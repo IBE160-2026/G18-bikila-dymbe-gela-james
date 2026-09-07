@@ -7,5 +7,6 @@ Repoet inneholder gruppens applikasjon og dokumentasjon av utvikling, testing og
 ## Medlemmer
 
 - Sena G Bikila
+- Aksel Dymbe
 - Kelly B Gela
 - Joseph James
