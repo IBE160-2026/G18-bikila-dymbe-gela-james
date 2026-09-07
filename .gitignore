@@ -1,0 +1,61 @@
+# Next.js / Node
+node_modules/
+.next/
+out/
+dist/
+build/
+.vercel/
+.turbo/
+*.tsbuildinfo
+next-env.d.ts
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Python environments, bytecode, packaging and caches
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.tox/
+.nox/
+.ipynb_checkpoints/
+pip-wheel-metadata/
+
+# Tests / coverage
+coverage/
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+test-results/
+playwright-report/
+
+# Secrets and local environment; keep example files
+.env
+.env.*
+!.env.example
+!.env.*.example
+*.log
+
+# BMAD: keep shared framework, skills, plans and documentation
+_bmad/config.user.toml
+_bmad/custom/*.user.toml
+_bmad/render/
+.claude/settings.local.json
+
+# Operating system / editors
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
