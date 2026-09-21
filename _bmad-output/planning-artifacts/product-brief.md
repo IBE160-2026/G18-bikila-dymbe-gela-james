@@ -1,12 +1,10 @@
-# SnowFinder – Produktbrief
+﻿# SnowFinder – Produktbrief
 
 **IBE160 Programmering med KI | Gruppe G18**
 
 *Beslutningsgrunnlag for utvikling, testing og refleksjonsrapport*
 
-![SnowFinders planlagte dataflyt og feilhåndtering](img/snowfinder-dataflyt.png)
 
-*Figur 1 SnowFinders planlagte dataflyt og feilhåndtering*
 
 ## Executive Summary
 
