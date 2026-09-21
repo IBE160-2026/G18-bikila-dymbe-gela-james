@@ -1,133 +1,369 @@
-# Produktbrief: SnowFinder
+# SnowFinder – Produktbrief
 
-**Emne:** IBE160 – Programmering med KI
-**Gruppe:** G18
-**Status:** Arbeidsutkast. Opprinnelig basert på «Produktbrief_SnowFinder.pdf» fra 09.09.2026, og nå omstrukturert etter emnets produktbrief-mal (`docs/maler/BMAD_Product_Brief_Student_Template.pdf`, BMAD Method v6.11.0). Dokumentet er ikke godkjent av gruppen eller faglærer, og flere seksjoner inneholder åpne punkter som må avklares før implementering låses.
+**IBE160 Programmering med KI | Gruppe G18**
+
+*Beslutningsgrunnlag for utvikling, testing og refleksjonsrapport*
+
+![SnowFinders planlagte dataflyt og feilhåndtering](img/snowfinder-dataflyt.png)
+
+*Figur 1 SnowFinders planlagte dataflyt og feilhåndtering*
 
 ## Executive Summary
 
-For norske skientusiaster lager vi SnowFinder, en webapplikasjon som hjelper dem å finne og sammenligne steder i Norge der værprognosen viser gode muligheter for snø – fordi de i dag må sjekke flere kilder manuelt og selv veie sammen temperatur, nedbør og høyde for hvert enkelt sted.
+SnowFinder er en webapplikasjon som hjelper norske skientusiaster med å
+finne og sammenligne steder der værprognosen viser gode muligheter for
+snø. I dag må brukeren ofte sjekke flere tjenester og selv tolke
+temperatur, nedbør, vind og høyde. SnowFinder samler disse opplysningene
+og presenterer dem i et interaktivt kart, en detaljvisning og en rangert
+Topp 10-liste.
 
-Brukeren søker etter et sted eller velger en lokasjon i et interaktivt kart, og får temperatur, nedbør, beregnet nysnø, vind og høyde samlet i én oversikt. En forklarbar SnowScore fra 0 til 100 gjør det mulig å sammenligne flere steder innenfor samme prognoseperiode, uten at brukeren selv må tolke rådataene.
+Prosjektets viktigste egenutviklede funksjon er **SnowScore**, en
+forklarbar poengsum fra 0 til 100. Poengsummen beregnes med dokumenterte
+regler for prognostisert nysnøpotensial, temperatur og sannsynlig
+snøandel. Brukeren skal kunne se både totalsummen og hvilke
+delberegninger som ligger bak resultatet.
 
-Løsningen viser **prognostisert snøpotensial** – ikke målt snødybde, faktiske løypeforhold eller en vurdering av skredsikkerhet. Omfang, prognosevindu og hvilke funksjoner som inngår i første versjon, er foreløpig ikke låst av gruppen (se «Scope» og «Beslutninger som gjenstår»).
+SnowFinder skal bruke live prognosedata fra MET Norway, stedsdata fra
+Kartverket og kartgrunnlag fra OpenStreetMap. Supabase brukes til sikker
+innlogging og private favoritter. En avgrenset agentbasert
+overvåkingsløsning skal kontrollere datakvalitet, registrere feil,
+forsøke trygg ny henting og sørge for at brukeren aldri får oppdiktede
+værverdier når en ekstern tjeneste ikke svarer.
+
+Løsningen viser **prognostisert snøpotensial**. Den viser ikke målt
+snødybde, garanterte løypeforhold eller skredsikkerhet.
 
 ## The Problem
 
-Skientusiaster som vil planlegge en tur, må i dag selv oppsøke og sammenligne flere kilder (f.eks. værtjenester, kartverk og skiforum) for å vurdere hvilket sted som har best forhold. Det krever at brukeren manuelt tolker og veier sammen flere værparametere – temperatur, nedbør, vind og høyde – per kandidatsted, uten noen samlet og forklart poengsum å sammenligne på tvers av steder.
+Skientusiaster som ønsker å velge tursted, må i dag ofte oppsøke og
+sammenligne flere kilder. De må manuelt vurdere om nedbør kommer som
+regn eller snø, om temperaturen er gunstig, hvor mye det blåser, og om
+flere aktuelle steder kan sammenlignes på samme tidspunkt.
 
-Konsekvensen er at valget av tursted blir tidkrevende og i stor grad avhengig av brukerens egen erfaring med å tolke værdata. Hvor stor denne kostnaden faktisk er for målgruppen (tidsbruk, antall kilder de i dag bruker, hvor ofte de bommer på forholdene), er ikke dokumentert og bør valideres med faktiske brukere.
+Dette skaper tre konkrete problemer:
+
+1. **Fragmentert informasjon:** relevante data ligger i flere tjenester.
+2. **Krevende tolkning:** rå værdata gir ikke nødvendigvis et tydelig svar på hvilket sted som har best prognostisert snøpotensial.
+3. **Lav sammenlignbarhet:** steder vurderes ofte med forskjellige prognoseperioder og kriterier.
+
+SnowFinder skal redusere tiden og den manuelle vurderingen som kreves
+for å finne aktuelle steder, samtidig som usikkerhet og datagrunnlag
+kommuniseres tydelig.
 
 ## The Solution
 
-SnowFinder samler de relevante værparameterne for et gitt sted i én oversikt, og oversetter dem til en forklarbar SnowScore som kan brukes til å sammenligne flere steder innenfor samme prognoseperiode. Brukeren skal kunne:
+Brukeren skal kunne:
 
-- Søke etter eller velge en lokasjon i et interaktivt kart over Norge.
-- Se værprognose (temperatur, nedbør, beregnet nysnø, vind, høyde) og SnowScore for valgt sted, med forklaring av hvordan poengsummen er beregnet.
-- Se en rangert oversikt over et avgrenset utvalg steder, samt en detaljvisning med tidspunkt for siste oppdatering.
-- (Foreslått, ikke bestemt) Logge inn med e-post for å lagre private favorittsteder, og stille enkle spørsmål til en regelbasert værchat som forklarer værdataene.
+- Søke etter et norsk stedsnavn eller velge en posisjon i kartet.
+- Hente oppdatert værprognose for valgt sted.
+- Se temperatur, nedbør, vind, høyde, prognoseperiode og tidspunkt for siste oppdatering.
+- Se en SnowScore fra 0 til 100 med forklaring av alle delpoeng.
+- Se en Topp 10-liste over et forhåndsdefinert utvalg steder, beregnet for samme prognoseperiode.
+- Sammenligne to eller tre steder på samme datagrunnlag.
+- Opprette bruker og lagre private favorittsteder.
+- Få tydelig beskjed dersom data mangler, er gamle eller ikke kan hentes.
 
-Hvordan SnowScore beregnes, hvilke datakilder som brukes, og hvordan innlogging/database løses teknisk, er beskrevet i støttenotatet nedenfor og hører hjemme i videre krav- og arkitekturarbeid (PRD/arkitektur), ikke som en låst del av denne briefen.
+Applikasjonen skal være responsiv og fungere på både mobil og PC.
+
+## Product Vision
+
+SnowFinder skal gjøre det raskere og enklere å finne steder med gode
+prognostiserte snøforhold, uten å skjule hvordan resultatet er beregnet.
+Målet er ikke å erstatte offisielle værtjenester, men å gjøre relevante
+data lettere å sammenligne og forstå.
+
+På lengre sikt kan løsningen utvides med historikk, flere
+prognosevinduer, flere turtyper og analyse av hvor godt tidligere
+prognoser traff. Første versjon skal imidlertid prioritere en stabil og
+testbar kjerne fremfor mange halvferdige funksjoner.
 
 ## What Makes This Different
 
-Alternativet i dag er at brukeren selv går til værtjenester og eventuelt kart/skiforum, og manuelt sammenligner flere steder og værparametere. Det tolereres fordi det er «godt nok» og gratis, men det krever tid og værfaglig skjønn av brukeren selv.
+SnowFinder skiller seg fra en vanlig værside ved å kombinere:
 
-SnowFinders foreslåtte fordel er at den samler parameterne og oversetter dem til én forklarbar, sammenlignbar poengsum (SnowScore) for flere steder på samme prognosegrunnlag – i stedet for at brukeren må gjøre denne sammenveiingen selv for hvert sted. Dette er foreløpig en antagelse: **det er ikke bekreftet av gruppen om dette oppleves som en reell fordel for målgruppen**, og SnowScore-vektingen er et skolemodell-designvalg, ikke en dokumentert bransjestandard (se støttenotat). Det finnes ingen kjent teknisk eller datamessig «moat» – fordelen ligger eventuelt i brukeropplevelsen (samlet, forklart sammenligning), ikke i unike data.
+- Kartbasert utforskning av steder i Norge.
+- En felles prognoseperiode for sammenligning.
+- En forklarbar SnowScore med synlige delpoeng.
+- Rangering og direkte sammenligning av steder.
+- Automatisk kontroll av datakvalitet og tydelig feilhåndtering.
+- Favoritter knyttet til en sikker brukerkonto.
 
-## Who This Serves
+Fordelen ligger ikke i unike værdata, men i hvordan dataene samles,
+kvalitetssikres, forklares og presenteres.
 
-**Primær bruker i én setning:** Norske skientusiaster som vil bruke fritiden sin best mulig, men som i dag må sjekke flere kilder manuelt for å finne et sted med gode snøforhold innenfor en gitt tidsperiode.
+## Target Users
 
-Sekundære brukere og mer presise behov (f.eks. erfaringsnivå, om det gjelder lengre skiturer eller nærturer) er ikke beskrevet i kildematerialet og bør konkretiseres av gruppen.
+### Primær målgruppe
+
+Norske skientusiaster som vil bruke mindre tid på å lete gjennom flere
+tjenester og raskere finne aktuelle steder med gode prognostiserte
+snøforhold.
+
+### Sekundær målgruppe
+
+- Studenter og familier som planlegger en helge- eller dagstur.
+- Brukere med begrenset erfaring i å tolke detaljerte værdata.
+- Erfarne brukere som ønsker en rask rangering før de undersøker et sted nærmere.
+
+## Scope for Version 1
+
+### In scope
+
+1. Interaktivt kart over Norge.
+2. Stedsøk og valg av posisjon i kartet.
+3. Live prognosedata fra MET Norway.
+4. Steds- og koordinatdata fra Kartverket.
+5. SnowScore med totalsum, delpoeng og forklaring.
+6. Topp 10-liste basert på samme prognosevindu.
+7. Sammenligning av to eller tre steder.
+8. Supabase-innlogging og private favoritter.
+9. Agentbasert validering, feillogging og trygg ny henting av værdata.
+10. Responsivt design, feilmeldinger og tilgjengelighet.
+11. Automatiserte tester og dokumentert kvalitetssikring.
+
+### Out of scope
+
+- Skredvarsling eller anbefaling om at et område er trygt.
+- Målt snødybde eller garanti for faktiske løypeforhold.
+- Kjøp, salg, booking eller betaling.
+- Sosialt nettverk, chat mellom brukere eller åpne brukerinnlegg.
+- En generativ værchat som kan finne på svar.
+- Kontinuerlig oppdatering hvert sekund.
+- Full dekning av alle steder i Norge i Topp 10-beregningen.
+
+## Data Sources and Processing
+
+| **Kilde**     | **Bruk**                                        | **Viktig avgrensning**                                        |
+|---------------|-------------------------------------------------|---------------------------------------------------------------|
+| MET Norway    | Temperatur, nedbør, vind og værprognose         | Prognosedata, ikke observerte snøforhold                      |
+| Kartverket    | Stedsnavn, søk og koordinater                   | Bruksvilkår og teknisk grensesnitt skal dokumenteres          |
+| OpenStreetMap | Kartgrunnlag                                    | Kildehenvisning skal vises i kartet                           |
+| Supabase      | Innlogging, favoritter og nødvendige systemdata | Passord håndteres av Supabase Auth, ikke av egen databasekode |
+| Brukeren      | Søketekst, valgt sted og favoritter             | Bare nødvendige personopplysninger lagres                     |
+
+Eksterne data skal hentes gjennom et eget service- eller backendlag.
+Dette laget skal validere svar, standardisere enheter, mellomlagre siste
+gyldige resultat og hindre at API-detaljer spres gjennom
+brukergrensesnittet.
+
+## SnowScore
+
+SnowScore skal være en deterministisk og testbar beregning. Samme
+inndata skal alltid gi samme resultat.
+
+| **Komponent**                | **Maksimalt bidrag** | **Formål**                                                                          |
+|------------------------------|----------------------|-------------------------------------------------------------------------------------|
+| Prognostisert nysnøpotensial | 60 poeng             | Vurderer nedbørsmengde sammen med temperatur og værtype                             |
+| Kulde                        | 25 poeng             | Gir poeng når temperaturen er egnet for at nedbør kan komme og bli liggende som snø |
+| Sannsynlig snøandel          | 15 poeng             | Vurderer hvor stor del av nedbøren som sannsynligvis kommer som snø                 |
+| **Totalt**                   | **100 poeng**        | Samlet og sammenlignbar vurdering                                                   |
+
+Før implementering skal gruppen fastsette og dokumentere:
+
+- Nøyaktige terskler og intervaller.
+- Hvordan temperatur gjennom prognoseperioden vektes.
+- Hvordan nedbør omregnes til et forsiktig estimat for snøpotensial.
+- Hvordan vind påvirker presentasjonen, selv om vind ikke inngår direkte i poengsummen.
+- Hvordan manglende eller usikre data påvirker resultatet.
+
+SnowScore skal aldri beregnes som om manglende verdier var null. Dersom
+nødvendige data mangler, skal resultatet merkes som ufullstendig eller
+ikke tilgjengelig.
+
+## AI Agents and Automated Operations
+
+Agentene skal støtte drift, testing og feilsøking. De skal ikke erstatte
+autoritative værdata eller ta skjulte beslutninger på vegne av brukeren.
+
+### 1. Data Retrieval Agent
+
+- Henter prognosedata når brukeren velger et sted.
+- Oppdaterer Topp 10-data etter en planlagt tidsplan.
+- Bruker en kontrollert ny-hentingsstrategi dersom en ekstern tjeneste midlertidig feiler.
+- Respekterer leverandørenes begrensninger, mellomlagring og bruksvilkår.
+
+### 2. Data Validation Agent
+
+- Kontrollerer at obligatoriske felt finnes.
+- Kontrollerer enheter, tidsstempler og realistiske verdiområder.
+- Avviser ugyldige eller ufullstendige svar før SnowScore beregnes.
+- Sammenligner nye svar med forventet datastruktur og oppdager API-endringer.
+
+### 3. Monitoring and Recovery Agent
+
+- Registrerer tekniske feil uten å lagre unødvendige personopplysninger.
+- Skiller mellom nettverksfeil, rate limits, valideringsfeil og programfeil.
+- Forsøker trygg ny henting et begrenset antall ganger.
+- Viser siste gyldige resultat med tydelig tidsstempel dersom dette er forsvarlig.
+- Viser «Værdata er midlertidig utilgjengelige» dersom pålitelig informasjon ikke finnes.
+
+### 4. Test and Quality Agent
+
+- Kjører enhetstester, integrasjonstester og kodekontroll ved Pull Requests.
+- Oppsummerer feil for gruppen, men endrer ikke produksjonskode uten menneskelig godkjenning.
+- Kontrollerer at SnowScore alltid ligger mellom 0 og 100.
+- Tester sentrale brukerreiser før en ny versjon publiseres.
+
+### Sikkerhetsgrenser for agentene
+
+- Agentene skal aldri konstruere eller gjette manglende værverdier.
+- Agentene skal aldri skjule datakilde, oppdateringstid eller feilstatus.
+- Nye kodeendringer skal godkjennes av et gruppemedlem gjennom Pull Request.
+- Antall automatiske nye forsøk skal være begrenset for å unngå overbelastning av eksterne API-er.
+- Kritiske feil skal logges og presenteres som feil, ikke kamufleres som vellykket respons.
+
+«Øyeblikkelig oppdatering» betyr at grensesnittet oppdateres straks nye
+validerte data er mottatt. Det betyr ikke at eksterne værdata endres
+hvert sekund. Oppdateringsfrekvensen skal følge datakildenes
+tilgjengelighet og bruksvilkår.
+
+## Proposed Architecture
+
+Teknisk flyt: Bruker og kart → React-frontend → API- og servicelag → MET
+Norway og Kartverket → validering, cache og SnowScore. Supabase
+håndterer innlogging og favoritter, mens overvåking og feillogg kan
+utløse kontrollert ny henting.
+
+### Foreslått teknologistack
+
+| **Område**             | **Teknologi**                                                       |
+|------------------------|---------------------------------------------------------------------|
+| Frontend               | React, TypeScript og Vite                                           |
+| Kart                   | Leaflet og OpenStreetMap                                            |
+| Backend/service        | Node.js-baserte API-funksjoner eller tilsvarende serverless-løsning |
+| Database og innlogging | Supabase og Row Level Security                                      |
+| Testing                | Vitest og Playwright                                                |
+| Kodekvalitet           | ESLint, TypeScript og formatkontroll                                |
+| Versjonskontroll       | GitHub, branches og Pull Requests                                   |
+| Automatisering         | GitHub Actions                                                      |
+
+## Database and Privacy
+
+Supabase skal brukes til autentisering og favoritter. Applikasjonen skal
+ikke utvikle egen passordlagring.
+
+Minimumstabeller:
+
+- profiles: nødvendig profilinformasjon knyttet til autentisert bruker.
+- favorites: bruker-ID, sted, koordinater og opprettelsestidspunkt.
+- api_incidents: teknisk feiltype, tidspunkt og status uten unødvendige persondata.
+
+Row Level Security skal sikre at:
+
+- En bruker bare kan lese og endre sine egne favoritter.
+- Ikke-innloggede brukere ikke får tilgang til private brukerdata.
+- Tekniske logger ikke er tilgjengelige fra den vanlige klienten.
+
+## Quality Assurance
+
+### Automatiserte tester
+
+- Enhetstester av alle SnowScore-regler og terskelverdier.
+- Tester av minimumsverdi 0 og maksimumsverdi 100.
+- Tester av manglende, ugyldige og gamle værdata.
+- Integrasjonstester av datatransformasjon fra API-svar til visning.
+- Tester av innlogging og private favoritter.
+- End-to-end-test av søk, kartvalg, resultat og favorittlagring.
+
+### Manuell kvalitetssikring
+
+- Kontrollere et utvalg steder mot den opprinnelige prognosen hos MET Norway.
+- Teste på mobil, nettbrett og PC.
+- Teste med tastatur og kontrollere kontrast og lesbarhet.
+- Gjennomføre brukertest med minst fem personer.
+- Dokumentere feil, årsak, løsning og ny test.
 
 ## Success Criteria
 
-Ikke fastsatt av gruppen ennå. Malen ber om målbare signaler i fire kategorier – disse må fylles inn før briefen kan regnes som komplett:
+| **Område**            | **Målbart kriterium**                                                              |
+|-----------------------|------------------------------------------------------------------------------------|
+| Kjernefunksjon        | Brukeren kan søke eller velge sted og få et gyldig, forklart resultat              |
+| Sammenligning         | Alle steder i Topp 10 beregnes for samme prognoseperiode                           |
+| Forklarbarhet         | Minst 4 av 5 testbrukere kan forklare hovedårsaken til en vist SnowScore           |
+| Datakvalitet          | Applikasjonen viser aldri oppdiktede verdier ved manglende API-data                |
+| Robusthet             | Kontrollerte tester av API-feil gir forståelig feilmelding og logget hendelse      |
+| Sikkerhet             | Tester viser at en bruker ikke kan lese eller endre en annen brukers favoritter    |
+| Testdekning           | All forretningskritisk beregningslogikk har automatiserte tester                   |
+| Tilgjengelighet       | Kjernefunksjonene kan brukes på mobil og med tastaturnavigasjon                    |
+| Prosjektgjennomføring | Alle vesentlige endringer kan spores til commits, branches og Pull Requests        |
+| Faglig refleksjon     | Rapporten dokumenterer KI-bidrag, menneskelig kontroll, feil og etiske vurderinger |
 
-| Signal | Metrikk / bevis | Mål | Når målt |
-| --- | --- | --- | --- |
-| Brukerutfall (f.eks. raskere/tryggere valg av tursted) | *ikke fastsatt* | *ikke fastsatt* | *ikke fastsatt* |
-| Adopsjon/atferd (f.eks. bruk av sammenligning/favoritter) | *ikke fastsatt* | *ikke fastsatt* | *ikke fastsatt* |
-| Kvalitet/tillit (f.eks. at SnowScore oppleves forståelig og korrekt) | *ikke fastsatt* | *ikke fastsatt* | *ikke fastsatt* |
-| Prosjekt/fag (hva som må vise seg for at prosjektet vurderes som vellykket i IBE160) | *ikke fastsatt* | *ikke fastsatt* | *ikke fastsatt* |
+## AI-assisted Development and Documentation
 
-## Scope
+Claude Code eller en tilsvarende kodeagent kan brukes til å:
 
-Grov, foreslått avgrensning basert på hva som er nødvendig for å vise kjerneverdien (sammenlignbar snøvurdering) – **ikke endelig bestemt av gruppen**:
+- Foreslå arkitektur og mappestruktur.
+- Generere førsteutkast til komponenter og tester.
+- Feilsøke API-integrasjoner.
+- Analysere testfeil og foreslå rettelser.
+- Forbedre dokumentasjon og kodekommentarer.
 
-**IN – forslag til første versjon**
-1. Interaktivt kart over Norge med søk og valg av lokasjon.
-2. Værprognose for valgt sted (temperatur, nedbør, beregnet nysnø, vind, høyde).
-3. Forklarbar SnowScore for valgt sted.
-4. Rangert oversikt over et avgrenset utvalg steder, innenfor samme prognoseperiode.
-5. Detaljvisning for valgt sted med tidspunkt for oppdatering.
+Gruppen skal dokumentere:
 
-**OUT – vurderes ikke nå**
-1. E-postinnlogging og lagring av private favorittsteder.
-2. Regelbasert værchat.
-3. Kjøp/salg eller annen kommersiell funksjonalitet (uttrykkelig utenfor prosjektet).
-4. Skredsikkerhetsvurdering eller presentasjon av data som målt (ikke prognostisert) snødybde.
+1. Hvilke oppgaver KI ble brukt til.
+2. De viktigste instruksene eller promptene.
+3. Hvilken kode KI foreslo.
+4. Hvilke forslag gruppen endret eller avviste.
+5. Hvordan koden ble testet og kvalitetssikret.
+6. Hvem som godkjente og integrerte endringen.
 
-Punkt 1–2 under «OUT» er eksplisitt nevnt som noe som skal avgrenses i beslutningspunktene under, og kan flyttes til v1 dersom gruppen bestemmer det.
+KI-generert kode skal behandles som et forslag, ikke som automatisk
+korrekt kode.
 
-## Vision
+## Ethical and Technological Considerations
 
-Dersom SnowFinder lykkes med å gjøre det raskere og enklere å sammenligne snøforhold på tvers av steder, kan løsningen over tid utvides til å dekke flere brukssituasjoner – f.eks. flere prognosevinduer og turtyper, historikk for å vurdere hvor treffsikre prognosene har vært, og et bredere sett med steder. Dette er et grunnlagsforslag, ikke en bekreftet retning, og bør videreutvikles av gruppen når kjerneverdien i første versjon er validert.
+- SnowScore kan påvirke brukerens valg, men er ikke en sikkerhetsvurdering.
+- Værprognoser inneholder usikkerhet som skal kommuniseres tydelig.
+- Løsningen skal ikke formulere garantier om snø, løypekvalitet eller sikker ferdsel.
+- Datakilder, beregningsmetode og oppdateringstid skal være synlige.
+- Personopplysninger skal begrenses til det som er nødvendig.
+- Automatiserte agenter skal ha avgrensede rettigheter, logging og menneskelig kontroll.
+- Gruppen skal drøfte både fordelene og risikoen ved KI-generert kode i refleksjonsrapporten.
 
-## Beslutninger som gjenstår
+## Development Process
 
-1. Avgrense funksjonene i første versjon, inkludert innlogging/favoritter og regelbasert værchat (se «Scope»).
-2. Fastsette hvordan SnowScore og beregnet nysnø skal beregnes og forklares (se støttenotat).
-3. Bestemme endelig prognosevindu slik at alle steder sammenlignes på samme grunnlag.
-4. Velge hvilke steder som skal inngå i rangeringen.
-5. Bestemme hvordan manglende, gamle eller usikre værdata skal vises.
-6. Avklare hvilke funksjoner som eventuelt krever innlogging.
-7. Beskrive og teste at en bruker ikke kan lese eller endre en annen brukers favoritter, dersom favoritter tas med.
-8. Fylle inn suksesskriterier sammen med gruppen (se «Success Criteria»).
-9. Vurdere og eventuelt utvide «What Makes This Different» og «Vision» sammen med gruppen – nåværende tekst er et forslag, ikke en bekreftet posisjon.
+Prosjektet gjennomføres iterativt:
 
-## Videre arbeid
+1. Låse krav, SnowScore-regler og datakilder.
+2. Lage teknisk arkitektur og datamodell.
+3. Bygge kart, søk og grunnleggende værvisning.
+4. Implementere og teste SnowScore.
+5. Bygge Topp 10 og sammenligning.
+6. Legge til Supabase-innlogging og favoritter.
+7. Implementere overvåking, trygg ny henting og feillogging.
+8. Gjennomføre automatiserte og manuelle tester.
+9. Brukerteste, forbedre og dokumentere.
+10. Ferdigstille refleksjonsrapport og individuell bidragsdokumentasjon.
 
-Bruk briefen som grunnlag for BMADs analyse- og planleggingsarbeid (PRD, arkitektur). Oppdater dokumentet når gruppen tar beslutninger, slik at videre kravarbeid, design, arkitektur og implementering bygger på samme prosjektbeskrivelse.
+Hvert gruppemedlem arbeider på egen branch. Vesentlige endringer
+integreres gjennom Pull Requests med minst én menneskelig gjennomgang.
 
----
+## Deliverables
 
-## Støttenotat: teknisk og funksjonelt underlag (til PRD/arkitektur)
+- Kjørbar SnowFinder-applikasjon.
+- Kildekode i GitHub med forståelig mappestruktur og commit-historikk.
+- Oppdatert produktbrief, krav og arkitektur.
+- Dokumentert SnowScore-algoritme.
+- Automatiserte tester og testresultater.
+- KI-logg med sentrale prompts, vurderinger og endringer.
+- Refleksjonsrapport om prosess, kvalitet, etikk og teknologi.
+- Kort demonstrasjon av normal drift og håndtering av API-feil.
 
-Dette notatet samler det tekniske og funksjonelle underlaget fra det opprinnelige forslaget. Det er ikke en del av selve produktbriefen etter malens struktur, men tas vare på her som grunnlag for videre krav- og arkitekturarbeid.
+## Definition of Done
 
-### Innlogging og database
+SnowFinder regnes som ferdig når:
 
-Supabase er foreslått for brukerkontoer og database. E-postinnlogging skal støtte private favoritter, og tilgangsreglene skal sikre at brukere bare kan lese og endre sine egne favoritter. Det må avklares om innlogging bare skal kreves for favoritter, mens kart og prognoser er tilgjengelige uten innlogging.
+- Alle funksjoner i «In scope» er implementert eller eksplisitt omprioritert og dokumentert.
+- Kjerneflyten fungerer på mobil og PC.
+- SnowScore er forklart, testet og reproduserbar.
+- Feil i eksterne tjenester håndteres uten oppdiktede data.
+- Supabase-regler og private favoritter er testet.
+- Automatiserte tester kjører uten kritiske feil.
+- Datakilder og oppdateringstid vises tydelig.
+- Vesentlige KI-bidrag og menneskelig kvalitetssikring er dokumentert.
+- Gruppen kan forklare både hvordan løsningen virker og hvilke begrensninger den har.
 
-### Data inn
-
-| Kilde eller input | Planlagt bruk |
-| --- | --- |
-| MET Norway | Prognoser for blant annet temperatur, nedbør, værtype og vind. |
-| Kartverket | Stedsnavn og koordinater. |
-| OpenStreetMap/kartflistjeneste | Kartgrunnlag. Konkret flisleverandør og bruksvilkår må avklares. |
-| Brukeren | Søketekst og valgt lokasjon, eventuelt posisjon fra brukerens enhet. |
-| Supabase | Innloggings- og favorittdata. |
-
-Tilgjengelighet, konkrete grensesnitt, bruksvilkår og hvilke data som faktisk kan hentes, må undersøkes i utviklingsarbeidet. Kilde til høydeopplysninger og metode for å beregne nysnø må også avklares.
-
-### Data ut
-
-Kart, sammenlignbar værprognose, SnowScore med forklaring, beregnet nysnø, temperatur, vind, høyde og oppdateringstidspunkt. I tillegg foreslås rangering av steder, detaljer for valgt sted, private favoritter og forklaringer fra en enkel regelbasert værchat, dersom disse tas med i omfanget. Manglende eller usikre opplysninger skal fremgå tydelig.
-
-### Forslag til SnowScore
-
-Grafen i den opprinnelige PDF-en viser følgende maksimale poengfordeling:
-
-| Komponent | Maksimalt bidrag |
-| --- | ---: |
-| Nysnø | 60 poeng |
-| Kulde | 25 poeng |
-| Snøandel | 15 poeng |
-| **Totalt** | **100 poeng** |
-
-Vektene er et designvalg i skolemodellen, ikke en dokumentert standard for snøkvalitet. Beregningsregler, terskler, enheter og håndtering av manglende data må fastsettes og testes mot faktiske værdata og brukerforståelse.
-
-**Kilde og bearbeiding:** «Produktbrief_SnowFinder.pdf», versjon sist endret 09.09.2026. Strukturen er lagt om til emnets produktbrief-mal (`docs/maler/BMAD_Product_Brief_Student_Template.pdf`) i denne versjonen. Ingen av de foreslåtte funksjonene er bekreftet implementert gjennom dette dokumentet.
+Denne briefen beskriver ambisjonsnivået gruppen mener gir et godt
+grunnlag for en sterk faglig besvarelse. Endelig karakter avgjøres av
+faglærer og av kvaliteten på implementering, testing, dokumentasjon og
+refleksjon - ikke av antall planlagte funksjoner alene.
