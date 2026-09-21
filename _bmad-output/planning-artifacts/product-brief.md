@@ -361,7 +361,3 @@ SnowFinder regnes som ferdig når:
 - Vesentlige KI-bidrag og menneskelig kvalitetssikring er dokumentert.
 - Gruppen kan forklare både hvordan løsningen virker og hvilke begrensninger den har.
 
-Denne briefen beskriver ambisjonsnivået gruppen mener gir et godt
-grunnlag for en sterk faglig besvarelse. Endelig karakter avgjøres av
-faglærer og av kvaliteten på implementering, testing, dokumentasjon og
-refleksjon - ikke av antall planlagte funksjoner alene.
