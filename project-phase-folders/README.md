@@ -16,3 +16,21 @@ Produktet heter **SnowFinder** — en webapp som finner steder og tidspunkt med 
 prognostiserte snøforhold, med **SnowScore** (0–100) som kjernemetrikk. Se
 [`1-Oppstartsfasen/SnowFinder-Produktbrief.md`](1-Oppstartsfasen/SnowFinder-Produktbrief.md)
 for full produktbrief.
+
+## Forholdet til `project-workspace/planning-artifacts/`
+
+`project-workspace/planning-artifacts/` er BMAD-verktøyets egen arbeidsmappe — der agentene
+(f.eks. Winston/arkitekt) skriver rå utkast og kjørelogg (`.memlog.md`) mens et dokument
+utarbeides. Den inneholder for øyeblikket:
+
+- `product-brief.md` — samme innhold som
+  [`1-Oppstartsfasen/SnowFinder-Produktbrief.md`](1-Oppstartsfasen/SnowFinder-Produktbrief.md),
+  men uten kuratering/omdøping
+- `architecture/architecture-*/` — kjøremappen bak
+  [`2-Planleggingsfasen/SnowFinder-Arkitektur.md`](2-Planleggingsfasen/SnowFinder-Arkitektur.md),
+  inkludert `.memlog.md` (hver beslutning logget underveis, inkl. versjonssjekk og
+  motstridende gjennomganger)
+
+Denne mappen er ikke gruppens leveranse — den ferdige, navngitte og kuraterte versjonen av
+hvert dokument ligger i riktig fasemappe over. `project-workspace/` er bare til referanse hvis
+noen vil se hvordan et dokument ble til.
