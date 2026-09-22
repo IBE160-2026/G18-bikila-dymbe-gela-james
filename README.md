@@ -13,7 +13,7 @@ Repoet inneholder gruppens applikasjon og dokumentasjon av utvikling, testing og
 
 ## Dokumentasjon
 
-Prosjektdokumentasjonen ligger i [`documentation/`](documentation/), organisert etter
+Prosjektdokumentasjonen ligger i [`phase-folder/`](phase-folder/), organisert etter
 oppstarts-, planleggings-, gjennomførings- og avslutningsfasen.
 
-- [Produktbrief](documentation/1-Oppstartsfasen/product-brief.md)
+- [Produktbrief](phase-folder/1-Oppstartsfasen/SnowFinder-Produktbrief.md)

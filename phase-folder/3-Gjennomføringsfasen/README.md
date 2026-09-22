@@ -5,12 +5,12 @@ for sprint.
 
 ## Innhold (legges til etter hvert)
 
-- **Sprint-status** — fremdrift per sprint (`bmad-sprint-planning` / sprint-status-oppdateringer)
-- **Statusrapporter / møtereferater** fra gruppa
-- **Kodegjennomganger** — funn fra `bmad-code-review` / `code-review`
-- **Endringshåndtering** — dokumenterte avvik fra plan (`bmad-correct-course`)
+- **Sprint-status** — fremdrift per sprint
+- **[`møtereferater/`](møtereferater/)** — ett referat per gruppemøte
+- **Kodegjennomganger** — funn fra kodegjennomgang
+- **Endringshåndtering** — dokumenterte avvik fra plan
 - **QA / testresultater** — egenskapstester av SnowScore, kontraktstester mot MET/NVE,
-  sikkerhetstester av RLS og Edge Functions, brukertester (`bmad-testarch-*`-artefakter)
+  sikkerhetstester av RLS og Edge Functions, brukertester
 
 ## Forrige / neste steg
 

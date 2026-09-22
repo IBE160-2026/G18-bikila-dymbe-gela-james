@@ -7,7 +7,7 @@ presenteres/leveres.
 
 - **Sluttrapport** — sammenstilling av mål, resultat og avvik mot produktbrief og
   suksesskriterier (ytelse, ferskhet, robusthet, korrekthet, nytte, tilgjengelighet)
-- **Retrospektiv** — hva fungerte, hva bør endres neste gang (`bmad-retrospective`)
+- **Retrospektiv** — hva fungerte, hva bør endres neste gang
 - **Leveransedokumentasjon** — demo-instruksjoner, driftsettingsnotater
 - **Presentasjonsmateriell** — slides/notater til fremføring
 
