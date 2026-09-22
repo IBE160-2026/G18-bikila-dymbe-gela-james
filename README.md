@@ -14,4 +14,6 @@ Repoet inneholder gruppens applikasjon og dokumentasjon av utvikling, testing og
 ## Dokumentasjon
 
 Prosjektdokumentasjonen ligger i [`project-phase-folders/`](project-phase-folders/), organisert
-etter oppstarts-, planleggings-, gjennomførings- og avslutningsfasen.
+etter oppstarts-, planleggings-, gjennomførings- og avslutningsfasen. `project-workspace/` er
+BMAD-verktøyets arbeidsmappe, ikke gruppens leveranse — se
+[`project-phase-folders/README.md`](project-phase-folders/README.md) for hva som ligger hvor.

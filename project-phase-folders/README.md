@@ -17,20 +17,17 @@ prognostiserte snøforhold, med **SnowScore** (0–100) som kjernemetrikk. Se
 [`1-Oppstartsfasen/SnowFinder-Produktbrief.md`](1-Oppstartsfasen/SnowFinder-Produktbrief.md)
 for full produktbrief.
 
-## Forholdet til `project-workspace/planning-artifacts/`
+## `project-phase-folders/` vs. `project-workspace/`
 
-`project-workspace/planning-artifacts/` er BMAD-verktøyets egen arbeidsmappe — der agentene
-(f.eks. Winston/arkitekt) skriver rå utkast og kjørelogg (`.memlog.md`) mens et dokument
-utarbeides. Den inneholder for øyeblikket:
-
-- `product-brief.md` — samme innhold som
-  [`1-Oppstartsfasen/SnowFinder-Produktbrief.md`](1-Oppstartsfasen/SnowFinder-Produktbrief.md),
-  men uten kuratering/omdøping
-- `architecture/architecture-*/` — kjøremappen bak
-  [`2-Planleggingsfasen/SnowFinder-Arkitektur.md`](2-Planleggingsfasen/SnowFinder-Arkitektur.md),
-  inkludert `.memlog.md` (hver beslutning logget underveis, inkl. versjonssjekk og
-  motstridende gjennomganger)
-
-Denne mappen er ikke gruppens leveranse — den ferdige, navngitte og kuraterte versjonen av
-hvert dokument ligger i riktig fasemappe over. `project-workspace/` er bare til referanse hvis
-noen vil se hvordan et dokument ble til.
+- **`project-phase-folders/`** (denne mappen) — gruppens kuraterte dokumentasjon:
+  - **Der nå:** produktbrief (`1-Oppstartsfasen/`), arkitektur og milepæler
+    (`2-Planleggingsfasen/`), møtereferat-mal (`3-Gjennomføringsfasen/`)
+  - **Kommer etter hvert:** PRD, UX/UI-spesifikasjon, epics/stories, sprint-plan, testplan
+    (`2-Planleggingsfasen/`), sprint-status, kodegjennomganger, endringslogg
+    (`3-Gjennomføringsfasen/`), sluttrapport, retrospektiv, leveranse (`4-Avslutningsfasen/`)
+- **`project-workspace/`** — BMAD-verktøyets arbeidsmappe:
+  - **Der nå:** `planning-artifacts/product-brief.md` og
+    `planning-artifacts/architecture/architecture-*/` (utkastene bak produktbriefen og
+    arkitekturen over)
+  - **Kommer etter hvert:** flere kjøringer i `planning-artifacts/` (PRD, epics/stories), samt
+    `implementation-artifacts/` og `test-artifacts/` når utvikling og testarbeid starter
