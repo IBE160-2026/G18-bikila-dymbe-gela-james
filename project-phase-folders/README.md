@@ -17,7 +17,7 @@ prognostiserte snøforhold, med **SnowScore** (0–100) som kjernemetrikk. Se
 [`1-Oppstartsfasen/SnowFinder-Produktbrief.md`](1-Oppstartsfasen/SnowFinder-Produktbrief.md)
 for full produktbrief.
 
-## `project-phase-folders/` vs. `project-workspace/`
+## `project-phase-folders/` vs. `project-workspace/` vs. koden
 
 - **`project-phase-folders/`** (denne mappen) — gruppens kuraterte dokumentasjon:
   - **Der nå:** produktbrief (`1-Oppstartsfasen/`), arkitektur og milepæler
@@ -31,3 +31,17 @@ for full produktbrief.
     arkitekturen over)
   - **Kommer etter hvert:** flere kjøringer i `planning-artifacts/` (PRD, epics/stories), samt
     `implementation-artifacts/` og `test-artifacts/` når utvikling og testarbeid starter
+- **Selve produktet (koden)** — verken i `project-phase-folders/` eller `project-workspace/`,
+  men i repo-roten: `src/`, `shared/`, `supabase/`, `scripts/`, `tests/`, `.github/workflows/`
+  (full mappestruktur og begrunnelse i
+  [`2-Planleggingsfasen/SnowFinder-Arkitektur.md`](2-Planleggingsfasen/SnowFinder-Arkitektur.md)):
+  - **Der nå:** ingenting — mappene er ikke opprettet ennå
+  - **Kommer etter hvert:**
+    - `src/` — frontend: sider, komponenter, hooks (Norgeskart, stedssider, filter,
+      SnowScore-forklaringsside)
+    - `shared/` — den ene SnowScore-formelen, brukt av både frontend-kalkulatoren og pipelinen
+    - `supabase/` — migrasjoner og Edge Functions: datapipeline (fetch → validate → score →
+      stage → publish → alert), tilbakemelding, snøvarsel, sletting av utdaterte data
+    - `scripts/` — engangsskript som bygger stedskatalogen fra OSM/Kartverket
+    - `tests/` — E2E- og kontraktstester
+    - `.github/workflows/` — CI/CD
