@@ -13,4 +13,7 @@ Repoet inneholder gruppens applikasjon og dokumentasjon av utvikling, testing og
 
 ## Dokumentasjon
 
-- [Produktbrief](_bmad-output/planning-artifacts/product-brief.md)
+Prosjektdokumentasjonen ligger i [`documentation/`](documentation/), organisert etter
+oppstarts-, planleggings-, gjennomførings- og avslutningsfasen.
+
+- [Produktbrief](documentation/1-Oppstartsfasen/product-brief.md)
