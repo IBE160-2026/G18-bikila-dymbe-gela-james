@@ -17,7 +17,7 @@ prognostiserte snøforhold, med **SnowScore** (0–100) som kjernemetrikk. Se
 [`1-Oppstartsfasen/SnowFinder-Produktbrief.md`](1-Oppstartsfasen/SnowFinder-Produktbrief.md)
 for full produktbrief.
 
-## `project-phase-folders/` vs. `project-workspace/` vs. koden
+## `project-phase-folders/` vs. `project-workspace/` vs. `ai-log/` vs. koden
 
 - **`project-phase-folders/`** (denne mappen) — gruppens kuraterte dokumentasjon:
   - **Der nå:** produktbrief (`1-Oppstartsfasen/`), arkitektur og milepæler
@@ -31,6 +31,10 @@ for full produktbrief.
     arkitekturen over)
   - **Kommer etter hvert:** flere kjøringer i `planning-artifacts/` (PRD, epics/stories), samt
     `implementation-artifacts/` og `test-artifacts/` når utvikling og testarbeid starter
+- **`ai-log/`** — løpende KI-bruksslogg på tvers av alle faser (ikke bare gjennomføring), per
+  produktbriefens krav om å logge sentrale prompts, endrede/avviste forslag og godkjenning:
+  - **Der nå:** [`logg.md`](../ai-log/logg.md) opprettet, tom mal klar til utfylling
+  - **Kommer etter hvert:** løpende oppføringer gruppen fyller inn selv
 - **Selve produktet (koden)** — verken i `project-phase-folders/` eller `project-workspace/`,
   men i repo-roten: `src/`, `shared/`, `supabase/`, `scripts/`, `tests/`, `.github/workflows/`
   (full mappestruktur og begrunnelse i
