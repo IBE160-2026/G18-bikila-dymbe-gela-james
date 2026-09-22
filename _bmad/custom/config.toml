@@ -5,3 +5,16 @@
 #
 # [agents.bmad-agent-pm]
 # description = "Prefers short, bulleted PRDs over narrative drafts."
+
+[core]
+output_folder = "{project-root}/project-workspace"
+
+[modules.bmm]
+planning_artifacts = "{project-root}/project-workspace/planning-artifacts"
+implementation_artifacts = "{project-root}/project-workspace/implementation-artifacts"
+
+[modules.tea]
+test_artifacts = "{project-root}/project-workspace/test-artifacts"
+test_design_output = "project-workspace/test-artifacts/test-design"
+test_review_output = "project-workspace/test-artifacts/test-reviews"
+trace_output = "project-workspace/test-artifacts/traceability"

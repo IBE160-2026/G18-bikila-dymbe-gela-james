@@ -10,7 +10,7 @@ created: '2026-09-22'
 updated: '2026-09-22'
 binds: []
 sources:
-  - phase-folder/1-Oppstartsfasen/SnowFinder-Produktbrief.md
+  - project-phase-folders/1-Oppstartsfasen/SnowFinder-Produktbrief.md
 companions: []
 ---
 
@@ -204,7 +204,7 @@ flowchart TB
     e2e/                        # Playwright, against a preview deploy
     contract/
       fixtures/                 # recorded MET/NVE responses
-  phase-folder/                 # course documentation (see phase-folder/README.md)
+  project-phase-folders/         # course documentation (see project-phase-folders/README.md)
   .github/
     workflows/                  # ci.yml, e2e.yml, deploy.yml
     agents/                     # existing BMAD agent configs — unrelated to CI
