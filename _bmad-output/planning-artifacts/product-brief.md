@@ -73,7 +73,7 @@ En egen fane lar brukere sende tilbakemeldinger direkte til gruppen uten innlogg
 1. verifiserer et Cloudflare Turnstile-token mot automatiserte angrep,
 2. validerer innholdet mot et fast skjema,
 3. begrenser antall innsendinger med en kortlevd, saltet hash som slettes etter 24 timer,
-4. lagrer tilbakemeldingen i en tabell der klienten kun har skrivetilgang,
+4. lagrer tilbakemeldingen selv, siden klienten ikke har noen direkte tilgang til tabellen og kontrollene dermed ikke kan omgås,
 5. varsler gruppen i en privat kanal.
 
 Tilbakemeldinger slettes automatisk etter tolv måneder.
@@ -82,7 +82,7 @@ Tilbakemeldinger slettes automatisk etter tolv måneder.
 
 - **Egenskapsbaserte tester** av SnowScore med tusenvis av tilfeldige inndata, som bekrefter at poengsummen alltid ligger mellom 0 og 100, at mer snø aldri gir lavere nysnøpoeng, at lavere temperatur aldri gir lavere kuldepoeng, og at samme inndata alltid gir samme resultat.
 - **Kontraktstester** mot lagrede API-svar fra MET og NVE.
-- **End-to-end-tester** av kart, filter, stedsside, varsel og tilbakemelding.
+- **End-to-end-tester** av kart, filter og stedsside, samt av «bør ha»-funksjoner som snøvarsel og tilbakemelding etter hvert som de implementeres.
 - **Sikkerhetstester** som bekrefter at klienten ikke kan lese tilbakemeldinger, varselregler eller push-abonnementer, at Row Level Security blokkerer all uautorisert tilgang, at alle Edge Functions validerer data på serversiden, at fritekst behandles som utrygt innhold og ikke kan injisere kode, at hemmelige nøkler aldri havner i frontend-koden, og at avmelding faktisk sletter varselregelen.
 - **Manuell kontroll** av et fast utvalg steder mot MET og test på mobil og PC.
 - **Oppgavebasert brukertest** med minst fem personer, som måler om de klarer å finne et aktuelt sted, justere filteret, forklare en SnowScore, oppdage utdaterte data og skille prognose fra faktiske forhold.
@@ -150,7 +150,7 @@ Mangler mer enn 10 % av timene, vises «ufullstendige data» i stedet for en poe
 - **Ærlig alder på data:** data eldre enn tre timer merkes «utdatert», og steder med data eldre enn tolv timer tas ut av kart, filter og varsler.
 - **Kontrollerte nye forsøk:** eksponentiell ventetid med tilfeldig variasjon, fast maksimum og en kretsbryter per datakilde.
 - **Idempotente jobber:** samme jobb gir samme resultat ved ny kjøring, og samtidige kjøringer blokkeres. Varsler har en unik nøkkel per regel og døgn, slik at ingen får samme varsel to ganger.
-- **Minste privilegium:** hemmelige nøkler finnes bare på serversiden, Row Level Security gjelder alle tabeller, og klienten har kun lesetilgang til publiserte data.
+- **Minste privilegium:** hemmelige nøkler finnes bare på serversiden, Row Level Security gjelder alle tabeller, og klienten har kun lesetilgang til publiserte data. All skriving går gjennom Edge Functions.
 - **Vern mot misbruk:** hastighetsbegrensning på alle åpne endepunkter, streng validering av inndata, Content Security Policy og automatiske avhengighetsoppdateringer.
 - **Overvåking:** mislykkede jobber, avviste svar og utløste kretsbrytere logges og varsler gruppen.
 
@@ -213,7 +213,7 @@ flowchart LR
 | `conditions` | Publiserte verdier per sted og tidssteg | Lesing for alle |
 | `conditions_staging` | Uferdig batch | Kun server |
 | `alert_rules` | Fulgt sted, terskel og push-adresse | Kun server |
-| `feedback` | Tilbakemeldinger uten konto | Skriving fra klienten, lesing kun for gruppen |
+| `feedback` | Tilbakemeldinger uten konto | Kun Edge Function kan skrive, kun gruppen kan lese |
 | `api_incidents` | Tekniske hendelser | Kun server og gruppen |
 
 SnowFinder krever ingen brukerkonto og lagrer ikke navn, e-postadresse eller brukerens posisjon, som bare brukes i nettleseren til avstandsfilteret. For push-varsler og vern mot misbruk behandles begrensede tekniske identifikatorer: push-abonnementet, en kortlevd saltet hash for hastighetsbegrensning og IP-adressen som Edge Functions og Turnstile nødvendigvis ser ved en forespørsel. Disse er pseudonyme personopplysninger. De brukes bare til det angitte formålet, beskyttes med tilgangskontroll og slettes når de ikke lenger trengs: varselregler og push-abonnement ved avmelding, hash etter 24 timer, tilbakemeldinger etter tolv måneder og værdata etter syv døgn.
