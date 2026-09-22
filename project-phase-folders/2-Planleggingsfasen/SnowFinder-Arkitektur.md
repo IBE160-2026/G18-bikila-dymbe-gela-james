@@ -136,6 +136,7 @@ flowchart LR
 | Naming (files, tables, functions) | `snake_case` for SQL (tables, columns, RPC functions); `camelCase` for TS values, `PascalCase` for React components/types. Pipeline stage files named after the stage verb (`fetch.ts`, `validate.ts`, …). |
 | Data & formats | All timestamps stored in UTC (`timestamptz`), converted to Norwegian local time only at the UI edge. IDs are Postgres `uuid`. API error shape: `{ error: { code, message } }` from every Edge Function. |
 | State & cross-cutting | Secrets only as Supabase project env vars, never committed, never in `src/`. All Edge Functions validate input with Zod before touching the database. Pipeline failures, rejected responses, and circuit-breaker trips both write to `api_incidents` *and* call a team-notification path (e.g. a webhook) — logging alone is not enough. |
+| Comments | No comments for what the code already says through naming — don't restate the obvious. Write one only for the *why*: a non-obvious constraint, a workaround for a specific API quirk (e.g. MET's `Expires` header behavior), or a rule this spine binds (e.g. `// AD-1: alert.ts never writes alert_rules`). If a reviewer would ask "why is this here?", that's the comment to write. |
 
 ## Stack
 
