@@ -6,33 +6,33 @@
 
 ## Executive Summary
 
-SnowFinder er en webapp som finner stedene og tidspunktene med best prognostiserte forhold for ski og fjelltur blant stedene i katalogen. Brukeren ser landet fargelagt etter forholdene, filtrerer på egne krav som «minst 15 mm nysnø og vind under 6 m/s», og kan få varsel på mobilen når et sted oppfyller kravene.
+SnowFinder er en webapp for alle som er ute etter snø. Den finner stedene og tidspunktene med best prognostiserte snøforhold blant stedene i katalogen. Brukeren ser landet fargelagt etter forholdene, filtrerer på egne krav som «minst 15 mm nysnø og vind under 6 m/s», og kan få varsel på mobilen når et sted oppfyller kravene.
 
-To forklarbare poengsummer driver løsningen: **SnowScore** for skifolket og **TurScore** for turgåerne. Begge har åpne formler og en egen forklaringsfane.
+Kjernen er **SnowScore**, én forklarbar poengsum fra 0 til 100 som viser snøpotensialet på et sted. Formelen er åpen, og en egen side på nettsiden forklarer steg for steg hvordan den beregnes.
 
 Bak brukeropplevelsen ligger en datapipeline som henter, validerer og publiserer data hver time. Nettsiden leser kun ferdig kvalitetssikrede data og fungerer videre selv om en datakilde faller ut. SnowFinder viser prognostiserte og modellerte forhold, ikke garanterte løypeforhold eller skredsikkerhet.
 
 ## The Problem
 
-Den som vil ut på ski eller tur, må i dag sjekke flere tjenester og selv vurdere om nedbøren blir snø, om det blåser for mye og når på dagen det klarner opp. Informasjonen er fragmentert, rådataene svarer ikke på hvor og når forholdene er best, og ingen tjeneste lar deg spørre «hvor i Norge oppfylles kravene mine nå?».
+Den som vil finne snø, må i dag sjekke flere tjenester og selv vurdere om nedbøren blir snø, om det blåser for mye og når på dagen det klarner opp. Informasjonen er fragmentert, rådataene svarer ikke på hvor og når forholdene er best, og ingen tjeneste lar deg spørre «hvor i Norge oppfylles kravene mine nå?».
 
 ## Target Users
 
-**Skientusiaster** som jakter nysnø og gode skiforhold, og **turentusiaster** som vil ha lite vind, sol og behagelig temperatur på fjellet. Tjenesten er åpen for alle som ferdes i norsk natur, både fastboende og tilreisende.
+**Skientusiaster** som jakter nysnø og gode skiforhold er den primære målgruppen. **Turentusiaster** som går vinterturer og toppturer, og som vil finne snø med lite vind, er sekundær målgruppe. Tjenesten er åpen for alle, både fastboende og tilreisende.
 
 - *Som skientusiast vil jeg finne alle skisteder med minst 15 mm nysnø neste døgn, slik at jeg kan velge sted for helgen.*
-- *Som turgåer vil jeg vite hvilke timer i morgen som er best for en topptur, slik at jeg unngår vind og regn.*
+- *Som turgåer vil jeg finne topper med nysnø og vind under 6 m/s, slik at jeg får en god vintertur.*
 - *Som skientusiast vil jeg få varsel når favorittstedet mitt får pudder, slik at jeg ikke går glipp av det.*
 
 ## The Solution
 
 ### Norgeskartet
 
-Startsiden er et kart over Norge der alle steder i katalogen er fargelagt etter SnowScore eller TurScore. Brukeren bytter mellom ski- og turmodus med én knapp, og et trykk på et sted åpner stedssiden.
+Startsiden er et kart over Norge der alle steder i katalogen er fargelagt etter SnowScore, fra grått for lite snøpotensial til sterkt blått for de beste stedene. Et trykk på et sted åpner stedssiden.
 
 ### Stedssiden
 
-Hvert sted har en egen side med unik adresse som viser poengsum med delpoeng, temperatur, nysnø, vind, skydekke, høyde og datakildens tidsstempel. Siden viser også **beste tidsvindu**: de fire sammenhengende dagslystimene de neste 48 timene med best forhold for å være ute, beregnet med TurScore-komponentene time for time, for eksempel «Best i morgen kl. 09–13».
+Hvert sted har en egen side med unik adresse som viser poengsum med delpoeng, temperatur, nysnø, vind, skydekke, høyde og datakildens tidsstempel. Siden viser også **beste skivindu**: de fire sammenhengende dagslystimene de neste 48 timene uten nedbør, med lavest snittvind og minst skydekke. Kommer det nysnø i perioden, velges bare vinduer etter at snøfallet har stoppet, for eksempel «Best i morgen kl. 09–13, etter nattens snøfall».
 
 ### Filter
 
@@ -47,15 +47,24 @@ Filteret gjennomsøker hele stedskatalogen og viser bare steder som oppfyller al
 | Avstand | Maks avstand fra brukerens posisjon (km) | Posisjon i nettleseren, lagres aldri |
 | Stedstype | Skisted, fjelltopp, by | Stedskatalog |
 
-Filteret kaller en parameterisert databasefunksjon mot en forhåndsberegnet, indeksert tabell og svarer på under to sekunder. Avstand beregnes i nettleseren på treffene som kommer tilbake, slik at posisjonen aldri forlater enheten. Antall treff oppdateres mens glidebryterne justeres, og ved null treff foreslås hvilket krav som bør lempes. Hurtigvalg som «Pudderdag» og «Rolig fjelltur» fyller inn filteret med ett trykk, og filterverdiene lagres i nettadressen slik at søk kan deles med en enkel lenke.
+Filteret kaller en parameterisert databasefunksjon mot en forhåndsberegnet, indeksert tabell og svarer på under to sekunder. Avstand beregnes i nettleseren på treffene som kommer tilbake, slik at posisjonen aldri forlater enheten. Antall treff oppdateres mens glidebryterne justeres, og ved null treff foreslås hvilket krav som bør lempes. Hurtigvalg som «Pudderdag» og «Sol etter snøfall» fyller inn filteret med ett trykk, og filterverdiene lagres i nettadressen slik at søk kan deles med en enkel lenke.
 
 ### Snøvarsel
 
 Brukeren kan følge et sted med en terskel, for eksempel «Varsle meg når Trysil får over 15 mm nysnø», og få push-varsel på mobilen når kravet oppfylles. Varsler krever ingen brukerkonto, og registrering skjer gjennom en Edge Function som validerer terskelen og begrenser antall regler per enhet. Etter hver publisering sjekker pipelinen varselreglene mot de nye dataene, sender maksimalt ett varsel per regel per døgn, og hvert varsel har avmelding med ett klikk. SnowFinder kan legges på hjemskjermen som en installerbar webapp, noe som er nødvendig for push-varsler på iPhone.
 
-### Forklaringsfanen
+### Siden «Slik beregner vi SnowScore»
 
-En egen fane viser formlene for SnowScore og TurScore, alle parametere, gjennomregnede eksempler, datakilder, kjente begrensninger og en endringslogg med versjonsnummer. Hver poengsum i løsningen lenker hit.
+En egen side på nettsiden forklarer SnowScore slik at hvem som helst kan forstå og etterprøve den:
+
+1. **Kort fortalt:** hva SnowScore måler, og hva den ikke måler, i tre setninger.
+2. **Steg for steg:** hvordan nedbør og temperatur blir til snøandel, nysnø og de tre delpoengene, med formelen og en illustrasjon av hver del.
+3. **Prøv selv:** en kalkulator der brukeren justerer nedbør og temperatur og ser poengsummen og delpoengene endre seg umiddelbart.
+4. **Regneeksempel:** et komplett eksempel fra rådata til ferdig poengsum.
+5. **Datakilder og begrensninger:** hvor dataene kommer fra, hvorfor dette er prognoser og ikke målt snø, og hvorfor vind vises separat.
+6. **Endringslogg:** versjonsnummer og begrunnelse for alle justeringer av parameterne.
+
+Kalkulatoren og pipelinen bruker nøyaktig samme beregningsmodul, slik at forklaringen og poengsummene i løsningen aldri kan sprike fra hverandre. Hver SnowScore i løsningen lenker til siden.
 
 ### Tilbakemelding uten konto
 
@@ -71,20 +80,20 @@ Tilbakemeldinger slettes automatisk etter tolv måneder.
 
 ### Innebygd kvalitetssikring
 
-- **Egenskapsbaserte tester** av begge poengsummene med tusenvis av tilfeldige inndata, som bekrefter at poengsummen alltid ligger mellom 0 og 100, at mer snø aldri gir lavere nysnøpoeng, at mer vind aldri gir høyere TurScore, og at samme inndata alltid gir samme resultat.
+- **Egenskapsbaserte tester** av SnowScore med tusenvis av tilfeldige inndata, som bekrefter at poengsummen alltid ligger mellom 0 og 100, at mer snø aldri gir lavere nysnøpoeng, at lavere temperatur aldri gir lavere kuldepoeng, og at samme inndata alltid gir samme resultat.
 - **Kontraktstester** mot lagrede API-svar fra MET og NVE.
 - **End-to-end-tester** av kart, filter, stedsside, varsel og tilbakemelding.
 - **Sikkerhetstester** som bekrefter at klienten ikke kan lese tilbakemeldinger, varselregler eller push-abonnementer, at Row Level Security blokkerer all uautorisert tilgang, at alle Edge Functions validerer data på serversiden, at fritekst behandles som utrygt innhold og ikke kan injisere kode, at hemmelige nøkler aldri havner i frontend-koden, og at avmelding faktisk sletter varselregelen.
 - **Manuell kontroll** av et fast utvalg steder mot MET og test på mobil og PC.
-- **Oppgavebasert brukertest** med minst fem personer, som måler om de klarer å finne et aktuelt sted, justere filteret, forklare en poengsum, oppdage utdaterte data og skille prognose fra faktiske forhold.
+- **Oppgavebasert brukertest** med minst fem personer, som måler om de klarer å finne et aktuelt sted, justere filteret, forklare en SnowScore, oppdage utdaterte data og skille prognose fra faktiske forhold.
 - **Sperret hovedgren:** kode flettes bare inn via Pull Request med grønne tester og godkjenning fra et gruppemedlem.
 
 ## Scope for Version 1
 
 | **Prioritet** | **Funksjoner** |
 |---|---|
-| Må ha | Norgeskart, stedssider, stedskatalog, datapipeline med validering, SnowScore og TurScore med forklaringsfane, filter for nysnø (prognose), vind og temperatur, robust feilhåndtering, CI med tester |
-| Bør ha | Beste tidsvindu, snøvarsel, solfilter, avstandsfilter, nysnø siste 24 t, tilbakemelding uten konto |
+| Må ha | Norgeskart, stedssider, stedskatalog, datapipeline med validering, SnowScore med forklaringsside, filter for nysnø (prognose), vind og temperatur, robust feilhåndtering, CI med tester |
+| Bør ha | Beste skivindu, kalkulator på forklaringssiden, snøvarsel, solfilter, avstandsfilter, nysnø siste 24 t, tilbakemelding uten konto |
 | Ikke i v1 | Brukerkontoer, flere språk, webkameraer, app i appbutikkene, skredvarsling, målt snødybde, booking, generativ værchat |
 
 Versjon 1 har bevisst ingen brukerkontoer. Det gjør løsningen enklere, reduserer angrepsflaten og holder behandlingen av personopplysninger på et minimum.
@@ -98,7 +107,7 @@ Versjon 1 har bevisst ingen brukerkontoer. Det gjør løsningen enklere, reduser
 | Kartverket | Stedsnavn, koordinater og høyde |
 | OpenStreetMap | Skianlegg og kartgrunnlag |
 
-Alle kilder krediteres i tråd med lisensene sine (CC BY 4.0, NLOD og ODbL), synlig i kartet og i forklaringsfanen.
+Alle kilder krediteres i tråd med lisensene sine (CC BY 4.0, NLOD og ODbL), synlig i kartet og på forklaringssiden.
 
 **Stedskatalogen** bygges fra OpenStreetMap (skianlegg og langrennsarenaer), Kartverket (navngitte fjelltopper og tettsteder) og en manuelt kvalitetssikret liste, Versjon 1 starter med ca. 300 nøye utvalgte steder. Katalogen utvides mot 1 500 steder først når pipelinen har kjørt stabilt, siden arkitekturen tåler økningen uten endringer. OpenStreetMap og Kartverket brukes bare når katalogen bygges, ikke i den løpende datainnhentingen.
 
@@ -108,7 +117,7 @@ Alle kilder krediteres i tråd med lisensene sine (CC BY 4.0, NLOD og ODbL), syn
 2. Kall sendes med identifiserende User-Agent og `If-Modified-Since`, og data hentes bare på nytt når `Expires` er passert. Samtidige kall begrenses, og lasten holdes godt innenfor METs vilkår.
 3. Hvert svar valideres mot et strengt skjema. Ugyldige svar avvises og logges, de rettes aldri automatisk.
 4. Alle tidspunkter lagres i UTC og vises i norsk tid med riktig sommertid. Dagslystimer beregnes lokalt med SunCalc, uten avhengighet til en ekstra tjeneste.
-5. Poengsummer, beste tidsvindu og filterverdier beregnes og skrives til en staging-tabell.
+5. SnowScore, beste skivindu og filterverdier beregnes og skrives til en staging-tabell.
 6. Batchen publiseres atomisk bare hvis minst 95 % av stedene er gyldige. Ellers beholdes forrige versjon.
 7. Varselregler evalueres mot de nye dataene, og varsler sendes.
 
@@ -133,24 +142,7 @@ All nedbør under 0 °C regnes som snø, ingen over +2 °C, og andelen faller li
 
 **Eksempel:** 12 mm nedbør i løpet av et døgn ved −3 °C og snittemperatur −5 °C gir A = 36, B = 25 og C = 15, altså SnowScore 76.
 
-## TurScore
-
-Beregnes over dagslystimene i tidsvinduet, med middelvind *w̄* (m/s), maks vindkast *g* (m/s), skydekke *c̄* (%), nedbør *P* (mm) og snittemperatur *T̄* (°C):
-
-```
-V  Vind         = 40 · min(1, max(0, (12 − w̄) / 9))
-L  Sol          = 25 · (1 − c̄ / 100)
-N  Tørt vær     = 20 · max(0, 1 − P / 5)
-K  Temperatur   = 15 · max(0, 1 − |T̄ − 12| / 15)
-
-TurScore = round(V + L + N + K)   (maks 30 hvis g ≥ 20 m/s)
-```
-
-Vindpoengene er fulle ved 3 m/s eller mindre. Ved kraftige vindkast begrenses poengsummen, og stedssiden viser en tydelig vindmerknad.
-
-**Eksempel:** 4 m/s, 20 % skydekke, ingen nedbør og 10 °C gir V ≈ 35,6, L = 20, N = 20 og K = 13, altså TurScore 89.
-
-For begge poengsummene gjelder: mangler mer enn 10 % av timene, vises «ufullstendige data» i stedet for en poengsum, og alle parametere er versjonert i forklaringsfanens endringslogg.
+Mangler mer enn 10 % av timene, vises «ufullstendige data» i stedet for en poengsum, og alle parametere er versjonert i forklaringssidens endringslogg.
 
 ## Robustness and Security
 
@@ -166,7 +158,7 @@ For begge poengsummene gjelder: mangler mer enn 10 % av timene, vises «ufullste
 
 ```mermaid
 flowchart LR
-    U["Bruker<br/>mobil og PC"] --> FE["React-webapp<br/>kart, filter, stedssider,<br/>forklaring, tilbakemelding"]
+    U["Bruker<br/>mobil og PC"] --> FE["React-webapp<br/>kart, filter, stedssider,<br/>SnowScore-side, tilbakemelding"]
     FE -- "kun lesing" --> DB[("Supabase<br/>publiserte data")]
     FE -- "tilbakemelding" --> EF["Edge Function<br/>Turnstile, validering,<br/>hastighetsgrense"]
     EF --> FB[("feedback")]
@@ -178,7 +170,7 @@ flowchart LR
         CB --> NVE["NVE seNorge"]
         MET --> V["Skjemavalidering"]
         NVE --> V
-        V --> S["SnowScore, TurScore,<br/>beste tidsvindu"]
+        V --> S["SnowScore og<br/>beste skivindu"]
         S --> ST[("Staging")]
         ST -- "minst 95 % gyldige" --> PUB["Atomisk publisering"]
         PUB --> AL["Varselmotor"]
@@ -232,7 +224,7 @@ SnowFinder krever ingen brukerkonto og lagrer ikke navn, e-postadresse eller bru
 |---|---|
 | Datakilde endrer format eller er nede | Kontraktstester, skjemavalidering, kretsbryter og siste gyldige data |
 | For mange kall mot MET | Hent kun ved utløpt `Expires`, begrens samtidighet, avrund koordinater |
-| Poengsummer oppleves som misvisende | Åpne formler, synlige delpoeng og kalibrering mot manuelle kontroller |
+| SnowScore oppleves som misvisende | Åpne formler, synlige delpoeng og kalibrering mot manuelle kontroller |
 | Varsler oppleves som mas | Maks ett varsel per regel per døgn og avmelding med ett klikk |
 | Scopet vokser | Prioriteringstabellen styrer rekkefølgen, og «bør ha» bygges først når «må ha» er ferdig |
 | Misbruk av åpne skjemaer | Turnstile, hastighetsgrense og fast skjema |
@@ -244,10 +236,10 @@ SnowFinder krever ingen brukerkonto og lagrer ikke navn, e-postadresse eller bru
 | Ytelse | 95 % av filtersøk svarer på under 2 sekunder, og kartet er interaktivt innen 3 sekunder på mobil |
 | Ferskhet | Publiserte data er normalt under 90 minutter gamle |
 | Robusthet | Tjenesten fungerer med siste gyldige data når en datakilde simuleres nede |
-| Korrekthet | Egenskapstestene passerer for minst 10 000 tilfeldige inndata per poengsum |
+| Korrekthet | Egenskapstestene passerer for minst 10 000 tilfeldige inndata |
 | Nytte | Minst 4 av 5 testbrukere løser oppgaven «finn et aktuelt skisted» raskere enn med dagens tjenester |
 | Dataforståelse | Minst 4 av 5 testbrukere skiller prognose fra faktiske forhold og oppdager utdaterte data |
-| Forklarbarhet | Minst 4 av 5 testbrukere kan forklare en vist poengsum |
+| Forklarbarhet | Minst 4 av 5 testbrukere kan forklare en vist SnowScore etter å ha lest forklaringssiden |
 | Tilgjengelighet | Kjernefunksjonene oppfyller WCAG 2.1 AA |
 | Sporbarhet | Alle endringer i hovedgrenen kommer via godkjente Pull Requests |
 
@@ -257,22 +249,23 @@ Datapipelinen, poengberegningene og varselmotoren er deterministisk kode, slik a
 
 ## Ethical Considerations
 
-Poengsummer, filter og varsler påvirker valg, men er ingen sikkerhetsvurdering, og løsningen lover aldri snø eller trygg ferdsel. Usikkerhet og datakilde vises alltid, og stedssider for fjellområder lenker til Varsom.no. Personvernet er ivaretatt gjennom dataminimering, tilgangskontroll og faste slettefrister, og briefen beskriver hvilke begrensede opplysninger som faktisk behandles i stedet for å love full anonymitet.
+SnowScore, filter og varsler påvirker valg, men er ingen sikkerhetsvurdering, og løsningen lover aldri snø eller trygg ferdsel. Usikkerhet og datakilde vises alltid, og stedssider for fjellområder lenker til Varsom.no. Personvernet er ivaretatt gjennom dataminimering, tilgangskontroll og faste slettefrister, og briefen beskriver hvilke begrensede opplysninger som faktisk behandles i stedet for å love full anonymitet.
 
 ## Product Vision
 
-SnowFinder skal bli det naturlige stedet å starte når man planlegger en dag i norsk natur. Neste steg er direktevideo fra offentlig tilgjengelige webkameraer: søker brukeren på Trysil skisenter, vises livebildet ved siden av prognosen dersom eieren har publisert et kamera, slik at brukeren ser hvordan forholdene faktisk er. Dette bygges kun på kameraer eieren selv har gjort offentlige, i tråd med deres vilkår og med egen personvernvurdering. Videre følger en tidslinje som viser forholdene time for time over hele landet, egen app i appbutikkene og en treffsikkerhetsmåler som viser hvor godt tidligere prognoser traff.
+SnowFinder skal bli det naturlige stedet å starte når man leter etter snø i Norge. Neste steg er direktevideo fra offentlig tilgjengelige webkameraer: søker brukeren på Trysil skisenter, vises livebildet ved siden av prognosen dersom eieren har publisert et kamera, slik at brukeren ser hvordan forholdene faktisk er. Dette bygges kun på kameraer eieren selv har gjort offentlige, i tråd med deres vilkår og med egen personvernvurdering. Videre følger en tidslinje som viser forholdene time for time over hele landet, egen app i appbutikkene og en treffsikkerhetsmåler som viser hvor godt tidligere prognoser traff.
 
 ## Development Process
 
-Prosjektet følger BMad Method med korte iterasjoner i prioritert rekkefølge: stedskatalog og pipeline, poengsummer, kart og stedssider, filter, deretter «bør ha»-funksjonene. Hvert medlem arbeider på egen branch, og alle endringer går gjennom Pull Request med tester og menneskelig godkjenning.
+Prosjektet følger BMad Method med korte iterasjoner i prioritert rekkefølge: stedskatalog og pipeline, SnowScore, kart og stedssider, filter, deretter «bør ha»-funksjonene. Hvert medlem arbeider på egen branch, og alle endringer går gjennom Pull Request med tester og menneskelig godkjenning.
 
 Løsningen har separate miljøer for utvikling og produksjon. Databaseskjemaet ligger som versjonerte migrasjoner i repoet, testdata legges inn automatisk, og hver Pull Request bygges og testes mot utviklingsmiljøet før den kan flettes inn.
 
 ## Definition of Done
 
 - Alle «må ha»-funksjoner er implementert, testet og dokumentert.
-- SnowScore og TurScore følger publiserte formler og består egenskapstestene.
+- SnowScore følger publisert formel og består egenskapstestene.
+- Forklaringssiden er publisert og bruker samme beregningsmodul som pipelinen.
 - Filteret gir korrekte treff på tvers av stedskatalogen innenfor ytelseskravet.
 - Tjenesten fungerer med siste gyldige data når en datakilde er nede.
 - Alle tester i CI er grønne.
