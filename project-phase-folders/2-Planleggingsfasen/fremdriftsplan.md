@@ -22,8 +22,8 @@ Vi bruker BMad Method med fem agenter. Hvert steg bygger på det forrige.
 
 | # | Steg | Agent | Resultat | Ansvarlig | Frist | Status |
 |---|---|---|---|---|---|---|
-| 1 | Produktbrief | Hele gruppen (emnets BMAD-mal) | [Produktbrief](../1-Oppstartsfasen/SnowFinder-Produktbrief.md) | | 2026-09-22 | ✅ Ferdig |
-| 2 | Første arkitekturgrunnlag | Winston (arkitekt) | [Arkitektur](SnowFinder-Arkitektur.md) | | 2026-09-22 | ✅ Ferdig |
+| 1 | Produktbrief | Emnets BMAD-mal | [Produktbrief](../1-Oppstartsfasen/SnowFinder-Produktbrief.md) | Aksel | 2026-09-22 | ✅ Ferdig |
+| 2 | Første arkitekturgrunnlag | Winston (arkitekt) | [Arkitektur](SnowFinder-Arkitektur.md) | Joseph | 2026-09-22 | ✅ Ferdig |
 | 3 | Rette opp briefen (SnowScore-formel m.m.) | Mary (analytiker) | Oppdatert produktbrief | | | ⬜ Neste |
 | 4 | Krav (PRD) | John (produktleder) | PRD | | | ⬜ |
 | 5 | Design og brukeropplevelse | Sally (UX-designer) | DESIGN.md og EXPERIENCE.md | | | ⬜ |
