@@ -20,7 +20,7 @@ for full produktbrief.
 ## `project-phase-folders/` vs. `project-workspace/` vs. `ai-log/` vs. koden
 
 - **`project-phase-folders/`** (denne mappen) — gruppens kuraterte dokumentasjon:
-  - **Der nå:** produktbrief (`1-Oppstartsfasen/`), arkitektur og milepæler
+  - **Der nå:** produktbrief (`1-Oppstartsfasen/`), arkitektur, milepæler og fremdriftsplan
     (`2-Planleggingsfasen/`), møtereferat-mal (`3-Gjennomføringsfasen/`)
   - **Kommer etter hvert:** PRD, UX/UI-spesifikasjon, epics/stories, sprint-plan, testplan
     (`2-Planleggingsfasen/`), sprint-status, kodegjennomganger, endringslogg
@@ -33,7 +33,8 @@ for full produktbrief.
     `implementation-artifacts/` og `test-artifacts/` når utvikling og testarbeid starter
 - **`ai-log/`** — løpende KI-bruksslogg på tvers av alle faser (ikke bare gjennomføring), per
   produktbriefens krav om å logge sentrale prompts, endrede/avviste forslag og godkjenning:
-  - **Der nå:** [`logg.md`](../ai-log/logg.md) opprettet, tom mal klar til utfylling
+  - **Der nå:** [`logg.md`](../ai-log/logg.md) opprettet, tom mal klar til utfylling, og
+    [`prompter/`](../ai-log/prompter/) med ordrette prompter, én fil per økt
   - **Kommer etter hvert:** løpende oppføringer gruppen fyller inn selv
 - **Selve produktet (koden)** — verken i `project-phase-folders/` eller `project-workspace/`,
   men i repo-roten: `src/`, `shared/`, `supabase/`, `scripts/`, `tests/`, `.github/workflows/`

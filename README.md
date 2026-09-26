@@ -17,3 +17,10 @@ Prosjektdokumentasjonen ligger i [`project-phase-folders/`](project-phase-folder
 etter oppstarts-, planleggings-, gjennomførings- og avslutningsfasen. `project-workspace/` er
 BMAD-verktøyets arbeidsmappe, ikke gruppens leveranse — se
 [`project-phase-folders/README.md`](project-phase-folders/README.md) for hva som ligger hvor.
+
+## Følg fremdriften
+
+- [`fremdriftsplan.md`](project-phase-folders/2-Planleggingsfasen/fremdriftsplan.md) viser hvor
+  vi er, hva som kommer, og hvilken BMad-agent vi bruker i hvert steg.
+- [`ai-log/prompter/`](ai-log/prompter/) inneholder promptene vi har brukt, ordrett, én fil per
+  økt.

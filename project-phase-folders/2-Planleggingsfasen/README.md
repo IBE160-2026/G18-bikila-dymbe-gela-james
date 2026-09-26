@@ -13,7 +13,9 @@ Formål: oversette produktbrief til konkrete krav, arkitektur og en gjennomførb
   SnowScore-forklaringsside
 - **Epics og stories** — nedbrutte leveranser: stedskatalog og pipeline, SnowScore, kart og
   stedssider, filter, «bør ha»-funksjoner
-- **Sprint-plan / fremdriftsplan**
+- **[`fremdriftsplan.md`](fremdriftsplan.md)** — stegene fra brief til ferdig app, hvilken
+  BMad-agent som brukes i hvert steg, og hvor vi er nå
+- **Sprint-plan**
 - **[`milepæler.md`](milepæler.md)** — prosjektets milepæler med status
 - **Testplan** — enhets-, egenskaps-, kontrakts-, sikkerhets- og E2E-tester
 
