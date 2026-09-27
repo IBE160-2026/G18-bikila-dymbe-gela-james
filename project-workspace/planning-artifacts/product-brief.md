@@ -32,7 +32,7 @@ Startsiden er et kart over Norge der alle steder i katalogen er fargelagt etter 
 
 ### Stedssiden
 
-Hvert sted har en egen side med unik adresse som viser poengsum med delpoeng, temperatur, nysnø, vind, skydekke, høyde og datakildens tidsstempel. Siden viser også **beste skivindu**: de fire sammenhengende dagslystimene de neste 48 timene uten nedbør, med lavest snittvind og minst skydekke. Kommer det nysnø i perioden, velges bare vinduer etter at snøfallet har stoppet, for eksempel «Best i morgen kl. 09–13, etter nattens snøfall».
+Hvert sted har en egen side med unik adresse som viser poengsum med delpoeng, temperatur, nysnø, vind, skydekke, høyde og datakildens tidsstempel. Siden viser også **beste skivindu**: de fire sammenhengende dagslystimene de neste 48 timene uten nedbør, med lavest snittvind og minst skydekke. Kommer det nysnø i perioden, velges bare vinduer etter at snøfallet har stoppet, for eksempel «Best i morgen kl. 09–13, etter nattens snøfall». Har stedet ingen dagslystimer i hele 48-timersvinduet (mørketid i Nord-Norge om vinteren), velges vinduet i stedet blant alle timene i perioden, og siden merkes tydelig med «Mørketid – vindu vist uten dagslys».
 
 ### Filter
 
@@ -47,7 +47,7 @@ Filteret gjennomsøker hele stedskatalogen og viser bare steder som oppfyller al
 | Avstand | Maks avstand fra brukerens posisjon (km) | Posisjon i nettleseren, lagres aldri |
 | Stedstype | Skisted, fjelltopp, by | Stedskatalog |
 
-Filteret kaller en parameterisert databasefunksjon mot en forhåndsberegnet, indeksert tabell og svarer på under to sekunder. Avstand beregnes i nettleseren på treffene som kommer tilbake, slik at posisjonen aldri forlater enheten. Antall treff oppdateres mens glidebryterne justeres, og ved null treff foreslås hvilket krav som bør lempes. Hurtigvalg som «Pudderdag» og «Sol etter snøfall» fyller inn filteret med ett trykk, og filterverdiene lagres i nettadressen slik at søk kan deles med en enkel lenke.
+Filteret kaller en parameterisert databasefunksjon mot en forhåndsberegnet, indeksert tabell og svarer på under to sekunder. Avstand beregnes i nettleseren på treffene som kommer tilbake, slik at posisjonen aldri forlater enheten. Antall treff oppdateres mens glidebryterne justeres, og ved null treff foreslås hvilket krav som bør lempes. Hurtigvalg som «Pudderdag» og «Sol etter snøfall» fyller inn filteret med ett trykk, og filterverdiene lagres i nettadressen slik at søk kan deles med en enkel lenke. Nysnøfilterets cm-anslag bruker samme faste omregning som SnowScore (se «SnowScore»-seksjonen): 1 mm vannekvivalent ≈ 1 cm nysnø.
 
 ### Snøvarsel
 
@@ -88,13 +88,15 @@ Tilbakemeldinger slettes automatisk etter tolv måneder.
 - **Oppgavebasert brukertest** med minst fem personer, som måler om de klarer å finne et aktuelt sted, justere filteret, forklare en SnowScore, oppdage utdaterte data og skille prognose fra faktiske forhold.
 - **Sperret hovedgren:** kode flettes bare inn via Pull Request med grønne tester og godkjenning fra et gruppemedlem.
 
+For et studentprosjekt med begrenset tid er det reelle må ha-minimumet: egenskapsbaserte tester av SnowScore, kontraktstester mot MET/NVE, og én E2E-røyktest av kart → filter → stedsside. Full sikkerhetstesting og den oppgavebaserte brukertesten med fem personer er mål vi strekker oss etter, men regnes som «bør ha»-dybde og blokkerer ikke en «må ha»-leveranse.
+
 ## Scope for Version 1
 
 Prioriteringen følger **MoSCoW-metoden**: Must have, Should have og Won't have.
 
 | **Prioritet (MoSCoW)** | **Funksjoner** |
 |---|---|
-| Må ha (Must have) | Norgeskart, stedssider, stedskatalog, datapipeline med validering, SnowScore med forklaringsside, filter for nysnø (prognose), vind og temperatur, robust feilhåndtering, CI med tester |
+| Må ha (Must have) | Norgeskart, tilgjengelig listevisning som alternativ til kartet, stedssider, stedskatalog, datapipeline med validering, SnowScore med forklaringsside, filter for nysnø (prognose), vind og temperatur, robust feilhåndtering, CI med tester |
 | Bør ha (Should have) | Beste skivindu, kalkulator på forklaringssiden, snøvarsel, solfilter, avstandsfilter, nysnø siste 24 t, tilbakemelding uten konto |
 | Ikke i v1 (Won't have) | Brukerkontoer, flere språk, webkameraer, app i appbutikkene, skredvarsling, målt snødybde, booking, generativ værchat |
 
@@ -134,15 +136,34 @@ Total nedbør:        P = Σ pₕ
 Snittemperatur:      T̄ = gjennomsnitt av Tₕ
 
 A  Nysnøpotensial  = 60 · min(1, S / 20)
-B  Kulde           = 25 · min(1, max(0, (2 − T̄) / 6))
-C  Snøandel        = 15 · S / P    (0 hvis P < 0,5 mm)
+B  Kuldebonus      = 25 · min(1, max(0, (2 − T̄) / 16))   (0 hvis P < 0,5 mm)
+C  Snøandel        = 15 · S / P                             (0 hvis P < 0,5 mm)
 
 SnowScore = round(A + B + C)
 ```
 
-All nedbør under 0 °C regnes som snø, ingen over +2 °C, og andelen faller lineært mellom. Nysnøpoengene er fulle ved 20 mm vannekvivalent, omtrent 20 cm nysnø.
+All nedbør under 0 °C regnes som snø, ingen over +2 °C, og andelen faller lineært mellom. Nysnøpoengene er fulle ved 20 mm vannekvivalent, omtrent 20 cm nysnø — vi bruker en fast omregning på 1 mm vannekvivalent ≈ 1 cm nysnø overalt i løsningen der cm vises; en forenkling av faktisk snøtetthet, men holdt likt ett sted i koden slik at tallene aldri spriker.
 
-**Eksempel:** 12 mm nedbør i løpet av et døgn ved −3 °C og snittemperatur −5 °C gir A = 36, B = 25 og C = 15, altså SnowScore 76.
+Kuldebonusen (B) krever nedbør for å telle: er det ikke nedbør i vinduet (P < 0,5 mm), er B og C alltid 0 uansett temperatur. En kald og tørr dag skal ikke score høyt bare fordi temperaturen er lav — SnowScore skal reflektere snøpotensial, ikke vintertemperatur alene. Nevneren i B (16, mot tidligere 6) er valgt slik at kuldebonusen først når full poengsum ved omtrent −14 °C i snitt i stedet for allerede ved −4 °C, slik at B faktisk skiller mellom «akkurat kaldt nok» og «arktisk kaldt» i stedet for at nesten alle norske vintersteder får makspoeng.
+
+**Eksempel:** Et 6-timers vindu har disse timesverdiene:
+
+| Time | Nedbør *pₕ* (mm) | Temperatur *Tₕ* (°C) |
+|---|---|---|
+| 1 | 1 | −1 |
+| 2 | 3 | −3 |
+| 3 | 4 | −4 |
+| 4 | 3 | −3 |
+| 5 | 1 | −2 |
+| 6 | 0 | −1 |
+
+P = 12 mm. Alle nedbørstimer har T ≤ 0 °C, så f(Tₕ) = 1 for hver av dem og S = 12 mm. T̄ = (−1−3−4−3−2−1) / 6 = −2,3 °C.
+
+A = 60 · min(1, 12/20) = 36
+B = 25 · min(1, max(0, (2 − (−2,3)) / 16)) = 25 · 0,27 ≈ 7
+C = 15 · 12/12 = 15
+
+SnowScore = round(36 + 7 + 15) = **58**
 
 Mangler mer enn 10 % av timene, vises «ufullstendige data» i stedet for en poengsum, og alle parametere er versjonert i forklaringssidens endringslogg.
 
@@ -239,10 +260,10 @@ SnowFinder krever ingen brukerkonto og lagrer ikke navn, e-postadresse eller bru
 | Ferskhet | Publiserte data er normalt under 90 minutter gamle |
 | Robusthet | Tjenesten fungerer med siste gyldige data når en datakilde simuleres nede |
 | Korrekthet | Egenskapstestene passerer for minst 10 000 tilfeldige inndata |
-| Nytte | Minst 4 av 5 testbrukere løser oppgaven «finn et aktuelt skisted» raskere enn med dagens tjenester |
+| Nytte | Minst 4 av 5 testbrukere fullfører oppgaven «finn et skisted som oppfyller et gitt krav, f.eks. minst 15 mm nysnø og vind under 6 m/s» på under 2 minutter i en veiledet brukertest, uten hjelp fra testleder |
 | Dataforståelse | Minst 4 av 5 testbrukere skiller prognose fra faktiske forhold og oppdager utdaterte data |
 | Forklarbarhet | Minst 4 av 5 testbrukere kan forklare en vist SnowScore etter å ha lest forklaringssiden |
-| Tilgjengelighet | Kjernefunksjonene oppfyller WCAG 2.1 AA |
+| Tilgjengelighet | Filter, stedssider, forklaringsside, skjema for tilbakemelding og snøvarsel oppfyller WCAG 2.1 AA. Norgeskartets tilgjengelige listevisning (tastaturnavigerbar, med tekst/tall i tillegg til farge) oppfyller AA i sin helhet; selve det visuelle kartlaget er unntatt, siden full AA-etterlevelse på et Leaflet-kart ikke er realistisk innenfor prosjektets tidsramme |
 | Sporbarhet | Alle endringer i hovedgrenen kommer via godkjente Pull Requests |
 
 ## AI-assisted Development

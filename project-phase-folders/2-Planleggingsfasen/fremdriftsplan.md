@@ -3,7 +3,7 @@
 Oversikt over hvordan vi går fram, steg for steg, så alle kan følge med selv om de ikke var
 på møtet. Oppdater statusen når et steg er ferdig.
 
-**Sist oppdatert:** 2026-09-26
+**Sist oppdatert:** 2026-09-27
 
 ## Slik holder du deg oppdatert
 
@@ -13,8 +13,10 @@ på møtet. Oppdater statusen når et steg er ferdig.
 
 ## Hvor er vi nå?
 
-Produktbriefen og et første arkitekturgrunnlag er ferdige. **Neste steg:** Mary retter opp
-briefen før John skriver PRD-en.
+Mary har rettet opp briefen (SnowScore-formelen, regneeksempelet, mørketid-håndtering,
+målbare suksesskriterier og WCAG-avgrensning — se `.memlog.md` i
+`project-workspace/planning-artifacts/` for begrunnelsene). **Neste steg:** John skriver
+PRD-en basert på den rettede briefen.
 
 ## Stegene
 
@@ -24,8 +26,8 @@ Vi bruker BMad Method med fem agenter. Hvert steg bygger på det forrige.
 |---|---|---|---|---|---|---|
 | 1 | Produktbrief | Emnets BMAD-mal | [Produktbrief](../1-Oppstartsfasen/SnowFinder-Produktbrief.md) | Aksel | 2026-09-22 | ✅ Ferdig |
 | 2 | Første arkitekturgrunnlag | Winston (arkitekt) | [Arkitektur](SnowFinder-Arkitektur.md) | Joseph | 2026-09-22 | ✅ Ferdig |
-| 3 | Rette opp briefen (SnowScore-formel m.m.) | Mary (analytiker) | Oppdatert produktbrief | | | ⬜ Neste |
-| 4 | Krav (PRD) | John (produktleder) | PRD | | | ⬜ |
+| 3 | Rette opp briefen (SnowScore-formel m.m.) | Mary (analytiker) | Oppdatert produktbrief | Joseph | 2026-09-27 | ✅ Ferdig |
+| 4 | Krav (PRD) | John (produktleder) | PRD | | | ⬜ Neste |
 | 5 | Design og brukeropplevelse | Sally (UX-designer) | DESIGN.md og EXPERIENCE.md | | | ⬜ |
 | 6 | Oppdatere arkitekturen mot PRD og UX | Winston (arkitekt) | Oppdatert arkitektur | | | ⬜ |
 | 7 | Epics og stories | John (produktleder) | Epics og stories | | | ⬜ |
