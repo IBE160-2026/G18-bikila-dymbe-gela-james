@@ -32,6 +32,13 @@ Epic 2 er bygget allerede i sprint 1, fordi forklaringssiden bare trenger SnowSc
 (1.4) og ikke databasen. Lenkene fra kart, liste og stedsside til forklaringssiden kommer
 når disse sidene bygges i sprint 2.
 
+### Status i sprint 1 (2026-09-27)
+
+| Story | Status | Merknad |
+|---|---|---|
+| 1.1 Prosjekt-skaffolding og CI | Spec godkjent (`ready-for-dev`) | Gjennomgått av en underagent. Ni rettelser, blant annet eksakt TypeScript 6.0.3. Ikke implementert ennå. |
+| 1.4, 1.2, 2.1–2.4 | Ikke startet | |
+
 ## Dette må gruppa sette opp før sprint 2
 
 - [ ] To Supabase-prosjekter, `snowfinder-dev` og `snowfinder-prod` (AD-3)

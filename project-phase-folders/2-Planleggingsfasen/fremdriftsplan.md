@@ -18,10 +18,22 @@ Mary har rettet briefen, John har skrevet [PRD-en](SnowFinder-PRD.md), Sally har
 oppdatert [arkitekturen](SnowFinder-Arkitektur.md) (AD-8/AD-9), og John har levert
 [epics og stories](SnowFinder-Epics-og-Stories.md): 5 epics, 27 stories, alle 29 FR-er dekket,
 kvalitetssikret med en Critique-and-Refine-elicitering (se dokumentets rettelsesnotater).
-[Sprintplanen](sprintplan.md) er klar med fire sprinter. Sprint 1 trenger ikke Supabase og er
-i gang.
-**Neste steg:** Amelia bygger sprint 1 (1.1, 1.4, 1.2, 2.1–2.4), én PR per story. Samtidig
-setter gruppa opp Supabase og hosting (sjekkliste i sprintplanen) før sprint 2.
+[Sprintplanen](sprintplan.md) er klar med fire sprinter (PR #6). Sprint 1 trenger ikke Supabase
+og er i gang.
+
+PR #2–#5 er lukket uten merge, fordi innholdet deres allerede lå i `main`. Se kommentarene på
+PR-ene.
+
+**Status i sprint 1:** Amelia (`bmad-build`) har skrevet en spec for Story 1.1 (skaffolding, CI
+og design-tokens). Den er gjennomgått av en underagent, rettet og godkjent (`ready-for-dev`),
+men ikke implementert ennå. Spec-en ligger i
+[`project-workspace/implementation-artifacts/`](../../project-workspace/implementation-artifacts/).
+
+**Neste steg:**
+1. Kjør `bmad-build` på spec-en for Story 1.1, og deretter 1.4, 1.2 og 2.1–2.4, med én PR per
+   story.
+2. Samtidig setter gruppa opp Supabase og hosting før sprint 2. Sjekklisten står i
+   sprintplanen.
 
 ## Stegene
 
