@@ -7,14 +7,24 @@ paradigm: 'Pipes-and-Filters pipeline (backend) feeding a read-only layered clie
 scope: 'Repository structure and system architecture for SnowFinder v1 (IBE160, G18)'
 status: final
 created: '2026-09-22'
-updated: '2026-09-22'
+updated: '2026-09-27'
 binds: []
 sources:
   - project-phase-folders/1-Oppstartsfasen/SnowFinder-Produktbrief.md
+  - project-phase-folders/2-Planleggingsfasen/SnowFinder-PRD.md
+  - project-phase-folders/2-Planleggingsfasen/SnowFinder-DESIGN.md
+  - project-phase-folders/2-Planleggingsfasen/SnowFinder-EXPERIENCE.md
 companions: []
 ---
 
 # Architecture Spine — SnowFinder
+
+**v2 (2026-09-27):** aligned against the PRD and UX spines (Sally's DESIGN.md/EXPERIENCE.md) —
+adds AD-8 (map/list as one route) and AD-9 (design tokens have one source), tightens AD-2 for
+the mørketid fallback flag. AD-1 through AD-7 and the stack are unchanged from v1; `AD` IDs are
+never renumbered (see `.memlog.md` in
+`project-workspace/planning-artifacts/architecture/architecture-G18-bikila-dymbe-gela-james-2026-09-22/`
+for the full decision trail).
 
 ## Design Paradigm
 
@@ -73,6 +83,12 @@ flowchart LR
   output, safe to re-run), and only *appends* typed columns to the single migration that
   defines `conditions_staging` — no stage introduces a parallel `raw_payload`/`jsonb` shape
   or a second staging table. One scheduled entrypoint orchestrates the chain in order.
+  **(v2, PRD FR-17):** when `score.ts` falls back to the mørketid rule for beste skivindu (no
+  daylight hours in the 48h window), it writes an explicit `skivindu_uten_dagslys: boolean`
+  column to `conditions_staging` — the frontend reads this flag verbatim and never re-derives
+  the mørketid state itself (e.g. by counting daylight hours client-side), so the stedsside's
+  «Mørketid – vindu vist uten dagslys» label can never disagree with what the pipeline actually
+  computed.
 
 ### AD-3 — Two Supabase environments, migrations as the only schema change path
 
@@ -129,6 +145,34 @@ flowchart LR
   every TTL deletion in the brief. No other Edge Function or pipeline stage deletes rows
   from `feedback`, the rate-limit hash table, or historical weather data.
 
+### AD-8 — Map and list are one route, one data hook *(v2, PRD FR-13/FR-21, EXPERIENCE.md IA)*
+
+- **Binds:** `src/pages/Utforsk.tsx`, `src/hooks/useSteder.ts`
+- **Prevents:** the map view and the accessible list view being built as two separate pages
+  with two separate data-fetching paths that quietly diverge in which filter parameters they
+  read or how they interpret the URL — the exact failure mode that would make the list a
+  second-class citizen instead of PRD FR-13's "fullverdig alternativ."
+- **Rule:** `Utforsk` is the *only* route for exploring the catalog. It reads `visning=kart|liste`
+  from the URL (default `kart`) purely to choose which presentation component to render
+  (`KartVisning` or `ListeVisning`); both read the same filter query params and call the same
+  `useSteder()` hook for data. No component under `src/pages/` duplicates the Supabase query
+  that `useSteder` wraps.
+
+### AD-9 — Design tokens have one source in code *(v2, DESIGN.md)*
+
+- **Binds:** `src/lib/theme.ts`, `src/styles/tokens.css`, every component under `src/components/`
+- **Prevents:** components hardcoding DESIGN.md's hex/px values independently and silently
+  drifting from the spec — the same class of problem AD-6 solves for the SnowScore formula,
+  applied to visual tokens.
+- **Rule:** `src/lib/theme.ts` is the single source of truth for every DESIGN.md frontmatter
+  token (colors, typography, rounded, spacing), as plain TypeScript constants keyed identically
+  to DESIGN.md. `src/styles/tokens.css` defines CSS custom properties with the same values for
+  ordinary component styling; a colocated `theme.test.ts` parses `tokens.css` and asserts it
+  matches `theme.ts`, failing CI on drift. The one JS-only consumer that CSS can't reach —
+  Leaflet marker fill colors — imports directly from `theme.ts`, never a third hardcoded color
+  list. No component under `src/components/` writes a literal hex/px value for anything
+  DESIGN.md already names.
+
 ## Consistency Conventions
 
 | Concern | Convention |
@@ -177,14 +221,23 @@ flowchart TB
 ```text
 /
   src/                          # frontend — layered, read-only against Supabase
-    pages/                      # route-level views: map, location page, score-explainer, feedback
-    components/                 # shared presentational components
-    hooks/                      # data-fetching + derived-state hooks
+    pages/                      # route-level views:
+      Utforsk.tsx               #   kart+liste, ONE route (AD-8) — visning=kart|liste in URL
+      Sted.tsx                  #   location page (beste skivindu, snøvarsel inline form)
+      SlikBeregnerViSnowScore.tsx #  explainer page + "prøv selv" calculator
+      Tilbakemelding.tsx        #   feedback form
+    components/                 # shared presentational components (KartVisning, ListeVisning,
+                                 #   ScoreBadge, FilterPanel, StedKort, …)
+    hooks/
+      useSteder.ts              #   single data-fetching hook shared by kart- and listevisning (AD-8)
     lib/
       supabase/                 # client.ts (anon key, read queries only)
       snowscore.ts              # re-exports shared/snowscore.ts for the calculator UI (AD-6)
+      theme.ts                  # single source of truth for DESIGN.md tokens (AD-9)
       types/                    # shared TS types generated from the DB schema
-    *.test.ts                   # colocated Vitest + fast-check tests
+    styles/
+      tokens.css                # CSS custom properties mirroring theme.ts (AD-9)
+    *.test.ts                   # colocated Vitest + fast-check tests (incl. theme.test.ts, AD-9)
   shared/
     snowscore.ts                # single canonical SnowScore formula (AD-6) — pure TS,
                                  #   no React/npm/Deno-specific deps, imported by BOTH
