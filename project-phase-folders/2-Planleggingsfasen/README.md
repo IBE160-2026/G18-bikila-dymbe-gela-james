@@ -15,7 +15,8 @@ Formål: oversette produktbrief til konkrete krav, arkitektur og en gjennomførb
   stedssider, filter, «bør ha»-funksjoner
 - **[`fremdriftsplan.md`](fremdriftsplan.md)** — stegene fra brief til ferdig app, hvilken
   BMad-agent som brukes i hvert steg, og hvor vi er nå
-- **Sprint-plan**
+- **[`sprintplan.md`](sprintplan.md)** — readiness-sjekk, fire sprinter og hva gruppa må sette
+  opp før sprint 2
 - **[`milepæler.md`](milepæler.md)** — prosjektets milepæler med status
 - **Testplan** — enhets-, egenskaps-, kontrakts-, sikkerhets- og E2E-tester
 

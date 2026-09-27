@@ -12,5 +12,7 @@ Rekkefølgen følger utviklingsprosessen i produktbriefen: stedskatalog og pipel
 | 5 | «Bør ha»: beste skivindu, kalkulator, snøvarsel, tilbakemelding | | Ikke startet |
 | 6 | Levering og demo | | Ikke startet |
 
-Fyll inn frister når sprint-planen er klar, og oppdater status fortløpende i
+[Sprintplanen](sprintplan.md) viser hvilken sprint som dekker hver milepæl: sprint 1 dekker
+milepæl 2, sprint 2 dekker 1 og 3, sprint 3 dekker 4, og sprint 4 dekker 5. Fyll inn frister når
+gruppa har satt datoer, og oppdater status fortløpende i
 [`3-Gjennomføringsfasen/`](../3-Gjennomføringsfasen/).

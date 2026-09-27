@@ -1,0 +1,78 @@
+# STATUS DEFINITIONS:
+# ==================
+# Epic Status:
+#   - backlog: Epic not yet started
+#   - in-progress: Epic actively being worked on
+#   - done: All stories in epic completed
+
+# Story Status:
+#   - backlog: Story only exists in epic file
+#   - ready-for-dev: Story file created, ready for development
+#   - in-progress: Developer actively working on implementation
+#   - review: Implementation complete, ready for review
+#   - done: Story completed
+
+# Retrospective Status:
+#   - optional: Can be completed but not required
+#   - done: Retrospective has been completed
+
+# Action Item Status:
+#   - open: Committed during a retrospective, not yet addressed
+#   - in-progress: Actively being worked on
+#   - done: Completed
+
+# WORKFLOW NOTES:
+# ===============
+# - Epic transitions to 'in-progress' automatically when its first story starts (via build's sprint sync)
+# - Stories can be worked in parallel if team capacity allows
+# - Developer typically creates the next story after the previous one is 'done' to incorporate learnings
+# - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
+# - Retrospective appends its action items to action_items; the status view surfaces open ones
+generated: 09-27-2026 12:00
+last_updated: 09-27-2026 12:00
+project: G18-bikila-dymbe-gela-james
+project_key: NOKEY
+tracking_system: file-system
+story_location: project-workspace/implementation-artifacts
+development_status:
+  epic-1: backlog
+  1-1-prosjekt-skaffolding-og-ci-skjelett: backlog
+  1-2-bygg-stedskatalogen: backlog
+  1-3-hent-og-valider-værdata-hver-time: backlog
+  1-4-bygg-den-delte-snowscore-modulen: backlog
+  1-5-beregn-og-publiser-snowscore-i-pipelinen: backlog
+  1-7-se-norgeskartet-med-fargelagte-steder: backlog
+  1-8-bruk-tilgjengelig-listevisning-i-stedet-for-kart: backlog
+  1-9-åpne-en-stedsside-med-full-poengsum: backlog
+  1-6-hold-tjenesten-oppe-når-en-datakilde-er-nede: backlog
+  epic-1-retrospective: optional
+
+  epic-2: backlog
+  2-1-les-kort-fortalt-og-steg-for-steg: backlog
+  2-2-se-det-utledede-regneeksempelet: backlog
+  2-3-les-om-datakilder-og-begrensninger: backlog
+  2-4-prøv-snowscore-kalkulatoren-selv: backlog
+  epic-2-retrospective: optional
+
+  epic-3: backlog
+  3-1-filtrer-på-nysnø-vind-og-temperatur: backlog
+  3-2-del-og-gjenåpne-et-filtrert-søk: backlog
+  3-3-få-hjelp-ved-null-treff-og-se-antall-treff-live: backlog
+  3-4-bruk-hurtigvalg-for-vanlige-kombinasjoner: backlog
+  3-5-filtrer-på-sol: backlog
+  3-6-filtrer-på-avstand: backlog
+  3-7-filtrer-på-stedstype: backlog
+  3-8-filtrer-på-nysnø-siste-24-timer: backlog
+  epic-3-retrospective: optional
+
+  epic-4: backlog
+  4-1-gjør-snowfinder-installerbar-som-pwa: backlog
+  4-2-se-beste-skivindu-på-stedssiden: backlog
+  4-3-registrer-et-snøvarsel-uten-konto: backlog
+  4-4-motta-og-meld-deg-av-et-snøvarsel: backlog
+  epic-4-retrospective: optional
+
+  epic-5: backlog
+  5-1-send-en-tilbakemelding-uten-konto: backlog
+  5-2-automatisk-sletting-av-gamle-tilbakemeldinger: backlog
+  epic-5-retrospective: optional
