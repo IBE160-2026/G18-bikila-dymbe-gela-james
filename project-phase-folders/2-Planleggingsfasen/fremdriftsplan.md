@@ -14,10 +14,12 @@ på møtet. Oppdater statusen når et steg er ferdig.
 ## Hvor er vi nå?
 
 Mary har rettet briefen, John har skrevet [PRD-en](SnowFinder-PRD.md), Sally har levert
-[DESIGN.md](SnowFinder-DESIGN.md)/[EXPERIENCE.md](SnowFinder-EXPERIENCE.md), og Winston har
-oppdatert [arkitekturen](SnowFinder-Arkitektur.md) mot begge (AD-8: kart/liste er én rute; AD-9:
-design-tokens har ett kildested i kode; AD-2 utvidet for mørketid-flagget). **Neste steg:** John
-lager epics/stories fra PRD + oppdatert arkitektur + UX.
+[DESIGN.md](SnowFinder-DESIGN.md)/[EXPERIENCE.md](SnowFinder-EXPERIENCE.md), Winston har
+oppdatert [arkitekturen](SnowFinder-Arkitektur.md) (AD-8/AD-9), og John har levert
+[epics og stories](SnowFinder-Epics-og-Stories.md): 5 epics, 27 stories, alle 29 FR-er dekket,
+kvalitetssikret med en Critique-and-Refine-elicitering (se dokumentets rettelsesnotater).
+**Neste steg:** Sprintplanlegging (John/Winston), deretter Amelia som bygger appen story for
+story.
 
 ## Stegene
 
@@ -31,8 +33,8 @@ Vi bruker BMad Method med fem agenter. Hvert steg bygger på det forrige.
 | 4 | Krav (PRD) | John (produktleder) | [PRD](SnowFinder-PRD.md) | Joseph | 2026-09-27 | ✅ Ferdig |
 | 5 | Design og brukeropplevelse | Sally (UX-designer) | [DESIGN.md](SnowFinder-DESIGN.md) / [EXPERIENCE.md](SnowFinder-EXPERIENCE.md) | Joseph | 2026-09-27 | ✅ Ferdig |
 | 6 | Oppdatere arkitekturen mot PRD og UX | Winston (arkitekt) | [Oppdatert arkitektur](SnowFinder-Arkitektur.md) | Joseph | 2026-09-27 | ✅ Ferdig |
-| 7 | Epics og stories | John (produktleder) | Epics og stories | | | ⬜ Neste |
-| 8 | Sprintplanlegging | John eller Winston | Sprintplan og frister i [milepæler](milepæler.md) | | | ⬜ |
+| 7 | Epics og stories | John (produktleder) | [Epics og stories](SnowFinder-Epics-og-Stories.md) | Joseph | 2026-09-27 | ✅ Ferdig |
+| 8 | Sprintplanlegging | John eller Winston | Sprintplan og frister i [milepæler](milepæler.md) | | | ⬜ Neste |
 | 9 | Bygge appen, én story om gangen | Amelia (utvikler) | Kode, tester, PR-er | | | ⬜ |
 | 10 | Brukertest, sluttrapport og demo | Hele gruppen | [Avslutningsfasen](../4-Avslutningsfasen/) | | | ⬜ |
 
