@@ -13,10 +13,11 @@ på møtet. Oppdater statusen når et steg er ferdig.
 
 ## Hvor er vi nå?
 
-Mary har rettet opp briefen (SnowScore-formelen, regneeksempelet, mørketid-håndtering,
-målbare suksesskriterier og WCAG-avgrensning — se `.memlog.md` i
-`project-workspace/planning-artifacts/` for begrunnelsene). **Neste steg:** John skriver
-PRD-en basert på den rettede briefen.
+Mary har rettet opp briefen, og John har skrevet [PRD-en](SnowFinder-PRD.md) basert på den
+(FR-er, NFR-er, MVP-avgrensning og suksessmål — se `.memlog.md` i
+`project-workspace/planning-artifacts/prd-G18-bikila-dymbe-gela-james-2026-09-27/` for
+begrunnelsene og de åpne spørsmålene i PRD-ens §10). **Neste steg:** Sally lager UX-design
+(DESIGN.md/EXPERIENCE.md) basert på PRD-ens brukerreiser og funksjoner.
 
 ## Stegene
 
@@ -27,8 +28,8 @@ Vi bruker BMad Method med fem agenter. Hvert steg bygger på det forrige.
 | 1 | Produktbrief | Emnets BMAD-mal | [Produktbrief](../1-Oppstartsfasen/SnowFinder-Produktbrief.md) | Aksel | 2026-09-22 | ✅ Ferdig |
 | 2 | Første arkitekturgrunnlag | Winston (arkitekt) | [Arkitektur](SnowFinder-Arkitektur.md) | Joseph | 2026-09-22 | ✅ Ferdig |
 | 3 | Rette opp briefen (SnowScore-formel m.m.) | Mary (analytiker) | Oppdatert produktbrief | Joseph | 2026-09-27 | ✅ Ferdig |
-| 4 | Krav (PRD) | John (produktleder) | PRD | | | ⬜ Neste |
-| 5 | Design og brukeropplevelse | Sally (UX-designer) | DESIGN.md og EXPERIENCE.md | | | ⬜ |
+| 4 | Krav (PRD) | John (produktleder) | [PRD](SnowFinder-PRD.md) | Joseph | 2026-09-27 | ✅ Ferdig |
+| 5 | Design og brukeropplevelse | Sally (UX-designer) | DESIGN.md og EXPERIENCE.md | | | ⬜ Neste |
 | 6 | Oppdatere arkitekturen mot PRD og UX | Winston (arkitekt) | Oppdatert arkitektur | | | ⬜ |
 | 7 | Epics og stories | John (produktleder) | Epics og stories | | | ⬜ |
 | 8 | Sprintplanlegging | John eller Winston | Sprintplan og frister i [milepæler](milepæler.md) | | | ⬜ |
