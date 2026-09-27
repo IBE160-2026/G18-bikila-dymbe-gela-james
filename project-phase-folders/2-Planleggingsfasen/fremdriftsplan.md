@@ -18,8 +18,10 @@ Mary har rettet briefen, John har skrevet [PRD-en](SnowFinder-PRD.md), Sally har
 oppdatert [arkitekturen](SnowFinder-Arkitektur.md) (AD-8/AD-9), og John har levert
 [epics og stories](SnowFinder-Epics-og-Stories.md): 5 epics, 27 stories, alle 29 FR-er dekket,
 kvalitetssikret med en Critique-and-Refine-elicitering (se dokumentets rettelsesnotater).
-**Neste steg:** Sprintplanlegging (John/Winston), deretter Amelia som bygger appen story for
-story.
+[Sprintplanen](sprintplan.md) er klar med fire sprinter. Sprint 1 trenger ikke Supabase og er
+i gang.
+**Neste steg:** Amelia bygger sprint 1 (1.1, 1.4, 1.2, 2.1–2.4), én PR per story. Samtidig
+setter gruppa opp Supabase og hosting (sjekkliste i sprintplanen) før sprint 2.
 
 ## Stegene
 
@@ -34,8 +36,8 @@ Vi bruker BMad Method med fem agenter. Hvert steg bygger på det forrige.
 | 5 | Design og brukeropplevelse | Sally (UX-designer) | [DESIGN.md](SnowFinder-DESIGN.md) / [EXPERIENCE.md](SnowFinder-EXPERIENCE.md) | Joseph | 2026-09-27 | ✅ Ferdig |
 | 6 | Oppdatere arkitekturen mot PRD og UX | Winston (arkitekt) | [Oppdatert arkitektur](SnowFinder-Arkitektur.md) | Joseph | 2026-09-27 | ✅ Ferdig |
 | 7 | Epics og stories | John (produktleder) | [Epics og stories](SnowFinder-Epics-og-Stories.md) | Joseph | 2026-09-27 | ✅ Ferdig |
-| 8 | Sprintplanlegging | John eller Winston | Sprintplan og frister i [milepæler](milepæler.md) | | | ⬜ Neste |
-| 9 | Bygge appen, én story om gangen | Amelia (utvikler) | Kode, tester, PR-er | | | ⬜ |
+| 8 | Sprintplanlegging | bmad-sprint-planning | [Sprintplan](sprintplan.md) og [sprint-status.yaml](../../project-workspace/implementation-artifacts/sprint-status.yaml) | Aksel | 2026-09-27 | ✅ Ferdig |
+| 9 | Bygge appen, én story om gangen | Amelia (utvikler) | Kode, tester, PR-er | Aksel (sprint 1) | | 🔄 Pågår |
 | 10 | Brukertest, sluttrapport og demo | Hele gruppen | [Avslutningsfasen](../4-Avslutningsfasen/) | | | ⬜ |
 
 Steg 1 og 2 ble gjort før gruppen bestemte seg for denne rekkefølgen. Derfor kommer
