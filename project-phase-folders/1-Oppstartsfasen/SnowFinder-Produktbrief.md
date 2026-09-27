@@ -90,13 +90,15 @@ Tilbakemeldinger slettes automatisk etter tolv måneder.
 
 ## Scope for Version 1
 
-| **Prioritet** | **Funksjoner** |
-|---|---|
-| Må ha | Norgeskart, stedssider, stedskatalog, datapipeline med validering, SnowScore med forklaringsside, filter for nysnø (prognose), vind og temperatur, robust feilhåndtering, CI med tester |
-| Bør ha | Beste skivindu, kalkulator på forklaringssiden, snøvarsel, solfilter, avstandsfilter, nysnø siste 24 t, tilbakemelding uten konto |
-| Ikke i v1 | Brukerkontoer, flere språk, webkameraer, app i appbutikkene, skredvarsling, målt snødybde, booking, generativ værchat |
+Prioriteringen følger **MoSCoW-metoden**: Must have, Should have og Won't have.
 
-Versjon 1 har bevisst ingen brukerkontoer. Det gjør løsningen enklere, reduserer angrepsflaten og holder behandlingen av personopplysninger på et minimum.
+| **Prioritet (MoSCoW)** | **Funksjoner** |
+|---|---|
+| Må ha (Must have) | Norgeskart, stedssider, stedskatalog, datapipeline med validering, SnowScore med forklaringsside, filter for nysnø (prognose), vind og temperatur, robust feilhåndtering, CI med tester |
+| Bør ha (Should have) | Beste skivindu, kalkulator på forklaringssiden, snøvarsel, solfilter, avstandsfilter, nysnø siste 24 t, tilbakemelding uten konto |
+| Ikke i v1 (Won't have) | Brukerkontoer, flere språk, webkameraer, app i appbutikkene, skredvarsling, målt snødybde, booking, generativ værchat |
+
+Versjon 1 er prosjektets **MVP** (minimum viable product) og har bevisst ingen brukerkontoer. Det gjør løsningen enklere, reduserer angrepsflaten og holder behandlingen av personopplysninger på et minimum.
 
 ## Data Sources and Pipeline
 
