@@ -17,6 +17,7 @@ Prosjektdokumentasjonen ligger i [`project-phase-folders/`](project-phase-folder
 etter oppstarts-, planleggings-, gjennomførings- og avslutningsfasen. `project-workspace/` er
 BMAD-verktøyets arbeidsmappe, ikke gruppens leveranse — se
 [`project-phase-folders/README.md`](project-phase-folders/README.md) for hva som ligger hvor.
+[`AGENTS.md`](AGENTS.md) inneholder reglene KI-agentene følger i repoet.
 
 ## Følg fremdriften
 

@@ -283,27 +283,6 @@ publiserte batch uendret
 **And** et sted med mer enn 10 % manglende timer får «ufullstendige data» i stedet for en
 tallverdi
 
-### Story 1.6: Hold tjenesten oppe når en datakilde er nede
-
-As en bruker,
-I want at SnowFinder fortsetter å vise data selv om MET eller NVE er nede,
-So that jeg alltid får et svar, selv om det ikke er det aller ferskeste. Realiserer FR-6.
-
-**Acceptance Criteria:**
-
-**Given** at MET eller NVE simuleres utilgjengelig i test
-**When** pipelinen kjører
-**Then** brukes eksponentiell ventetid med tilfeldig variasjon og fast maksimum ved feilende kall
-**And** en kretsbryter per datakilde åpner etter et definert antall påfølgende feil og stopper
-videre forsøk i en avkjølingsperiode
-**And** klienten fortsetter å vise siste gyldige publiserte batch — aldri en tom eller delvis
-oppdatering
-**And** hendelsen logges til `api_incidents` **og** utløser en aktiv varsling til gruppen (ikke
-kun en logglinje, jf. NFR-6)
-**And** frontend viser `banner-stale-data`-komponenten (DESIGN.md/UX-DR10) øverst på Utforsk-
-og stedssiden når en kretsbryter er åpen eller siste publiserte batch er eldre enn normalt —
-uten at resten av siden blokkeres
-
 ### Story 1.7: Se Norgeskartet med fargelagte steder
 
 As en skientusiast,
@@ -358,6 +337,31 @@ kart, liste og denne siden (NFR-3)
 **And** et sted med «ufullstendige data» (Story 1.5) vises som tekst, aldri som et tallbadge
 **And** en automatisert tilgjengelighetstest (axe/Playwright) i CI rapporterer null kritiske
 WCAG 2.1 AA-brudd på denne siden (NFR-7)
+
+### Story 1.6: Hold tjenesten oppe når en datakilde er nede
+
+As en bruker,
+I want at SnowFinder fortsetter å vise data selv om MET eller NVE er nede,
+So that jeg alltid får et svar, selv om det ikke er det aller ferskeste. Realiserer FR-6.
+
+**Acceptance Criteria:**
+
+**Given** at MET eller NVE simuleres utilgjengelig i test
+**When** pipelinen kjører
+**Then** brukes eksponentiell ventetid med tilfeldig variasjon og fast maksimum ved feilende kall
+**And** en kretsbryter per datakilde åpner etter et definert antall påfølgende feil og stopper
+videre forsøk i en avkjølingsperiode
+**And** klienten fortsetter å vise siste gyldige publiserte batch — aldri en tom eller delvis
+oppdatering
+**And** hendelsen logges til `api_incidents` **og** utløser en aktiv varsling til gruppen (ikke
+kun en logglinje, jf. NFR-6)
+**And** frontend viser `banner-stale-data`-komponenten (DESIGN.md/UX-DR10) øverst på Utforsk-
+og stedssiden når en kretsbryter er åpen eller siste publiserte batch er eldre enn normalt —
+uten at resten av siden blokkeres
+
+`[RETTET under sprintplanlegging 2026-09-27: Story 1.6 flyttet etter 1.9. Den krever
+`banner-stale-data` på Utforsk- og stedssiden, som først finnes etter 1.7 og 1.9 — en
+forover-avhengighet. Nummeret er beholdt så kryssreferanser ikke brytes.]`
 
 ---
 

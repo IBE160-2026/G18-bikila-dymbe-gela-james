@@ -20,22 +20,23 @@ for full produktbrief.
 ## `project-phase-folders/` vs. `project-workspace/` vs. `ai-log/` vs. koden
 
 - **`project-phase-folders/`** (denne mappen) — gruppens kuraterte dokumentasjon:
-  - **Der nå:** produktbrief (`1-Oppstartsfasen/`), arkitektur, milepæler og fremdriftsplan
-    (`2-Planleggingsfasen/`), møtereferat-mal (`3-Gjennomføringsfasen/`)
-  - **Kommer etter hvert:** PRD, UX/UI-spesifikasjon, epics/stories, sprint-plan, testplan
-    (`2-Planleggingsfasen/`), sprint-status, kodegjennomganger, endringslogg
-    (`3-Gjennomføringsfasen/`), sluttrapport, retrospektiv, leveranse (`4-Avslutningsfasen/`)
+  - **Der nå:** produktbrief (`1-Oppstartsfasen/`), PRD, arkitektur, DESIGN/EXPERIENCE,
+    epics/stories, sprintplan, milepæler og fremdriftsplan (`2-Planleggingsfasen/`),
+    møtereferat-mal (`3-Gjennomføringsfasen/`)
+  - **Kommer etter hvert:** testplan (`2-Planleggingsfasen/`), kodegjennomganger og
+    endringslogg (`3-Gjennomføringsfasen/`), sluttrapport, retrospektiv og leveranse
+    (`4-Avslutningsfasen/`)
 - **`project-workspace/`** — BMAD-verktøyets arbeidsmappe:
-  - **Der nå:** `planning-artifacts/product-brief.md` og
-    `planning-artifacts/architecture/architecture-*/` (utkastene bak produktbriefen og
-    arkitekturen over)
-  - **Kommer etter hvert:** flere kjøringer i `planning-artifacts/` (PRD, epics/stories), samt
-    `implementation-artifacts/` og `test-artifacts/` når utvikling og testarbeid starter
+  - **Der nå:** utkastene bak produktbrief, PRD, UX og arkitektur i `planning-artifacts/`
+    (identiske med kopiene i denne mappen), og `implementation-artifacts/` med
+    `sprint-status.yaml`, epic-kontekst og story-specs
+  - **Kommer etter hvert:** `test-artifacts/` når testarbeidet starter
 - **`ai-log/`** — løpende KI-bruksslogg på tvers av alle faser (ikke bare gjennomføring), per
   produktbriefens krav om å logge sentrale prompts, endrede/avviste forslag og godkjenning:
-  - **Der nå:** [`logg.md`](../ai-log/logg.md) opprettet, tom mal klar til utfylling, og
-    [`prompter/`](../ai-log/prompter/) med ordrette prompter, én fil per økt
-  - **Kommer etter hvert:** løpende oppføringer gruppen fyller inn selv
+  [`logg.md`](../ai-log/logg.md) er sammendraget, og [`prompter/`](../ai-log/prompter/) har
+  promptene ordrett, én fil per økt
+- **`AGENTS.md` og `CLAUDE.md`** (repo-roten) — felles regler for KI-agentene: grener og PR,
+  loggføring, språk og hvilke filer som må holdes like
 - **Selve produktet (koden)** — verken i `project-phase-folders/` eller `project-workspace/`,
   men i repo-roten: `src/`, `shared/`, `supabase/`, `scripts/`, `tests/`, `.github/workflows/`
   (full mappestruktur og begrunnelse i
