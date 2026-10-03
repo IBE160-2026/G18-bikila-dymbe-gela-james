@@ -8,6 +8,9 @@
 
 [core]
 output_folder = "{project-root}/project-workspace"
+# Felles språk for hele gruppa (config.user.toml er gitignored og deles ikke)
+communication_language = "Norwegian"
+document_output_language = "Norwegian"
 
 [modules.bmm]
 planning_artifacts = "{project-root}/project-workspace/planning-artifacts"
