@@ -1,0 +1,124 @@
+{
+  "grenser": "Snøandel f(T): f = 1 ved T ≤ 0 °C og f = 0 ved T ≥ 2 °C (begge inklusive), lineært mellom. Nedbørsgrensen for B og C er inklusiv: B og C beregnes når P ≥ 0,5 mm og er 0 når P < 0,5 mm. Manglende timer: nøyaktig 10 % gir fortsatt score; bare strengt mer enn 10 %, eller en tom liste, gir «ufullstendig». S, P og T̄ beregnes bare over timer der både nedbør og temperatur finnes; en time med én manglende verdi teller ikke med. A ≤ 60 (taket nås ved S ≥ 20 mm), B ≤ 25 (taket nås ved T̄ ≤ −14 °C) og B = 0 ved T̄ ≥ 2 °C. Delpoeng er uavrundede; bare totalen avrundes med Math.round, der x,5 rundes opp.",
+  "tilfeller": [
+    {
+      "navn": "Briefens eksempel",
+      "timer": [
+        { "precipitationMm": 1, "temperatureC": -1 },
+        { "precipitationMm": 3, "temperatureC": -3 },
+        { "precipitationMm": 4, "temperatureC": -4 },
+        { "precipitationMm": 3, "temperatureC": -3 },
+        { "precipitationMm": 1, "temperatureC": -2 },
+        { "precipitationMm": 0, "temperatureC": -1 }
+      ],
+      "forventet": { "kind": "score", "a": 36, "b": 6.770833333333333, "c": 15, "score": 58, "newSnowMm": 12, "precipitationMm": 12, "meanTemperatureC": -2.3333333333333335 }
+    },
+    {
+      "navn": "Tørt og kaldt (P < 0,5 mm gir B = C = 0)",
+      "timer": [
+        { "precipitationMm": 0.1, "temperatureC": -20 },
+        { "precipitationMm": 0.1, "temperatureC": -20 },
+        { "precipitationMm": 0.1, "temperatureC": -20 },
+        { "precipitationMm": 0.1, "temperatureC": -20 }
+      ],
+      "forventet": { "kind": "score", "a": 1.2, "b": 0, "c": 0, "score": 1, "newSnowMm": 0.4, "precipitationMm": 0.4, "meanTemperatureC": -20 }
+    },
+    {
+      "navn": "Grense nedbør: P = 0,5 mm nøyaktig",
+      "timer": [
+        { "precipitationMm": 0.25, "temperatureC": -2 },
+        { "precipitationMm": 0.25, "temperatureC": 2 }
+      ],
+      "forventet": { "kind": "score", "a": 0.75, "b": 3.125, "c": 7.5, "score": 11, "newSnowMm": 0.25, "precipitationMm": 0.5, "meanTemperatureC": 0 }
+    },
+    {
+      "navn": "Snøandel-grenser: T = 0, 1 og 2",
+      "timer": [
+        { "precipitationMm": 1, "temperatureC": 0 },
+        { "precipitationMm": 1, "temperatureC": 1 },
+        { "precipitationMm": 1, "temperatureC": 2 }
+      ],
+      "forventet": { "kind": "score", "a": 4.5, "b": 1.5625, "c": 7.5, "score": 14, "newSnowMm": 1.5, "precipitationMm": 3, "meanTemperatureC": 1 }
+    },
+    {
+      "navn": "Tak: S ≥ 20 mm, T̄ ≤ −14 °C, all nedbør som snø",
+      "timer": [
+        { "precipitationMm": 10, "temperatureC": -15 },
+        { "precipitationMm": 10, "temperatureC": -15 },
+        { "precipitationMm": 10, "temperatureC": -15 },
+        { "precipitationMm": 10, "temperatureC": -15 }
+      ],
+      "forventet": { "kind": "score", "a": 60, "b": 25, "c": 15, "score": 100, "newSnowMm": 40, "precipitationMm": 40, "meanTemperatureC": -15 }
+    },
+    {
+      "navn": "Vått og mildt: T̄ ≥ 2 °C gir B = 0",
+      "timer": [
+        { "precipitationMm": 4, "temperatureC": 0 },
+        { "precipitationMm": 6, "temperatureC": 5 }
+      ],
+      "forventet": { "kind": "score", "a": 12, "b": 0, "c": 6, "score": 18, "newSnowMm": 4, "precipitationMm": 10, "meanTemperatureC": 2.5 }
+    },
+    {
+      "navn": "A har nådd taket med blandede temperaturer (S > 20 mm, B < 25)",
+      "timer": [
+        { "precipitationMm": 15, "temperatureC": -4 },
+        { "precipitationMm": 15, "temperatureC": 1 },
+        { "precipitationMm": 10, "temperatureC": 8 }
+      ],
+      "forventet": { "kind": "score", "a": 60, "b": 0.5208333333333334, "c": 8.4375, "score": 69, "newSnowMm": 22.5, "precipitationMm": 40, "meanTemperatureC": 1.6666666666666667 }
+    },
+    {
+      "navn": "Totalen er nøyaktig x,5 (57,5 rundes opp til 58)",
+      "timer": [
+        { "precipitationMm": 1, "temperatureC": -6 },
+        { "precipitationMm": 1, "temperatureC": -6 },
+        { "precipitationMm": 1, "temperatureC": -6 },
+        { "precipitationMm": 1, "temperatureC": -6 },
+        { "precipitationMm": 1, "temperatureC": -6 },
+        { "precipitationMm": 1, "temperatureC": -6 },
+        { "precipitationMm": 1, "temperatureC": -6 },
+        { "precipitationMm": 1, "temperatureC": -6 },
+        { "precipitationMm": 1, "temperatureC": -6 },
+        { "precipitationMm": 1, "temperatureC": -6 }
+      ],
+      "forventet": { "kind": "score", "a": 30, "b": 12.5, "c": 15, "score": 58, "newSnowMm": 10, "precipitationMm": 10, "meanTemperatureC": -6 }
+    },
+    {
+      "navn": "Akkurat 10 % mangler (beregnes over de 9 timene; den delvis manglende timen på +5 °C teller ikke i T̄)",
+      "timer": [
+        { "precipitationMm": 1, "temperatureC": -7 },
+        { "precipitationMm": 1, "temperatureC": -7 },
+        { "precipitationMm": 1, "temperatureC": -7 },
+        { "precipitationMm": 1, "temperatureC": -7 },
+        { "precipitationMm": null, "temperatureC": 5 },
+        { "precipitationMm": 1, "temperatureC": -7 },
+        { "precipitationMm": 1, "temperatureC": -7 },
+        { "precipitationMm": 1, "temperatureC": -7 },
+        { "precipitationMm": 1, "temperatureC": -7 },
+        { "precipitationMm": 1, "temperatureC": -7 }
+      ],
+      "forventet": { "kind": "score", "a": 27, "b": 14.0625, "c": 15, "score": 56, "newSnowMm": 9, "precipitationMm": 9, "meanTemperatureC": -7 }
+    },
+    {
+      "navn": "Over 10 % mangler (2 av 10 timer)",
+      "timer": [
+        { "precipitationMm": 1, "temperatureC": -7 },
+        { "precipitationMm": null, "temperatureC": -7 },
+        { "precipitationMm": 1, "temperatureC": -7 },
+        { "precipitationMm": 1, "temperatureC": -7 },
+        { "precipitationMm": 1, "temperatureC": -7 },
+        { "precipitationMm": 1, "temperatureC": null },
+        { "precipitationMm": 1, "temperatureC": -7 },
+        { "precipitationMm": 1, "temperatureC": -7 },
+        { "precipitationMm": 1, "temperatureC": -7 },
+        { "precipitationMm": 1, "temperatureC": -7 }
+      ],
+      "forventet": { "kind": "incomplete", "missingShare": 0.2 }
+    },
+    {
+      "navn": "Tom liste",
+      "timer": [],
+      "forventet": { "kind": "incomplete", "missingShare": 1 }
+    }
+  ]
+}
