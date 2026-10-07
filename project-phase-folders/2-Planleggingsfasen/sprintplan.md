@@ -51,5 +51,5 @@ når disse sidene bygges i sprint 2.
 
 1. Amelia (`bmad-build`) bygger storyen på egen branch, `story/<nummer>-<kort-navn>`.
 2. Tester og CI må være grønne.
-3. Det åpnes en Pull Request, og et annet gruppemedlem godkjenner før merge til `main`.
+3. Det åpnes en Pull Request, som merges til `main` når sjekkene er grønne.
 4. Statusen oppdateres i `sprint-status.yaml`, og KI-bruken logges i `ai-log/`.

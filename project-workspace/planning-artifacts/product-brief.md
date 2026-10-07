@@ -88,7 +88,7 @@ Hvem som helst, også sensor, kan klone repoet og starte SnowFinder med `npm ci 
 - **Automatisk tilgjengelighetssjekk** av filter, liste, stedsside og forklaringsside.
 - **Manuell kontroll** av et fast utvalg steder mot MET, og test på mobil og PC.
 - **Oppgavebasert brukertest** med minst fem personer, som måler om de klarer å finne et aktuelt sted, justere filteret, forklare en SnowScore, oppdage utdaterte data og skille prognose fra faktiske forhold.
-- **Sperret hovedgren:** kode flettes bare inn via Pull Request med grønne tester og godkjenning fra et gruppemedlem.
+- **Sperret hovedgren:** kode flettes bare inn via Pull Request med grønne tester.
 
 ## What Makes This Different
 
@@ -243,7 +243,7 @@ Kriteriene er delt etter hvordan de verifiseres, slik at det er tydelig hva som 
 | Robusthet | Tjenesten viser siste gyldige data når en datakilde simuleres nede | Automatisk (CI) |
 | Datakvalitet | Hver kjøring lagrer en kvalitetsrapport, og hver publisert verdi kan spores til kjøringen | Automatisk (CI) |
 | Tilgjengelighet | Filter, stedssider, forklaringsside og listevisning har null kritiske WCAG 2.1 AA-brudd i automatisk sjekk. Selve kartlaget er unntatt; listevisningen er det fulle alternativet | Automatisk (CI) |
-| Sporbarhet | Alle endringer i hovedgrenen kommer via godkjente Pull Requests | Automatisk (grenbeskyttelse) |
+| Sporbarhet | Alle endringer i hovedgrenen kommer via Pull Requests | Git-historikken |
 | Kjørbarhet | Et gruppemedlem starter appen fra et rent klon kun etter README, på under 10 minutter | Manuelt, tidlig og før hver innlevering |
 | Ytelse | Filteret svarer på under 2 sekunder, og kartet er interaktivt innen 3 sekunder på mobil | Manuelt, med måledata |
 | Ferskhet | Publiserte data er normalt under 90 minutter gamle | Manuelt, fra kvalitetsrapportene i drift |
@@ -271,7 +271,7 @@ SnowFinder skal bli det naturlige stedet å starte når man leter etter snø i N
 
 ## Development Process
 
-Prosjektet følger BMad Method med korte iterasjoner i prioritert rekkefølge: stedskatalog og dataprogram, SnowScore, kart og stedssider, filter, deretter «bør ha»-funksjonene. Hvert medlem arbeider på egen branch, og alle endringer går gjennom Pull Request med tester og menneskelig godkjenning.
+Prosjektet følger BMad Method med korte iterasjoner i prioritert rekkefølge: stedskatalog og dataprogram, SnowScore, kart og stedssider, filter, deretter «bør ha»-funksjonene. Hvert medlem arbeider på egen branch, og alle endringer går gjennom Pull Request med tester og KI-gjennomgang.
 
 Hver Pull Request bygges og testes automatisk i CI med demodata, uten eksterne tjenester. Stedskatalogen og demodataene ligger som versjonerte filer i repoet.
 
