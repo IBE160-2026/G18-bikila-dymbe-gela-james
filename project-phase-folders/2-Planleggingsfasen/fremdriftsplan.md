@@ -3,7 +3,7 @@
 Oversikt over hvordan vi går fram, steg for steg, så alle kan følge med selv om de ikke var
 på møtet. Oppdater statusen når et steg er ferdig.
 
-**Sist oppdatert:** 2026-09-27
+**Sist oppdatert:** 2026-10-07
 
 ## Slik holder du deg oppdatert
 
@@ -13,27 +13,41 @@ på møtet. Oppdater statusen når et steg er ferdig.
 
 ## Hvor er vi nå?
 
-Mary har rettet briefen, John har skrevet [PRD-en](SnowFinder-PRD.md), Sally har levert
-[DESIGN.md](SnowFinder-DESIGN.md)/[EXPERIENCE.md](SnowFinder-EXPERIENCE.md), Winston har
-oppdatert [arkitekturen](SnowFinder-Arkitektur.md) (AD-8/AD-9), og John har levert
-[epics og stories](SnowFinder-Epics-og-Stories.md): 5 epics, 27 stories, alle 29 FR-er dekket,
-kvalitetssikret med en Critique-and-Refine-elicitering (se dokumentets rettelsesnotater).
-[Sprintplanen](sprintplan.md) er klar med fire sprinter (PR #6). Sprint 1 trenger ikke Supabase
-og er i gang.
+**7. oktober: faglærers tilbakemelding er innarbeidet, og planen er forenklet.**
 
-PR #2–#5 er lukket uten merge, fordi innholdet deres allerede lå i `main`. Se kommentarene på
-PR-ene.
+Faglæreren vurderte prosjektet som «Vanskelig», med flest eksterne tjenester som største risiko
+([tilbakemeldingen](../1-Oppstartsfasen/tilbakemelding-product-brief.md)). To godkjente
+endringsrunder (PR #8–#13) har gjort dette:
+- **Ingen database og ingen Supabase.** Dataprogrammet er et Node-script (`npm run data`) som
+  lager én JSON-fil, og appen er en statisk side som filtrerer i nettleseren.
+- **Ikke i v1:** snøvarsel (push, PWA), tilbakemeldingsskjema og analyse av treffsikkerhet. De
+  fjernede kravene står merket «Ikke i v1» i PRD-en, så historikken synes.
+- **Nytt i Må ha:** lokal kjøring med demodata, så sensor kan starte appen med
+  `npm ci && npm run dev` uten nøkler. Kvalitetsrapport for hver kjøring og fasittabeller.
+- Oppdatert: [produktbrief](../1-Oppstartsfasen/SnowFinder-Produktbrief.md),
+  [PRD v3](SnowFinder-PRD.md) og [arkitektur v4](SnowFinder-Arkitektur.md). Endringsforslagene
+  ligger i [`project-workspace/planning-artifacts/`](../../project-workspace/planning-artifacts/).
 
-**Status i sprint 1:** Amelia (`bmad-build`) har skrevet en spec for Story 1.1 (skaffolding, CI
-og design-tokens). Den er gjennomgått av en underagent, rettet og godkjent (`ready-for-dev`),
-men ikke implementert ennå. Spec-en ligger i
-[`project-workspace/implementation-artifacts/`](../../project-workspace/implementation-artifacts/).
+**Story 1.1** (prosjektskjelett, CI-fil og design-tokens) er bygget, gjennomgått og merget (PR #10).
 
-**Neste steg:**
-1. Kjør `bmad-build` på spec-en for Story 1.1, og deretter 1.4, 1.2 og 2.1–2.4, med én PR per
-   story.
-2. Samtidig setter gruppa opp Supabase og hosting før sprint 2. Sjekklisten står i
-   sprintplanen.
+**Åpne PR-er som et annet gruppemedlem enn Joseph må godkjenne:**
+- #14: oppdatert `AGENTS.md` (regler for agentene, inkludert «et annet gruppemedlem godkjenner før merge»);
+- #15: lokal pre-push-hook som kjører lint, typesjekk, tester og bygg før hver push, og avviser push til `main`.
+
+**GitHub Actions er av.** Bare faglærer kan slå det på. Inntil da gjør pre-push-hooken jobben
+lokalt. Etter at #15 er merget, kjører alle `npm run prepare` én gang.
+
+**Neste steg** (se også tabellen under):
+1. **Sally (`bmad-ux`)** lager wireframes for Utforsk, Stedsside og forklaringsside, kobler
+   kursets skjermkrav (pålogging, profil, innsjekking, feed, arrangementer) til SnowFinder, og
+   lager en brukertestplan.
+2. **John** oppdaterer epics og stories etter forenklingen. Story 1.2, 1.3, 1.5 og 1.10 skrives
+   om; snøvarsel og tilbakemelding faller bort. Deretter oppdateres sprintplanen og
+   `sprint-status.yaml`.
+3. **Amelia (`bmad-build`)** bygger Story 1.4 (SnowScore-modulen) og 1.10 (demodata).
+
+Forslag til annet videre arbeid eller endringer: legg dem fram som en PR eller i et
+møtereferat. Endringer i krav eller omfang går gjennom `bmad-correct-course`.
 
 ## Stegene
 
@@ -49,7 +63,10 @@ Vi bruker BMad Method med fem agenter. Hvert steg bygger på det forrige.
 | 6 | Oppdatere arkitekturen mot PRD og UX | Winston (arkitekt) | [Oppdatert arkitektur](SnowFinder-Arkitektur.md) | Joseph | 2026-09-27 | ✅ Ferdig |
 | 7 | Epics og stories | John (produktleder) | [Epics og stories](SnowFinder-Epics-og-Stories.md) | Joseph | 2026-09-27 | ✅ Ferdig |
 | 8 | Sprintplanlegging | bmad-sprint-planning | [Sprintplan](sprintplan.md) og [sprint-status.yaml](../../project-workspace/implementation-artifacts/sprint-status.yaml) | Aksel | 2026-09-27 | ✅ Ferdig |
-| 9 | Bygge appen, én story om gangen | Amelia (utvikler) | Kode, tester, PR-er | Aksel (sprint 1) | | 🔄 Pågår |
+| 8b | Innarbeide faglærers tilbakemelding og forenkle (to endringsrunder) | `bmad-correct-course`, John, Winston | [Endringsforslag](../../project-workspace/planning-artifacts/), oppdatert brief, PRD v3 og arkitektur v4 | Joseph | 2026-10-07 | ✅ Ferdig |
+| 8c | Wireframes, kursets skjermkrav og brukertestplan | Sally (UX-designer) | Oppdatert EXPERIENCE.md og wireframes | | | ⬜ Neste |
+| 8d | Oppdatere epics, stories og sprintplan etter forenklingen | John og `bmad-sprint-planning` | Epics og stories, sprintplan, `sprint-status.yaml` | | | ⬜ |
+| 9 | Bygge appen, én story om gangen | Amelia (utvikler) | Kode, tester, PR-er. Story 1.1 ferdig (PR #10). | Aksel (sprint 1) | | 🔄 Pågår |
 | 10 | Brukertest, sluttrapport og demo | Hele gruppen | [Avslutningsfasen](../4-Avslutningsfasen/) | | | ⬜ |
 
 Steg 1 og 2 ble gjort før gruppen bestemte seg for denne rekkefølgen. Derfor kommer
@@ -71,3 +88,4 @@ arkitekturen før PRD-en, og Winston går gjennom den på nytt i steg 6.
 - Logg promptene fra hver KI-økt i [`ai-log/prompter/`](../../ai-log/prompter/).
 - Skriv et møtereferat etter hvert gruppemøte.
 - Ingen kode går rett inn i `main`. Alt går via Pull Request med grønne tester.
+- Et annet gruppemedlem enn den som laget PR-en godkjenner før merge.
