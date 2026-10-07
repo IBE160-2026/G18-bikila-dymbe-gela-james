@@ -46,7 +46,8 @@ De står i `sprint-status.yaml` med kommentaren «Ikke i v1» og bygges ikke.
 |---|---|---|
 | 1.1 Prosjekt-skaffolding og CI | Ferdig (`done`) | Merget i PR #10. |
 | 1.2 Bygg stedskatalogen | Ferdig (`done`) | Merget i PR #18. Fil i stedet for database. 300 steder i `data/catalog.json`. Navnelista bør gjennomgås av gruppa. |
-| 1.4, 1.10, 2.1–2.4 | Ikke startet | Neste: 1.4, deretter 1.10. |
+| 1.4 Den delte SnowScore-modulen | Implementert og gjennomgått (`review`) | `shared/snowscore.ts` med fasittabell og egenskapstester. Tidsvinduets lengde velges i 1.5. |
+| 1.10, 2.1–2.4 | Ikke startet | Neste: 1.10. |
 
 ## Dette må gruppa sette opp før sprint 2
 
