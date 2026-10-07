@@ -44,7 +44,7 @@ Skriptet i `scripts/build-catalog/` henter skisteder fra OpenStreetMap og slår 
 
 Klonet du repoet før hooken kom, slår du den på med `npm run prepare`. Sjekk at den er aktiv med `git config core.hooksPath`; svaret skal være `.githooks`.
 
-Hooken er en lokal erstatning for CI til GitHub Actions er slått på for repoet. Den er ikke helt det samme:
+GitHub Actions kjører de samme sjekkene (`ci.yml`) på hver PR. Hooken gir deg svaret før du pusher. Den er ikke helt det samme:
 - den kjører på din maskin og Node-versjon;
 - den tester ikke den flettede tilstanden i pull requesten.
 
