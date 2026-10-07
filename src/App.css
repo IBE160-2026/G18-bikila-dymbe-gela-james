@@ -1,0 +1,22 @@
+/* AD-9: only variables from tokens.css, never literal values for anything DESIGN.md names. */
+body {
+  margin: 0;
+  background: var(--color-surface-base);
+  color: var(--color-ink-primary);
+  font-family: var(--typography-body-font-family);
+  font-size: var(--typography-body-font-size);
+  font-weight: var(--typography-body-font-weight);
+  line-height: var(--typography-body-line-height);
+}
+
+.app {
+  padding: var(--spacing-gutter);
+}
+
+.app h1 {
+  margin: 0;
+  font-family: var(--typography-display-font-family);
+  font-size: var(--typography-display-font-size);
+  font-weight: var(--typography-display-font-weight);
+  line-height: var(--typography-display-line-height);
+}

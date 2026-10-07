@@ -11,6 +11,19 @@ Repoet inneholder gruppens applikasjon og dokumentasjon av utvikling, testing og
 - Kelly B Gela
 - Joseph James
 
+## Kom i gang
+
+Krever Node 24, eller Node 26 eller nyere (Node 25 støttes ikke).
+
+```sh
+npm ci              # installer avhengighetene fra package-lock.json
+npm run dev         # start utviklingsserveren
+npm run lint        # kjør ESLint
+npm run typecheck   # sjekk typene
+npm test            # kjør enhetstestene
+npm run build       # bygg produksjonsversjonen
+```
+
 ## Dokumentasjon
 
 Prosjektdokumentasjonen ligger i [`project-phase-folders/`](project-phase-folders/), organisert

@@ -2,7 +2,8 @@
 title: 'Story 1.1: Project scaffolding and CI skeleton'
 type: 'chore'
 created: '2026-09-27'
-status: 'ready-for-dev'
+status: 'done'
+baseline_commit: 'dcd81e6c2923560873201f298bed121e7841ddca'
 route: 'dispatch'
 review_loop_iteration: 0
 context:
@@ -53,17 +54,17 @@ context:
 ## Tasks & Acceptance
 
 **Execution:**
-- [ ] `package.json` -- create with `"type": "module"`, `"engines": {"node": ">=24"}`, scripts `dev`, `build` (`tsc -b && vite build`), `typecheck` (`tsc -b`), `lint` (`eslint .`), `test` (`vitest run`); pinned deps -- toolchain entry point.
-- [ ] `tsconfig.json` (`"files": []` + `references` to the two below), `tsconfig.app.json` (include `src`, `shared`; strict; `noEmit`; `types: ["node", "vite/client"]`; `tsBuildInfoFile: ./node_modules/.tmp/tsconfig.app.tsbuildinfo`), `tsconfig.node.json` (include `vite.config.ts`; same pattern) -- Vite-template project-reference pattern so `tsc -b` typechecks without emitting; no `composite`.
-- [ ] `vite.config.ts` -- `defineConfig` from `vitest/config`; React plugin; `test` block: environment `node`, include `src/**/*.test.{ts,tsx}`, `shared/**/*.test.ts`, `supabase/functions/**/*.test.ts` (AD-4).
-- [ ] `eslint.config.js` -- flat config: `@eslint/js` recommended + `typescript-eslint` + `eslint-plugin-react-hooks`; use `reactHooks.configs.flat.recommended`, `globals.browser`; ignore `dist`, `coverage`, `_bmad`, `.claude`, `.agents`, `ai-log`, `project-*`.
-- [ ] `index.html`, `src/main.tsx` (imports `./styles/tokens.css` and `./App.css`), `src/App.tsx`, `src/App.css` -- minimal shell rendering `<h1>SnowFinder</h1>`; `App.css` uses only `var(--…)` from `tokens.css`.
-- [ ] `src/lib/theme.ts` -- exported `as const` objects `colors`, `typography`, `rounded`, `spacing`; every value is the DESIGN.md string verbatim (e.g. `fontWeight: '700'`, `spacing['1']: '4px'`).
-- [ ] `src/styles/tokens.css` -- `:root` custom properties, naming `--color-<key>`, `--rounded-<key>`, `--spacing-<key>`, `--typography-<style>-<kebab-prop>` — e.g. `--spacing-1: 4px`, `--typography-meta-letter-spacing: 0.01em`, `--typography-numeric-font-feature-settings: 'tnum' 1`, `--typography-display-font-family: 'Inter', system-ui, sans-serif`.
-- [ ] `src/lib/theme.test.ts` -- read `tokens.css` via `readFileSync(new URL('../styles/tokens.css', import.meta.url), 'utf8')`, parse `--name: value;` pairs, flatten `theme.ts` with the same naming rule, assert exact set equality and value equality (compare after `trim()` only, no other normalisation); cover the four matrix rows (drift cases via small inline CSS fixtures fed to the same parse/compare helper).
-- [ ] Empty skeleton dirs with `.gitkeep`: `src/pages`, `src/components`, `src/hooks`, `src/lib/supabase`, `src/lib/types`, `shared`, `supabase/migrations`, `supabase/functions`, `scripts/build-catalog`, `tests/e2e`, `tests/contract/fixtures`.
-- [ ] `.github/workflows/ci.yml` -- on `pull_request` and `push` to `main`; `permissions: contents: read`; `ubuntu-latest`; `actions/setup-node` Node 24 with `cache: npm`; `npm ci`, `npm run lint`, `npm run typecheck`, `npm test`, `npm run build`.
-- [ ] `README.md` -- short "Kom i gang" section (Norwegian, matching the file): `npm install`, `npm run dev`, `npm test`.
+- [x] `package.json` -- create with `"type": "module"`, `"engines": {"node": ">=24"}`, scripts `dev`, `build` (`tsc -b && vite build`), `typecheck` (`tsc -b`), `lint` (`eslint .`), `test` (`vitest run`); pinned deps -- toolchain entry point.
+- [x] `tsconfig.json` (`"files": []` + `references` to the two below), `tsconfig.app.json` (include `src`, `shared`; strict; `noEmit`; `types: ["node", "vite/client"]`; `tsBuildInfoFile: ./node_modules/.tmp/tsconfig.app.tsbuildinfo`), `tsconfig.node.json` (include `vite.config.ts`; same pattern) -- Vite-template project-reference pattern so `tsc -b` typechecks without emitting; no `composite`.
+- [x] `vite.config.ts` -- `defineConfig` from `vitest/config`; React plugin; `test` block: environment `node`, include `src/**/*.test.{ts,tsx}`, `shared/**/*.test.ts`, `supabase/functions/**/*.test.ts` (AD-4).
+- [x] `eslint.config.js` -- flat config: `@eslint/js` recommended + `typescript-eslint` + `eslint-plugin-react-hooks`; use `reactHooks.configs.flat.recommended`, `globals.browser`; ignore `dist`, `coverage`, `_bmad`, `.claude`, `.agents`, `ai-log`, `project-*`.
+- [x] `index.html`, `src/main.tsx` (imports `./styles/tokens.css` and `./App.css`), `src/App.tsx`, `src/App.css` -- minimal shell rendering `<h1>SnowFinder</h1>`; `App.css` uses only `var(--…)` from `tokens.css`.
+- [x] `src/lib/theme.ts` -- exported `as const` objects `colors`, `typography`, `rounded`, `spacing`; every value is the DESIGN.md string verbatim (e.g. `fontWeight: '700'`, `spacing['1']: '4px'`).
+- [x] `src/styles/tokens.css` -- `:root` custom properties, naming `--color-<key>`, `--rounded-<key>`, `--spacing-<key>`, `--typography-<style>-<kebab-prop>` — e.g. `--spacing-1: 4px`, `--typography-meta-letter-spacing: 0.01em`, `--typography-numeric-font-feature-settings: 'tnum' 1`, `--typography-display-font-family: 'Inter', system-ui, sans-serif`.
+- [x] `src/lib/theme.test.ts` -- read `tokens.css` via `readFileSync(new URL('../styles/tokens.css', import.meta.url), 'utf8')`, parse `--name: value;` pairs, flatten `theme.ts` with the same naming rule, assert exact set equality and value equality (compare after `trim()` only, no other normalisation); cover the four matrix rows (drift cases via small inline CSS fixtures fed to the same parse/compare helper).
+- [x] Empty skeleton dirs with `.gitkeep`: `src/pages`, `src/components`, `src/hooks`, `src/lib/supabase`, `src/lib/types`, `shared`, `supabase/migrations`, `supabase/functions`, `scripts/build-catalog`, `tests/e2e`, `tests/contract/fixtures`.
+- [x] `.github/workflows/ci.yml` -- on `pull_request` and `push` to `main`; `permissions: contents: read`; `ubuntu-latest`; `actions/setup-node` Node 24 with `cache: npm`; `npm ci`, `npm run lint`, `npm run typecheck`, `npm test`, `npm run build`.
+- [x] `README.md` -- short "Kom i gang" section (Norwegian, matching the file): `npm install`, `npm run dev`, `npm test`.
 
 **Acceptance Criteria:**
 - Given a fresh clone, when running `npm ci && npm run lint && npm run typecheck && npm test && npm run build`, then every command exits 0.
@@ -73,11 +74,37 @@ context:
 
 ## Implementation Notes
 
+- All pins installed as specified; `npm install` resolved them with no peer-dependency errors and 0 vulnerabilities. `package-lock.json` (made on Windows, Node 26.7 / npm 11.19) lists every `@rolldown/binding-*` optional package, including `binding-linux-x64-gnu`, so `npm ci` on `ubuntu-latest` should not need a regenerated lockfile.
+- `theme.test.ts` keeps the parse/compare helpers local to the test file (not exported from `theme.ts`), so the shipped module holds tokens only. The comparison checks set equality and values after `trim()` only; failures list every drift as `missing variable …`, `extra variable …` or `value drift in …`.
+- `eslint.config.js` uses `tseslint.config(...)` with `js.configs.recommended`, `tseslint.configs.recommended` and `reactHooks.configs.flat.recommended`; the ignores are exactly those in the task.
+- tsconfigs follow the Vite template (bundler resolution, `verbatimModuleSyntax`, strict, `noEmit`, no `composite`).
+- `index.html` uses `lang="nb"` because the UI is Norwegian only.
+
 ## Spec Change Log
 
 ## Review Triage Log
 
 - Pre-approval spec review (subagent), 9 findings, all accepted: exact dev-dep pins incl. TS 6.0.3 (high); test file types for reading tokens.css (high); Vitest include per AD-4 (medium); token naming/compare examples (medium); tsc -b project-reference pattern (medium); dark mode deferred explicitly (low); app shell wiring (low); CI permissions/cache/Linux lockfile (low); ESLint ignores + react-hooks preset (low).
+
+**Implementation review, 2026-10-07** (Blind Hunter, Edge Case Hunter, Verification Gap). There are no intent_gap or bad_spec findings, so there is no loopback.
+
+| # | Layer | Finding | Verdict | Route | Evidence |
+|---|---|---|---|---|---|
+| 1 | blind | `package-lock.json` missing from the diff | false | reject | The file is tracked and committed; the coordinator left it out of the review diff on purpose (generated file). |
+| 2 | blind, verification-gap | Windows-made lockfile not proven on Linux / Node 24 | maybe-false | settled by PR CI | It lists `@rolldown/binding-linux-x64-gnu`. The first CI run on the PR decides it. |
+| 3 | blind | Spec status and triage log do not match the work | false | reject | Status set to `in-review` in step 4. This log is written in step 5, as the workflow defines. |
+| 4 | blind | Dark-mode deferral recorded only in a CSS comment | false | reject | Recorded in the frozen intent (Boundaries, "Always": dark mode switching deferred). |
+| 5 | blind, edge | `parseCssVars` silently overwrites a variable declared twice | low | patch | `Map.set` keeps the last value. Now reported as `duplicate variable`, with a test. |
+| 6 | edge | `engines >=24` admits Node 25, which vitest 5.0.1 excludes | low | patch | Vitest engines are `^22.12.0 \|\| ^24.0.0 \|\| >=26.0.0`. Changed to `^24.0.0 \|\| >=26.0.0`. |
+| 7 | blind, edge | CI has no timeout or concurrency control | low | patch | Added `timeout-minutes: 15` and a concurrency group that cancels outdated runs. |
+| 8 | blind | README does not show the CI gates (lint, typecheck, build) and uses `npm install` | low | patch | README is graded (criterion 6). It now uses `npm ci` and lists all gates. |
+| 9 | blind, edge | CSS parser reads declarations outside `:root` | low | defer | Only one `:root` block exists today. This becomes real with dark mode. |
+| 10 | blind | ESLint uses browser globals for every file; `scripts/`, `supabase/functions/` and `tests/` are not type-checked | low | defer | No code exists there yet. Due with Stories 1.2 and 1.3. |
+| 11 | blind | Nothing checks that CSS uses only `var(--…)`, or that `theme.ts` matches DESIGN.md | low | defer | Values match today (checked by hand by Verification Gap). It needs tooling (stylelint or a frontmatter test). |
+| 12 | blind | Inter font named but never loaded | low | defer | Falls back to `system-ui`. Decide in the first UI story (NFR-2 performance). |
+| 13 | blind | No favicon, description or theme-color; actions not SHA-pinned; no `npm audit` | low | defer | Cosmetic or hardening. Fits Story 4.1 (PWA) and Dependabot. |
+| 14 | blind | No `.gitignore` entries for `node_modules/`, `dist/`, `coverage/` | false | reject | Already present in the root `.gitignore` (lines 2, 5, 9, 33). |
+| 15 | verification-gap | Gap screen of the token drift test | — | none | No gaps. The test is tied to the real exports and the real file, and each matrix row has a passing test. |
 
 ## Verification
 
