@@ -24,6 +24,22 @@ npm test            # kjør enhetstestene
 npm run build       # bygg produksjonsversjonen
 ```
 
+### Sjekk før push
+
+`npm ci` (eller `npm install`) slår på en git-hook, `.githooks/pre-push`, som kjøres hver gang du pusher:
+
+- Push direkte til `main` avvises. Lag en grein og en pull request.
+- Har du endringer som ikke er committet, stoppes pushen, slik at sjekkene tester det du faktisk pusher.
+- `lint`, `typecheck`, `test` og `build` kjøres, og pushen stoppes hvis én av dem feiler.
+
+Klonet du repoet før hooken kom, slår du den på med `npm run prepare`. Sjekk at den er aktiv med `git config core.hooksPath`; svaret skal være `.githooks`.
+
+Hooken er en lokal erstatning for CI til GitHub Actions er slått på for repoet. Den er ikke helt det samme:
+- den kjører på din maskin og Node-versjon;
+- den tester ikke den flettede tilstanden i pull requesten.
+
+Bare i et nødstilfelle med feilende sjekker kan den hoppes over med `git push --no-verify`. Skriv i så fall i pull requesten hvorfor. Bruk det aldri for å pushe til `main`.
+
 ## Dokumentasjon
 
 Prosjektdokumentasjonen ligger i [`project-phase-folders/`](project-phase-folders/), organisert

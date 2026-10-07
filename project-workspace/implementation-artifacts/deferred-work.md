@@ -13,3 +13,9 @@
 - source_spec: `project-workspace/implementation-artifacts/spec-1-1-prosjekt-skaffolding-og-ci-skjelett.md`
   summary: Favicon, meta description og theme-color i index.html (naturlig sammen med PWA-manifestet i Story 4.1), og SHA-pinning av GitHub Actions og npm audit/Dependabot i CI.
   evidence: Story 1.1-gjennomgang (Blind Hunter). Dev-serveren gir 404 på /favicon.ico; actions er pinnet til @v4; ingen sårbarhetssjekk i CI ennå.
+- source_spec: `project-workspace/implementation-artifacts/spec-lokale-git-hooks.md`
+  summary: Når faglærer har slått på GitHub Actions og grenbeskyttelse for main (krev én godkjenning), skal pre-push-hooken nedgraderes til en valgfri hjelp, eller fjernes, og README og AGENTS.md oppdateres.
+  evidence: Hooken er en lokal erstatning (gjennomgang 2026-10-07). Regelen om at et annet gruppemedlem godkjenner før merge kan bare håndheves av grenbeskyttelse på GitHub, som krever administratortilgang.
+- source_spec: `project-workspace/implementation-artifacts/spec-lokale-git-hooks.md`
+  summary: En .gitattributes-regel for hele repoet (* text=auto) som stopper støy fra linjeskift i diffene, og eventuelt en liten automatisk test av hooken.
+  evidence: Gjennomgang 2026-10-07: core.autocrlf gir CRLF-advarsler på flere filer. Hooken er bare manuelt verifisert på Windows (Git Bash, Node 26), ikke på Mac, Linux eller Node 24.
