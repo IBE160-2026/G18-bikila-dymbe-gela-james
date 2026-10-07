@@ -18,3 +18,8 @@
 - Hver overskrift har Må ha eller Bør ha.
 
 **Hva vi gjorde med det:** Sprintplanen og `sprint-status.yaml` er ikke oppdatert ennå. De mangler 1.10 og 1.11, og har fortsatt Epic 4 og 5 som før.
+
+### 2
+> Vil du at jeg kjører sprintplanleggingen nå, så steg 8d blir ferdig? — «ja»
+
+**Svar (kort):** Kjørte `bmad-sprint-planning`. Readiness-sjekken ga CONCERNS: UX-dokumentene er ikke oppdatert, og Story 1.11 trenger Actions og Pages. Aksel valgte «Fortsett». Første prøvekjøring viste at «(Må ha)» i overskriftene ble en del av nøklene, så merkingen ble flyttet til en egen linje. Deretter ble `sprint-status.yaml` skrevet og validert, og sprintplanen ble oppdatert.

@@ -45,9 +45,7 @@ lokalt. Alle som har klonet repoet før #15, kjører `npm run prepare` én gang.
 1. **Sally (`bmad-ux`)** lager wireframes for Utforsk, Stedsside og forklaringsside, kobler
    kursets skjermkrav (pålogging, profil, innsjekking, feed, arrangementer) til SnowFinder, og
    lager en brukertestplan.
-2. **John** oppdaterer epics og stories etter forenklingen. Story 1.2, 1.3, 1.5 og 1.10 skrives
-   om; snøvarsel og tilbakemelding faller bort. Deretter oppdateres sprintplanen og
-   `sprint-status.yaml`.
+2. ~~**John** oppdaterer epics og stories etter forenklingen.~~ Ferdig 2026-10-07 (PR #19): epics v3, sprintplan og `sprint-status.yaml`.
 3. **Amelia (`bmad-build`)** bygger Story 1.4 (SnowScore-modulen) og 1.10 (demodata).
 
 Forslag til annet videre arbeid eller endringer: legg dem fram som en PR eller i et
@@ -69,7 +67,7 @@ Vi bruker BMad Method med fem agenter. Hvert steg bygger på det forrige.
 | 8 | Sprintplanlegging | bmad-sprint-planning | [Sprintplan](sprintplan.md) og [sprint-status.yaml](../../project-workspace/implementation-artifacts/sprint-status.yaml) | Aksel | 2026-09-27 | ✅ Ferdig |
 | 8b | Innarbeide faglærers tilbakemelding og forenkle (to endringsrunder) | `bmad-correct-course`, John, Winston | [Endringsforslag](../../project-workspace/planning-artifacts/), oppdatert brief, PRD v3 og arkitektur v4 | Joseph | 2026-10-07 | ✅ Ferdig |
 | 8c | Wireframes, kursets skjermkrav og brukertestplan | Sally (UX-designer) | Oppdatert EXPERIENCE.md og wireframes | | | ⬜ Neste |
-| 8d | Oppdatere epics, stories og sprintplan etter forenklingen | John og `bmad-sprint-planning` | Epics og stories, sprintplan, `sprint-status.yaml` | Aksel | 2026-10-07 | 🔄 Epics oppdatert (v3); sprintplan og `sprint-status.yaml` gjenstår |
+| 8d | Oppdatere epics, stories og sprintplan etter forenklingen | John og `bmad-sprint-planning` | Epics og stories, sprintplan, `sprint-status.yaml` | Aksel | 2026-10-07 | ✅ Ferdig (epics v3, sprintplan og `sprint-status.yaml`) |
 | 9 | Bygge appen, én story om gangen | Amelia (utvikler) | Kode, tester, PR-er. Story 1.1 ferdig (PR #10). | Aksel (sprint 1) | | 🔄 Pågår |
 | 10 | Brukertest, sluttrapport og demo | Hele gruppen | [Avslutningsfasen](../4-Avslutningsfasen/) | | | ⬜ |
 

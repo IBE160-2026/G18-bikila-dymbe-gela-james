@@ -25,7 +25,7 @@ Det finnes ingen database og ingen Supabase. Dataprogrammet er et Node-script so
 JSON-datafil, og appen er statiske filer som bare leser den (arkitektur v4, PRD v3).
 - Snøvarsel, PWA og tilbakemelding er «Ikke i v1». ID-ene beholdes, slik at sensor kan følge
   hvordan planen utviklet seg.
-- Hver story har Må ha eller Bør ha i overskriften.
+- Hver story har Må ha eller Bør ha på linjen «Prioritet» rett under overskriften.
 - Nye stories: 1.10 (demodata) og 1.11 (planlagt jobb og publisering).
 
 ## Kravinventar
@@ -213,7 +213,9 @@ blir konkrete).
 Brukeren kan åpne SnowFinder og se ekte, ferske SnowScore-data for norske steder, på kart eller
 i tilgjengelig liste, og åpne et sted for full detalj.
 
-### Story 1.1: Prosjekt-skaffolding og CI-skjelett *(Må ha, ferdig: PR #10)*
+### Story 1.1: Prosjekt-skaffolding og CI-skjelett
+
+**Prioritet:** Må ha, ferdig: PR #10
 
 `[v3: Bygget før forenklingen. Mappene `supabase/` og `src/lib/supabase/` fjernes i Story 1.10.]`
 
@@ -237,7 +239,9 @@ uten dette har ingen senere komponent-story et sted å hente farger/typografi/sp
 **And** ingen forretningslogikk, ingen databasetabeller og ingen Supabase-tilkobling opprettes i
 denne storyen (jf. "opprett kun det en story faktisk trenger")
 
-### Story 1.2: Bygg stedskatalogen *(Må ha)*
+### Story 1.2: Bygg stedskatalogen
+
+**Prioritet:** Må ha
 
 As en gruppemedlem som skal fylle katalogen,
 I want et frittstående skript som bygger en katalogfil med ~300 steder fra OpenStreetMap og Kartverket,
@@ -257,7 +261,9 @@ katalogen uten å endre den (AD-5)
 
 `[v3: Erstatter migreringen til `locations`. Bygget i PR #18.]`
 
-### Story 1.3: Hent og valider værdata hver time *(Må ha)*
+### Story 1.3: Hent og valider værdata hver time
+
+**Prioritet:** Må ha
 
 As systemet,
 I want å hente MET- og NVE-data for alle steder i katalogen og validere hvert svar mot et strengt skjema,
@@ -279,7 +285,9 @@ rettes aldri automatisk
 **And** skjemaene er dokumentert i `shared/contracts/data-dictionary.md` (felt, enhet, gyldig
 område, kilde), og kontraktstester i `tests/contract/` kjører valideringen mot opptatte ekte svar
 
-### Story 1.4: Bygg den delte SnowScore-modulen *(Må ha)*
+### Story 1.4: Bygg den delte SnowScore-modulen
+
+**Prioritet:** Må ha
 
 As en bruker,
 I want at SnowScore beregnes av én enkelt, delt formel — ikke to separate implementasjoner,
@@ -302,7 +310,9 @@ test mot modulen (AD-12)
 **And** denne storyen leverer kun modulen og dens tester — ingen pipeline-integrasjon ennå
 (det er Story 1.5)
 
-### Story 1.10: Kjør SnowFinder lokalt med demodata *(Må ha)*
+### Story 1.10: Kjør SnowFinder lokalt med demodata
+
+**Prioritet:** Må ha
 
 As en sensor eller et nytt gruppemedlem,
 I want å starte SnowFinder fra et rent klon med `npm ci && npm run dev`, uten nøkler og nettverk,
@@ -327,7 +337,9 @@ mot demo-nå)
 dataprogrammet den trenger (`run.ts`, `score.ts`, `publish.ts` mot fixtures). Story 1.3 og 1.5
 kobler senere på de ekte kildene.]`
 
-### Story 1.5: Beregn og publiser SnowScore i dataprogrammet *(Må ha)*
+### Story 1.5: Beregn og publiser SnowScore i dataprogrammet
+
+**Prioritet:** Må ha
 
 As en bruker,
 I want at hvert sted i katalogen får en fersk, publisert SnowScore hver time,
@@ -350,7 +362,9 @@ stedspost har kjørings-ID og kildens tidsstempel (NFR-DQ3)
 avviste per kilde, antall ufullstendige, publisert eller ikke og hvorfor). For en publisert
 kjøring ligger den i datafilen; ellers skrives den til loggen (NFR-DQ2)
 
-### Story 1.11: Kjør dataprogrammet hver time og publiser appen *(Må ha)*
+### Story 1.11: Kjør dataprogrammet hver time og publiser appen
+
+**Prioritet:** Må ha
 
 As en bruker,
 I want at SnowFinder på nett oppdateres med ekte data hver time,
@@ -372,7 +386,9 @@ rød i Actions-fanen (NFR-6)
 `[v3: Ny story fra endringsrunde 2. Krever at Actions og Pages er slått på; til da kan
 `npm run data` kjøres lokalt.]`
 
-### Story 1.7: Se Norgeskartet med fargelagte steder *(Må ha)*
+### Story 1.7: Se Norgeskartet med fargelagte steder
+
+**Prioritet:** Må ha
 
 As en skientusiast,
 I want å se et kart over Norge der hvert sted er fargelagt etter SnowScore,
@@ -391,7 +407,9 @@ datafilen gjennom `src/lib/data/` — ingen annen komponent laster stedsdata sel
 **And** kartet er interaktivt (kan panneres/zoomes) innen 3 sekunder på en representativ
 mobiltelefon over 4G (NFR-2)
 
-### Story 1.8: Bruk tilgjengelig listevisning i stedet for kart *(Må ha)*
+### Story 1.8: Bruk tilgjengelig listevisning i stedet for kart
+
+**Prioritet:** Må ha
 
 As en bruker med skjermleser og tastatur,
 I want en fullverdig listevisning av samme steder som kartet,
@@ -410,7 +428,9 @@ dra-og-slipp)
 WCAG 2.1 AA-brudd på denne siden
 **And** listen virker i demomodus (Story 1.10)
 
-### Story 1.9: Åpne en stedsside med full poengsum *(Må ha)*
+### Story 1.9: Åpne en stedsside med full poengsum
+
+**Prioritet:** Må ha
 
 As en skientusiast,
 I want å se full poengsum med delpoeng og rådata for ett sted,
@@ -431,7 +451,9 @@ kart, liste og denne siden (NFR-3). Alderen regnes mot `src/lib/clock.ts` og vur
 WCAG 2.1 AA-brudd på denne siden (NFR-7)
 **And** siden virker i demomodus (Story 1.10)
 
-### Story 1.6: Hold tjenesten oppe når en datakilde er nede *(Bør ha)*
+### Story 1.6: Hold tjenesten oppe når en datakilde er nede
+
+**Prioritet:** Bør ha
 
 As en bruker,
 I want at SnowFinder fortsetter å vise data selv om MET eller NVE er nede, og at jeg ser når dataene er gamle,
@@ -460,7 +482,9 @@ forover-avhengighet. Nummeret er beholdt så kryssreferanser ikke brytes.]`
 
 Brukeren kan lese en forklaringsside som viser nøyaktig hvordan SnowScore beregnes.
 
-### Story 2.1: Les kort fortalt og steg for steg *(Må ha)*
+### Story 2.1: Les kort fortalt og steg for steg
+
+**Prioritet:** Må ha
 
 As en bruker,
 I want en side som forklarer hva SnowScore måler og hvordan den beregnes,
@@ -479,7 +503,9 @@ stedsside)
 **And** en automatisert tilgjengelighetstest (axe/Playwright) i CI rapporterer null kritiske
 WCAG 2.1 AA-brudd på denne siden (NFR-7)
 
-### Story 2.2: Se det utledede regneeksempelet *(Må ha)*
+### Story 2.2: Se det utledede regneeksempelet
+
+**Prioritet:** Må ha
 
 As en bruker,
 I want et komplett regneeksempel fra rådata til ferdig poengsum,
@@ -494,7 +520,9 @@ eksplisitt utledet før A/B/C og sluttsummen vises
 **And** tallene i eksempelet stemmer med `shared/snowscore.ts` sin faktiske output for samme
 inndata (verifisert med en test som kjører eksempelets inndata gjennom modulen)
 
-### Story 2.3: Les om datakilder og begrensninger *(Må ha)*
+### Story 2.3: Les om datakilder og begrensninger
+
+**Prioritet:** Må ha
 
 As en bruker,
 I want å forstå at SnowScore er en prognose, ikke en garanti,
@@ -510,7 +538,9 @@ Varsom.no for fjellområder
 **And** siden viser kvalitetsrapporten fra siste publiserte kjøring i klartekst (andel gyldige,
 avviste svar per kilde, antall med ufullstendige data, tidspunkt) (NFR-DQ2)
 
-### Story 2.4: Prøv SnowScore-kalkulatoren selv *(Bør ha)*
+### Story 2.4: Prøv SnowScore-kalkulatoren selv
+
+**Prioritet:** Bør ha
 
 As en bruker,
 I want å justere nedbør og temperatur og se poengsummen endre seg live,
@@ -530,7 +560,9 @@ finnes i kalkulator-komponenten (AD-6)
 
 Brukeren kan sette presise krav og få akkurat de stedene som oppfyller dem.
 
-### Story 3.1: Filtrer på nysnø, vind og temperatur *(Må ha)*
+### Story 3.1: Filtrer på nysnø, vind og temperatur
+
+**Prioritet:** Må ha
 
 As en skientusiast,
 I want å sette minimumskrav til nysnø og grenser for vind og temperatur,
@@ -550,7 +582,9 @@ CI-blokkerende test mot `shared/filter.ts`
 fra 768px og oppover (DESIGN.md/UX-DR12), verifisert med en Playwright-test i begge
 viewport-bredder
 
-### Story 3.2: Del og gjenåpne et filtrert søk *(Må ha)*
+### Story 3.2: Del og gjenåpne et filtrert søk
+
+**Prioritet:** Må ha
 
 As en bruker,
 I want at filterverdiene mine lagres i nettadressen,
@@ -565,7 +599,9 @@ So that jeg kan dele søket mitt med et enkelt lenke-trykk. Realiserer FR-21. Re
 **And** `shared/filter.ts` eier `FilterParams` og de eneste `parse`/`serialize`-funksjonene
 mellom URL og filter (AD-12)
 
-### Story 3.3: Få hjelp ved null treff og se antall treff live *(Må ha)*
+### Story 3.3: Få hjelp ved null treff og se antall treff live
+
+**Prioritet:** Må ha
 
 As en bruker,
 I want å se antall treff oppdateres mens jeg justerer filteret, og få et konkret forslag ved null treff,
@@ -582,7 +618,9 @@ treff hvis lempet, og foreslår nettopp det (f.eks. «Ingen treff. Prøv vind un
 stedet»)
 **And** forslaget ved null treff er dekket av fasittabellen fra Story 3.1
 
-### Story 3.4: Bruk hurtigvalg for vanlige kombinasjoner *(Bør ha)*
+### Story 3.4: Bruk hurtigvalg for vanlige kombinasjoner
+
+**Prioritet:** Bør ha
 
 As en bruker,
 I want forhåndsdefinerte snarveier som «Pudderdag»,
@@ -595,7 +633,9 @@ So that jeg slipper å stille inn flere glidebrytere manuelt hver gang. Bør ha.
 **Then** fylles filteret med chipens faste, dokumenterte kombinasjon av verdier i én handling,
 og resultatet oppdateres umiddelbart
 
-### Story 3.5: Filtrer på sol *(Bør ha)*
+### Story 3.5: Filtrer på sol
+
+**Prioritet:** Bør ha
 
 As en turgåer,
 I want å sette maks skydekke i dagslystimer,
@@ -607,7 +647,9 @@ So that jeg finner steder med utsikt til sol, ikke bare snø. Bør ha. Realisere
 **When** jeg setter maks skydekke
 **Then** kombineres dette med de andre kriteriene (fortsatt OG)
 
-### Story 3.6: Filtrer på avstand *(Bør ha)*
+### Story 3.6: Filtrer på avstand
+
+**Prioritet:** Bør ha
 
 As en bruker,
 I want å sette maks avstand fra min egen posisjon,
@@ -621,7 +663,9 @@ So that jeg finner steder som faktisk er i nærheten. Bør ha. Realiserer FR-23.
 **And** posisjonen beregnes og brukes kun i nettleseren — et nettverkskall med posisjon i sendes
 aldri noe sted (verifisert med nettverkstest, NFR-Privacy)
 
-### Story 3.7: Filtrer på stedstype *(Bør ha)*
+### Story 3.7: Filtrer på stedstype
+
+**Prioritet:** Bør ha
 
 As en bruker,
 I want å filtrere på stedstype (skisted, fjelltopp, by),
@@ -633,7 +677,9 @@ So that jeg kun ser stedstyper som er relevante for turen min. Bør ha. Realiser
 **When** jeg velger én eller flere stedstyper
 **Then** kombineres dette med de andre kriteriene (fortsatt OG)
 
-### Story 3.8: Filtrer på nysnø siste 24 timer *(Bør ha)*
+### Story 3.8: Filtrer på nysnø siste 24 timer
+
+**Prioritet:** Bør ha
 
 As en bruker,
 I want å filtrere på NVE sitt modellerte nysnø for siste døgn, ikke bare MET-prognosen fremover,
@@ -652,12 +698,16 @@ i grensesnittet hvilken kilde som er i bruk
 
 Brukeren kan se beste skivindu på stedssiden. *(v3: Snøvarsel og PWA er Ikke i v1.)*
 
-### Story 4.1: Gjør SnowFinder installerbar som PWA *(Ikke i v1, v3)*
+### Story 4.1: Gjør SnowFinder installerbar som PWA
+
+**Prioritet:** Ikke i v1, v3
 
 Tatt ut i forenklingen. Den var en forutsetning for push-varsler på iPhone, og snøvarsel er ute
 av v1. ID-en beholdes.
 
-### Story 4.2: Se beste skivindu på stedssiden *(Bør ha)*
+### Story 4.2: Se beste skivindu på stedssiden
+
+**Prioritet:** Bør ha
 
 As en skientusiast,
 I want å se de fire beste sammenhengende timene de neste 48 timene,
@@ -679,25 +729,35 @@ snøfall som slutter midt i vinduet, for få sammenhengende dagslystimer, mørke
 test mot samme funksjon som dataprogrammet bruker
 **And** demodatasettet får ett sted i mørketid når denne storyen bygges (FR-30)
 
-### Story 4.3: Registrer et snøvarsel uten konto *(Ikke i v1, v3)*
+### Story 4.3: Registrer et snøvarsel uten konto
+
+**Prioritet:** Ikke i v1, v3
 
 Tatt ut i forenklingen (FR-18). Den krevde en Edge Function og lagrede regler. ID-en beholdes.
 
-### Story 4.4: Motta og meld deg av et snøvarsel *(Ikke i v1, v3)*
+### Story 4.4: Motta og meld deg av et snøvarsel
+
+**Prioritet:** Ikke i v1, v3
 
 Tatt ut i forenklingen (FR-19). Den krevde Web Push og en push-leverandør. ID-en beholdes.
 
 ---
 
-## Epic 5: Gi tilbakemelding uten konto *(Ikke i v1, v3)*
+## Epic 5: Gi tilbakemelding uten konto
+
+**Prioritet:** Ikke i v1, v3
 
 Tatt ut i forenklingen. Ingen story i denne epicen bygges i v1.
 
-### Story 5.1: Send en tilbakemelding uten konto *(Ikke i v1, v3)*
+### Story 5.1: Send en tilbakemelding uten konto
+
+**Prioritet:** Ikke i v1, v3
 
 Tatt ut (FR-27, FR-28). Den krevde Supabase, Cloudflare Turnstile og lagring av fritekst. ID-en
 beholdes.
 
-### Story 5.2: Automatisk sletting av gamle tilbakemeldinger *(Ikke i v1, v3)*
+### Story 5.2: Automatisk sletting av gamle tilbakemeldinger
+
+**Prioritet:** Ikke i v1, v3
 
 Tatt ut (FR-29). Uten lagrede tilbakemeldinger er det ingenting å slette. ID-en beholdes.
