@@ -38,8 +38,9 @@ endringsrunder (PR #8–#13) har gjort dette:
 Gruppa har bestemt (7. oktober) at godkjenning fra et annet gruppemedlem ikke kreves før merge.
 Den som lager PR-en, kan merge den selv når sjekkene er grønne.
 
-**GitHub Actions er av.** Bare faglærer kan slå det på. Inntil da gjør pre-push-hooken jobben
-lokalt. Alle som har klonet repoet før #15, kjører `npm run prepare` én gang.
+**GitHub Actions er på.** CI (`ci.yml`) kjører på hver PR og ved push til `main`. Pre-push-hooken
+kjører de samme sjekkene lokalt. Alle som har klonet repoet før #15, kjører `npm run prepare` én gang.
+GitHub Pages er ikke slått på; det krever en administrator (faglærer).
 
 **Neste steg** (se også tabellen under):
 1. **Sally (`bmad-ux`)** lager wireframes for Utforsk, Stedsside og forklaringsside, kobler

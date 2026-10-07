@@ -23,3 +23,13 @@
 > Vil du at jeg kjører sprintplanleggingen nå, så steg 8d blir ferdig? — «ja»
 
 **Svar (kort):** Kjørte `bmad-sprint-planning`. Readiness-sjekken ga CONCERNS: UX-dokumentene er ikke oppdatert, og Story 1.11 trenger Actions og Pages. Aksel valgte «Fortsett». Første prøvekjøring viste at «(Må ha)» i overskriftene ble en del av nøklene, så merkingen ble flyttet til en egen linje. Deretter ble `sprint-status.yaml` skrevet og validert, og sprintplanen ble oppdatert.
+
+### 3
+> kan vi omgå dette: Story 1.11 krever at faglærer slår på GitHub Actions og Pages.
+
+**Svar (kort):** Claude sjekket repoet med `gh api`. Actions var allerede på, for CI hadde kjørt grønt på PR #18 og #19. Bare Pages mangler, og det krever admin. Claude foreslo tre veier: be faglærer slå på Pages, publiser bare datafila til grenen `data`, eller host fra en fork.
+
+### 4
+> gjør det. [...] fortsett fremdrift
+
+**Hva vi gjorde med det:** Rettet påstanden om at Actions er av i fremdriftsplan, sprintplan, epics og README. Story 1.11 fikk reserven med grenen `data` og `raw.githubusercontent.com`. Deretter ble PR #18 og #19 merget i den rekkefølgen.

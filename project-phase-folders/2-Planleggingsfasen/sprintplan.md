@@ -14,7 +14,7 @@ bygges, men disse punktene er kjent:
 | # | Funn | Hva vi gjør |
 |---|---|---|
 | 1 | UX-dokumentene (EXPERIENCE.md og DESIGN.md) er ikke oppdatert etter forenklingen. De har fortsatt tilbakemeldingssiden og PWA, og mangler demobanneret (UX-DR16). | Sally (`bmad-ux`) oppdaterer dem før UI-storyene i sprint 2 (1.7–1.10). |
-| 2 | Story 1.11 (planlagt jobb og publisering) krever at GitHub Actions og Pages er slått på, og det kan bare faglærer gjøre. | Be faglærer slå dem på. Til da kjøres `npm run data` lokalt, og pre-push-hooken erstatter CI. |
+| 2 | Story 1.11 publiserer til GitHub Pages, og Pages kan bare slås på av en administrator (faglærer). GitHub Actions er allerede på, og CI kjører på PR-er. | Be faglærer slå på Pages. Reserve: jobben publiserer bare datafila til grenen `data`, og appen leser den derfra (står i Story 1.11). |
 | 3 | Story 1.6 krever `banner-stale-data` på Utforsk og stedssiden, som først bygges i 1.7 og 1.9. | 1.6 bygges etter 1.9. Den er nå Bør ha. |
 | 4 | NFR-8 (skalerbarhet) har ingen story. | Allerede flagget i PRD §10. Ingen endring. |
 
@@ -28,7 +28,7 @@ Frister fylles inn i [milepæler](milepæler.md) når gruppa har satt datoer.
 | Sprint | Mål | Stories | Forutsetning |
 |---|---|---|---|
 | 1 | Prosjektet bygger, SnowScore-formelen og katalogen finnes i kode, appen kjører med demodata, og forklaringssiden er på plass | 1.1, 1.2, 1.4, 1.10, 2.1, 2.2, 2.3, 2.4 | Ingen |
-| 2 | Ekte data på kart, i liste og på stedssiden | 1.3, 1.5, 1.7, 1.8, 1.9, 1.11 | UX-dokumentene er oppdatert. For 1.11: Actions og Pages er slått på |
+| 2 | Ekte data på kart, i liste og på stedssiden | 1.3, 1.5, 1.7, 1.8, 1.9, 1.11 | UX-dokumentene er oppdatert |
 | 3 | Filter (Må ha først, deretter Bør ha) | 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8 | Sprint 2 er ferdig |
 | 4 | Bør ha: robusthet og skivindu | 1.6, 4.2 | Sprint 3 er ferdig |
 
@@ -50,7 +50,8 @@ De står i `sprint-status.yaml` med kommentaren «Ikke i v1» og bygges ikke.
 
 ## Dette må gruppa sette opp før sprint 2
 
-- [ ] Be faglærer slå på GitHub Actions og GitHub Pages for repoet (CI og Story 1.11)
+- [x] GitHub Actions er på (CI kjører på PR-er)
+- [ ] Be faglærer slå på GitHub Pages (Settings → Pages → Source: GitHub Actions). Ellers brukes reserven i Story 1.11
 - [ ] Sally (`bmad-ux`) oppdaterer UX-dokumentene etter forenklingen
 
 ## Arbeidsflyt per story

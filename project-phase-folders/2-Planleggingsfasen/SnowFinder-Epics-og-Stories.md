@@ -112,8 +112,9 @@ NFR-8: Skalerbarhet — katalog 300→1500 steder, "noen tusen" samtidige bruker
   sync av `theme.test.ts` (AD-9).
 - CI: `ci.yml` (lint/typecheck/unit/property/kontraktstester på hver PR), `e2e.yml`
   (Playwright-røyktest i demomodus) og `data.yml` (planlagt kjøring hver time + GitHub
-  Pages-deploy). Til GitHub Actions er slått på, kjører en lokal pre-push-hook sjekkene.
-- Hosting: GitHub Pages `[ASSUMPTION — en administrator må slå på Actions og Pages]`.
+  Pages-deploy). GitHub Actions er slått på for repoet (CI har kjørt på PR-er siden 2026-10-07).
+- Hosting: GitHub Pages `[ASSUMPTION — en administrator må slå på Pages]`. Reserve uten Pages:
+  datafila publiseres til grenen `data` og leses fra `raw.githubusercontent.com` (Story 1.11).
 
 ### UX-designkrav
 
@@ -372,19 +373,21 @@ So that kartet viser ferske prognoser uten at noen kjører noe for hånd. Realis
 
 **Acceptance Criteria:**
 
-**Given** dataprogrammet fra Story 1.5 og at en administrator har slått på GitHub Actions og
-Pages
+**Given** dataprogrammet fra Story 1.5
 **When** `.github/workflows/data.yml` kjører hver time (og ved merge til `main`)
 **Then** kjøres `npm run data`, appen bygges med den nye `latest.json`, og resultatet
 publiseres til GitHub Pages
+**And** er Pages ikke slått på, publiserer jobben i stedet bare `latest.json` til grenen
+`data` (`permissions: contents: write`), og `src/lib/data/` kan lese den fra
+`raw.githubusercontent.com`. Da får en lokalt kjørt app ferske data hver time uten hosting
 **And** jobben bruker en `concurrency`-gruppe uten avbrudd, så bare én kjøring går om gangen
 **And** produksjonsbygget feiler hvis kjøringen ikke ga `latest.json`, slik at forrige
 publisering blir stående og produksjon aldri viser demodata (AD-10)
 **And** en kjøring som ikke publiserer, laster opp kvalitetsrapporten som artifact og vises som
 rød i Actions-fanen (NFR-6)
 
-`[v3: Ny story fra endringsrunde 2. Krever at Actions og Pages er slått på; til da kan
-`npm run data` kjøres lokalt.]`
+`[v3: Ny story fra endringsrunde 2. Actions er allerede på. Pages krever en administrator
+(faglærer); reserveløsningen over trenger verken admin eller hemmeligheter.]`
 
 ### Story 1.7: Se Norgeskartet med fargelagte steder
 
