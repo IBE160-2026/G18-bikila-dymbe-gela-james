@@ -4,18 +4,26 @@ status: draft
 sources:
   - project-phase-folders/2-Planleggingsfasen/SnowFinder-PRD.md
   - project-phase-folders/1-Oppstartsfasen/SnowFinder-Produktbrief.md
-updated: 2026-09-27
+  - project-workspace/planning-artifacts/sprint-change-proposal-2026-10-07.md
+  - project-workspace/planning-artifacts/sprint-change-proposal-2026-10-07-forenkling.md
+updated: 2026-10-07
 ---
 
 # SnowFinder — Experience Spine
 
+**v2 (2026-10-07):** Oppdatert etter forenklingen. Snøvarsel, tilbakemelding og installerbar app
+(PWA) er «Ikke i v1». Nytt: demobanneret og panelet for datakvalitet på forklaringssiden.
+Banneret for gamle data vises når dataene er eldre enn normalt, ikke ved en kretsbryter.
+
 ## Foundation
 
-Responsivt web-PWA, mobil og desktop likestilt (ikke mobil-først med desktop som ettertanke —
-brief og PRD er eksplisitte på at begge er primære bruksmåter). Ingen UI-system arvet (React +
-egen komponentsone per `SnowFinder-DESIGN.md` — arkitekturens stack har ikke låst
-shadcn/MUI/Tailwind). Installerbar som PWA (nødvendig for push-varsler på iPhone, PRD FR-18/19).
+Responsiv webapp (statiske filer), mobil og desktop likestilt (ikke mobil-først med desktop som
+ettertanke — brief og PRD er eksplisitte på at begge er primære bruksmåter). Ingen UI-system
+arvet (React + egen komponentsone per `SnowFinder-DESIGN.md` — arkitekturens stack har ikke låst
+shadcn/MUI/Tailwind). *(v2: Ikke installerbar som PWA i v1, siden push-varsler er tatt ut.)*
 Ingen brukerkonto noe sted — hver økt er anonym; «innlogget tilstand» finnes ikke i IA-en under.
+Appen leser én publisert datafil og skriver ingenting. Uten ferske data (rent klon) vises et
+demodatasett, tydelig merket.
 
 ## Informasjonsarkitektur
 
@@ -23,12 +31,13 @@ Ingen brukerkonto noe sted — hver økt er anonym; «innlogget tilstand» finne
 |---|---|---|
 | Utforsk (kart) | `/` (standard) | Norgeskart fargelagt etter SnowScore, primær inngang |
 | Utforsk (liste) | `/` med `visning=liste`, eller «Vis som liste»-lenke fra kartet | Samme steder/filter som kartet, tastaturnavigerbar liste — fullverdig alternativ, ikke en degradert reserve (PRD FR-13) |
-| Stedsside | Trykk på kartmarkør, listerad, eller direkte delt lenke `/sted/:id` | Full poengsum, delpoeng, rådata, beste skivindu, snøvarsel-registrering |
-| Slik beregner vi SnowScore | Toppnavigasjon, eller lenke fra ethvert score-badge | Forklaring, regneeksempel, «prøv selv»-kalkulator, datakilder |
-| Tilbakemelding | Toppnavigasjon («Tilbakemelding») | Skjema uten konto, når som helst |
+| Stedsside | Trykk på kartmarkør, listerad, eller direkte delt lenke `/sted/:id` | Full poengsum, delpoeng, rådata, beste skivindu (Bør ha) |
+| Slik beregner vi SnowScore | Toppnavigasjon, eller lenke fra ethvert score-badge | Forklaring, regneeksempel, datakilder og begrensninger, datakvalitet for siste kjøring, «prøv selv»-kalkulator (Bør ha) |
+
+*(v2: Flaten «Tilbakemelding» er Ikke i v1.)*
 
 **Navigasjon:** Fast toppnavigasjon på alle bredder (ikke bunn-faner) — «SnowFinder» (til
-Utforsk) · «Slik beregner vi SnowScore» · «Tilbakemelding». På mobil kollapser dette til en
+Utforsk) · «Slik beregner vi SnowScore». På mobil kollapser dette til en
 enkel meny (☰), men Utforsk-flaten selv (kart/liste-vekslingen) ligger alltid rett under
 navigasjonen, aldri bak et ekstra trykk — det er forsiden.
 
@@ -53,7 +62,8 @@ Rolig, presis, aldri alarmerende eller selgende — SnowFinder lover aldri snø 
 | «Viser siste kjente data fra kl. 14:00 — MET svarer ikke nå» | «Feil: API timeout» |
 | «Ufullstendige data for dette stedet» | Vise 0 eller en gjettet poengsum |
 | «Mørketid — vindu vist uten dagslys» | La skivindu-kortet forsvinne stille |
-| «Varsel slettet.» (etter avmelding) | Ingen bekreftelse i det hele tatt |
+| «Demodata – ikke ekte prognoser» | Vise demodata uten merking, som om de var ekte |
+| «Siste kjøring: 297 av 300 steder gyldige, kl. 14:05» | «Datakvalitet: OK» uten tall |
 
 ## Komponentmønstre
 
@@ -67,9 +77,11 @@ Atferd. Visuelle spesifikasjoner ligger i `SnowFinder-DESIGN.md.Components`.
 | Filterpanel | Utforsk (kart + liste) | Slidere for nysnø/vind/temperatur (Må ha) + sol/avstand/stedstype (Bør ha). Antall treff oppdateres live (`aria-live="polite"`) mens sliderne justeres. Nullstill-knapp alltid synlig når minst ett filter avviker fra standard. |
 | Hurtigvalg-chip | Filterpanel | «Pudderdag», «Sol etter snøfall» — trykk fyller filteret og oppdaterer resultatet i samme handling, ingen bekreftelsesdialog. |
 | Beste skivindu-kort | Stedsside | Vises kun når vinduet finnes (Bør ha); mørketid-fallback-tekst når ingen dagslystimer finnes i perioden. |
-| Snøvarsel-knapp/skjema | Stedsside | «Varsle meg» åpner et lite inline-skjema (terskelverdi + enhet), ikke en ny side. Etter registrering: knappen blir «Følger dette stedet» med en tydelig avmeldingslenke. |
-| Tilbakemeldingsskjema | Tilbakemelding-flaten | Kategori (radio/select) + fritekst (tegnteller, maks 1000). Advarsel om personopplysninger vises statisk over feltet, ikke som popup. |
-| Kalkulator («prøv selv») | Forklaringsside | To numeriske inndata (nedbør, temperatur) → live-oppdatert A/B/C + sum, samme modul som pipelinen (PRD FR-10). |
+| Kalkulator («prøv selv») | Forklaringsside | To numeriske inndata (nedbør, temperatur) → live-oppdatert A/B/C + sum, samme modul som dataprogrammet (PRD FR-10, Bør ha). |
+| Demobanner | Alle flater, øverst under navigasjonen | Vises når datafilen er demodata (`mode: "demo"`): «Demodata – ikke ekte prognoser». Kan ikke lukkes, men blokkerer ingenting. Lenker til README-avsnittet om ekte data. |
+| Datakvalitetspanel | Forklaringsside | Viser siste publiserte kjørings kvalitetsrapport i klartekst: tidspunkt, antall steder, andel gyldige, avviste svar per kilde og antall med ufullstendige data (NFR-DQ2). Ingen grafer kreves; en enkel tabell eller liste. |
+
+*(v2: Snøvarsel-knapp/-skjema og tilbakemeldingsskjema er Ikke i v1.)*
 
 ## Tilstandsmønstre
 
@@ -78,12 +90,12 @@ Atferd. Visuelle spesifikasjoner ligger i `SnowFinder-DESIGN.md.Components`.
 | Laster (kaldstart) | Kart/liste | Skjelett-kort/-markører i `surface-sunken`, ingen spinner-only-skjerm. |
 | Null treff | Kart/liste | «Ingen treff. Prøv {foreslått lempet krav} i stedet» — aldri en tom flate uten handling. |
 | Utdatert data (3–12 t) | Stedsside, kort, liste | Liten `meta`-tekst «Utdatert» + tidsstempel, ingen blokkering av visning. |
-| Data for gammel (>12 t) | Kart/liste/varsler | Stedet vises ikke i det hele tatt (fjernet fra resultater, jf. NFR-3) — ikke vist gråtonet, faktisk fjernet, så brukeren aldri handler på for gammel info. |
-| Datakilde nede | Global banner | `banner-stale-data` øverst: «Viser siste kjente data fra kl. XX:XX». Blokkerer ikke bruk av resten av siden. |
+| Data for gammel (>12 t) | Kart/liste/stedsside | Stedet vises ikke i det hele tatt (fjernet fra resultater, jf. NFR-3) — ikke vist gråtonet, faktisk fjernet, så brukeren aldri handler på for gammel info. |
+| Gamle data | Global banner | `banner-stale-data` øverst når de nyeste dataene er eldre enn normalt (over 90 min, NFR-3), for eksempel fordi en datakilde er nede: «Viser siste kjente data fra kl. XX:XX». Blokkerer ikke bruk av resten av siden. *(v2: utløses av dataalder, ikke av en kretsbryter.)* |
+| Demodata | Global banner | Demobanneret (se Komponentmønstre). Alder regnes mot demodatasettets egen «nå», så «Utdatert» og «fjernet» oppfører seg likt hver gang. |
 | Ufullstendige data | Stedsside, kort | Tekst «Ufullstendige data» i stedet for et score-badge — aldri en tallverdi som ser reell ut. |
 | Mørketid (skivindu) | Stedsside | «Mørketid – vindu vist uten dagslys», vinduet beregnes blant alle timer. |
-| Skjemafeil (feedback/varsel) | Feedback, snøvarsel | Feilmelding rett under feltet, programmatisk koblet (`aria-describedby`), fokus flyttes til første feil ved innsending. |
-| Suksess (varsel/tilbakemelding) | Stedsside, Tilbakemelding | Kort, konkret bekreftelse (se Tone-tabell) — ingen modal, ingen konfetti. |
+| Ugyldig inndata | Kalkulator, filterfelt | Feilmelding rett under feltet, programmatisk koblet (`aria-describedby`). |
 | Fokus | Alle flater | Synlig fokusring i `{colors.accent}` på alt interaktivt — aldri `outline: none` uten erstatning. |
 
 ## Interaksjonsprimitiver
@@ -122,15 +134,11 @@ listevisningen, som **er** fullt AA).
   nettbrett-spesifikk layout — nettbrett bruker desktop-layouten skalert ned.
 - **Mobil (<768px):** Kart/liste fyller skjermen under toppnavigasjonen. Filterpanelet ligger i
   et bunn-ark som starter delvis synlig (viser aktive filterverdier som chips) og kan dras opp
-  til full høyde. Stedsside er én kolonne, beste skivindu-kort og snøvarsel stables under
-  hverandre.
+  til full høyde. Stedsside er én kolonne; beste skivindu-kort ligger under delpoengene.
 - **Desktop (≥768px):** Filterpanelet er et fast venstre sidepanel (ikke bunn-ark), kart/liste
-  fyller resten. Stedsside bruker to kolonner (rådata + delpoeng til venstre, beste skivindu og
-  snøvarsel til høyre).
-- **PWA:** Installerbar fra både mobil og desktop; installasjons-prompt vises kun etter at
-  brukeren har besøkt en stedsside minst én gang (verdi må oppleves før install-tilbudet), aldri
-  ved første sideåpning. `[ASSUMPTION: install-triggeret er ikke spesifisert i PRD/brief — dette
-  er et rimelig, ikke-påtrengende standardvalg som kan justeres.]`
+  fyller resten. Stedsside bruker to kolonner (rådata + delpoeng til venstre, beste skivindu til
+  høyre).
+- **PWA:** *(Ikke i v1, v2.)* Ingen installasjon eller install-prompt.
 
 ## Nøkkelflyter
 
@@ -148,7 +156,9 @@ listevisningen, som **er** fullt AA).
 Feil-gren: Ingen treff ved steg 2 → banneret foreslår «Prøv vind under 8 m/s i stedet» i stedet
 for en tom flate.
 
-### Flyt 2 — Aksel følger et sted og får varsel (realiserer UJ-2)
+### Flyt 2 — Aksel følger et sted og får varsel (UJ-2) *(Ikke i v1, v2)*
+
+Beholdt for historikkens skyld. Snøvarsel er tatt ut av v1, så denne flyten bygges ikke.
 
 1. Aksel er på Oppdal sin stedsside. Trykker «Varsle meg».
 2. Inline-skjema: setter terskel 15 mm nysnø. Bekrefter.
@@ -173,9 +183,22 @@ gjentatt varsling samme dag selv om pipelinen kjører hver time).
 6. **Klimaks:** Hun havner på nøyaktig samme stedsside som en kart-bruker ville gjort — ingen
    informasjon eller funksjonalitet er tapt ved å velge listen.
 
+### Flyt 4 — Sensor åpner SnowFinder fra et rent klon (realiserer FR-30)
+
+1. Sensor kloner repoet og kjører `npm ci && npm run dev` etter README.
+2. Utforsk åpnes med kartet og demobanneret «Demodata – ikke ekte prognoser» øverst.
+3. Hun ser ett sted merket «Ufullstendige data» og ett merket «Utdatert», slik demodatasettet er
+   laget for.
+4. Hun åpner «Slik beregner vi SnowScore» og ser datakvaliteten for demokjøringen.
+5. **Klimaks:** Hun kjører `npm run data`, laster siden på nytt, og banneret er borte —
+   samme app, nå med ferske, ekte prognoser.
+
 ## Åpne spørsmål (UX)
 
 1. Bør «Vis som liste» være en fane ved siden av kartet, eller en ren lenke/toggle over det?
    Spinen antar toggle (enklere IA, samme rute) — bekreft med Winston/Amelia før bygging.
 2. Nøkkelskjerm-mockuper er ikke generert i denne runden — vurder en oppfølgingsøkt for
    kart/liste-flaten spesifikt, siden layout der er mer kritisk enn tabellene her fanger.
+3. *(v2)* Fra endringsrunde 1 står fortsatt U1 (wireframes for nøkkelskjermene), U2 (kursets
+   skjermkrav koblet til SnowFinder) og U3 (brukertestplan med SUS). Koblingen i U2 må gjøres om,
+   fordi «profil → snøvarsel» og «innsjekking → tilbakemelding» er tatt ut.
