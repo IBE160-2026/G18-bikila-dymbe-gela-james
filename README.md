@@ -24,6 +24,16 @@ npm test            # kjør enhetstestene
 npm run build       # bygg produksjonsversjonen
 ```
 
+### Stedskatalogen
+
+`data/catalog.json` er lista over de ca. 300 stedene appen viser (skisteder, fjelltopper og byer). Den er committet og endres bare når vi bygger den på nytt for hånd:
+
+```sh
+npm run catalog     # bygg data/catalog.json på nytt (krever nett)
+```
+
+Skriptet i `scripts/build-catalog/` henter skisteder fra OpenStreetMap og slår opp fjelltoppene og byene i `scripts/build-catalog/seeds.json` hos Kartverket, sammen med høyden. Resultatet sjekkes mot skjemaet `Catalog` i `shared/contracts/catalog.ts` før fila skrives. Feiler en kilde, eller finnes et navn i `seeds.json` ikke, avsluttes skriptet med feil og den gamle fila står urørt. Overpass (OpenStreetMap) er ofte opptatt; da prøver skriptet igjen og bytter speil, og ellers kan du kjøre det på nytt senere. Se over endringene i `data/catalog.json` før du committer dem.
+
 ### Sjekk før push
 
 `npm ci` (eller `npm install`) slår på en git-hook, `.githooks/pre-push`, som kjøres hver gang du pusher:

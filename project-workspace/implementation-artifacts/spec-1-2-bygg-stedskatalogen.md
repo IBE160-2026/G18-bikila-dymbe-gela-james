@@ -2,7 +2,8 @@
 title: 'Story 1.2: Bygg stedskatalogen'
 type: 'feature'
 created: '2026-10-07'
-status: 'ready-for-dev'
+status: 'done'
+baseline_commit: 'abf88dd2f9fb83ed84e0d0fef4d6f6fc28a963fd'
 route: 'dispatch'
 review_loop_iteration: 0
 context:
@@ -66,20 +67,56 @@ context:
 ## Tasks & Acceptance
 
 **Execution:**
-- [ ] `package.json`, `package-lock.json` -- legg til `zod` 4.6.5, `tsx` 4.23.13 og scriptet `catalog`.
-- [ ] `eslint.config.js`, `tsconfig.json`, `tsconfig.scripts.json`, `vite.config.ts` -- Node-globaler, typesjekk og testdekning for `scripts/`.
-- [ ] `shared/contracts/catalog.ts` -- Zod `Sted`-for-katalog (`CatalogEntry`) og `Catalog` (`{ generert: ISO-UTC, steder: CatalogEntry[] }`), med unike `id`, 4-desimals-sjekk og Norge-boks (lat 57,9–71,2, lon 4,5–31,2). Bare `zod`-import (AD-6).
-- [ ] `shared/contracts/catalog.test.ts` -- gyldig katalog godtas; duplikat-id, 5 desimaler, utenfor boks og ukjent type avvises.
-- [ ] `scripts/build-catalog/seeds.json` -- manuelt kvalitetssikret liste: `{ navn, type, kommune }` for fjelltopper og byer, pluss `ekskluder`/`inkluder` for OSM-skisteder.
-- [ ] `scripts/build-catalog/` (`index.ts`, `osm.ts`, `kartverket.ts`, `build.ts`) -- henting med nye forsøk/speil, normalisering, slug-id, avrunding, dedup, validering, atomisk skriving, oppsummering til konsollen. Ren logikk i `build.ts` uten nettverk.
-- [ ] `scripts/build-catalog/build.test.ts` -- dekker matrisens rader med innebygde svar.
-- [ ] `data/catalog.json` -- kjør `npm run catalog` og commit resultatet.
-- [ ] `README.md` -- kort avsnitt om `npm run catalog`.
+- [x] `package.json`, `package-lock.json` -- legg til `zod` 4.6.5, `tsx` 4.23.13 og scriptet `catalog`.
+- [x] `eslint.config.js`, `tsconfig.json`, `tsconfig.scripts.json`, `vite.config.ts` -- Node-globaler, typesjekk og testdekning for `scripts/`.
+- [x] `shared/contracts/catalog.ts` -- Zod `Sted`-for-katalog (`CatalogEntry`) og `Catalog` (`{ generert: ISO-UTC, steder: CatalogEntry[] }`), med unike `id`, 4-desimals-sjekk og Norge-boks (lat 57,9–71,2, lon 4,5–31,2). Bare `zod`-import (AD-6).
+- [x] `shared/contracts/catalog.test.ts` -- gyldig katalog godtas; duplikat-id, 5 desimaler, utenfor boks og ukjent type avvises.
+- [x] `scripts/build-catalog/seeds.json` -- manuelt kvalitetssikret liste: `{ navn, type, kommune }` for fjelltopper og byer, pluss `ekskluder`/`inkluder` for OSM-skisteder.
+- [x] `scripts/build-catalog/` (`index.ts`, `osm.ts`, `kartverket.ts`, `build.ts`) -- henting med nye forsøk/speil, normalisering, slug-id, avrunding, dedup, validering, atomisk skriving, oppsummering til konsollen. Ren logikk i `build.ts` uten nettverk.
+- [x] `scripts/build-catalog/build.test.ts` -- dekker matrisens rader med innebygde svar.
+- [x] `data/catalog.json` -- kjør `npm run catalog` og commit resultatet.
+- [x] `README.md` -- kort avsnitt om `npm run catalog`.
 
 **Acceptance Criteria:**
 - Given et rent klon, when `npm ci && npm run lint && npm run typecheck && npm test && npm run build` kjøres, then alt går grønt uten nettverk.
 - Given `data/catalog.json`, when den parses med `Catalog`, then den er gyldig og har 250–350 steder.
 - Given kodebasen, when man søker etter importer av `scripts/build-catalog`, then finnes ingen utenfor mappen.
+
+## Implementation Notes
+
+- La til `http.ts` (User-Agent, nye forsøk, samtidighetsgrense) og oppslag i Kartverkets `kommuneinfo` for OSM-steder med lik slug.
+- `navneobjekttype`-filteret i stedsnavn-API-et gir ingen treff for f.eks. Molde som `By`, så typen filtreres i koden.
+- Overpass-området for Norge inkluderer Svalbard; skisteder utenfor Norge-boksen forkastes før rangering.
+- Skriptet nekter å skrive hvis antallet havner utenfor 250–350.
+- Noen steder har Kartverkets skrivemåte (Trysil sentrum heter «Innbygda»).
+
+## Spec Change Log
+
+## Review Triage Log
+
+**Gjennomgang 2026-10-07** (Blind Hunter, Edge Case Hunter, Verification Gap). Ingen intent_gap eller bad_spec, så ingen loopback.
+
+| # | Lag | Funn | Verdikt | Rute | Begrunnelse |
+|---|---|---|---|---|---|
+| 1 | blind | OSM-utvalget har stadioner, hoppbakker, skileik, en skiklubb og et sommerskisenter, mens Kvitfjell, Oppdal, Myrkdalen, Narvikfjellet, Kongsberg, Gaustablikk, Sjusjøen og Bjorli mangler | medium | patch | Bekreftet i `data/catalog.json`. Kurateringen er laget for dette (`ekskluder`/`inkluder` i `seeds.json`); lista må fylles og skriptet kjøres på nytt. |
+| 2 | blind, edge | Samme anlegg to ganger under ulike navn (Alphapark/Voss Resort 0,45 km, Ringkollen alpinbakke/skistadion 0,51 km) | medium | patch | Bekreftet: to OSM-par under 1 km. OSM-dedup krever likt navn. Par på tvers av typer (Geilo by / Ski Geilo) er forskjellige stedstyper og beholdes. |
+| 3 | blind, edge | Fjelltopp eller by fra `seeds.json` som avvises i `finalize` (høyde/boks), forsvinner med bare en konsollinje | medium | patch | Bekreftet i `index.ts`: bare `printRejections`. Strider mot «Navn ikke funnet → ingen fil skrives» og README. |
+| 4 | blind, edge | Skisteder som avvises etter utvalget, fylles ikke opp | low | reject | Skjer ikke i dagens kjøring (150 av 150); ville kreve reserveliste. |
+| 5 | blind | Id-er er ikke stabile over gjenoppbygginger (suffiks bare ved kollisjon i samme kjøring) | low | reject | Ny bygging er manuell og id-endringer synes i PR-diffen; ingen bruker id-er ennå. Løsningen krever ny mekanisme. |
+| 6 | blind, edge, vg | `fetchKommune` sluker alle feil, ikke bare 404 | low | patch | Bekreftet: bar `catch`. Liten rettelse: kast videre alt annet enn HTTP 404. |
+| 7 | blind, edge | Navnesøk henter bare første side (100 treff) | low | reject | Feiler høylytt med «ingen treff» for seeden; alle dagens seeds løses. |
+| 8 | blind | `hoyde` betyr ulikt for skisted (terreng i områdets senter), topp og by | low | patch | Ikke dokumentert noe sted; en kommentar på feltet i `catalog.ts` holder. |
+| 9 | blind | Status i spesifikasjon og `sprint-status.yaml` er ulike, og KI-loggen mangler | false | reject | Begge oppdateres i steg 5 av arbeidsflyten, før commit. |
+| 10 | blind, vg | `index.ts` (fatale stier, atomisk skriving) har ingen tester | medium | defer | Krever omskriving til `run(deps, paths)`. Skriptet kjøres for hånd og resultatet gjennomgås i PR. |
+| 11 | vg | Ingen test sjekker den committede `data/catalog.json` mot `Catalog` og 250–350 | medium | patch | Bekreftet: ingen test leser fila. |
+| 12 | blind, edge | `slugify` mangler đ/ŋ/ŧ, og regex-en har usynlige tegn | low | patch | Direkte rettelse: eksplisitte erstatninger og `̀-ͯ`. |
+| 13 | blind | `shared/**` får nettleser-globaler i ESLint | low | patch | Direkte rettelse i `eslint.config.js`. |
+| 14 | vg | Ingenting håndhever at bare `scripts/build-catalog/` importerer skriptet | low | patch | En `no-restricted-imports`-regel er en direkte konfig-rettelse. |
+| 15 | edge | Samisk/kvensk kommunenavn: `.at(-1)` gir feil del for f.eks. Hamarøy | low | reject | Påvirker bare suffiks ved kollisjon; sjelden og kosmetisk. |
+| 16 | edge | Suffiksert id kan fortsatt kollidere | false | reject | `Catalog.parse` kaster høylytt; det er riktig oppførsel. |
+| 17 | edge | Treff uten `representasjonspunkt` gir TypeError | false | reject | Høylytt feil, ingen stille skade; API-et har alltid feltet i observerte svar. |
+| 18 | blind | Navn i både `inkluder` og `ekskluder` forsvinner stille | low | reject | Usannsynlig; krever ny vakt. |
+| 19 | blind | `getJson` tar ikke med svarteksten ved 4xx | low | reject | Kosmetisk; status og URL står i feilen. |
 
 ## Design Notes
 
