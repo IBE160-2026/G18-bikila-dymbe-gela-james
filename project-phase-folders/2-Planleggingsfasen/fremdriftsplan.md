@@ -30,12 +30,16 @@ endringsrunder (PR #8–#13) har gjort dette:
 
 **Story 1.1** (prosjektskjelett, CI-fil og design-tokens) er bygget, gjennomgått og merget (PR #10).
 
-**Åpne PR-er som et annet gruppemedlem enn Joseph må godkjenne:**
-- #14: oppdatert `AGENTS.md` (regler for agentene, inkludert «et annet gruppemedlem godkjenner før merge»);
-- #15: lokal pre-push-hook som kjører lint, typesjekk, tester og bygg før hver push, og avviser push til `main`.
+**Også merget:**
+- #14: oppdatert `AGENTS.md` (regler for agentene);
+- #15: lokal pre-push-hook som kjører lint, typesjekk, tester og bygg før hver push, og avviser push til `main`;
+- #16: denne planen.
+
+Gruppa har bestemt (7. oktober) at godkjenning fra et annet gruppemedlem ikke kreves før merge.
+Den som lager PR-en, kan merge den selv når sjekkene er grønne.
 
 **GitHub Actions er av.** Bare faglærer kan slå det på. Inntil da gjør pre-push-hooken jobben
-lokalt. Etter at #15 er merget, kjører alle `npm run prepare` én gang.
+lokalt. Alle som har klonet repoet før #15, kjører `npm run prepare` én gang.
 
 **Neste steg** (se også tabellen under):
 1. **Sally (`bmad-ux`)** lager wireframes for Utforsk, Stedsside og forklaringsside, kobler
@@ -80,12 +84,10 @@ arkitekturen før PRD-en, og Winston går gjennom den på nytt i steg 6.
   stedsside, filter og forklaringsside.
 - **Stories lages etter arkitektur og UX**, slik at hver story kan vise til både krav, design
   og tekniske regler.
-- **Amelia bygger én story om gangen** på egen branch, med Pull Request og godkjenning fra et
-  gruppemedlem.
+- **Amelia bygger én story om gangen** på egen branch, med Pull Request og grønne sjekker.
 
 ## Regler for alle
 
 - Logg promptene fra hver KI-økt i [`ai-log/prompter/`](../../ai-log/prompter/).
 - Skriv et møtereferat etter hvert gruppemøte.
 - Ingen kode går rett inn i `main`. Alt går via Pull Request med grønne tester.
-- Et annet gruppemedlem enn den som laget PR-en godkjenner før merge.

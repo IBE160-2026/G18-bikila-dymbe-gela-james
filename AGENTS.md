@@ -9,7 +9,6 @@ Gruppeprosjekt i IBE160 ved Høgskolen i Molde: en statisk webapp som rangerer ~
 
 - Utfør hvert oppdrag gjennom riktig BMAD-skill, aldri ad hoc: kode og rettinger → `bmad-build`; nye eller endrede krav og omfang → `bmad-correct-course`; arkitektur → `bmad-architecture`; UX → `bmad-ux`; denne filen → `bmad-project-context`.
 - Aldri commit eller push til `main`. Hver story får egen gren `story/<story-id>` og leveres som PR med grønne sjekker.
-- Et annet gruppemedlem enn den som laget PR-en godkjenner (Approve i GitHub) før merge. Agenter merger aldri en PR selv.
 - Logg hver vesentlig KI-økt: én rad i `ai-log/logg.md` (dato, fase, hvem, verktøy/modell, oppgave, endrede/avviste forslag, godkjent av), og promptene ordrett i `ai-log/prompter/ÅÅÅÅ-MM-DD-<navn>-<tema>.md`.
 - Svar og skriv nye dokumenter på norsk. Kode, kommentarer og navn i koden skrives på engelsk. Eksisterende engelske dokumenter (arkitekturen, story-specs) redigeres på engelsk.
 - Ikke legg til database, brukerkontoer, snøvarsel/push, tilbakemeldingsskjema eller andre tjenester som krever konto eller nøkkel. De er «Ikke i v1» etter faglærers råd; et slikt ønske går til `bmad-correct-course`.
@@ -66,8 +65,8 @@ Kort og bindende. Detaljer om krav, arkitektur og design står i brief, PRD, ark
 - Én grein per oppgave: `story/<nr>-<kort-navn>` for kode og `docs/<tema>` for dokumentasjon og planlegging. Greinen slettes etter merge.
 - Små commits på norsk i imperativ («Legg til …», «Fiks …»), med story-nummer når det finnes.
 - Alt leveres som Pull Request. Beskrivelsen lenker til story og krav, og sier hva som er testet og hva som er utsatt.
-- **Et annet gruppemedlem godkjenner (Approve) før merge.** Agenter merger aldri selv.
-- Kodegjennomgang i to lag: først Amelias KI-gjennomgang i `bmad-build` (funn i spec-ens Review Triage Log), så gruppemedlemmets gjennomgang i PR-en.
+- Den som lager PR-en kan merge den selv når sjekkene er grønne. Gruppemedlemmer kan gjerne kommentere PR-er, men godkjenning kreves ikke (gruppas beslutning 2026-10-07).
+- Kodegjennomgang i to lag: først Amelias KI-gjennomgang i `bmad-build` (funn i spec-ens Review Triage Log), deretter eventuelle kommentarer fra gruppemedlemmer i PR-en.
 
 ## 3. Kontinuerlig integrasjon
 
@@ -80,10 +79,10 @@ Kort og bindende. Detaljer om krav, arkitektur og design står i brief, PRD, ark
 - **Enhetstester** (Vitest, ved siden av koden): SnowScore med egenskapstester og fasittabell, filteret med fasittabell, og dataprogrammets steg.
 - **Integrasjonstester:** kontraktstester mot lagrede MET- og NVE-svar, og dataprogrammet kjørt på disse (publiserer bare ved minst 95 % gyldige, viser siste gyldige data ved nedetid).
 - **Akseptansetester:** hver story har Given/When/Then-kriterier med tester som kjører, pluss røyktesten og en brukertest med minst fem personer.
-- **Ansvar:** den som bygger en story skriver testene; den som godkjenner PR-en sjekker at testene tester det kriteriene sier.
+- **Ansvar:** den som bygger en story skriver testene og sjekker at de tester det kriteriene sier, før merge.
 
 ## 5. Åpent for gruppa
 
-- Be faglærer slå på GitHub Actions og grenbeskyttelse for `main` (krev én godkjenning før merge).
+- Be faglærer slå på GitHub Actions.
 - Kursets skjermkrav (pålogging, profil, innsjekking, feed, arrangementer) kobles til SnowFinder av Sally (`bmad-ux`) – legg aldri til kontoer eller sosiale funksjoner selv.
 - `CONTRIBUTING.md` ligger lokalt hos Joseph og overlapper denne filen; avgjør om den skal inn eller slettes.

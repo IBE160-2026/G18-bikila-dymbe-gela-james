@@ -711,9 +711,9 @@ ID-ene er beholdt fra v1.
   hvis CI-tiden tillater det.]` Validerer FR-7.
 - **SM-7 (Tilgjengelighet):** Automatisert axe-sjekk i CI rapporterer null kritiske
   WCAG 2.1 AA-brudd på filter, stedsside, forklaringsside og listevisning. Validerer FR-13/NFR-7.
-- **SM-8 (Sporbarhet):** 100 % av endringer i hovedgrenen kommer via godkjente Pull Requests
-  (verifiserbart i git-historikk og med grenbeskyttelse). Validerer prosesskravet i AGENTS.md og
-  CONTRIBUTING.md.
+- **SM-8 (Sporbarhet):** 100 % av endringer i hovedgrenen kommer via Pull Requests (verifiserbart
+  i git-historikken). *(v3: krav om godkjenning fra et annet gruppemedlem er fjernet etter gruppas
+  beslutning 2026-10-07.)* Validerer prosesskravet i AGENTS.md.
 
 ### 9.2 Måles manuelt eller under demo (B)
 
