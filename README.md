@@ -11,6 +11,16 @@ Repoet inneholder gruppens applikasjon og dokumentasjon av utvikling, testing og
 - Kelly B Gela
 - Joseph James
 
+## Kom i gang
+
+Krever Node 24 eller nyere.
+
+```sh
+npm install   # installer avhengighetene
+npm run dev   # start utviklingsserveren
+npm test      # kjør enhetstestene
+```
+
 ## Dokumentasjon
 
 Prosjektdokumentasjonen ligger i [`project-phase-folders/`](project-phase-folders/), organisert

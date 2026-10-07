@@ -29,14 +29,14 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 # - Retrospective appends its action items to action_items; the status view surfaces open ones
 generated: 09-27-2026 12:00
-last_updated: 09-27-2026 14:00
+last_updated: 10-07-2026 12:00
 project: G18-bikila-dymbe-gela-james
 project_key: NOKEY
 tracking_system: file-system
 story_location: project-workspace/implementation-artifacts
 development_status:
-  epic-1: backlog
-  1-1-prosjekt-skaffolding-og-ci-skjelett: ready-for-dev
+  epic-1: in-progress
+  1-1-prosjekt-skaffolding-og-ci-skjelett: in-progress
   1-2-bygg-stedskatalogen: backlog
   1-3-hent-og-valider-værdata-hver-time: backlog
   1-4-bygg-den-delte-snowscore-modulen: backlog
