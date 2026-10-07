@@ -1,2 +1,5 @@
 # Git hooks are shell scripts and must keep LF line endings on every OS
 .githooks/* text eol=lf
+# Generated data files are compared byte for byte (npm run data:demo is deterministic)
+public/data/*.json text eol=lf
+tests/contract/fixtures/** text eol=lf

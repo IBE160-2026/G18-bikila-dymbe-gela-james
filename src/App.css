@@ -9,14 +9,64 @@ body {
   line-height: var(--typography-body-line-height);
 }
 
-.app {
-  padding: var(--spacing-gutter);
+.app-header {
+  padding: var(--spacing-3) var(--spacing-gutter);
+  background: var(--color-surface-raised);
+  border-bottom: 1px solid var(--color-border-hairline);
 }
 
-.app h1 {
+.app-title {
   margin: 0;
   font-family: var(--typography-display-font-family);
   font-size: var(--typography-display-font-size);
   font-weight: var(--typography-display-font-weight);
   line-height: var(--typography-display-line-height);
+}
+
+/* Read by screen readers, not shown. */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.app {
+  padding: var(--spacing-gutter);
+}
+
+/* banner-demo in DESIGN.md: neutral surface-sunken with a thin ink-secondary border. */
+.banner-demo {
+  margin: var(--spacing-3) var(--spacing-gutter) 0;
+  padding: var(--spacing-3) var(--spacing-4);
+  border: 1px solid var(--color-ink-secondary);
+  border-radius: var(--rounded-sm);
+  background: var(--color-surface-sunken);
+  color: var(--color-ink-primary);
+}
+
+.banner-demo a {
+  color: var(--color-accent);
+}
+
+a:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* Loading is a skeleton in surface-sunken, never just a spinner. */
+.skeleton {
+  height: var(--spacing-7);
+  border-radius: var(--rounded-md);
+  background: var(--color-surface-sunken);
+}
+
+.error {
+  margin: 0;
+  color: var(--color-ink-primary);
 }

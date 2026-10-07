@@ -24,6 +24,26 @@ npm test            # kjør enhetstestene
 npm run build       # bygg produksjonsversjonen
 ```
 
+### Demomodus
+
+Et rent klon trenger verken nøkler eller nett. `npm run dev` viser da demodataene i
+`public/data/demo.json`, med banneret «Demodata – ikke ekte prognoser». Appen laster
+`public/data/latest.json` hvis den finnes, og ellers `demo.json`. `latest.json` lages av
+dataprogrammet når live-henting er på plass, og committes ikke.
+
+Demodataene er 24 steder med ekte, innspilte MET- og NVE-svar fra `tests/contract/fixtures/`. Ett
+sted har ufullstendige data, og ett har kildedata som er eldre enn 3 timer (merkingen «Utdatert» i
+appen kommer i Story 1.9). «Nå» i demoen er tidspunktet for de nyeste dataene, så det ser likt ut
+uansett når du åpner appen.
+
+```sh
+npm run data:demo        # lag public/data/demo.json på nytt fra fixturene (uten nett, gir byte-lik fil)
+npm run fixtures:record  # ta opp nye MET- og NVE-svar (krever nett, se tests/contract/fixtures/README.md)
+```
+
+Feltene i datafila og kildesvarene er beskrevet i
+[`shared/contracts/data-dictionary.md`](shared/contracts/data-dictionary.md).
+
 ### Stedskatalogen
 
 `data/catalog.json` er lista over de ca. 300 stedene appen viser (skisteder, fjelltopper og byer). Den er committet og endres bare når vi bygger den på nytt for hånd:

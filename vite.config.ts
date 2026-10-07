@@ -5,7 +5,7 @@ export default defineConfig({
   plugins: [react()],
   test: {
     environment: 'node',
-    // AD-4: tests are colocated with the app, the shared module, the scripts and the Edge Functions.
-    include: ['src/**/*.test.{ts,tsx}', 'shared/**/*.test.ts', 'scripts/**/*.test.ts', 'supabase/functions/**/*.test.ts'],
+    // AD-4: unit tests are colocated with the code; contract tests run against the recorded fixtures.
+    include: ['src/**/*.test.{ts,tsx}', 'shared/**/*.test.ts', 'scripts/**/*.test.ts', 'tests/contract/**/*.test.ts'],
   },
 })

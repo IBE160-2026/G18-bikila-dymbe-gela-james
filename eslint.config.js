@@ -16,7 +16,7 @@ export default tseslint.config(
   {
     // shared/ runs in both Vite and Node, so it gets neither browser nor Node globals.
     files: ['**/*.{ts,tsx,js}'],
-    ignores: ['scripts/**', 'shared/**'],
+    ignores: ['scripts/**', 'shared/**', 'tests/contract/**'],
     languageOptions: {
       globals: globals.browser,
     },
@@ -30,10 +30,28 @@ export default tseslint.config(
     },
   },
   {
-    // AD-5: scripts/ runs in Node, never in the browser.
-    files: ['scripts/**/*.{ts,js}'],
+    // AD-5: scripts/ runs in Node, never in the browser. So do the contract tests and the recorder.
+    files: ['scripts/**/*.{ts,js}', 'tests/contract/**/*.{ts,js}'],
     languageOptions: {
       globals: globals.node,
+    },
+  },
+  {
+    // AD-10: src/lib/clock.ts is the only source of "now" in the app.
+    files: ['src/**/*.{ts,tsx}'],
+    ignores: ['src/lib/clock.ts'],
+    rules: {
+      'no-restricted-syntax': [
+        'error',
+        {
+          selector: "CallExpression[callee.object.name='Date'][callee.property.name='now']",
+          message: 'AD-10: use now() from src/lib/clock.ts instead of Date.now().',
+        },
+        {
+          selector: "NewExpression[callee.name='Date'][arguments.length=0]",
+          message: 'AD-10: use now() from src/lib/clock.ts instead of new Date() without arguments.',
+        },
+      ],
     },
   },
 )
