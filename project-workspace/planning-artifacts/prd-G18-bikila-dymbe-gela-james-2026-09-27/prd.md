@@ -1,7 +1,7 @@
 ---
 title: SnowFinder
 created: 2026-09-27
-updated: 2026-09-27
+updated: 2026-10-07
 status: draft
 ---
 
@@ -25,6 +25,17 @@ bygger videre på det (UX-spesifikasjon, arkitektur, epics/stories).
 rett etter Marys brief-rettelser, ikke gjennom flere runder brukersamtale. Der noe er antatt
 fremfor bekreftet med gruppa, er det merket `[ASSUMPTION]` inline og samlet i §9 — dette er
 Fast-path-modus, ikke Coaching-modus.
+
+**v2 (2026-10-07):** Oppdatert etter faglærers tilbakemelding på produktbriefen (2026-10-06),
+gjennom en godkjent endringsrunde
+([sprint-change-proposal-2026-10-07.md](../../project-workspace/planning-artifacts/sprint-change-proposal-2026-10-07.md)).
+- Ny Må ha: lokal demomodus (FR-30), så sensor kan kjøre appen uten gruppas tjenester.
+- Pipelinens robusthetsmaskineri er flyttet til Bør ha (FR-2, FR-6, NFR-6).
+- Nye datakvalitetskrav (NFR-DQ1–3).
+- Fasittabeller for skivindu og filter (FR-14, FR-17, FR-20).
+- Suksessmålene i §9 er delt etter hvordan de verifiseres.
+
+FR-ID-ene er stabile og nummereres aldri om.
 
 ## 1. Visjon
 
@@ -66,7 +77,8 @@ sjekker før de bestemmer seg for hvor de skal denne helgen.
   - **Sti:** (1) Åpner Norgeskartet, ser fargede punkter. (2) Åpner filteret, setter minimum
     15 mm nysnø neste 24 t og maks vind 6 m/s. (3) Kartet oppdaterer antall treff live mens hun
     justerer glidebryterne. (4) Trykker på et blått punkt i Trøndelag. (5) Stedssiden viser
-    SnowScore 82, delpoeng, og beste skivindu lørdag kl. 10–14.
+    SnowScore 82, delpoeng, og (når Bør ha-funksjonen FR-17 er bygget) beste skivindu lørdag
+    kl. 10–14.
   - **Klimaks:** Hun ser akkurat hvorfor stedet scorer høyt (delpoengene), ikke bare tallet, og
     stoler på det.
   - **Oppløsning:** Hun bestemmer seg for stedet og deler lenken (filterverdier er i URL-en) med
@@ -150,8 +162,9 @@ Systemet henter værdata for alle steder i katalogen hver time via en planlagt j
 **Konsekvenser (testbare):**
 - Forespørsler bruker identifiserende User-Agent og respekterer `If-Modified-Since`/`Expires`
   fra MET — ingen ny henting før `Expires` er passert for et gitt sted.
-- En avbrutt kjøring (f.eks. Supabase-tidsavbrudd) fortsetter der den slapp ved neste forsøk,
-  fremfor å starte helt på nytt.
+- Én planlagt jobb henter alle ~300 steder i én kjøring, med begrenset samtidighet. En avbrutt
+  kjøring (f.eks. Supabase-tidsavbrudd) publiserer ingenting (FR-5) og kjøres på nytt ved neste
+  time. *(v2: køstyrte puljer som fortsetter der de slapp, er Bør ha.)*
 
 #### FR-3: Skjemavalidering av rådata *(Må ha)*
 
@@ -160,13 +173,19 @@ Systemet validerer hvert API-svar mot et strengt skjema (Zod) før det brukes vi
 **Konsekvenser (testbare):**
 - Et ugyldig svar (feil felt, feil type, manglende felt) avvises og logges til
   `api_incidents` — det rettes aldri automatisk og propagerer aldri til `conditions`.
+  *(v2)* De to loggene har hvert sitt formål:
+  - `api_incidents` (Må ha) har én rad per avvist svar, med detaljer.
+  - `pipeline_runs` (NFR-DQ2) har oppsummeringen per kjøring.
+
+  Aktiv varsling av gruppen er Bør ha (NFR-6).
 - Kontraktstester kjører samme validering mot opptatte, ekte MET/NVE-svar (`tests/contract/`) og
   fanger opp brytende API-endringer før de treffer produksjon.
 
-#### FR-4: SnowScore- og skivindu-beregning *(Må ha)*
+#### FR-4: SnowScore- og skivindu-beregning *(Må ha; skivindu-delen er Bør ha)*
 
-Systemet beregner SnowScore (§4.2) og beste skivindu for hvert sted for hvert nytt datasett, og
-skriver resultatet til en staging-tabell.
+Systemet beregner SnowScore (§4.2) for hvert sted for hvert nytt datasett, og skriver resultatet
+til en staging-tabell. *(v2)* Beregning av beste skivindu legges til i samme steg når Bør
+ha-funksjonen FR-17 bygges.
 
 **Konsekvenser (testbare):**
 - Mangler mer enn 10 % av timene i vinduet for et sted, settes stedet til «ufullstendige data»
@@ -181,13 +200,21 @@ denne kjøringen; ellers beholdes forrige gyldige batch uendret.
 - Simulert nedetid hos én datakilde som fører til at andelen gyldige steder faller under 95 %,
   medfører at klienten fortsatt viser forrige batch — ikke delvise eller tomme data.
 - Publisering er idempotent: samme input gir samme resultat ved gjentatt kjøring, og samtidige
-  kjøringer for samme batch blokkeres (arkitektur AD-2).
+  kjøringer for samme batch blokkeres (arkitektur AD-2). *(v2)* Låsen beholdes som Må ha selv i
+  den forenklede pipelinen. Den er én databaselås rundt publiseringen og koster lite. Uten den
+  kan to overlappende kjøringer (f.eks. en manuell og den planlagte) publisere hver sin halve
+  batch, og det bryter med selve kvalitetsterskelen.
 
-#### FR-6: Robusthet mot datakilde-nedetid *(Må ha)*
+#### FR-6: Robusthet mot datakilde-nedetid *(delt i v2: FR-6a Må ha, FR-6b Bør ha)*
 
 Systemet håndterer at MET eller NVE ikke svarer, uten at brukeropplevelsen bryter sammen.
 
-**Konsekvenser (testbare):**
+**FR-6a — Siste gyldige data *(Må ha)*. Konsekvenser (testbare):**
+- Når en datakilde feiler, publiseres ingen ny batch, og klienten viser forrige gyldige batch
+  (følger av FR-5). Verifiseres ved å simulere nedetid i test (NFR-4).
+- Feilen registreres i kjøringens rad i `pipeline_runs` (NFR-DQ2).
+
+**FR-6b — Kontrollerte nye forsøk og kretsbryter *(Bør ha)*. Konsekvenser (testbare):**
 - Eksponentiell ventetid med tilfeldig variasjon og fast maksimum ved feilende kall.
 - En kretsbryter per datakilde åpner etter et definert antall påfølgende feil og stopper videre
   forsøk i en avkjølingsperiode, i stedet for å hamre løs på en nede tjeneste.
@@ -207,7 +234,7 @@ Systemet beregner SnowScore med formelen fra briefen (§«SnowScore», rettet av
 `shared/snowscore.ts`-modul brukt av både pipeline og forklaringssidens kalkulator (AD-6).
 
 **Konsekvenser (testbare):**
-- Egenskapsbaserte tester (minst 1000 tilfeldige inndata i CI, se NFR-QA i §7): poengsummen er
+- Egenskapsbaserte tester (minst 1000 tilfeldige inndata i CI, se SM-6 i §9.1): poengsummen er
   alltid mellom 0 og 100; mer nysnø gir aldri lavere A; lavere snittemperatur gir aldri lavere B;
   ingen nedbør (P < 0,5 mm) gir alltid B = 0 og C = 0; samme inndata gir alltid samme resultat.
 - En parity-test kjører et fast sett gyldige inndata gjennom både `src/lib/snowscore.ts` og
@@ -221,6 +248,9 @@ og én illustrasjon per delpoeng.
 **Konsekvenser (testbare):**
 - Siden er tilgjengelig fra hver SnowScore-visning i løsningen (lenket, ikke bare fra
   toppmenyen).
+- *(v2)* Siden har et panel «Datakvalitet» som viser siste kjøring fra `pipeline_runs` i
+  klartekst (tidspunkt, andel gyldige steder, antall avviste svar). I demomodus vises
+  demodatasettets byggeinformasjon i stedet (NFR-DQ2).
 - Innholdet er versjonert: hver endring i formelparametere (som Marys nevner-endring 6→16) får en
   ny rad i endringsloggen på siden, med begrunnelse.
 
@@ -231,6 +261,8 @@ til ferdig poengsum, slik Mary rettet det (6-timers tabell, se briefen).
 
 **Konsekvenser (testbare):**
 - Eksemplet viser eksplisitt S, P og T̄ utledet fra timesverdiene — ikke bare sluttsvaret.
+- *(v2)* Eksempelets inndata og forventede svar (58) kjøres som fasittest mot
+  `shared/snowscore.ts` (SM-10). Siden og testen bruker samme tabell, så de kan ikke sprike.
 
 #### FR-10: «Prøv selv»-kalkulator *(Bør ha)*
 
@@ -285,6 +317,8 @@ kriterium som bør lempes ved null treff.
 **Konsekvenser (testbare):**
 - Ved null treff identifiserer systemet hvilket enkeltkriterium som, hvis fjernet, ville gitt
   flest nye treff, og foreslår nettopp det (jf. UJ-1 edge case).
+- *(v2)* Fasittabellen for filter (definert i FR-20) inneholder også forventet forslag ved
+  null treff.
 
 #### FR-15: Hurtigvalg *(Bør ha)*
 
@@ -319,6 +353,14 @@ Stedssiden viser de fire beste sammenhengende timene i et 48-timers vindu, med m
 - Kommer det nysnø i perioden, velges vinduet kun blant timer etter at snøfallet har stoppet.
 - I mørketid vises teksten «Mørketid – vindu vist uten dagslys» i stedet for at funksjonen
   returnerer tomt eller feiler.
+- *(v2)* En fasittabell med minst fire tilfeller viser inndata time for time og forventet
+  vindu. Tilfellene er:
+  1. en vanlig dag;
+  2. snøfall som slutter midt i 48-timersvinduet;
+  3. for få sammenhengende dagslystimer;
+  4. mørketid.
+
+  Tabellen brukes både i dokumentasjonen og som test mot samme funksjon som pipelinen.
 
 #### FR-18: Snøvarsel — registrering *(Bør ha)*
 
@@ -340,7 +382,7 @@ maks én gang per regel per døgn.
 - To påfølgende publiseringer samme døgn som begge oppfyller terskelen, utløser kun ett varsel
   (deduplisert via `alert_dispatch_log`, AD-1).
 - Hvert varsel har avmelding med ett klikk, og avmelding sletter regelen (ikke bare deaktiverer
-  den) — verifisert med sikkerhetstest (se NFR-QA i §7).
+  den) — verifisert med sikkerhetstest (Bør ha-testdybde, se §6.2).
 
 ### 4.5 Filter
 
@@ -357,6 +399,14 @@ med OG, og få tilbake bare steder som oppfyller alle valgte kriterier.
   databasefunksjon mot en forhåndsberegnet, indeksert tabell.
 - Nysnø-cm-anslaget bruker den faste omregningen 1 mm vannekvivalent ≈ 1 cm nysnø (Marys
   presisering), identisk med SnowScore-seksjonens forklaring.
+- *(v2)* En fasittabell med et lite stedssett (5–8 steder) og flere filterkombinasjoner viser
+  forventede treff og forventet forslag ved null treff.
+  - Begge datakildene skal gi fasitresultatet: demomodus (delt TypeScript-logikk) og databasen
+    (parameterisert databasefunksjon).
+  - Testen mot den delte logikken er CI-blokkerende (SM-10).
+  - Testen mot databasefunksjonen kjøres mot lokal Supabase når Supabase-adapteren finnes, og
+    blir CI-blokkerende når CI har en lokal database.
+  - Arkitekturen avgjør hvordan de to holdes like (AD-10).
 
 #### FR-21: Filterverdier i URL *(Må ha)*
 
@@ -422,6 +472,56 @@ fast skjema, og begrenser antall innsendinger med en kortlevd, saltet hash.
 Tilbakemeldinger slettes automatisk etter tolv måneder, av samme sentrale rutine som eier all
 TTL-sletting (`retention/cleanup.ts`, AD-7).
 
+### 4.7 Kjøring, demodata og analyse *(v2)*
+
+**Beskrivelse:** Gjør det mulig for en utenforstående, først og fremst sensor, å kjøre og
+prøve SnowFinder fra et rent klon, uten gruppas Supabase-prosjekt, nøkler eller kontoer.
+Realiserer ingen brukerreise direkte, men er forutsetningen for at kjerneflyten (UJ-1, UJ-3)
+kan prøves og testes uavhengig av drift.
+
+#### FR-30: Lokal demomodus med ferdige data *(Må ha)*
+
+En utenforstående kan klone repoet og starte SnowFinder med `npm ci && npm run dev`. Det
+krever ikke Supabase-prosjekt, nøkler eller nettverkskall til MET og NVE. Appen viser da et
+demodatasett.
+
+**Konsekvenser (testbare):**
+- **Datakilde:** velges med `VITE_DATA_SOURCE=demo|supabase`. `demo` er standard i
+  `.env.example`, som ikke inneholder ekte hemmeligheter.
+- **Hvordan demodataene lages:** demodatasettet (ca. 20–30 steder) bygges med
+  `npm run demo:data` fra de lagrede MET- og NVE-svarene i `tests/contract/fixtures/`. Det
+  bruker samme valideringskode og samme SnowScore-modul som pipelinen (AD-6). Ingen poengsum
+  skrives for hånd.
+- **Reproduserbart:** samme fixtures gir alltid samme demodatasett, og det sjekkes av en test.
+- **Fast demoklokke:** demodatasettet har et eget referansetidspunkt («demo-nå»). I demomodus
+  regnes dataalder (FR-16, NFR-3) mot dette tidspunktet, ikke mot maskinens klokke. Da ser
+  appen lik ut uansett når sensor starter den, og grensene på 3 og 12 timer kan testes
+  deterministisk.
+- **Alle tilstander er med:** demodatasettet har minst ett sted med «ufullstendige data» og ett
+  med utdaterte data (eldre enn 3 timer mot demo-nå). Når Bør ha-funksjonen FR-17 er bygget,
+  kommer ett sted i mørketid i tillegg.
+- **Skrivefunksjoner:** «Varsle meg» (FR-18) og tilbakemelding (FR-27) er ikke tilgjengelige i
+  demomodus. Hvis de er bygget, vises de deaktivert med en kort forklaring («Krever
+  nettversjonen»), og det dekkes av en test.
+- **Tydelig merket:** demomodus vises i grensesnittet («Demodata – ikke ekte prognoser»).
+- **Testet i CI:** en E2E-røyktest kjører kart → filter → stedsside i demomodus.
+- **README** beskriver to kjøremåter:
+  - demomodus, som anbefales for sensor;
+  - full lokal stack med Supabase CLI, som krever Docker.
+
+#### FR-31: Vurdering av SnowScore mot målte forhold *(Bør ha)*
+
+Gruppen kan vurdere hvor godt SnowScore og MET-prognosen treffer, ved å sammenligne prognosert
+nysnø med NVE seNorges modellerte nysnø i etterkant, for katalogens steder over en periode.
+
+**Konsekvenser (testbare):**
+- Analysen kjøres med et skript utenfor appen (`scripts/analysis/`). Den er ikke en del av
+  kjøretidskoden og endrer ingen publiserte data.
+- Resultatet er en kort, reproduserbar rapport med treffsikkerhet (f.eks. gjennomsnittlig avvik
+  og andel steder der prognosen bommet med mer enn en gitt grense) og systematiske avvik etter
+  stedstype og høyde. Den brukes i sluttrapporten og til eventuell kalibrering av formelen
+  (versjonert på forklaringssiden, FR-8).
+
 ## 5. Ikke-mål (eksplisitt)
 
 - SnowFinder er **ikke** en skredfarevurdering og gir aldri råd om ferdselssikkerhet — lenker til
@@ -442,21 +542,29 @@ TTL-sletting (`retention/cleanup.ts`, AD-7).
 
 ### 6.1 I omfang (Må ha)
 
-- Stedskatalog og datapipeline med validering, robusthet og atomisk publisering (§4.1)
+- Lokal demomodus med ferdige data, `.env.example` og en README som virker fra et rent klon
+  (§4.7, FR-30)
+- Stedskatalog og en enkel datapipeline (én planlagt jobb) med validering, atomisk publisering,
+  siste gyldige data ved nedetid (FR-6a) og datakvalitet per kjøring (§4.1, NFR-DQ1–3)
 - SnowScore-modul, forklaringsside (uten kalkulator), regneeksempel (§4.2, FR-7/8/9/11)
 - Norgeskart **og** tilgjengelig listevisning som likeverdig alternativ (§4.3)
 - Stedsside med full poengsum og rådata (§4.4, FR-16)
 - Filter for nysnø, vind og temperatur, med URL-persistens og null-treff-veiledning (§4.5,
   FR-20/21/26)
-- Robust feilhåndtering (kretsbrytere, siste gyldige data) og CI med det reelle
-  QA-minimumet Mary definerte: egenskapsbaserte tester, kontraktstester, én E2E-røyktest
-  (kart → filter → stedsside)
+- CI med det reelle QA-minimumet: egenskapsbaserte tester, kontraktstester, fasittabell for
+  filter og én E2E-røyktest (kart → filter → stedsside) i demomodus
 
 ### 6.2 Utenfor MVP (Bør ha — bygges først når Må ha er ferdig og testet)
 
 - Beste skivindu (FR-17), kalkulator på forklaringssiden (FR-10), snøvarsel (FR-18/19),
   solfilter (FR-22), avstandsfilter (FR-23), nysnø siste 24 t (FR-25), tilbakemelding uten konto
   (FR-27/28/29)
+- *(v2)* Kontrollerte nye forsøk, kretsbryter og aktiv varsling av gruppen (FR-6b, NFR-6), og
+  køstyrte puljer som fortsetter der de slapp (FR-2)
+- *(v2)* Vurdering av SnowScore mot målte forhold (FR-31)
+- *(v2)* **Halvveis-regel:** Er Må ha ikke stabilt ved slutten av sprint 2, utsettes snøvarsel
+  (FR-18/19) og tilbakemelding (FR-27/28/29) til etter innlevering. Begge krever eksterne
+  tjenester (Web Push, Turnstile) som sensor ikke kan teste.
 - Full sikkerhetstestsuite og den oppgavebaserte 5-persons brukertesten — verdifulle mål, men
   regnes som «bør ha»-dybde (Marys skille), ikke en blokkerende del av en «må ha»-leveranse
   `[NOTE FOR PM: hvis tiden blir svært knapp, er sikkerhetstestene for feedback/varsel-skrivepath
@@ -481,7 +589,25 @@ booking, generativ værchat — se §5 for begrunnelse.
   merkes «utdatert», og steder med data eldre enn tolv timer fjernes fra kart/filter/varsler.
   Validerer FR-16.
 - **NFR-4:** Tjenesten fungerer med siste gyldige data når én datakilde (MET eller NVE) er
-  utilgjengelig — verifisert ved å simulere nedetid i test. Validerer FR-6.
+  utilgjengelig — verifisert ved å simulere nedetid i test. Validerer FR-6a.
+
+### 7.2b Datakvalitet og sporbarhet *(v2)*
+
+- **NFR-DQ1 (datakontrakt):** Hvert MET- og NVE-svar valideres mot et Zod-skjema. Skjemaene er
+  dokumentert som en dataordbok med felt, enhet, gyldig verdiområde og kilde, i én fil som
+  arkitekturen angir. En test feiler hvis et felt i Zod-skjemaet mangler i ordboken, eller
+  omvendt. Validerer FR-3.
+- **NFR-DQ2 (kvalitet per kjøring):** Hver pipeline-kjøring skriver én rad i `pipeline_runs`
+  med disse feltene:
+  - starttid og varighet;
+  - antall steder og andel gyldige;
+  - antall avviste svar per kilde;
+  - antall steder med ufullstendige data;
+  - om batchen ble publisert.
+
+  Forklaringssiden viser kvaliteten til siste kjøring i klartekst. Validerer FR-5 og FR-6a.
+- **NFR-DQ3 (sporbarhet):** Hver publisert verdi har `run_id` og kildens tidsstempel. Da kan
+  enhver poengsum spores tilbake til kjøringen og rådataene den kom fra. Validerer FR-16.
 
 ### 7.3 Sikkerhet og personvern
 
@@ -489,9 +615,10 @@ booking, generativ værchat — se §5 for begrunnelse.
   Turnstile-beskyttet; hemmelige nøkler finnes kun på serversiden; Row Level Security gjelder
   alle tabeller; klienten har utelukkende lesetilgang (anon key) mot publiserte data (AD-1).
   Validerer FR-28.
-- **NFR-6:** Mislykkede pipeline-jobber, avviste API-svar og utløste kretsbrytere logges til
-  `api_incidents` **og** varsler gruppen aktivt (webhook/kanal) — logging alene er ikke
-  tilstrekkelig (arkitektur, Consistency Conventions). Validerer FR-6.
+- **NFR-6 *(Bør ha fra v2)*:** Mislykkede pipeline-jobber, avviste API-svar og utløste
+  kretsbrytere logges til `api_incidents` **og** varsler gruppen aktivt (webhook/kanal). Logging
+  alene er ikke tilstrekkelig (arkitektur, Consistency Conventions). Validerer FR-6b. I Må ha er
+  `pipeline_runs` (NFR-DQ2) kilden til kunnskap om feilede kjøringer.
 - **NFR-Privacy:** Ingen brukerkonto kreves noe sted i løsningen. Posisjon brukes og beregnes
   kun i nettleseren og sendes aldri til server (FR-23). Push-abonnement, rate-limit-hash og
   IP-adresse er de eneste behandlede identifikatorene, og slettes etter definerte frister
@@ -538,18 +665,28 @@ kodekvalitetsdetalj.
 
 ## 9. Suksessmål
 
-**Primære**
-- **SM-1 (Ytelse):** 95 % av filtersøk under 2 sekunder. Validerer FR-20/NFR-1.
-- **SM-2 (Nytte):** Minst 4 av 5 testbrukere fullfører oppgaven «finn et skisted som oppfyller
-  et gitt krav» på under 2 minutter, uten hjelp fra testleder. Validerer FR-20/FR-12/FR-13.
-- **SM-3 (Forklarbarhet):** Minst 4 av 5 testbrukere kan forklare en vist SnowScore etter å ha
-  lest forklaringssiden. Validerer FR-8/FR-9.
+*(v2) Suksessmålene er delt etter hvordan de verifiseres, slik at det går klart fram hva som
+faktisk er verifisert:*
+- **A:** automatisk i CI, og blokkerer merge;
+- **B:** målt manuelt eller under demo, og rapportert med måledata;
+- **C:** mål for den oppgavebaserte brukertesten med fem personer.
 
-**Sekundære**
-- **SM-4 (Dataforståelse):** Minst 4 av 5 testbrukere skiller prognose fra faktiske forhold og
-  oppdager utdaterte data uten å bli fortalt det på forhånd. Validerer FR-11/FR-16.
+ID-ene er beholdt fra v1.
+
+### 9.1 Verifiseres automatisk i CI (A)
+
+- **SM-9 (Kjerneflyt, ny i v2):** En E2E-røyktest i demomodus åpner Utforsk, setter et filter
+  og åpner en stedsside fra resultatet. Den passerer på hver PR. Validerer FR-12/FR-16/FR-20/FR-30.
+- **SM-10 (Fasit, ny i v2):** Fasittabellene for SnowScore (regneeksempelet), beste skivindu
+  og filter med null treff passerer. Validerer FR-9/FR-14/FR-17/FR-20. *Må ha for SnowScore og
+  filter. Skivindu-tabellen kommer til når Bør ha-funksjonen FR-17 bygges.*
+- **SM-15 (Dataalder, ny i v2):** En test med fast demoklokke bekrefter grensene: «utdatert»
+  fra 3 timer, og fjernet fra kart, liste og filter etter 12 timer. Validerer FR-16/NFR-3.
+  *Må ha.*
+- **SM-11 (Datakvalitet, ny i v2):** En pipeline-test bekrefter at hver kjøring skriver én
+  komplett rad i `pipeline_runs`, og at hver publisert verdi har `run_id`. Validerer NFR-DQ2/DQ3.
 - **SM-5 (Robusthet):** Tjenesten fungerer med siste gyldige data når en datakilde simuleres
-  nede, verifisert i test. Validerer FR-6/NFR-4.
+  nede, verifisert i test. Validerer FR-6a/NFR-4.
 - **SM-6 (Korrekthet):** Egenskapstestene for SnowScore passerer for minst 1000 tilfeldige
   inndata i CI (skalert ned fra briefens opprinnelige 10 000 for realistisk CI-kjøretid i et
   studentprosjekt — samme egenskaper testes, færre kjøringer).
@@ -558,9 +695,42 @@ kodekvalitetsdetalj.
 - **SM-7 (Tilgjengelighet):** Automatisert axe-sjekk i CI rapporterer null kritiske
   WCAG 2.1 AA-brudd på filter, stedsside, forklaringsside og listevisning. Validerer FR-13/NFR-7.
 - **SM-8 (Sporbarhet):** 100 % av endringer i hovedgrenen kommer via godkjente Pull Requests
-  (verifiserbart i git-historikk). Validerer prosesskravet i CONTRIBUTING.md.
+  (verifiserbart i git-historikk og med grenbeskyttelse). Validerer prosesskravet i AGENTS.md og
+  CONTRIBUTING.md.
 
-**Mot-metrikker (skal ikke optimeres isolert)**
+### 9.2 Måles manuelt eller under demo (B)
+
+- **SM-1 (Ytelse):** 95 % av filtersøk under 2 sekunder. Validerer FR-20/NFR-1.
+- **SM-12 (Kartlasting, ny ID i v2):** Kartet er interaktivt innen 3 sekunder på en mobil over
+  4G. Validerer NFR-2.
+- **SM-13 (Ferskhet, ny ID i v2):** Publiserte data er normalt under 90 minutter gamle. Det
+  måles fra `pipeline_runs` over minst én uke med den planlagte jobben i gang mot
+  Supabase-prodmiljøet. Validerer NFR-3.
+- **SM-14 (Kjørbarhet, ny i v2):** Et gruppemedlem som ikke har satt opp prosjektet før, starter
+  appen i demomodus fra et rent klon kun etter README, på under 10 minutter og uten hjelp.
+  Det gjøres første gang senest rett etter Story 1.10, og deretter før hver innlevering. Hvert
+  steg som mangler eller er uklart, noteres og rettes. Validerer FR-30.
+
+*Merking:* SM-1, SM-12 og SM-14 er Må ha. SM-13 krever drift i prodmiljøet og rapporteres når
+det finnes.
+
+Måleresultatene føres i sluttrapporten med dato, enhet og metode. De er ikke CI-blokkerende,
+fordi de avhenger av nettverk og maskinvare.
+
+### 9.3 Mål for brukertesten (C)
+
+- **SM-2 (Nytte):** Minst 4 av 5 testbrukere fullfører oppgaven «finn et skisted som oppfyller
+  et gitt krav» på under 2 minutter, uten hjelp fra testleder. Validerer FR-20/FR-12/FR-13.
+- **SM-3 (Forklarbarhet):** Minst 4 av 5 testbrukere kan forklare en vist SnowScore etter å ha
+  lest forklaringssiden. Validerer FR-8/FR-9.
+- **SM-4 (Dataforståelse):** Minst 4 av 5 testbrukere skiller prognose fra faktiske forhold og
+  oppdager utdaterte data uten å bli fortalt det på forhånd. Validerer FR-11/FR-16.
+
+Brukertestplanen (oppgaver, måling og SUS-skjema) ligger i EXPERIENCE.md. Selve brukertesten
+med fem personer er Bør ha-dybde (§6.2), men oppgavene er Må ha-flyten (UJ-1, UJ-3), så
+testen kan gjennomføres så snart Må ha er ferdig.
+
+### 9.4 Mot-metrikker (skal ikke optimeres isolert)
 - **SM-C1:** Antall sendte snøvarsler skal *ikke* økes for sin egen del — et varsel som ikke
   fører til at brukeren faktisk drar eller handler, er støy, ikke suksess. Motvekt til SM-2/FR-19
   (motvirker en fremtidig fristelse til å varsle oftere «for engasjement»).
@@ -573,9 +743,14 @@ kodekvalitetsdetalj.
    uavklart («Deferred») — avklares når FR-18/19 tas som story.
 2. **Hosting:** Cloudflare Pages (arkitekturens antagelse, pga. Turnstile fra samme leverandør)
    eller Vercel? Bekreft med gruppa før første deploy.
-3. **IBE160-vurderingskriterier:** Finnes det et eget kriteriedokument for emnet utover
-   produktbriefens Definition of Done? Ikke funnet i repoet ved skrivetidspunktet — hvis det
-   finnes, bør det krysjekkes mot §9 Suksessmål og §6 MVP-omfang.
+3. ~~**IBE160-vurderingskriterier:**~~ *Lukket i v2.* Sensorveiledningen for del 1 og
+   faglærers tilbakemelding (2026-10-06) er nå kjent og krysjekket mot §6 og §9, gjennom
+   endringsrunden 2026-10-07.
+6. *(v2)* **Kursets skjermkrav:** Emnet ber om wireframes for pålogging, profil, innsjekking,
+   sosial feed og arrangementer, men v1 har bevisst ingen kontoer eller sosiale funksjoner (§5).
+   Det foreslås å koble hvert punkt til nærmeste skjerm i SnowFinder, med begrunnelse i
+   EXPERIENCE.md. Gruppa og faglærer må bekrefte. Endres produktet, går det gjennom
+   `bmad-correct-course`.
 4. **Skalatall for NFR-8:** Er «noen tusen brukere» en reell forventning for
    innleveringen/demoen, eller kun en arkitektonisk forsikring? Påvirker om lasttesting hører
    hjemme i Må ha-QA-minimumet.
@@ -591,3 +766,6 @@ kodekvalitetsdetalj.
   realistisk CI-kjøretid; samme testede egenskaper.
 - §6.2 — Sikkerhetstester for feedback/varsel-skrivepath foreslått prioritert høyt *innad* i
   «bør ha», selv om kategorien i seg selv ikke er blokkerende.
+- §4.7 FR-30 *(v2)* — Demodatasettet på ca. 20–30 steder antas å være nok til å vise alle
+  tilstander og gi meningsfulle filtertreff. Det økes hvis fasittabellen for filter trenger flere
+  steder.
