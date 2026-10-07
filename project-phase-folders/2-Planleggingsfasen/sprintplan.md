@@ -45,7 +45,7 @@ De står i `sprint-status.yaml` med kommentaren «Ikke i v1» og bygges ikke.
 | Story | Status | Merknad |
 |---|---|---|
 | 1.1 Prosjekt-skaffolding og CI | Ferdig (`done`) | Merget i PR #10. |
-| 1.2 Bygg stedskatalogen | Implementert og gjennomgått (`review`) | PR #18. Fil i stedet for database. 300 steder i `data/catalog.json`. Navnelista bør gjennomgås av gruppa. |
+| 1.2 Bygg stedskatalogen | Ferdig (`done`) | Merget i PR #18. Fil i stedet for database. 300 steder i `data/catalog.json`. Navnelista bør gjennomgås av gruppa. |
 | 1.4, 1.10, 2.1–2.4 | Ikke startet | Neste: 1.4, deretter 1.10. |
 
 ## Dette må gruppa sette opp før sprint 2

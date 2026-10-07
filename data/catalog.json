@@ -1,0 +1,2705 @@
+{
+  "generert": "2026-10-07T19:24:43Z",
+  "steder": [
+    {
+      "id": "adneram-skitrekk",
+      "navn": "Ådneram Skitrekk",
+      "lat": 59.0221,
+      "lon": 6.9103,
+      "hoyde": 700,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "aktiven-skiheis",
+      "navn": "Aktiven skiheis",
+      "lat": 60.379,
+      "lon": 6.0072,
+      "hoyde": 456,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "al-skisenter",
+      "navn": "Ål skisenter",
+      "lat": 60.6653,
+      "lon": 8.525,
+      "hoyde": 782,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "alen-skisenter",
+      "navn": "Ålen skisenter",
+      "lat": 62.8312,
+      "lon": 11.2925,
+      "hoyde": 562,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "alesund",
+      "navn": "Ålesund",
+      "lat": 62.4723,
+      "lon": 6.1549,
+      "hoyde": 3,
+      "type": "by",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "alpinsenteret-i-raudalen",
+      "navn": "Alpinsenteret i Raudalen",
+      "lat": 61.221,
+      "lon": 8.8208,
+      "hoyde": 907,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "alta",
+      "navn": "Alta",
+      "lat": 69.9689,
+      "lon": 23.2716,
+      "hoyde": 61,
+      "type": "by",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "amblisberget-skianlegg",
+      "navn": "Amblisberget skianlegg",
+      "lat": 60.9686,
+      "lon": 10.7331,
+      "hoyde": 515,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "anstadblaheia-skitrekk",
+      "navn": "Ånstadblåheia skitrekk",
+      "lat": 68.714,
+      "lon": 15.3185,
+      "hoyde": 332,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "arendal",
+      "navn": "Arendal",
+      "lat": 58.4612,
+      "lon": 8.767,
+      "hoyde": 2,
+      "type": "by",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "bardufoss",
+      "navn": "Bardufoss",
+      "lat": 69.0644,
+      "lon": 18.5116,
+      "hoyde": 73,
+      "type": "by",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "beitostolen-skisenter",
+      "navn": "Beitostølen Skisenter",
+      "lat": 61.2551,
+      "lon": 8.9051,
+      "hoyde": 1004,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "bergen",
+      "navn": "Bergen",
+      "lat": 60.3932,
+      "lon": 5.3245,
+      "hoyde": 6,
+      "type": "by",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "besshoe",
+      "navn": "Besshøe",
+      "lat": 61.5179,
+      "lon": 8.6872,
+      "hoyde": 2258,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "bispen",
+      "navn": "Bispen",
+      "lat": 62.4619,
+      "lon": 7.6499,
+      "hoyde": 1448,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "bitihorn",
+      "navn": "Bitihorn",
+      "lat": 61.2943,
+      "lon": 8.7994,
+      "hoyde": 1607,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "bjorkelangen-skisenter",
+      "navn": "Bjørkelangen skisenter",
+      "lat": 59.8866,
+      "lon": 11.5435,
+      "hoyde": 195,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "bjornestad-skisenter",
+      "navn": "Bjørnestad Skisenter",
+      "lat": 58.6625,
+      "lon": 6.5884,
+      "hoyde": 476,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "blahoa",
+      "navn": "Blåhøa",
+      "lat": 62.7542,
+      "lon": 9.3323,
+      "hoyde": 1671,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "bleikvassli-skibakke",
+      "navn": "Bleikvassli skibakke",
+      "lat": 65.9082,
+      "lon": 13.841,
+      "hoyde": 341,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "blommen-skisenter",
+      "navn": "Blommen skisenter",
+      "lat": 63.8042,
+      "lon": 11.6234,
+      "hoyde": 190,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "bodo",
+      "navn": "Bodø",
+      "lat": 67.2827,
+      "lon": 14.3751,
+      "hoyde": 3,
+      "type": "by",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "borgbakken",
+      "navn": "Borgbakken",
+      "lat": 61.3159,
+      "lon": 12.2702,
+      "hoyde": 390,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "borgefjellsenteret",
+      "navn": "Børgefjellsenteret",
+      "lat": 64.8904,
+      "lon": 13.5217,
+      "hoyde": 527,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "bortelid-skisenter",
+      "navn": "Bortelid Skisenter",
+      "lat": 58.8297,
+      "lon": 7.4762,
+      "hoyde": 632,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "botnkrona",
+      "navn": "Botnkrona",
+      "lat": 65.9617,
+      "lon": 12.628,
+      "hoyde": 1071,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "braten",
+      "navn": "Bråten",
+      "lat": 64.4752,
+      "lon": 11.4795,
+      "hoyde": 92,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "brattstolen-skisenter",
+      "navn": "Brattstølen Skisenter",
+      "lat": 60.8667,
+      "lon": 9.194,
+      "hoyde": 845,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "breimsbygda-skisenter",
+      "navn": "Breimsbygda Skisenter",
+      "lat": 61.765,
+      "lon": 6.5131,
+      "hoyde": 748,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "breimyrbakkene",
+      "navn": "Breimyrbakkene",
+      "lat": 59.5046,
+      "lon": 10.2293,
+      "hoyde": 117,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "budor-skitrekk",
+      "navn": "Budor skitrekk",
+      "lat": 60.951,
+      "lon": 11.2824,
+      "hoyde": 660,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "byasbakken",
+      "navn": "Byåsbakken",
+      "lat": 63.4155,
+      "lon": 10.3409,
+      "hoyde": 179,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "daltroa-alpinbakke",
+      "navn": "Daltrøa alpinbakke",
+      "lat": 63.5042,
+      "lon": 11.0717,
+      "hoyde": 126,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "dombas",
+      "navn": "Dombås",
+      "lat": 62.0755,
+      "lon": 9.1279,
+      "hoyde": 644,
+      "type": "by",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "donnmannen",
+      "navn": "Dønnmannen",
+      "lat": 66.0472,
+      "lon": 12.3958,
+      "hoyde": 824,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "drammen",
+      "navn": "Drammen",
+      "lat": 59.7439,
+      "lon": 10.2045,
+      "hoyde": 4,
+      "type": "by",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "eikedalen-skisenter",
+      "navn": "Eikedalen skisenter",
+      "lat": 60.4121,
+      "lon": 5.9123,
+      "hoyde": 617,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "elgahogna",
+      "navn": "Elgåhogna",
+      "lat": 62.1488,
+      "lon": 12.0651,
+      "hoyde": 1460,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "ellingsrudkollen",
+      "navn": "Ellingsrudkollen",
+      "lat": 59.7097,
+      "lon": 10.8483,
+      "hoyde": 132,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "elverum",
+      "navn": "Elverum",
+      "lat": 60.8819,
+      "lon": 11.5623,
+      "hoyde": 189,
+      "type": "by",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "engerdal-ostfjell",
+      "navn": "Engerdal Østfjell",
+      "lat": 61.7843,
+      "lon": 11.9713,
+      "hoyde": 862,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "fagerfjell-skisenter",
+      "navn": "Fagerfjell Skisenter",
+      "lat": 59.8289,
+      "lon": 9.3069,
+      "hoyde": 693,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "fagernes",
+      "navn": "Fagernes",
+      "lat": 60.9859,
+      "lon": 9.2323,
+      "hoyde": 359,
+      "type": "by",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "fagernesfjellet",
+      "navn": "Fagernesfjellet",
+      "lat": 68.4216,
+      "lon": 17.48,
+      "hoyde": 991,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "falketind",
+      "navn": "Falketind",
+      "lat": 61.3847,
+      "lon": 8.0967,
+      "hoyde": 2058,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "fannaraki",
+      "navn": "Fannaråki",
+      "lat": 61.5167,
+      "lon": 7.9083,
+      "hoyde": 2067,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "fauske",
+      "navn": "Fauske",
+      "lat": 67.2595,
+      "lon": 15.3933,
+      "hoyde": 7,
+      "type": "by",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "fefor-hoifjellshotell-skibakke-loyper",
+      "navn": "Fefor Høifjellshotell Skibakke & Løyper",
+      "lat": 61.5411,
+      "lon": 9.6407,
+      "hoyde": 1001,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "fidjeland-skitrekk",
+      "navn": "Fidjeland Skitrekk",
+      "lat": 58.9628,
+      "lon": 6.9545,
+      "hoyde": 788,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "finnsnes",
+      "navn": "Finnsnes",
+      "lat": 69.2296,
+      "lon": 17.981,
+      "hoyde": 7,
+      "type": "by",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "finse-skisenter",
+      "navn": "Finse Skisenter",
+      "lat": 60.6058,
+      "lon": 7.51,
+      "hoyde": 1349,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "fjellhaugen-skisenter",
+      "navn": "Fjellhaugen skisenter",
+      "lat": 59.8472,
+      "lon": 6.0664,
+      "hoyde": 572,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "fjellsyn-skisenter",
+      "navn": "Fjellsyn Skisenter",
+      "lat": 62.1739,
+      "lon": 9.79,
+      "hoyde": 815,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "flugonfjell-skisenter",
+      "navn": "Flugonfjell skisenter",
+      "lat": 59.7469,
+      "lon": 8.8668,
+      "hoyde": 828,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "folarskardnuten",
+      "navn": "Folarskardnuten",
+      "lat": 60.6128,
+      "lon": 7.7861,
+      "hoyde": 1919,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "fongen",
+      "navn": "Fongen",
+      "lat": 63.1807,
+      "lon": 11.6308,
+      "hoyde": 1441,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "fonna-glacier-ski-resort",
+      "navn": "FONNA Glacier Ski Resort",
+      "lat": 60.2168,
+      "lon": 6.4385,
+      "hoyde": 1413,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "forde",
+      "navn": "Førde",
+      "lat": 61.4522,
+      "lon": 5.8572,
+      "hoyde": 3,
+      "type": "by",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "frei-alpinsenter",
+      "navn": "Frei alpinsenter",
+      "lat": 63.0473,
+      "lon": 7.7749,
+      "hoyde": 166,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "fulufjellet-alpinsenter",
+      "navn": "Fulufjellet alpinsenter",
+      "lat": 61.3914,
+      "lon": 12.7553,
+      "hoyde": 619,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "furedalen-alpin",
+      "navn": "Furedalen alpin",
+      "lat": 60.372,
+      "lon": 5.9729,
+      "hoyde": 441,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "furutangen-skisenter",
+      "navn": "Furutangen skisenter",
+      "lat": 61.3715,
+      "lon": 11.8028,
+      "hoyde": 580,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "gala-alpinsenter",
+      "navn": "Gålå Alpinsenter",
+      "lat": 61.4975,
+      "lon": 9.7568,
+      "hoyde": 800,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "galdhoe",
+      "navn": "Galdhøe",
+      "lat": 61.6498,
+      "lon": 8.3183,
+      "hoyde": 2283,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "galdhopiggen",
+      "navn": "Galdhøpiggen",
+      "lat": 61.6364,
+      "lon": 8.3125,
+      "hoyde": 2467,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "gamlestolen",
+      "navn": "Gamlestølen",
+      "lat": 61.0324,
+      "lon": 9.6907,
+      "hoyde": 924,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "gausta-skisenter",
+      "navn": "Gausta skisenter",
+      "lat": 59.8763,
+      "lon": 8.7293,
+      "hoyde": 928,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "gaustatoppen",
+      "navn": "Gaustatoppen",
+      "lat": 59.8542,
+      "lon": 8.6492,
+      "hoyde": 1882,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "gautefall-skisenter",
+      "navn": "Gautefall skisenter",
+      "lat": 59.058,
+      "lon": 8.7285,
+      "hoyde": 539,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "geilo",
+      "navn": "Geilo",
+      "lat": 60.5337,
+      "lon": 8.209,
+      "hoyde": 777,
+      "type": "by",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "gjovik",
+      "navn": "Gjøvik",
+      "lat": 60.7957,
+      "lon": 10.6916,
+      "hoyde": 132,
+      "type": "by",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "glittertind",
+      "navn": "Glittertind",
+      "lat": 61.6512,
+      "lon": 8.5576,
+      "hoyde": 2447,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "grakallen",
+      "navn": "Gråkallen",
+      "lat": 63.4209,
+      "lon": 10.2518,
+      "hoyde": 551,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "grakallparken",
+      "navn": "Gråkallparken",
+      "lat": 63.4207,
+      "lon": 10.2707,
+      "hoyde": 415,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "grong-skisenter",
+      "navn": "Grong skisenter",
+      "lat": 64.3948,
+      "lon": 12.3099,
+      "hoyde": 328,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "gullbotn",
+      "navn": "Gullbotn",
+      "lat": 60.4059,
+      "lon": 5.635,
+      "hoyde": 262,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "gullingen-skisenter",
+      "navn": "Gullingen skisenter",
+      "lat": 59.4112,
+      "lon": 6.4663,
+      "hoyde": 705,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "hafjell",
+      "navn": "Hafjell",
+      "lat": 61.237,
+      "lon": 10.4865,
+      "hoyde": 709,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "hallbjonnsekken-skisenter",
+      "navn": "Hallbjønnsekken skisenter",
+      "lat": 59.3581,
+      "lon": 7.7345,
+      "hoyde": 890,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "hallingskarvet",
+      "navn": "Hallingskarvet",
+      "lat": 60.6128,
+      "lon": 7.6663,
+      "hoyde": 1777,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "hallingskarvet-skisenter",
+      "navn": "Hallingskarvet skisenter",
+      "lat": 60.6417,
+      "lon": 8.0202,
+      "hoyde": 910,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "hamar",
+      "navn": "Hamar",
+      "lat": 60.7945,
+      "lon": 11.068,
+      "hoyde": 127,
+      "type": "by",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "hammerfest",
+      "navn": "Hammerfest",
+      "lat": 70.6634,
+      "lon": 23.6821,
+      "hoyde": 3,
+      "type": "by",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "hamperokken",
+      "navn": "Hamperokken",
+      "lat": 69.562,
+      "lon": 19.3582,
+      "hoyde": 1375,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "hannibalbakken",
+      "navn": "Hannibalbakken",
+      "lat": 59.6724,
+      "lon": 9.6009,
+      "hoyde": 365,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "harpefossen-skisenter",
+      "navn": "Harpefossen skisenter",
+      "lat": 61.9643,
+      "lon": 5.9314,
+      "hoyde": 446,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "harstad",
+      "navn": "Harstad",
+      "lat": 68.8011,
+      "lon": 16.5441,
+      "hoyde": 3,
+      "type": "by",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "harteigen",
+      "navn": "Hårteigen",
+      "lat": 60.1942,
+      "lon": 7.0688,
+      "hoyde": 1671,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "hatten",
+      "navn": "Hatten",
+      "lat": 66.0084,
+      "lon": 13.4799,
+      "hoyde": 712,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "haugesund",
+      "navn": "Haugesund",
+      "lat": 59.4138,
+      "lon": 5.268,
+      "hoyde": 12,
+      "type": "by",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "haugsasen-granvin-alpin",
+      "navn": "Haugsåsen (Granvin Alpin)",
+      "lat": 60.5468,
+      "lon": 6.7494,
+      "hoyde": 383,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "haukvatnet-skianlegg",
+      "navn": "Haukvatnet skianlegg",
+      "lat": 63.3884,
+      "lon": 10.3187,
+      "hoyde": 207,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "heggesasen-alpinbakke",
+      "navn": "Heggesåsen Alpinbakke",
+      "lat": 64.0301,
+      "lon": 11.4971,
+      "hoyde": 106,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "hemsedal-skisenter",
+      "navn": "Hemsedal skisenter",
+      "lat": 60.8511,
+      "lon": 8.5105,
+      "hoyde": 1077,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "hermannsdalstinden",
+      "navn": "Hermannsdalstinden",
+      "lat": 67.942,
+      "lon": 12.938,
+      "hoyde": 1022,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "hestbreapiggan",
+      "navn": "Hestbreapiggan",
+      "lat": 61.7421,
+      "lon": 8.109,
+      "hoyde": 2130,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "higravtindan",
+      "navn": "Higravtindan",
+      "lat": 68.357,
+      "lon": 14.7923,
+      "hoyde": 1094,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "hogas-alpinsenter",
+      "navn": "Høgås alpinsenter",
+      "lat": 59.5144,
+      "lon": 10.2282,
+      "hoyde": 174,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "hogronden",
+      "navn": "Høgronden",
+      "lat": 61.9444,
+      "lon": 9.9004,
+      "hoyde": 2115,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "honningsvag",
+      "navn": "Honningsvåg",
+      "lat": 70.9789,
+      "lon": 25.9768,
+      "hoyde": 12,
+      "type": "by",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "hornelen",
+      "navn": "Hornelen",
+      "lat": 61.8557,
+      "lon": 5.2468,
+      "hoyde": 855,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "hornindal-skisenter",
+      "navn": "Hornindal skisenter",
+      "lat": 62.0104,
+      "lon": 6.548,
+      "hoyde": 530,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "hovdebakken",
+      "navn": "Hovdebakken",
+      "lat": 60.7959,
+      "lon": 10.6746,
+      "hoyde": 210,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "hovden-alpinsenter",
+      "navn": "Hovden Alpinsenter",
+      "lat": 59.5745,
+      "lon": 7.3289,
+      "hoyde": 1043,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "hovikbakken",
+      "navn": "Høvikbakken",
+      "lat": 59.7267,
+      "lon": 10.5037,
+      "hoyde": 27,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "hurdal-skisenter",
+      "navn": "Hurdal Skisenter",
+      "lat": 60.4636,
+      "lon": 11.0725,
+      "hoyde": 409,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "ingierkollen",
+      "navn": "Ingierkollen",
+      "lat": 59.8021,
+      "lon": 10.7914,
+      "hoyde": 118,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "innbygda",
+      "navn": "Innbygda",
+      "lat": 61.3149,
+      "lon": 12.2637,
+      "hoyde": 356,
+      "type": "by",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "innerdalstarnet",
+      "navn": "Innerdalstårnet",
+      "lat": 62.7053,
+      "lon": 8.7873,
+      "hoyde": 1448,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "jardarkollen",
+      "navn": "Jardarkollen",
+      "lat": 59.8817,
+      "lon": 10.4982,
+      "hoyde": 56,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "jerikobakken",
+      "navn": "Jerikobakken",
+      "lat": 59.9323,
+      "lon": 10.8869,
+      "hoyde": 178,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "jiehkkevarri",
+      "navn": "Jiehkkevárri",
+      "lat": 69.4693,
+      "lon": 19.8776,
+      "hoyde": 1830,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "jolster-skisenter",
+      "navn": "Jølster Skisenter",
+      "lat": 61.4736,
+      "lon": 6.0906,
+      "hoyde": 488,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "jonshornet",
+      "navn": "Jønshornet",
+      "lat": 62.3168,
+      "lon": 6.3339,
+      "hoyde": 1406,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "kaldafjellet",
+      "navn": "Kaldafjellet",
+      "lat": 59.5234,
+      "lon": 6.9803,
+      "hoyde": 1450,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "karasjok",
+      "navn": "Karasjok",
+      "lat": 69.4719,
+      "lon": 25.5111,
+      "hoyde": 141,
+      "type": "by",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "kautokeino",
+      "navn": "Kautokeino",
+      "lat": 69.0124,
+      "lon": 23.041,
+      "hoyde": 319,
+      "type": "by",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "keiservarden",
+      "navn": "Keiservarden",
+      "lat": 67.3149,
+      "lon": 14.4785,
+      "hoyde": 364,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "kirkenes",
+      "navn": "Kirkenes",
+      "lat": 69.7271,
+      "lon": 30.045,
+      "hoyde": 9,
+      "type": "by",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "kjerag",
+      "navn": "Kjerag",
+      "lat": 59.0207,
+      "lon": 6.5805,
+      "hoyde": 1074,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "kjolen-sportcenter",
+      "navn": "Kjølen Sportcenter",
+      "lat": 59.485,
+      "lon": 11.7481,
+      "hoyde": 224,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "knyken-skisenter",
+      "navn": "Knyken Skisenter",
+      "lat": 63.2624,
+      "lon": 9.7382,
+      "hoyde": 327,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "kolastinden",
+      "navn": "Kolåstinden",
+      "lat": 62.2587,
+      "lon": 6.3106,
+      "hoyde": 1400,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "kongen",
+      "navn": "Kongen",
+      "lat": 62.4727,
+      "lon": 7.6388,
+      "hoyde": 1609,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "kongsberg",
+      "navn": "Kongsberg",
+      "lat": 59.6635,
+      "lon": 9.6474,
+      "hoyde": 169,
+      "type": "by",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "kristiansand",
+      "navn": "Kristiansand",
+      "lat": 58.1462,
+      "lon": 7.9957,
+      "hoyde": 8,
+      "type": "by",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "kristiansund",
+      "navn": "Kristiansund",
+      "lat": 63.1105,
+      "lon": 7.728,
+      "hoyde": 16,
+      "type": "by",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "kvanndalsnuten",
+      "navn": "Kvanndalsnuten",
+      "lat": 60.2217,
+      "lon": 6.3225,
+      "hoyde": 979,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "kvitfjell",
+      "navn": "Kvitfjell",
+      "lat": 61.4519,
+      "lon": 10.1247,
+      "hoyde": 759,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "kvitfjellet",
+      "navn": "Kvitfjellet",
+      "lat": 61.4682,
+      "lon": 10.1066,
+      "hoyde": 1049,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "kvitingskjolen",
+      "navn": "Kvitingskjølen",
+      "lat": 61.7627,
+      "lon": 8.7358,
+      "hoyde": 2061,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "kyrkja",
+      "navn": "Kyrkja",
+      "lat": 61.5414,
+      "lon": 8.292,
+      "hoyde": 2019,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "lakselv",
+      "navn": "Lakselv",
+      "lat": 70.0513,
+      "lon": 24.9717,
+      "hoyde": 17,
+      "type": "by",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "leirskallen-skisenter",
+      "navn": "Leirskallen skisenter",
+      "lat": 59.859,
+      "lon": 10.8287,
+      "hoyde": 129,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "lierne-skisenter",
+      "navn": "Lierne skisenter",
+      "lat": 64.4493,
+      "lon": 13.7242,
+      "hoyde": 511,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "lifjell-skisenter",
+      "navn": "Lifjell Skisenter",
+      "lat": 59.4759,
+      "lon": 9.0368,
+      "hoyde": 530,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "lilleasen-skitrekk",
+      "navn": "Lilleåsen skitrekk",
+      "lat": 62.2535,
+      "lon": 7.1985,
+      "hoyde": 610,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "lillehammer",
+      "navn": "Lillehammer",
+      "lat": 61.1151,
+      "lon": 10.4663,
+      "hoyde": 196,
+      "type": "by",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "ljosland-skisenter",
+      "navn": "Ljosland skisenter",
+      "lat": 58.7846,
+      "lon": 7.3373,
+      "hoyde": 613,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "lodalskapa",
+      "navn": "Lodalskåpa",
+      "lat": 61.7906,
+      "lon": 7.2047,
+      "hoyde": 2081,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "lovaasjordet",
+      "navn": "Løvaasjordet",
+      "lat": 59.7267,
+      "lon": 10.1369,
+      "hoyde": 289,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "lundbybakkene",
+      "navn": "Lundbybakkene",
+      "lat": 60.4086,
+      "lon": 11.0304,
+      "hoyde": 206,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "lygna-skisenter",
+      "navn": "Lygna skisenter",
+      "lat": 60.4594,
+      "lon": 10.6334,
+      "hoyde": 622,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "mannen",
+      "navn": "Mannen",
+      "lat": 62.4557,
+      "lon": 7.772,
+      "hoyde": 1286,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "marikollen-skisenter",
+      "navn": "Marikollen skisenter",
+      "lat": 59.9223,
+      "lon": 11.0502,
+      "hoyde": 287,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "martabakken",
+      "navn": "Martabakken",
+      "lat": 59.9316,
+      "lon": 10.4626,
+      "hoyde": 106,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "melderskin",
+      "navn": "Melderskin",
+      "lat": 60.0062,
+      "lon": 6.0827,
+      "hoyde": 1426,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "meraker-alpinsenter",
+      "navn": "Meråker alpinsenter",
+      "lat": 63.4517,
+      "lon": 11.6886,
+      "hoyde": 324,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "midtmaradalstindane",
+      "navn": "Midtmaradalstindane",
+      "lat": 61.4458,
+      "lon": 7.8508,
+      "hoyde": 1832,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "mo-i-rana",
+      "navn": "Mo i Rana",
+      "lat": 66.3128,
+      "lon": 14.1428,
+      "hoyde": 27,
+      "type": "by",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "modum-skisenter",
+      "navn": "Modum skisenter",
+      "lat": 59.9671,
+      "lon": 10.0294,
+      "hoyde": 261,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "molde",
+      "navn": "Molde",
+      "lat": 62.7375,
+      "lon": 7.1591,
+      "hoyde": 4,
+      "type": "by",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "molden",
+      "navn": "Molden",
+      "lat": 61.3456,
+      "lon": 7.318,
+      "hoyde": 1107,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "morgedal",
+      "navn": "Morgedal",
+      "lat": 59.4768,
+      "lon": 8.4235,
+      "hoyde": 471,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "mosjoen",
+      "navn": "Mosjøen",
+      "lat": 65.837,
+      "lon": 13.1914,
+      "hoyde": 5,
+      "type": "by",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "mosvatn-skisenter",
+      "navn": "Møsvatn skisenter",
+      "lat": 59.8079,
+      "lon": 8.2935,
+      "hoyde": 992,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "moysalen",
+      "navn": "Møysalen",
+      "lat": 68.526,
+      "lon": 15.4521,
+      "hoyde": 1263,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "muen",
+      "navn": "Muen",
+      "lat": 61.7199,
+      "lon": 10.1929,
+      "hoyde": 1421,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "mugnetinden",
+      "navn": "Mugnetinden",
+      "lat": 61.2501,
+      "lon": 8.6637,
+      "hoyde": 1734,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "myrkdalen",
+      "navn": "Myrkdalen",
+      "lat": 60.8628,
+      "lon": 6.4704,
+      "hoyde": 740,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "namsos",
+      "navn": "Namsos",
+      "lat": 64.4656,
+      "lon": 11.4978,
+      "hoyde": 3,
+      "type": "by",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "namsos-skisenter",
+      "navn": "Namsos skisenter",
+      "lat": 64.4827,
+      "lon": 11.5139,
+      "hoyde": 93,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "nannestad-skisenter",
+      "navn": "Nannestad Skisenter",
+      "lat": 60.2667,
+      "lon": 11.0207,
+      "hoyde": 279,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "narvik",
+      "navn": "Narvik",
+      "lat": 68.4383,
+      "lon": 17.4278,
+      "hoyde": 41,
+      "type": "by",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "narvikfjellet-ski-resort",
+      "navn": "Narvikfjellet Ski Resort",
+      "lat": 68.4283,
+      "lon": 17.4639,
+      "hoyde": 492,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "nerskogen-skisenter",
+      "navn": "Nerskogen skisenter",
+      "lat": 62.7672,
+      "lon": 9.6219,
+      "hoyde": 871,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "nesfjellet-alpinsenter",
+      "navn": "Nesfjellet Alpinsenter",
+      "lat": 60.5353,
+      "lon": 9.0418,
+      "hoyde": 906,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "njunis",
+      "navn": "Njunis",
+      "lat": 68.7494,
+      "lon": 19.4886,
+      "hoyde": 1717,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "nordfjord-fritidssenter",
+      "navn": "Nordfjord fritidssenter",
+      "lat": 61.8556,
+      "lon": 6.4687,
+      "hoyde": 546,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "norefjell",
+      "navn": "Norefjell",
+      "lat": 60.2281,
+      "lon": 9.5696,
+      "hoyde": 859,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "nylendlia-skianlegg",
+      "navn": "Nylendlia skianlegg",
+      "lat": 59.982,
+      "lon": 11.0187,
+      "hoyde": 139,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "odda",
+      "navn": "Odda",
+      "lat": 60.0691,
+      "lon": 6.5456,
+      "hoyde": 2,
+      "type": "by",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "okla",
+      "navn": "Okla",
+      "lat": 62.6885,
+      "lon": 9.2146,
+      "hoyde": 1460,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "oksskolten",
+      "navn": "Oksskolten",
+      "lat": 66.0143,
+      "lon": 14.3385,
+      "hoyde": 1913,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "olavsbakken",
+      "navn": "Olavsbakken",
+      "lat": 69.9639,
+      "lon": 23.4404,
+      "hoyde": 80,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "oppdal",
+      "navn": "Oppdal",
+      "lat": 62.5943,
+      "lon": 9.6912,
+      "hoyde": 541,
+      "type": "by",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "oppdal-skisenter",
+      "navn": "Oppdal Skisenter",
+      "lat": 62.619,
+      "lon": 9.685,
+      "hoyde": 998,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "orskogfjell-skisenter",
+      "navn": "Ørskogfjell skisenter",
+      "lat": 62.537,
+      "lon": 6.9733,
+      "hoyde": 412,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "orsta-skisenter",
+      "navn": "Ørsta skisenter",
+      "lat": 62.1563,
+      "lon": 6.28,
+      "hoyde": 472,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "oslo",
+      "navn": "Oslo",
+      "lat": 59.9127,
+      "lon": 10.7461,
+      "hoyde": 10,
+      "type": "by",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "oslo-skisenter",
+      "navn": "Oslo Skisenter",
+      "lat": 59.9567,
+      "lon": 10.8097,
+      "hoyde": 319,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "otta",
+      "navn": "Otta",
+      "lat": 61.7712,
+      "lon": 9.5353,
+      "hoyde": 290,
+      "type": "by",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "prestenga-skipark",
+      "navn": "Prestenga Skipark",
+      "lat": 59.5907,
+      "lon": 11.164,
+      "hoyde": 123,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "prestkampen",
+      "navn": "Prestkampen",
+      "lat": 61.387,
+      "lon": 10.0757,
+      "hoyde": 1230,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "prestlia",
+      "navn": "Prestlia",
+      "lat": 63.8802,
+      "lon": 11.2819,
+      "hoyde": 67,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "rasletinden",
+      "navn": "Rasletinden",
+      "lat": 61.3951,
+      "lon": 8.6994,
+      "hoyde": 2103,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "rasttigaisa",
+      "navn": "Rásttigáisá",
+      "lat": 69.9982,
+      "lon": 26.2656,
+      "hoyde": 1060,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "rauland-skisenter",
+      "navn": "Rauland skisenter",
+      "lat": 59.7191,
+      "lon": 8.1547,
+      "hoyde": 949,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "raulandsfjell-alpinsenter",
+      "navn": "Raulandsfjell alpinsenter",
+      "lat": 59.7232,
+      "lon": 7.996,
+      "hoyde": 859,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "rauma-skisenter",
+      "navn": "Rauma skisenter",
+      "lat": 62.5974,
+      "lon": 7.658,
+      "hoyde": 452,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "reinebringen",
+      "navn": "Reinebringen",
+      "lat": 67.9279,
+      "lon": 13.0715,
+      "hoyde": 478,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "reineskarvet",
+      "navn": "Reineskarvet",
+      "lat": 60.7825,
+      "lon": 8.1608,
+      "hoyde": 1787,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "renafjellet-alpinsenter",
+      "navn": "Renåfjellet alpinsenter",
+      "lat": 61.7119,
+      "lon": 11.3008,
+      "hoyde": 757,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "ringerudsetra-skitrekk",
+      "navn": "Ringerudsetra skitrekk",
+      "lat": 60.4007,
+      "lon": 9.9989,
+      "hoyde": 732,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "ringkollen-alpinbakke",
+      "navn": "Ringkollen alpinbakke",
+      "lat": 60.1649,
+      "lon": 10.3856,
+      "hoyde": 552,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "rjukan",
+      "navn": "Rjukan",
+      "lat": 59.8789,
+      "lon": 8.5941,
+      "hoyde": 297,
+      "type": "by",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "roldal-skisenter",
+      "navn": "Røldal Skisenter",
+      "lat": 59.8262,
+      "lon": 6.7297,
+      "hoyde": 950,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "rombakstotta",
+      "navn": "Rombakstøtta",
+      "lat": 68.4338,
+      "lon": 17.58,
+      "hoyde": 1227,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "romsdalshornet",
+      "navn": "Romsdalshornet",
+      "lat": 62.4913,
+      "lon": 7.7859,
+      "hoyde": 1549,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "rondeslottet",
+      "navn": "Rondeslottet",
+      "lat": 61.9149,
+      "lon": 9.851,
+      "hoyde": 2177,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "roros",
+      "navn": "Røros",
+      "lat": 62.5743,
+      "lon": 11.3834,
+      "hoyde": 631,
+      "type": "by",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "roros-alpinsenter-hummelfjell",
+      "navn": "Røros Alpinsenter Hummelfjell",
+      "lat": 62.4783,
+      "lon": 11.2375,
+      "hoyde": 752,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "ruten",
+      "navn": "Ruten",
+      "lat": 63.1354,
+      "lon": 11.5593,
+      "hoyde": 1172,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "saebyggjenuten",
+      "navn": "Sæbyggjenuten",
+      "lat": 59.4618,
+      "lon": 7.6256,
+      "hoyde": 1506,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "saksa",
+      "navn": "Saksa",
+      "lat": 62.231,
+      "lon": 6.5507,
+      "hoyde": 1065,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "saslia-alpinanlegg",
+      "navn": "Såslia alpinanlegg",
+      "lat": 63.2821,
+      "lon": 11.0538,
+      "hoyde": 240,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "sauda-skisenter",
+      "navn": "Sauda skisenter",
+      "lat": 59.6208,
+      "lon": 6.2404,
+      "hoyde": 452,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "savalan-skisenter",
+      "navn": "Savalan skisenter",
+      "lat": 62.3157,
+      "lon": 10.5274,
+      "hoyde": 823,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "seilandstuva",
+      "navn": "Seilandstuva",
+      "lat": 70.4462,
+      "lon": 23.0956,
+      "hoyde": 1077,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "siljan-skisenter",
+      "navn": "Siljan skisenter",
+      "lat": 59.2779,
+      "lon": 9.6708,
+      "hoyde": 284,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "sirdal-skisenter",
+      "navn": "Sirdal Skisenter",
+      "lat": 58.9166,
+      "lon": 6.8388,
+      "hoyde": 704,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "sissihoa",
+      "navn": "Sissihøa",
+      "lat": 62.5326,
+      "lon": 9.7156,
+      "hoyde": 1620,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "sjusjoen-skisenter",
+      "navn": "Sjusjøen Skisenter",
+      "lat": 61.1163,
+      "lon": 10.7508,
+      "hoyde": 757,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "skagahogdi-skisenter",
+      "navn": "Skagahøgdi skisenter",
+      "lat": 60.7109,
+      "lon": 8.8971,
+      "hoyde": 657,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "skaget",
+      "navn": "Skaget",
+      "lat": 61.2911,
+      "lon": 9.1999,
+      "hoyde": 1684,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "skala",
+      "navn": "Skåla",
+      "lat": 61.8681,
+      "lon": 6.967,
+      "hoyde": 1829,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "skarslia-ski-og-akesenter",
+      "navn": "Skarslia Ski- og Akesenter",
+      "lat": 60.6859,
+      "lon": 8.285,
+      "hoyde": 978,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "skeikampen-alpinsenter",
+      "navn": "Skeikampen Alpinsenter",
+      "lat": 61.3506,
+      "lon": 10.0754,
+      "hoyde": 968,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "ski-geilo",
+      "navn": "Ski Geilo",
+      "lat": 60.5308,
+      "lon": 8.202,
+      "hoyde": 772,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "skien",
+      "navn": "Skien",
+      "lat": 59.2096,
+      "lon": 9.609,
+      "hoyde": 15,
+      "type": "by",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "skimore-oslo",
+      "navn": "Skimore Oslo",
+      "lat": 59.9915,
+      "lon": 10.651,
+      "hoyde": 388,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "slogen",
+      "navn": "Slogen",
+      "lat": 62.208,
+      "lon": 6.673,
+      "hoyde": 1556,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "smiubelgen",
+      "navn": "Smiubelgen",
+      "lat": 61.8913,
+      "lon": 9.679,
+      "hoyde": 1802,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "sno-oslo",
+      "navn": "SNØ Oslo",
+      "lat": 59.949,
+      "lon": 10.9554,
+      "hoyde": 203,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "snohetta",
+      "navn": "Snøhetta",
+      "lat": 62.3198,
+      "lon": 9.2677,
+      "hoyde": 2281,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "snonuten",
+      "navn": "Snønuten",
+      "lat": 59.5207,
+      "lon": 6.8644,
+      "hoyde": 1579,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "snota",
+      "navn": "Snota",
+      "lat": 62.8477,
+      "lon": 9.0946,
+      "hoyde": 1615,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "sogn-skisenter",
+      "navn": "Sogn skisenter",
+      "lat": 61.3345,
+      "lon": 7.1995,
+      "hoyde": 512,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "sogndal",
+      "navn": "Sogndal",
+      "lat": 61.2291,
+      "lon": 7.0967,
+      "hoyde": 6,
+      "type": "by",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "sogndal-skisenter",
+      "navn": "Sogndal skisenter",
+      "lat": 61.2943,
+      "lon": 6.9819,
+      "hoyde": 645,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "solen",
+      "navn": "Sølen",
+      "lat": 61.8841,
+      "lon": 11.517,
+      "hoyde": 1749,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "sollifjellet-alpinsenter",
+      "navn": "Sollifjellet alpinsenter",
+      "lat": 68.8044,
+      "lon": 16.3909,
+      "hoyde": 346,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "spatind",
+      "navn": "Spåtind",
+      "lat": 61.0771,
+      "lon": 9.7894,
+      "hoyde": 1411,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "spjelkavikheisa",
+      "navn": "Spjelkavikheisa",
+      "lat": 62.4565,
+      "lon": 6.3823,
+      "hoyde": 170,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "stavadalen-skisenter",
+      "navn": "Stavadalen skisenter",
+      "lat": 60.8434,
+      "lon": 9.3975,
+      "hoyde": 943,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "stavanger",
+      "navn": "Stavanger",
+      "lat": 58.969,
+      "lon": 5.7294,
+      "hoyde": 11,
+      "type": "by",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "steigalia-skitrekk",
+      "navn": "Steigalia skitrekk",
+      "lat": 63.0968,
+      "lon": 9.6888,
+      "hoyde": 276,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "steinkjer",
+      "navn": "Steinkjer",
+      "lat": 64.0148,
+      "lon": 11.4954,
+      "hoyde": 7,
+      "type": "by",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "stetinden",
+      "navn": "Stetinden",
+      "lat": 68.1651,
+      "lon": 16.5926,
+      "hoyde": 1390,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "stor-svuku",
+      "navn": "Stor-Svuku",
+      "lat": 62.2563,
+      "lon": 12.0628,
+      "hoyde": 1420,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "stordal-alpinsenter",
+      "navn": "Stordal alpinsenter",
+      "lat": 62.4097,
+      "lon": 7.2006,
+      "hoyde": 616,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "stordalen-skisenter",
+      "navn": "Stordalen skisenter",
+      "lat": 60.9496,
+      "lon": 5.6791,
+      "hoyde": 588,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "store-blamannen",
+      "navn": "Store Blåmannen",
+      "lat": 69.7351,
+      "lon": 18.5921,
+      "hoyde": 1040,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "store-hellstugutinden",
+      "navn": "Store Hellstugutinden",
+      "lat": 61.5444,
+      "lon": 8.4281,
+      "hoyde": 2333,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "store-lenangstinden",
+      "navn": "Store Lenangstinden",
+      "lat": 69.7092,
+      "lon": 20.0911,
+      "hoyde": 1372,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "store-memurutinden",
+      "navn": "Store Memurutinden",
+      "lat": 61.5663,
+      "lon": 8.483,
+      "hoyde": 2327,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "store-ringstind",
+      "navn": "Store Ringstind",
+      "lat": 61.442,
+      "lon": 7.8007,
+      "hoyde": 2101,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "store-skagastolstind",
+      "navn": "Store Skagastølstind",
+      "lat": 61.4612,
+      "lon": 7.8719,
+      "hoyde": 2402,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "store-smorstabbtinden",
+      "navn": "Store Smørstabbtinden",
+      "lat": 61.5717,
+      "lon": 8.119,
+      "hoyde": 2204,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "store-soleibotntinden",
+      "navn": "Store Soleibotntinden",
+      "lat": 61.4473,
+      "lon": 7.7864,
+      "hoyde": 2082,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "store-trolltinden",
+      "navn": "Store Trolltinden",
+      "lat": 62.4861,
+      "lon": 7.7184,
+      "hoyde": 1777,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "storebjorn",
+      "navn": "Storebjørn",
+      "lat": 61.5482,
+      "lon": 8.1371,
+      "hoyde": 2219,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "storeskar-skisenter",
+      "navn": "Storeskar skisenter",
+      "lat": 59.5765,
+      "lon": 9.2515,
+      "hoyde": 167,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "storronden",
+      "navn": "Storronden",
+      "lat": 61.8917,
+      "lon": 9.8623,
+      "hoyde": 2074,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "storskrymten",
+      "navn": "Storskrymten",
+      "lat": 62.3725,
+      "lon": 9.0618,
+      "hoyde": 1985,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "storsolnkletten",
+      "navn": "Storsølnkletten",
+      "lat": 61.9798,
+      "lon": 10.292,
+      "hoyde": 1827,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "storsylen",
+      "navn": "Storsylen",
+      "lat": 63.0202,
+      "lon": 12.1987,
+      "hoyde": 1755,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "strandafjellet-skisenter",
+      "navn": "Strandafjellet skisenter",
+      "lat": 62.2928,
+      "lon": 6.8397,
+      "hoyde": 461,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "stryn",
+      "navn": "Stryn",
+      "lat": 61.9026,
+      "lon": 6.7179,
+      "hoyde": 5,
+      "type": "by",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "stryn-vinterski",
+      "navn": "Stryn Vinterski",
+      "lat": 61.9266,
+      "lon": 6.6969,
+      "hoyde": 514,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "suliskongen",
+      "navn": "Suliskongen",
+      "lat": 67.1468,
+      "lon": 16.3773,
+      "hoyde": 1906,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "sunndal-alpinsenter",
+      "navn": "Sunndal alpinsenter",
+      "lat": 62.7787,
+      "lon": 8.5538,
+      "hoyde": 358,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "sunnfjord-skisenter",
+      "navn": "Sunnfjord skisenter",
+      "lat": 61.4716,
+      "lon": 5.7391,
+      "hoyde": 481,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "sunnmorsalpane-skiarena-fjellseter",
+      "navn": "Sunnmørsalpane Skiarena Fjellseter",
+      "lat": 62.3408,
+      "lon": 6.7514,
+      "hoyde": 633,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "surnadal-alpinsenter",
+      "navn": "Surnadal alpinsenter",
+      "lat": 62.962,
+      "lon": 8.6667,
+      "hoyde": 266,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "surtningssue",
+      "navn": "Surtningssue",
+      "lat": 61.5341,
+      "lon": 8.5727,
+      "hoyde": 2359,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "svolvaer",
+      "navn": "Svolvær",
+      "lat": 68.2352,
+      "lon": 14.5636,
+      "hoyde": 3,
+      "type": "by",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "synshorn",
+      "navn": "Synshorn",
+      "lat": 61.3399,
+      "lon": 8.7974,
+      "hoyde": 1465,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "sysendalen-skisenter",
+      "navn": "Sysendalen Skisenter",
+      "lat": 60.4165,
+      "lon": 7.3379,
+      "hoyde": 875,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "tagtvedtbakken",
+      "navn": "Tagtvedtbakken",
+      "lat": 59.0615,
+      "lon": 10.0652,
+      "hoyde": 16,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "torfinnstindane",
+      "navn": "Torfinnstindane",
+      "lat": 61.3738,
+      "lon": 8.574,
+      "hoyde": 2042,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "torghatten",
+      "navn": "Torghatten",
+      "lat": 65.3983,
+      "lon": 12.0907,
+      "hoyde": 257,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "torsbustaden-alpinsenter",
+      "navn": "Torsbustaden alpinsenter",
+      "lat": 63.6831,
+      "lon": 11.308,
+      "hoyde": 292,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "trolldalen-skisenter",
+      "navn": "Trolldalen skisenter",
+      "lat": 59.7869,
+      "lon": 10.8757,
+      "hoyde": 149,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "trollhotta",
+      "navn": "Trollhøtta",
+      "lat": 62.7325,
+      "lon": 9.7364,
+      "hoyde": 1380,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "tromsdalstinden",
+      "navn": "Tromsdalstinden",
+      "lat": 69.6072,
+      "lon": 19.1458,
+      "hoyde": 1238,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "tromso",
+      "navn": "Tromsø",
+      "lat": 69.6546,
+      "lon": 18.9637,
+      "hoyde": 6,
+      "type": "by",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "tromso-alpinpark",
+      "navn": "Tromsø Alpinpark",
+      "lat": 69.6704,
+      "lon": 19.0755,
+      "hoyde": 287,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "tron",
+      "navn": "Tron",
+      "lat": 62.1744,
+      "lon": 10.6948,
+      "hoyde": 1664,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "trondheim",
+      "navn": "Trondheim",
+      "lat": 63.4305,
+      "lon": 10.3951,
+      "hoyde": 9,
+      "type": "by",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "trysil",
+      "navn": "Trysil",
+      "lat": 61.3121,
+      "lon": 12.1985,
+      "hoyde": 860,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "tusten-skiheiser",
+      "navn": "Tusten Skiheiser",
+      "lat": 62.7729,
+      "lon": 7.2594,
+      "hoyde": 384,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "tveit-skisenter",
+      "navn": "Tveit skisenter",
+      "lat": 58.2043,
+      "lon": 8.1052,
+      "hoyde": 47,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "tverradalskyrkja",
+      "navn": "Tverrådalskyrkja",
+      "lat": 61.7429,
+      "lon": 7.6872,
+      "hoyde": 2077,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "tyin-filefjell",
+      "navn": "Tyin-Filefjell",
+      "lat": 61.1914,
+      "lon": 8.2335,
+      "hoyde": 943,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "tynset",
+      "navn": "Tynset",
+      "lat": 62.2752,
+      "lon": 10.7855,
+      "hoyde": 504,
+      "type": "by",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "ulriken",
+      "navn": "Ulriken",
+      "lat": 60.3775,
+      "lon": 5.3871,
+      "hoyde": 638,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "uranostinden",
+      "navn": "Uranostinden",
+      "lat": 61.4267,
+      "lon": 8.1504,
+      "hoyde": 2156,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "uvdal-alpinsenter-senteret",
+      "navn": "Uvdal alpinsenter (Senteret)",
+      "lat": 60.2943,
+      "lon": 8.5262,
+      "hoyde": 893,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "vadso",
+      "navn": "Vadsø",
+      "lat": 70.0803,
+      "lon": 29.7309,
+      "hoyde": 25,
+      "type": "by",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "vagakallen",
+      "navn": "Vågakallen",
+      "lat": 68.1889,
+      "lon": 14.2958,
+      "hoyde": 906,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "valdres-alpinsenter",
+      "navn": "Valdres Alpinsenter",
+      "lat": 60.9365,
+      "lon": 9.432,
+      "hoyde": 916,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "vassfjellet",
+      "navn": "Vassfjellet",
+      "lat": 63.2618,
+      "lon": 10.3561,
+      "hoyde": 702,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "vassfjellet-skisenter",
+      "navn": "Vassfjellet skisenter",
+      "lat": 63.2629,
+      "lon": 10.3825,
+      "hoyde": 383,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "vegarshei-skisenter",
+      "navn": "Vegårshei skisenter",
+      "lat": 58.7547,
+      "lon": 8.8586,
+      "hoyde": 214,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "vestvatnlia-alpinanlegg",
+      "navn": "Vestvatnlia alpinanlegg",
+      "lat": 67.0754,
+      "lon": 14.9592,
+      "hoyde": 378,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "vinterlandet-namsskogan",
+      "navn": "Vinterlandet Namsskogan",
+      "lat": 64.7485,
+      "lon": 12.8595,
+      "hoyde": 160,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "volda-skisenter",
+      "navn": "Volda skisenter",
+      "lat": 62.1586,
+      "lon": 6.1478,
+      "hoyde": 468,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "voss-resort-fjellheisar",
+      "navn": "Voss Resort Fjellheisar",
+      "lat": 60.6544,
+      "lon": 6.3932,
+      "hoyde": 659,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "vradal-panorama",
+      "navn": "Vrådal Panorama",
+      "lat": 59.3037,
+      "lon": 8.4326,
+      "hoyde": 535,
+      "type": "skisted",
+      "kilde": "osm"
+    }
+  ]
+}
