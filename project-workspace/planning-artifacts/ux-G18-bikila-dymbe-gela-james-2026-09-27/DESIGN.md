@@ -96,6 +96,12 @@ components:
     radius: '{rounded.sm}'
     background: '{colors.warning}'
     padding: '{spacing.3} {spacing.4}'
+  banner-demo:
+    radius: '{rounded.sm}'
+    background: '{colors.surface-sunken}'
+    borderColor: '{colors.ink-secondary}'
+    borderWidth: '1px'
+    padding: '{spacing.3} {spacing.4}'
 ---
 
 ## Brand & Style
@@ -125,8 +131,9 @@ bruksmønstre («rett før en tur» og planlegging kvelden før); dette kan snus
   Brukes aldri til noe annet (ikke til generisk status, ikke til kategori-tagger), slik at
   brukeren lærer seg at «denne fargeskalaen betyr snøpotensial» og ingenting annet.
 - **Danger/Warning/Success** er strengt semantiske og aldri dekorative: danger til feil og
-  utdaterte/fjernede data, warning til «siste kjente data» ved datakilde-nedetid, success til
-  bekreftelser (varsel registrert, tilbakemelding sendt).
+  utdaterte/fjernede data, warning til «siste kjente data» når dataene er eldre enn normalt,
+  success til bekreftelser. *(v2: snøvarsel og tilbakemelding er Ikke i v1, så success har
+  ingen fast bruk ennå; tokenet beholdes.)*
 - Unngå: å bruke SnowScore-skalaens blåtoner til noe som ikke er en SnowScore (ville lære
   brukeren feil mønster), og å bruke danger-rødt til noe som bare er informativt.
 
@@ -155,7 +162,7 @@ EXPERIENCE.md for full oppførsel.
 
 Ingen tunge skygger. SnowFinder er en flat, kartografisk flate — dybde kommer av tone
 (`surface-base` → `surface-raised` → `surface-sunken`), ikke skygge. Ett unntak: bunn-arket
-(filterpanel på mobil) og modaler (feedback-skjema) får en svak, kort skygge (`0 -2px 12px
+(filterpanel på mobil) og eventuelle modaler får en svak, kort skygge (`0 -2px 12px
 rgba(15,27,45,0.08)`) utelukkende for å signalisere at de flyter over kartet — aldri på kort i
 selve listen.
 
@@ -181,7 +188,16 @@ SnowScore-visning, slik at en bruker lærer «rundt = poengsum».
   aksentfarget fylt del. Levende tallverdi vises alltid ved siden av sliderens gripepunkt, ikke
   bare i et hjørne.
 - **Banner-stale-data** — Full bredde, warning-bakgrunn, ink-primary tekst (ikke hvit — bedre
-  kontrast mot gult/oker). Vises kun når data er eldre enn 3 t eller en datakilde er nede.
+  kontrast mot gult/oker). Vises når de nyeste dataene er eldre enn normalt (over 90 min), for
+  eksempel fordi en datakilde er nede.
+- **Banner-demo** *(v2)* — Full bredde, `{colors.surface-sunken}` bakgrunn med tynn
+  `{colors.ink-secondary}`-kant og ink-primary tekst: «Demodata – ikke ekte prognoser». Bevisst
+  nøytral og ikke warning-farget, så den ikke forveksles med banneret for gamle data.
+  `[ASSUMPTION: fargevalget er ikke bestemt av gruppa — nøytrale, eksisterende tokens valgt for å
+  unngå nye farger; kan endres.]`
+- **Datakvalitetspanel** *(v2)* — `{colors.surface-raised}` kort på forklaringssiden med
+  tallene i `numeric`. Bruker ikke SnowScore-skalaen; avviste svar vises som tall, ikke i
+  danger-rødt.
 - **Beste skivindu-kort** — `surface-sunken` bakgrunn (skiller det visuelt fra rådata-kortene
   rundt), tidsromtekst i `heading`, begrunnelse («etter nattens snøfall») i `meta`.
 
