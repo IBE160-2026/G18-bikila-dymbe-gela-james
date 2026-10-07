@@ -2,7 +2,8 @@
 title: 'Story 1.10: Kjør SnowFinder lokalt med demodata'
 type: 'feature'
 created: '2026-10-07'
-status: 'ready-for-dev'
+status: 'done'
+baseline_commit: '79ed66f50caf7493fb91452bbe75234c2fa8324b'
 route: 'dispatch'
 review_loop_iteration: 0
 context:
@@ -68,20 +69,56 @@ context:
 ## Tasks & Acceptance
 
 **Execution:**
-- [ ] `shared/contracts/met.ts`, `nve.ts`, `run.ts`, `published.ts`, `data-dictionary.md` -- Zod-skjemaer for MET-subsettet, NVE-svaret, `RunContext`, `RunReport`, `Sted` og `PublishedData` (`mode`, `referenceTime`, `runId`, `generert`, `report`, `steder`). `Sted`: katalogfeltene + `kildeTidspunkt`, `runId`, `snowScore` (resultatet fra modulen), `nysnoCm` (S omregnet), `temperatur` (T̄), `vindMaks` (maks i vinduet), `skydekke` (snitt %), `nveNysnoSisteDognMm` (eller `null`).
-- [ ] `shared/geo.ts` -- WGS84 → UTM33 (ren TS, ingen avhengighet) med test mot kjente punkter (±1 m).
-- [ ] `scripts/pipeline/run.ts`, `validate.ts`, `score.ts`, `publish.ts`, `sources/fixtures.ts` -- `run.ts --demo` leser demokatalog og fixtures; rapport i `finally`.
-- [ ] `tests/contract/record-fixtures.ts` + `npm run fixtures:record` -- tar opp fixtures for demokatalogen (kjøres for hånd).
-- [ ] `tests/contract/fixtures/` -- `demo-catalog.json`, `met/<id>.json`, `nve/<id>.json`, `README.md`.
-- [ ] `package.json` -- `data:demo` (`tsx scripts/pipeline/run.ts --demo`), `fixtures:record`.
-- [ ] `public/data/demo.json` -- generert og committet; `.gitignore` får `public/data/latest.json`.
-- [ ] `src/lib/clock.ts`, `src/lib/data/` (laster, parser med `PublishedData`, reserve), `src/components/DemoBanner.tsx`, `src/App.tsx` -- skall som viser banneret og «24 steder lastet».
-- [ ] Tester: kontraktstester for fixtures, score/publish (terskel, atomisk, ufullstendig), determinisme (byte-lik), lasteren (reserve, ødelagt fil) og klokka.
-- [ ] Rydd `supabase/`, `src/lib/supabase/`, `vite.config.ts`; README «Kom i gang» med demo og `npm run data:demo`.
+- [x] `shared/contracts/met.ts`, `nve.ts`, `run.ts`, `published.ts`, `data-dictionary.md` -- Zod-skjemaer for MET-subsettet, NVE-svaret, `RunContext`, `RunReport`, `Sted` og `PublishedData` (`mode`, `referenceTime`, `runId`, `generert`, `report`, `steder`). `Sted`: katalogfeltene + `kildeTidspunkt`, `runId`, `snowScore` (resultatet fra modulen), `nysnoCm` (S omregnet), `temperatur` (T̄), `vindMaks` (maks i vinduet), `skydekke` (snitt %), `nveNysnoSisteDognMm` (eller `null`).
+- [x] `shared/geo.ts` -- WGS84 → UTM33 (ren TS, ingen avhengighet) med test mot kjente punkter (±1 m).
+- [x] `scripts/pipeline/run.ts`, `validate.ts`, `score.ts`, `publish.ts`, `sources/fixtures.ts` -- `run.ts --demo` leser demokatalog og fixtures; rapport i `finally`.
+- [x] `tests/contract/record-fixtures.ts` + `npm run fixtures:record` -- tar opp fixtures for demokatalogen (kjøres for hånd).
+- [x] `tests/contract/fixtures/` -- `demo-catalog.json`, `met/<id>.json`, `nve/<id>.json`, `README.md`.
+- [x] `package.json` -- `data:demo` (`tsx scripts/pipeline/run.ts --demo`), `fixtures:record`.
+- [x] `public/data/demo.json` -- generert og committet; `.gitignore` får `public/data/latest.json`.
+- [x] `src/lib/clock.ts`, `src/lib/data/` (laster, parser med `PublishedData`, reserve), `src/components/DemoBanner.tsx`, `src/App.tsx` -- skall som viser banneret og «24 steder lastet».
+- [x] Tester: kontraktstester for fixtures, score/publish (terskel, atomisk, ufullstendig), determinisme (byte-lik), lasteren (reserve, ødelagt fil) og klokka.
+- [x] Rydd `supabase/`, `src/lib/supabase/`, `vite.config.ts`; README «Kom i gang» med demo og `npm run data:demo`.
 
 **Acceptance Criteria:**
 - Given et rent klon, when `npm ci && npm run lint && npm run typecheck && npm test && npm run build` kjøres uten nett, then alt er grønt.
 - Given `npm run dev`, when appen åpnes, then vises demobanneret og «24 steder lastet».
+
+## Implementation Notes
+
+- `WINDOW_HOURS = 24` og `selectWindow` ligger i `shared/snowscore.ts` (AD-6): timen som inneholder referansetiden og de neste 23.
+- Et sted er gyldig for 95 %-terskelen når MET-svaret er gyldig; avviste NVE-svar rapporteres, men teller ikke.
+- Bodø har ingen NVE-rute («No cell exists») og ble byttet med Mo i Rana i demokatalogen.
+- `.gitattributes` tvinger LF for `public/data/*.json` og fixtures, så byte-sjekken holder på Windows.
+
+## Spec Change Log
+
+## Review Triage Log
+
+**Gjennomgang 2026-10-07** (Blind Hunter, Edge Case Hunter, Verification Gap). Ingen intent_gap eller bad_spec, så ingen loopback.
+
+| # | Lag | Funn | Verdikt | Rute | Begrunnelse |
+|---|---|---|---|---|---|
+| 1 | blind, edge | 5xx eller nettverksfeil på `latest.json` gir demodata | medium | patch | Bekreftet i `tryFetch`: alt som ikke er `ok` blir «missing». Bare 404 og HTML-svar skal regnes som manglende. |
+| 2 | blind | `latest.json` hentes uten cache-styring | low | patch | Direkte rettelse: `cache: 'no-cache'`. |
+| 3 | vg, blind | Ingen test renderer appen (banner, «24 steder lastet», feil) | medium | patch | Akseptkriterium 2 er bare sjekket for hånd. Ren `AppView` + `renderToStaticMarkup` i node-miljøet. |
+| 4 | blind | Siden mangler `h1`, og skjelettet leses ikke opp | medium | patch | Bekreftet: tittelen er en `span`; `aria-label` på `div` uten rolle. |
+| 5 | vg | Gyldig MET uten timer i vinduet er ikke testet (`Math.max([])`) | low | patch | Én test; hindrer at ett sted stopper hele publiseringen. |
+| 6 | blind, edge | `parseNveDate` godtar måned 13 og time 25 | low | patch | Direkte rettelse: sjekk alle feltene. |
+| 7 | blind, edge | `NoDataValue` utenfor 0–1000 avviser hele NVE-svaret | medium | patch | Temalista bruker både 255 og 65535. |
+| 8 | vg, edge | Demoens referansetid kan komme fra et svar som senere avvises | low | patch | Bruk bare svar som validerer. |
+| 9 | blind | `antallUfullstendige` teller også avviste steder | low | patch | Tell bare gyldige steder med hull; presiser i ordboka. |
+| 10 | edge | `main()` uten `.catch`, og «Kjøringen feilet: undefined» | low | patch | Direkte rettelser. |
+| 11 | blind | Ordboka sier «før», koden «på eller før»; README-lenke og ordvalg | low | patch | Tekstrettelser; nevn at «Utdatert»-merking kommer i 1.9. |
+| 12 | vg | Exit-koden til `npm run data:demo` er ikke testet | medium | defer | Ingen bruker den ennå; hører til 1.11 når CI avhenger av den. |
+| 13 | vg | Ingen test av at klokke-lint-regelen slår til | low | defer | Billig å legge til med ESLints Node-API senere. |
+| 14 | blind, edge | Lint-regelen stopper ikke `Date()` eller `performance.now()` | low | reject | Krever flere selektorer; AD-10 nevner `Date.now()` og `new Date()`. |
+| 15 | edge | Midlertidig filnavn kan kollidere ved samtidig publisering | false | reject | Én kjøring om gangen (AD-2). |
+| 16 | edge | `varighetMs` kan bli NaN | false | reject | Tidene kommer fra koden selv, aldri fra eksterne data. |
+| 17 | edge | Opptaksskriptet mangler vakter mot delvis skriving | low | reject | Kjøres for hånd, og resultatet gjennomgås i git. |
+| 18 | edge | `baseUrl` uten skråstrek | false | reject | Vite sin `BASE_URL` slutter alltid med `/`. |
+| 19 | vg | `Math.max` med `null`-tidspunkt i en test | low | reject | Gjelder ikke dagens fixtures. |
+| 20 | blind | Status, KI-logg og fixtures mangler i diffen | false | reject | Status og logg tas i steg 5; fixtures ble utelatt med vilje og er sjekket med kontraktstester. |
 
 ## Design Notes
 

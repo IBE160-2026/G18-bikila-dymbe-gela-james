@@ -22,3 +22,9 @@
 - source_spec: `project-workspace/implementation-artifacts/spec-1-2-bygg-stedskatalogen.md`
   summary: Gjør orkestreringen i scripts/build-catalog/index.ts testbar (run(deps, paths) + tynn inngangsfil) og test de fatale stiene og den atomiske skrivingen.
   evidence: Story 1.2-gjennomgang (Verification Gap, Blind Hunter). Kastene for uløste seeds og manglende inkluder-navn, og «forrige fil står urørt», har ingen test; index.ts kaller main() ved import.
+- source_spec: `project-workspace/implementation-artifacts/spec-1-10-kjor-snowfinder-lokalt-med-demodata.md`
+  summary: Test exit-koden til dataprogrammet (ikke publisert → 1, manglende --demo → 2) når Story 1.11 lar CI avhenge av den.
+  evidence: Story 1.10-gjennomgang (Verification Gap). `main` i scripts/pipeline/run.ts er ikke eksportert, og alle tester kaller runDemo direkte.
+- source_spec: `project-workspace/implementation-artifacts/spec-1-10-kjor-snowfinder-lokalt-med-demodata.md`
+  summary: Test at ESLint-regelen mot Date.now()/new Date() i src/ faktisk slår til (ESLint Node-API i Vitest).
+  evidence: Story 1.10-gjennomgang (Verification Gap). I dag går lint grønt også hvis selektoren er feil, fordi ingen kode i src/ leser klokka.

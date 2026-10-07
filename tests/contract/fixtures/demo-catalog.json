@@ -1,0 +1,221 @@
+{
+  "generert": "2026-10-07T19:24:43Z",
+  "steder": [
+    {
+      "id": "bergen",
+      "navn": "Bergen",
+      "lat": 60.3932,
+      "lon": 5.3245,
+      "hoyde": 6,
+      "type": "by",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "galdhopiggen",
+      "navn": "Galdhøpiggen",
+      "lat": 61.6364,
+      "lon": 8.3125,
+      "hoyde": 2467,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "gaustatoppen",
+      "navn": "Gaustatoppen",
+      "lat": 59.8542,
+      "lon": 8.6492,
+      "hoyde": 1882,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "hafjell",
+      "navn": "Hafjell",
+      "lat": 61.237,
+      "lon": 10.4865,
+      "hoyde": 709,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "hemsedal-skisenter",
+      "navn": "Hemsedal skisenter",
+      "lat": 60.8511,
+      "lon": 8.5105,
+      "hoyde": 1077,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "jiehkkevarri",
+      "navn": "Jiehkkevárri",
+      "lat": 69.4693,
+      "lon": 19.8776,
+      "hoyde": 1830,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "kirkenes",
+      "navn": "Kirkenes",
+      "lat": 69.7271,
+      "lon": 30.045,
+      "hoyde": 9,
+      "type": "by",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "kjerag",
+      "navn": "Kjerag",
+      "lat": 59.0207,
+      "lon": 6.5805,
+      "hoyde": 1074,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "lillehammer",
+      "navn": "Lillehammer",
+      "lat": 61.1151,
+      "lon": 10.4663,
+      "hoyde": 196,
+      "type": "by",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "mo-i-rana",
+      "navn": "Mo i Rana",
+      "lat": 66.3128,
+      "lon": 14.1428,
+      "hoyde": 27,
+      "type": "by",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "narvikfjellet-ski-resort",
+      "navn": "Narvikfjellet Ski Resort",
+      "lat": 68.4283,
+      "lon": 17.4639,
+      "hoyde": 492,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "oksskolten",
+      "navn": "Oksskolten",
+      "lat": 66.0143,
+      "lon": 14.3385,
+      "hoyde": 1913,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "oppdal-skisenter",
+      "navn": "Oppdal Skisenter",
+      "lat": 62.619,
+      "lon": 9.685,
+      "hoyde": 998,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "oslo",
+      "navn": "Oslo",
+      "lat": 59.9127,
+      "lon": 10.7461,
+      "hoyde": 10,
+      "type": "by",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "rondeslottet",
+      "navn": "Rondeslottet",
+      "lat": 61.9149,
+      "lon": 9.851,
+      "hoyde": 2177,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "sirdal-skisenter",
+      "navn": "Sirdal Skisenter",
+      "lat": 58.9166,
+      "lon": 6.8388,
+      "hoyde": 704,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "snohetta",
+      "navn": "Snøhetta",
+      "lat": 62.3198,
+      "lon": 9.2677,
+      "hoyde": 2281,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "stavanger",
+      "navn": "Stavanger",
+      "lat": 58.969,
+      "lon": 5.7294,
+      "hoyde": 11,
+      "type": "by",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "store-skagastolstind",
+      "navn": "Store Skagastølstind",
+      "lat": 61.4612,
+      "lon": 7.8719,
+      "hoyde": 2402,
+      "type": "fjelltopp",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "tromso",
+      "navn": "Tromsø",
+      "lat": 69.6546,
+      "lon": 18.9637,
+      "hoyde": 6,
+      "type": "by",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "tromso-alpinpark",
+      "navn": "Tromsø Alpinpark",
+      "lat": 69.6704,
+      "lon": 19.0755,
+      "hoyde": 287,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "trondheim",
+      "navn": "Trondheim",
+      "lat": 63.4305,
+      "lon": 10.3951,
+      "hoyde": 9,
+      "type": "by",
+      "kilde": "kartverket"
+    },
+    {
+      "id": "trysil",
+      "navn": "Trysil",
+      "lat": 61.3121,
+      "lon": 12.1985,
+      "hoyde": 860,
+      "type": "skisted",
+      "kilde": "osm"
+    },
+    {
+      "id": "voss-resort-fjellheisar",
+      "navn": "Voss Resort Fjellheisar",
+      "lat": 60.6544,
+      "lon": 6.3932,
+      "hoyde": 659,
+      "type": "skisted",
+      "kilde": "osm"
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs'
 import fc from 'fast-check'
 import { describe, expect, it } from 'vitest'
-import { computeSnowScore, mmToCm, snowFraction, type HourlyValue, type SnowScoreResult } from './snowscore'
+import { computeSnowScore, mmToCm, selectWindow, snowFraction, WINDOW_HOURS, type HourlyValue, type SnowScoreResult } from './snowscore'
 
 interface GoldenCase {
   navn: string
@@ -193,5 +193,30 @@ describe('computeSnowScore invalid input', () => {
       { precipitationMm: -1, temperatureC: -2 },
     ]
     expect(() => computeSnowScore(hours)).toThrow(RangeError)
+  })
+})
+
+describe('selectWindow', () => {
+  const hourly = (startIso: string, count: number) =>
+    Array.from({ length: count }, (_, i) => ({ time: new Date(Date.parse(startIso) + i * 3_600_000).toISOString() }))
+
+  it('starts at the hour containing the reference time and covers 24 hours', () => {
+    const steps = hourly('2026-10-07T18:00:00Z', 40)
+    const window = selectWindow(steps, '2026-10-07T20:30:29Z')
+    expect(window).toHaveLength(WINDOW_HOURS)
+    expect(window[0]?.time).toBe('2026-10-07T20:00:00.000Z')
+    expect(window[23]?.time).toBe('2026-10-08T19:00:00.000Z')
+  })
+
+  it('leaves undefined slots for hours the source does not have', () => {
+    const steps = hourly('2026-10-07T20:00:00Z', 24).filter((_, i) => i !== 3 && i !== 23)
+    const window = selectWindow(steps, '2026-10-07T20:00:00Z')
+    expect(window[3]).toBeUndefined()
+    expect(window[23]).toBeUndefined()
+    expect(window.filter((step) => step === undefined)).toHaveLength(2)
+  })
+
+  it('throws on an invalid reference time', () => {
+    expect(() => selectWindow([], 'not a time')).toThrow(RangeError)
   })
 })

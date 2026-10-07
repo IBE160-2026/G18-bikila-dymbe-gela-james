@@ -119,3 +119,20 @@ export function computeSnowScore(hours: readonly HourlyValue[]): SnowScoreResult
     meanTemperatureC,
   }
 }
+
+/** Decided 2026-10-07 (Story 1.10): SnowScore covers the next 24 hours from the reference time. */
+export const WINDOW_HOURS = 24
+
+const HOUR_MS = 3_600_000
+
+/**
+ * Picks the forecast steps for the SnowScore window: the hour containing `referenceTime` and the
+ * 23 after it. A slot is `undefined` when the source has no step for that hour, which the caller
+ * maps to a missing hour (null), so gaps count towards the incomplete-data rule.
+ */
+export function selectWindow<T extends { time: string }>(steps: readonly T[], referenceTime: string): (T | undefined)[] {
+  const start = Math.floor(Date.parse(referenceTime) / HOUR_MS) * HOUR_MS
+  if (!Number.isFinite(start)) throw new RangeError(`Invalid reference time: ${referenceTime}`)
+  const byTime = new Map(steps.map((step) => [Date.parse(step.time), step]))
+  return Array.from({ length: WINDOW_HOURS }, (_, i) => byTime.get(start + i * HOUR_MS))
+}
