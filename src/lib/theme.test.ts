@@ -5,14 +5,19 @@ import { colors, rounded, spacing, typography } from './theme'
 // AD-9: theme.ts is the source of truth; tokens.css must define exactly the same variables and values.
 
 type Vars = Map<string, string>
+type ParsedCss = { vars: Vars; duplicates: string[] }
 
-function parseCssVars(css: string): Vars {
+function parseCssVars(css: string): ParsedCss {
   const vars: Vars = new Map()
+  const duplicates: string[] = []
   const withoutComments = css.replace(/\/\*[\s\S]*?\*\//g, '')
   for (const match of withoutComments.matchAll(/--([A-Za-z0-9-]+)\s*:\s*([^;]+);/g)) {
-    vars.set(`--${match[1]}`, match[2].trim())
+    const name = `--${match[1]}`
+    // A second declaration silently overrides the first, so it counts as drift instead of being checked.
+    if (vars.has(name)) duplicates.push(name)
+    else vars.set(name, match[2].trim())
   }
-  return vars
+  return { vars, duplicates }
 }
 
 function kebab(prop: string): string {
@@ -31,8 +36,8 @@ function themeVars(): Vars {
 }
 
 /** Returns one message per drift, each naming the variable; empty when in sync. */
-function compareTokens(expected: Vars, actual: Vars): string[] {
-  const problems: string[] = []
+function compareTokens(expected: Vars, { vars: actual, duplicates }: ParsedCss): string[] {
+  const problems: string[] = duplicates.map((name) => `duplicate variable ${name}`)
   for (const [name, value] of expected) {
     const cssValue = actual.get(name)
     if (cssValue === undefined) problems.push(`missing variable ${name}`)
@@ -70,5 +75,11 @@ describe('design tokens (AD-9)', () => {
     const expected: Vars = new Map([['--spacing-1', '4px']])
     const problems = compareTokens(expected, parseCssVars(':root { --spacing-1: 4px; --spacing-99: 1px; }'))
     expect(problems).toEqual(['extra variable --spacing-99'])
+  })
+
+  it('reports a duplicate variable by name', () => {
+    const expected: Vars = new Map([['--spacing-1', '4px']])
+    const problems = compareTokens(expected, parseCssVars(':root { --spacing-1: 4px; --spacing-1: 5px; }'))
+    expect(problems).toEqual(['duplicate variable --spacing-1'])
   })
 })

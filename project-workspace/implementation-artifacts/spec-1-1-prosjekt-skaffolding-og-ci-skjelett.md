@@ -2,7 +2,7 @@
 title: 'Story 1.1: Project scaffolding and CI skeleton'
 type: 'chore'
 created: '2026-09-27'
-status: 'in-progress'
+status: 'done'
 baseline_commit: 'dcd81e6c2923560873201f298bed121e7841ddca'
 route: 'dispatch'
 review_loop_iteration: 0
@@ -85,6 +85,26 @@ context:
 ## Review Triage Log
 
 - Pre-approval spec review (subagent), 9 findings, all accepted: exact dev-dep pins incl. TS 6.0.3 (high); test file types for reading tokens.css (high); Vitest include per AD-4 (medium); token naming/compare examples (medium); tsc -b project-reference pattern (medium); dark mode deferred explicitly (low); app shell wiring (low); CI permissions/cache/Linux lockfile (low); ESLint ignores + react-hooks preset (low).
+
+**Implementation review, 2026-10-07** (Blind Hunter, Edge Case Hunter, Verification Gap). There are no intent_gap or bad_spec findings, so there is no loopback.
+
+| # | Layer | Finding | Verdict | Route | Evidence |
+|---|---|---|---|---|---|
+| 1 | blind | `package-lock.json` missing from the diff | false | reject | The file is tracked and committed; the coordinator left it out of the review diff on purpose (generated file). |
+| 2 | blind, verification-gap | Windows-made lockfile not proven on Linux / Node 24 | maybe-false | settled by PR CI | It lists `@rolldown/binding-linux-x64-gnu`. The first CI run on the PR decides it. |
+| 3 | blind | Spec status and triage log do not match the work | false | reject | Status set to `in-review` in step 4. This log is written in step 5, as the workflow defines. |
+| 4 | blind | Dark-mode deferral recorded only in a CSS comment | false | reject | Recorded in the frozen intent (Boundaries, "Always": dark mode switching deferred). |
+| 5 | blind, edge | `parseCssVars` silently overwrites a variable declared twice | low | patch | `Map.set` keeps the last value. Now reported as `duplicate variable`, with a test. |
+| 6 | edge | `engines >=24` admits Node 25, which vitest 5.0.1 excludes | low | patch | Vitest engines are `^22.12.0 \|\| ^24.0.0 \|\| >=26.0.0`. Changed to `^24.0.0 \|\| >=26.0.0`. |
+| 7 | blind, edge | CI has no timeout or concurrency control | low | patch | Added `timeout-minutes: 15` and a concurrency group that cancels outdated runs. |
+| 8 | blind | README does not show the CI gates (lint, typecheck, build) and uses `npm install` | low | patch | README is graded (criterion 6). It now uses `npm ci` and lists all gates. |
+| 9 | blind, edge | CSS parser reads declarations outside `:root` | low | defer | Only one `:root` block exists today. This becomes real with dark mode. |
+| 10 | blind | ESLint uses browser globals for every file; `scripts/`, `supabase/functions/` and `tests/` are not type-checked | low | defer | No code exists there yet. Due with Stories 1.2 and 1.3. |
+| 11 | blind | Nothing checks that CSS uses only `var(--…)`, or that `theme.ts` matches DESIGN.md | low | defer | Values match today (checked by hand by Verification Gap). It needs tooling (stylelint or a frontmatter test). |
+| 12 | blind | Inter font named but never loaded | low | defer | Falls back to `system-ui`. Decide in the first UI story (NFR-2 performance). |
+| 13 | blind | No favicon, description or theme-color; actions not SHA-pinned; no `npm audit` | low | defer | Cosmetic or hardening. Fits Story 4.1 (PWA) and Dependabot. |
+| 14 | blind | No `.gitignore` entries for `node_modules/`, `dist/`, `coverage/` | false | reject | Already present in the root `.gitignore` (lines 2, 5, 9, 33). |
+| 15 | verification-gap | Gap screen of the token drift test | — | none | No gaps. The test is tied to the real exports and the real file, and each matrix row has a passing test. |
 
 ## Verification
 

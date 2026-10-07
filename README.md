@@ -13,12 +13,15 @@ Repoet inneholder gruppens applikasjon og dokumentasjon av utvikling, testing og
 
 ## Kom i gang
 
-Krever Node 24 eller nyere.
+Krever Node 24, eller Node 26 eller nyere (Node 25 støttes ikke).
 
 ```sh
-npm install   # installer avhengighetene
-npm run dev   # start utviklingsserveren
-npm test      # kjør enhetstestene
+npm ci              # installer avhengighetene fra package-lock.json
+npm run dev         # start utviklingsserveren
+npm run lint        # kjør ESLint
+npm run typecheck   # sjekk typene
+npm test            # kjør enhetstestene
+npm run build       # bygg produksjonsversjonen
 ```
 
 ## Dokumentasjon
