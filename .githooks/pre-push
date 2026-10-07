@@ -1,0 +1,27 @@
+#!/bin/sh
+# Local stand-in for CI until GitHub Actions is enabled for the repo.
+# Installed by `npm ci` / `npm install` (the `prepare` script sets core.hooksPath).
+# Emergency bypass: git push --no-verify
+
+# Git passes one line per ref: <local ref> <local sha> <remote ref> <remote sha>
+while read -r local_ref local_sha remote_ref remote_sha; do
+  if [ "$remote_ref" = "refs/heads/main" ]; then
+    echo "pre-push: push direkte til main er ikke tillatt. Lag en grein og en pull request." >&2
+    exit 1
+  fi
+done
+
+# The checks run on the files on disk, so they only reflect the pushed commits when
+# there are no uncommitted changes to tracked files.
+if [ -n "$(git status --porcelain --untracked-files=no)" ]; then
+  echo "pre-push: du har endringer som ikke er committet. Commit eller stash dem først, så sjekkene tester det som faktisk pushes." >&2
+  exit 1
+fi
+
+for check in lint typecheck test build; do
+  echo "pre-push: npm run $check"
+  if ! npm run --silent "$check"; then
+    echo "pre-push: «npm run $check» feilet, pushen er stoppet. Rett feilen og prøv igjen." >&2
+    exit 1
+  fi
+done
