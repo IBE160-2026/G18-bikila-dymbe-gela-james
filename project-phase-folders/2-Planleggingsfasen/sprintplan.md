@@ -37,7 +37,8 @@ når disse sidene bygges i sprint 2.
 | Story | Status | Merknad |
 |---|---|---|
 | 1.1 Prosjekt-skaffolding og CI | Spec godkjent (`ready-for-dev`) | Gjennomgått av en underagent. Ni rettelser, blant annet eksakt TypeScript 6.0.3. Ikke implementert ennå. |
-| 1.4, 1.2, 2.1–2.4 | Ikke startet | |
+| 1.2 Bygg stedskatalogen | Implementert og gjennomgått (`review`) | Fil i stedet for database (arkitektur v4). 300 steder i `data/catalog.json`. Navnelista bør gjennomgås av gruppa i PR-en. |
+| 1.4, 2.1–2.4 | Ikke startet | |
 
 ## Dette må gruppa sette opp før sprint 2
 

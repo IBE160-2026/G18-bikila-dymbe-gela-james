@@ -19,3 +19,6 @@
 - source_spec: `project-workspace/implementation-artifacts/spec-lokale-git-hooks.md`
   summary: En .gitattributes-regel for hele repoet (* text=auto) som stopper støy fra linjeskift i diffene, og eventuelt en liten automatisk test av hooken.
   evidence: Gjennomgang 2026-10-07: core.autocrlf gir CRLF-advarsler på flere filer. Hooken er bare manuelt verifisert på Windows (Git Bash, Node 26), ikke på Mac, Linux eller Node 24.
+- source_spec: `project-workspace/implementation-artifacts/spec-1-2-bygg-stedskatalogen.md`
+  summary: Gjør orkestreringen i scripts/build-catalog/index.ts testbar (run(deps, paths) + tynn inngangsfil) og test de fatale stiene og den atomiske skrivingen.
+  evidence: Story 1.2-gjennomgang (Verification Gap, Blind Hunter). Kastene for uløste seeds og manglende inkluder-navn, og «forrige fil står urørt», har ingen test; index.ts kaller main() ved import.
