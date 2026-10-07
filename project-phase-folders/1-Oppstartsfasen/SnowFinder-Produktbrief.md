@@ -4,6 +4,12 @@
 
 *Finn de beste prognostiserte forholdene – før alle andre.*
 
+> **Gjeldende versjon** er `project-phase-folders/1-Oppstartsfasen/SnowFinder-Produktbrief.md`.
+> Kopien i `project-workspace/planning-artifacts/product-brief.md` er BMADs arbeidskopi og holdes
+> lik. Sist oppdatert 2026-10-07 etter faglærers tilbakemelding
+> ([tilbakemelding-product-brief.md](tilbakemelding-product-brief.md)) og en godkjent
+> endringsrunde. Tekniske detaljer står i PRD-en og arkitekturen.
+
 ## Executive Summary
 
 SnowFinder er en webapp for alle som er ute etter snø. Den finner stedene og tidspunktene med best prognostiserte snøforhold blant stedene i katalogen. Brukeren ser landet fargelagt etter forholdene, filtrerer på egne krav som «minst 15 mm nysnø og vind under 6 m/s», og kan få varsel på mobilen når et sted oppfyller kravene.
@@ -14,7 +20,7 @@ Bak brukeropplevelsen ligger en datapipeline som henter, validerer og publiserer
 
 ## The Problem
 
-Den som vil finne snø, må i dag sjekke flere tjenester og selv vurdere om nedbøren blir snø, om det blåser for mye og når på dagen det klarner opp. Informasjonen er fragmentert, rådataene svarer ikke på hvor og når forholdene er best, og ingen tjeneste lar deg spørre «hvor i Norge oppfylles kravene mine nå?».
+Den som vil finne snø, må i dag sjekke flere tjenester og selv vurdere om nedbøren blir snø, om det blåser for mye og når på dagen det klarner opp. Informasjonen er fragmentert, og rådataene svarer ikke på hvor og når forholdene er best. Ingen tjeneste vi kjenner lar deg spørre «hvor i Norge oppfylles *alle* kravene mine nå?», med nysnø, vind og temperatur samtidig.
 
 ## Target Users
 
@@ -88,7 +94,37 @@ Tilbakemeldinger slettes automatisk etter tolv måneder.
 - **Oppgavebasert brukertest** med minst fem personer, som måler om de klarer å finne et aktuelt sted, justere filteret, forklare en SnowScore, oppdage utdaterte data og skille prognose fra faktiske forhold.
 - **Sperret hovedgren:** kode flettes bare inn via Pull Request med grønne tester og godkjenning fra et gruppemedlem.
 
-For et studentprosjekt med begrenset tid er det reelle må ha-minimumet: egenskapsbaserte tester av SnowScore, kontraktstester mot MET/NVE, og én E2E-røyktest av kart → filter → stedsside. Full sikkerhetstesting og den oppgavebaserte brukertesten med fem personer er mål vi strekker oss etter, men regnes som «bør ha»-dybde og blokkerer ikke en «må ha»-leveranse.
+For et studentprosjekt med begrenset tid er det reelle må ha-minimumet:
+- egenskapsbaserte tester av SnowScore;
+- kontraktstester mot MET og NVE;
+- fasittabeller for regneeksempelet og filteret;
+- én E2E-røyktest av kart → filter → stedsside.
+
+Full sikkerhetstesting og den oppgavebaserte brukertesten med fem personer er mål vi strekker oss etter, men regnes som «bør ha»-dybde og blokkerer ikke en «må ha»-leveranse.
+
+### Lokal demomodus
+
+Hvem som helst, også sensor, kan klone repoet og starte SnowFinder med `npm ci && npm run dev` uten nøkler, kontoer eller tilgang til gruppas tjenester.
+- Appen viser da et demodatasett som er bygget av samme kode som pipelinen, fra lagrede MET- og NVE-svar. Datasettet viser også tilstander som «ufullstendige data» og utdaterte data.
+- Demomodus er tydelig merket i grensesnittet.
+- Full lokal kjøring med database er beskrevet i README for dem som har Docker.
+
+## What Makes This Different
+
+Det finnes allerede gode tjenester. Hver av dem svarer på et annet spørsmål enn SnowFinder:
+
+| **Tjeneste** | **Hva den gir** | **Hva den ikke gir** |
+|---|---|---|
+| [yr.no](https://www.yr.no) | Prognose for ett sted om gangen | Sammenligning av mange steder mot brukerens egne krav |
+| [seNorge.no](https://www.senorge.no) (NVE) | Simulert snø og prognose for nysnø i hele landet, som rasterkart | Filter på flere krav samtidig (nysnø *og* vind *og* temperatur), forklart poengsum og varsel per sted |
+| [fnugg.no](https://www.fnugg.no) og [skiinfo.no](https://www.skiinfo.no) | Rapporter og forhold fra alpinanlegg | Steder utenfor anleggene (topper, langrenn), og felles, etterprøvbar vurdering på tvers |
+
+SnowFinder skiller seg ut på tre punkter:
+1. **Søk på egne krav på tvers av landet.** Filteret gir bare stedene som oppfyller alle kravene samtidig.
+2. **Én åpen poengsum.** SnowScore er en åpen og etterprøvbar formel med delpoeng og regneeksempel.
+3. **Ærlig om datakvaliteten.** Appen viser alder og kvalitet på dataene.
+
+SnowFinder bruker selv data fra MET og NVE og erstatter ingen av dem. Den sammenstiller dataene for et konkret spørsmål.
 
 ## Scope for Version 1
 
@@ -96,11 +132,13 @@ Prioriteringen følger **MoSCoW-metoden**: Must have, Should have og Won't have.
 
 | **Prioritet (MoSCoW)** | **Funksjoner** |
 |---|---|
-| Må ha (Must have) | Norgeskart, tilgjengelig listevisning som alternativ til kartet, stedssider, stedskatalog, datapipeline med validering, SnowScore med forklaringsside, filter for nysnø (prognose), vind og temperatur, robust feilhåndtering, CI med tester |
-| Bør ha (Should have) | Beste skivindu, kalkulator på forklaringssiden, snøvarsel, solfilter, avstandsfilter, nysnø siste 24 t, tilbakemelding uten konto |
+| Må ha (Must have) | Lokal demomodus med ferdige data, Norgeskart, tilgjengelig listevisning som alternativ til kartet, stedssider, stedskatalog, enkel datapipeline (én planlagt jobb) med validering og datakvalitet per kjøring, SnowScore med forklaringsside, filter for nysnø (prognose), vind og temperatur, siste gyldige data ved nedetid, CI med tester |
+| Bør ha (Should have) | Beste skivindu, kalkulator på forklaringssiden, snøvarsel, solfilter, avstandsfilter, nysnø siste 24 t, tilbakemelding uten konto, kretsbryter og varsling av gruppen, analyse av SnowScore mot målte forhold |
 | Ikke i v1 (Won't have) | Brukerkontoer, flere språk, webkameraer, app i appbutikkene, skredvarsling, målt snødybde, booking, generativ værchat |
 
 Versjon 1 er prosjektets **MVP** (minimum viable product) og har bevisst ingen brukerkontoer. Det gjør løsningen enklere, reduserer angrepsflaten og holder behandlingen av personopplysninger på et minimum.
+
+Kjeden stedskatalog → data → SnowScore → kart/liste → stedsside → filter skal virke stabilt før noe annet bygges. Hvis «må ha» ikke er stabilt halvveis i implementeringen (etter sprint 2), utsettes snøvarsel og tilbakemelding. Begge krever eksterne tjenester (Web Push og Turnstile) som sensor ikke kan teste.
 
 ## Data Sources and Pipeline
 
@@ -115,15 +153,15 @@ Alle kilder krediteres i tråd med lisensene sine (CC BY 4.0, NLOD og ODbL), syn
 
 **Stedskatalogen** bygges fra OpenStreetMap (skianlegg og langrennsarenaer), Kartverket (navngitte fjelltopper og tettsteder) og en manuelt kvalitetssikret liste, Versjon 1 starter med ca. 300 nøye utvalgte steder. Katalogen utvides mot 1 500 steder først når pipelinen har kjørt stabilt, siden arkitekturen tåler økningen uten endringer. OpenStreetMap og Kartverket brukes bare når katalogen bygges, ikke i den løpende datainnhentingen.
 
-**Pipelinen** kjører hver time som en køstyrt jobb i puljer, slik at ingen enkeltkjøring overskrider tidsgrensene i Supabase og en avbrutt kjøring fortsetter der den slapp:
+**Pipelinen** er én planlagt jobb som kjører hver time:
+1. Den henter data for stedene, og respekterer METs vilkår.
+2. Hvert svar valideres mot et strengt skjema. Ugyldige svar avvises og logges, og de rettes aldri automatisk.
+3. SnowScore beregnes.
+4. Resultatet publiseres samlet bare hvis minst 95 % av stedene har gyldige data. Ellers beholdes forrige versjon.
 
-1. Koordinater avrundes til fire desimaler og sendes med stedets høyde, slik at MET korrigerer temperaturen for terrenget.
-2. Kall sendes med identifiserende User-Agent og `If-Modified-Since`, og data hentes bare på nytt når `Expires` er passert. Samtidige kall begrenses, og lasten holdes godt innenfor METs vilkår.
-3. Hvert svar valideres mot et strengt skjema. Ugyldige svar avvises og logges, de rettes aldri automatisk.
-4. Alle tidspunkter lagres i UTC og vises i norsk tid med riktig sommertid. Dagslystimer beregnes lokalt med SunCalc, uten avhengighet til en ekstra tjeneste.
-5. SnowScore, beste skivindu og filterverdier beregnes og skrives til en staging-tabell.
-6. Batchen publiseres atomisk bare hvis minst 95 % av stedene er gyldige. Ellers beholdes forrige versjon.
-7. Varselregler evalueres mot de nye dataene, og varsler sendes.
+Hver kjøring lagrer en kort kvalitetsrapport: andel gyldige steder, avviste svar og manglende timer. Hver publisert poengsum kan spores tilbake til kjøringen og rådataene den kom fra.
+
+Kretsbryter, kontrollerte nye forsøk og varsling av gruppen er «bør ha». Detaljene står i PRD-en og arkitekturen.
 
 ## SnowScore
 
@@ -171,49 +209,26 @@ Mangler mer enn 10 % av timene, vises «ufullstendige data» i stedet for en poe
 
 - **Frakoblet arkitektur:** nettsiden leser kun publiserte data. Faller MET eller NVE ut, fungerer SnowFinder videre med siste gyldige data.
 - **Ærlig alder på data:** data eldre enn tre timer merkes «utdatert», og steder med data eldre enn tolv timer tas ut av kart, filter og varsler.
-- **Kontrollerte nye forsøk:** eksponentiell ventetid med tilfeldig variasjon, fast maksimum og en kretsbryter per datakilde.
+- **Kontrollerte nye forsøk (bør ha):** eksponentiell ventetid med tilfeldig variasjon, fast maksimum og en kretsbryter per datakilde.
 - **Idempotente jobber:** samme jobb gir samme resultat ved ny kjøring, og samtidige kjøringer blokkeres. Varsler har en unik nøkkel per regel og døgn, slik at ingen får samme varsel to ganger.
 - **Minste privilegium:** hemmelige nøkler finnes bare på serversiden, Row Level Security gjelder alle tabeller, og klienten har kun lesetilgang til publiserte data. All skriving går gjennom Edge Functions.
 - **Vern mot misbruk:** hastighetsbegrensning på alle åpne endepunkter, streng validering av inndata, Content Security Policy og automatiske avhengighetsoppdateringer.
-- **Overvåking:** mislykkede jobber, avviste svar og utløste kretsbrytere logges og varsler gruppen.
+- **Overvåking:** hver kjøring lagrer en kvalitetsrapport, og mislykkede jobber og avviste svar logges. Aktiv varsling av gruppen er «bør ha».
 
 ## Proposed Architecture
 
+Overordnet bilde. Komponenter, regler og datamodell står i [arkitekturen](../2-Planleggingsfasen/SnowFinder-Arkitektur.md).
+
 ```mermaid
 flowchart LR
-    U["Bruker<br/>mobil og PC"] --> FE["React-webapp<br/>kart, filter, stedssider,<br/>SnowScore-side, tilbakemelding"]
+    U["Bruker<br/>mobil og PC"] --> FE["React-webapp"]
     FE -- "kun lesing" --> DB[("Supabase<br/>publiserte data")]
-    FE -- "tilbakemelding" --> EF["Edge Function<br/>Turnstile, validering,<br/>hastighetsgrense"]
-    EF --> FB[("feedback")]
-    FE -- "følg sted" --> EF
-
-    subgraph PIPE["Datapipeline hver time"]
-        J["Planlagt jobb"] --> CB["Kretsbryter og<br/>kontrollerte forsøk"]
-        CB --> MET["MET Norway"]
-        CB --> NVE["NVE seNorge"]
-        MET --> V["Skjemavalidering"]
-        NVE --> V
-        V --> S["SnowScore og<br/>beste skivindu"]
-        S --> ST[("Staging")]
-        ST -- "minst 95 % gyldige" --> PUB["Atomisk publisering"]
-        PUB --> AL["Varselmotor"]
-    end
-
-    PUB --> DB
-    EF --> AR[("Varselregler")]
-    AR --> AL
-    AL --> PUSH["Push-varsel"]
-    PUSH --> U
-    V -- "avvist svar" --> LOG[("api_incidents")]
-    LOG --> TEAM["Varsel til gruppen"]
-    EF --> TEAM
-
-    subgraph QA["Kvalitetssikring"]
-        PR["Pull Request"] --> T["Enhets-, egenskaps-,<br/>kontrakts- og E2E-tester"]
-        T --> G["Godkjenning"]
-    end
-
-    G -- "publisering" --> FE
+    FE -. "demomodus" .-> DEMO[("Demodata<br/>fra lagrede svar")]
+    J["Planlagt jobb<br/>hver time"] --> MET["MET og NVE"]
+    MET --> J
+    J -- "validert, minst 95 % gyldige" --> DB
+    FE -- "bør ha: følg sted,<br/>tilbakemelding" --> EF["Edge Functions"]
+    EF --> DB
 ```
 
 | **Område** | **Teknologi** |
@@ -254,17 +269,24 @@ SnowFinder krever ingen brukerkonto og lagrer ikke navn, e-postadresse eller bru
 
 ## Success Criteria
 
-| **Område** | **Målbart kriterium** |
-|---|---|
-| Ytelse | 95 % av filtersøk svarer på under 2 sekunder, og kartet er interaktivt innen 3 sekunder på mobil |
-| Ferskhet | Publiserte data er normalt under 90 minutter gamle |
-| Robusthet | Tjenesten fungerer med siste gyldige data når en datakilde simuleres nede |
-| Korrekthet | Egenskapstestene passerer for minst 10 000 tilfeldige inndata |
-| Nytte | Minst 4 av 5 testbrukere fullfører oppgaven «finn et skisted som oppfyller et gitt krav, f.eks. minst 15 mm nysnø og vind under 6 m/s» på under 2 minutter i en veiledet brukertest, uten hjelp fra testleder |
-| Dataforståelse | Minst 4 av 5 testbrukere skiller prognose fra faktiske forhold og oppdager utdaterte data |
-| Forklarbarhet | Minst 4 av 5 testbrukere kan forklare en vist SnowScore etter å ha lest forklaringssiden |
-| Tilgjengelighet | Filter, stedssider, forklaringsside, skjema for tilbakemelding og snøvarsel oppfyller WCAG 2.1 AA. Norgeskartets tilgjengelige listevisning (tastaturnavigerbar, med tekst/tall i tillegg til farge) oppfyller AA i sin helhet; selve det visuelle kartlaget er unntatt, siden full AA-etterlevelse på et Leaflet-kart ikke er realistisk innenfor prosjektets tidsramme |
-| Sporbarhet | Alle endringer i hovedgrenen kommer via godkjente Pull Requests |
+Kriteriene er delt etter hvordan de verifiseres, slik at det er tydelig hva som faktisk er sjekket.
+
+| **Område** | **Målbart kriterium** | **Verifiseres** |
+|---|---|---|
+| Kjerneflyt | En bruker kan åpne kartet, sette et filter og åpne en stedsside fra resultatet, også i demomodus | Automatisk (E2E i CI) |
+| Korrekthet | Egenskapstestene for SnowScore passerer for minst 1 000 tilfeldige inndata, og fasittabellene for regneeksempel og filter stemmer | Automatisk (CI) |
+| Robusthet | Tjenesten fungerer med siste gyldige data når en datakilde simuleres nede | Automatisk (CI) |
+| Datakvalitet | Hver kjøring lagrer en kvalitetsrapport, og hver publisert verdi kan spores til kjøringen | Automatisk (CI) |
+| Tilgjengelighet | Filter, stedssider, forklaringsside og listevisning har null kritiske WCAG 2.1 AA-brudd i automatisk sjekk. Selve kartlaget er unntatt; listevisningen er det fulle alternativet | Automatisk (CI) |
+| Sporbarhet | Alle endringer i hovedgrenen kommer via godkjente Pull Requests | Automatisk (grenbeskyttelse) |
+| Kjørbarhet | Et gruppemedlem starter appen fra et rent klon kun etter README, på under 10 minutter | Manuelt, tidlig og før hver innlevering |
+| Ytelse | 95 % av filtersøk svarer på under 2 sekunder, og kartet er interaktivt innen 3 sekunder på mobil | Manuelt, med måledata |
+| Ferskhet | Publiserte data er normalt under 90 minutter gamle | Manuelt, fra kvalitetsrapportene i drift |
+| Nytte | Minst 4 av 5 testbrukere fullfører oppgaven «finn et skisted som oppfyller et gitt krav, f.eks. minst 15 mm nysnø og vind under 6 m/s» på under 2 minutter, uten hjelp fra testleder | Brukertest |
+| Dataforståelse | Minst 4 av 5 testbrukere skiller prognose fra faktiske forhold og oppdager utdaterte data | Brukertest |
+| Forklarbarhet | Minst 4 av 5 testbrukere kan forklare en vist SnowScore etter å ha lest forklaringssiden | Brukertest |
+
+Antall tilfeldige inndata er satt ned fra 10 000 til 1 000 (PRD SM-6), slik at CI holder en rimelig kjøretid. Egenskapene som testes er de samme.
 
 ## AI-assisted Development
 
@@ -282,10 +304,11 @@ SnowFinder skal bli det naturlige stedet å starte når man leter etter snø i N
 
 Prosjektet følger BMad Method med korte iterasjoner i prioritert rekkefølge: stedskatalog og pipeline, SnowScore, kart og stedssider, filter, deretter «bør ha»-funksjonene. Hvert medlem arbeider på egen branch, og alle endringer går gjennom Pull Request med tester og menneskelig godkjenning.
 
-Løsningen har separate miljøer for utvikling og produksjon. Databaseskjemaet ligger som versjonerte migrasjoner i repoet, testdata legges inn automatisk, og hver Pull Request bygges og testes mot utviklingsmiljøet før den kan flettes inn.
+Løsningen har separate miljøer for utvikling og produksjon. Databaseskjemaet ligger som versjonerte migrasjoner i repoet, testdata legges inn automatisk, og hver Pull Request bygges og testes før den kan flettes inn. Demomodus gjør at appen og E2E-testene kan kjøres uten disse miljøene.
 
 ## Definition of Done
 
+- Appen kan startes fra et rent klon kun etter README, i demomodus og uten nøkler.
 - Alle «må ha»-funksjoner er implementert, testet og dokumentert.
 - SnowScore følger publisert formel og består egenskapstestene.
 - Forklaringssiden er publisert og bruker samme beregningsmodul som pipelinen.
