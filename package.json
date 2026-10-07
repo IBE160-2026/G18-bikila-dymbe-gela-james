@@ -11,7 +11,8 @@
     "build": "tsc -b && vite build",
     "typecheck": "tsc -b",
     "lint": "eslint .",
-    "test": "vitest run"
+    "test": "vitest run",
+    "prepare": "git config core.hooksPath .githooks || exit 0"
   },
   "dependencies": {
     "react": "19.3.0",
