@@ -21,12 +21,14 @@ function describeIssues(error: z.ZodError): string {
 function check<T>(
   schema: z.ZodType<T>,
   value: unknown,
+  fetchError: string | undefined,
   stedId: string,
   kilde: Avvisning['kilde'],
   avviste: Avvisning[],
 ): T | null {
-  if (value === undefined) {
-    avviste.push({ stedId, kilde, arsak: MISSING_RESPONSE })
+  // A failed call gives no response; its reason from fetch.ts is reported instead of the generic one.
+  if (fetchError !== undefined || value === undefined) {
+    avviste.push({ stedId, kilde, arsak: fetchError ?? MISSING_RESPONSE })
     return null
   }
   const result = schema.safeParse(value)
@@ -42,8 +44,8 @@ export function validate(ctx: RunContext): RunContext {
     const raw = rawById.get(sted.id)
     return {
       stedId: sted.id,
-      met: check(MetForecast, raw?.met, sted.id, 'met', avviste),
-      nve: check(NveGridTimeSeries, raw?.nve, sted.id, 'nve', avviste),
+      met: check(MetForecast, raw?.met, raw?.feil?.met, sted.id, 'met', avviste),
+      nve: check(NveGridTimeSeries, raw?.nve, raw?.feil?.nve, sted.id, 'nve', avviste),
     }
   })
   return { ...ctx, validated, avviste }

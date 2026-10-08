@@ -2,7 +2,8 @@
 title: 'Story 1.3: Hent og valider værdata hver time'
 type: 'feature'
 created: '2026-10-07'
-status: 'ready-for-dev'
+status: 'done'
+baseline_commit: '90ac92bf9371bd8be28a9197e89616d3845d354b'
 route: 'dispatch'
 review_loop_iteration: 0
 context:
@@ -58,13 +59,13 @@ context:
 ## Tasks & Acceptance
 
 **Execution:**
-- [ ] `scripts/pipeline/fetch.ts` -- `metUrl`, `nveUrl`, `fetchAll(ctx, { fetchFn, concurrency, timeoutMs })`; feil blir manglende svar med årsak.
-- [ ] `scripts/pipeline/validate.ts` -- registrer manglende svar (ikke bare ugyldige) som avvist med årsaken fra fetch.
-- [ ] `scripts/pipeline/run.ts` -- `runLive`: les `data/catalog.json`, fetch → validate → score, skriv rapporten (ikke publiser); `main` kjører den uten `--demo`.
-- [ ] `package.json` -- `"data": "tsx scripts/pipeline/run.ts"`.
-- [ ] `tests/contract/record-fixtures.ts` -- bruk URL-byggerne fra `fetch.ts`.
-- [ ] `scripts/pipeline/fetch.test.ts`, `run.test.ts` -- falsk `fetchFn`: normal kjøring, MET-feil, NVE 400, tidsavbrudd, ikke-JSON, samtidighetsgrense (aldri over 5), og at User-Agent sendes.
-- [ ] `shared/contracts/data-dictionary.md`, `README.md` -- kort om `npm run data` (krever nett, skriver ingen fil ennå).
+- [x] `scripts/pipeline/fetch.ts` -- `metUrl`, `nveUrl`, `fetchAll(ctx, { fetchFn, concurrency, timeoutMs })`; feil blir manglende svar med årsak.
+- [x] `scripts/pipeline/validate.ts` -- registrer manglende svar (ikke bare ugyldige) som avvist med årsaken fra fetch.
+- [x] `scripts/pipeline/run.ts` -- `runLive`: les `data/catalog.json`, fetch → validate → score, skriv rapporten (ikke publiser); `main` kjører den uten `--demo`.
+- [x] `package.json` -- `"data": "tsx scripts/pipeline/run.ts"`.
+- [x] `tests/contract/record-fixtures.ts` -- bruk URL-byggerne fra `fetch.ts`.
+- [x] `scripts/pipeline/fetch.test.ts`, `run.test.ts` -- falsk `fetchFn`: normal kjøring, MET-feil, NVE 400, tidsavbrudd, ikke-JSON, samtidighetsgrense (aldri over 5), og at User-Agent sendes.
+- [x] `shared/contracts/data-dictionary.md`, `README.md` -- kort om `npm run data` (krever nett, skriver ingen fil ennå).
 
 **Acceptance Criteria:**
 - Given et rent klon, when `npm ci && npm run lint && npm run typecheck && npm test && npm run build` kjøres uten nett, then alt er grønt.
@@ -75,3 +76,22 @@ context:
 **Commands:**
 - `npm run lint && npm run typecheck && npm test && npm run build` -- expected: alt exit 0.
 - `npm run data` (med nett) -- expected: rapport med ~300 steder og `git status` uendret.
+
+## Review Triage Log
+
+| # | Lag | Funn | Vurdering | Rute | Begrunnelse |
+|---|-----|------|-----------|------|-------------|
+| 1 | Blind, Edge, VG | `main()` gir exit 0 for en live-kjøring der alle kall feilet (`andelGyldige` 0). | medium | patch | Stemmer: bare `ikkePublisertFordi` sjekkes. `MIN_VALID_SHARE` finnes allerede i `publish.ts`, så rettingen er én betingelse. |
+| 2 | VG, Blind | `main()` (exit-kode, `--demo`-ruting) har ingen test, og det utsatte punktet nevner fortsatt exit 2. | medium | defer | Stemmer, men testen er allerede utsatt til Story 1.11. Nytt punkt i `deferred-work.md` med den nye regelen. |
+| 3 | Edge, Blind | `concurrency` 0, negativ eller NaN gir hull i `mapLimit` og TypeError. | low | avvist | Bare tester og standardverdien 5 setter den. Rettingen krever en ny vakt. |
+| 4 | Edge | `timeoutMs` negativ eller NaN gir misvisende «Nettverksfeil». | low | avvist | Ingen kaller med slike verdier, og rettingen krever en ny vakt. |
+| 5 | Edge | En `clock()` som ikke er ISO, gir NaN og kast. | false | avvist | `clock` injiseres bare i tester. Standardverdien er `new Date().toISOString()`. |
+| 6 | Edge | Ett kast i `mapLimit` lar den andre kildens kall gå videre. | low | avvist | `metUrl`/`nveUrl` kaster ikke for en katalog som er validert av Zod. `getOnce` kaster aldri. |
+| 7 | Edge | Svar med svært stor kropp leses helt inn. | low | avvist | MET og NVE er kjente kilder, og tidsavbruddet på 20 s begrenser det. Rettingen krever ny kode. |
+| 8 | Blind | NVE-perioden regnes i UTC. Mellom 00 og 02 norsk tid slutter den på forrige norske dato. | maybe-false | defer | Logikken er flyttet uendret fra `record-fixtures.ts`. Det er uklart om `latestNveValue` da får en eldre verdi; det må sjekkes mot NVE-svar rundt midnatt. |
+| 9 | Blind | `ai-log`, `fremdriftsplan.md` og status i `sprint-status.yaml` mangler. | false | avvist | Det er ikke en kodefeil. Prosessfilene oppdateres når storyen leveres, i samme PR. |
+| 10 | Blind | Det finnes ingen test for at standardstiene aldri skriver i `public/data/`, og ingen for «Avbrutt kjøring». | low | avvist | `runLive` har ingen skrivekall. Testen «writes no file» dekker matriseraden. |
+| 11 | Blind | `record-fixtures.ts`: AD-5-kommentaren motsier importen fra `scripts/pipeline/fetch`. | low | patch | Det er en direkte retting av kommentaren. Ulik User-Agent og `getJson` er bevisst (bare URL-byggerne deles, ifølge specen). |
+| 12 | Blind | Tidsavbruddet skrives med desimalpunktum («0.01 s»). | low | avvist | I ekte kjøringer står det «20 s». |
+| 13 | Blind | Samtidighetstesten bruker tid og setter aldri `concurrency`. | low | avvist | Den viser grensen på 5 per kilde, som er kravet. En strammere test gir ingen påvist gevinst. |
+| 14 | Blind | `RawResponses` håndhever ikke at et manglende svar har en årsak i `feil`. | low | avvist | `fetchAll` setter alltid `feil` ved feil, og det er testet. En `superRefine` legger til kompleksitet. |

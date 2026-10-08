@@ -13,6 +13,7 @@
     "lint": "eslint .",
     "test": "vitest run",
     "catalog": "tsx scripts/build-catalog/index.ts",
+    "data": "tsx scripts/pipeline/run.ts",
     "data:demo": "tsx scripts/pipeline/run.ts --demo",
     "fixtures:record": "tsx tests/contract/record-fixtures.ts",
     "prepare": "git config core.hooksPath .githooks || exit 0"

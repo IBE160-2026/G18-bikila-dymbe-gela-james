@@ -5,13 +5,16 @@
 import { mkdir, readFile, rename, rm, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { Catalog, type CatalogEntry } from '../../shared/contracts/catalog'
+import { Catalog } from '../../shared/contracts/catalog'
 import { MetForecast } from '../../shared/contracts/met'
 import { NveGridTimeSeries } from '../../shared/contracts/nve'
-import { wgs84ToUtm33 } from '../../shared/geo'
 import { selectWindow } from '../../shared/snowscore'
+// The URL builders are shared with the live run, so the fixtures are recorded from the same calls.
+import { metUrl, nveUrl } from '../../scripts/pipeline/fetch'
 
-// AD-5: the catalog script's HTTP helpers are not imported; this follows the same pattern.
+// AD-5: the catalog script's HTTP helpers are not imported; getJson below follows the same pattern.
+// The pipeline's URL builders (imported above) are shared on purpose, so fixtures and live runs make
+// the same calls.
 const USER_AGENT = 'SnowFinder-fixtures/1.0 (IBE160 G18, Hogskolen i Molde; https://github.com/IBE160-2026)'
 const CONCURRENCY = 4
 const ATTEMPTS = 3
@@ -26,8 +29,6 @@ export const REMOVED_WINDOW_HOURS = [6, 7, 8, 9]
 /** Gets `updated_at` moved this far behind the newest other fixture. */
 export const STALE_ID = 'kirkenes'
 export const STALE_SHIFT_HOURS = 4
-/** Days of NVE history before the recording date. */
-const NVE_DAYS_BACK = 6
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
@@ -48,18 +49,6 @@ async function getJson(url: string): Promise<unknown> {
     }
   }
   throw lastError
-}
-
-const isoDate = (ms: number) => new Date(ms).toISOString().slice(0, 10)
-
-function metUrl(sted: CatalogEntry): string {
-  return `https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=${sted.lat}&lon=${sted.lon}&altitude=${sted.hoyde}`
-}
-
-function nveUrl(sted: CatalogEntry, today: number): string {
-  const { x, y } = wgs84ToUtm33(sted.lat, sted.lon)
-  const from = isoDate(today - NVE_DAYS_BACK * 86_400_000)
-  return `https://gts.nve.no/api/GridTimeSeries/${Math.round(x)}/${Math.round(y)}/${from}/${isoDate(today)}/fsw.json`
 }
 
 async function writeJson(relative: string, value: unknown): Promise<void> {

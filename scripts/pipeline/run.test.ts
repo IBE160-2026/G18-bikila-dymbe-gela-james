@@ -1,10 +1,12 @@
-import { cp, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
+import { cp, mkdtemp, readdir, readFile, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { PublishedData } from '../../shared/contracts/published'
-import { DEMO_OUT_PATH, runDemo } from './run'
+import type { FetchFn } from './fetch'
+import { DEMO_OUT_PATH, LIVE_NOT_PUBLISHED, liveRunId, runDemo, runLive } from './run'
 import { DEFAULT_FIXTURES_DIR } from './sources/fixtures'
+import { catalogEntry, metResponse, nveResponse, REFERENCE_TIME, snowyDay } from './testing'
 
 const HOUR_MS = 3_600_000
 const silent = () => {}
@@ -78,6 +80,76 @@ describe('runDemo', () => {
   it('still writes a report when the run crashes before scoring', async () => {
     const lines: string[] = []
     const report = await runDemo({ fixturesDir: join(dir, 'does-not-exist'), outPath: join(dir, 'x.json'), log: (l) => lines.push(l) })
+    expect(report.publisert).toBe(false)
+    expect(report.ikkePublisertFordi).toContain('Kjøringen feilet')
+    expect(lines.length).toBeGreaterThan(0)
+  })
+})
+
+describe('runLive', () => {
+  const ids = ['a', 'b', 'c', 'd']
+  const END = '2026-10-07T20:31:15Z'
+
+  async function writeCatalog(): Promise<string> {
+    const path = join(dir, 'catalog.json')
+    await writeFile(path, JSON.stringify({ generert: REFERENCE_TIME, steder: ids.map(catalogEntry) }))
+    return path
+  }
+
+  /** start, then end for every later reading, so the duration is known. */
+  const clock = () => {
+    let readings = 0
+    return () => (readings++ === 0 ? REFERENCE_TIME : END)
+  }
+
+  const valid: FetchFn = async (url) =>
+    new Response(JSON.stringify(url.startsWith('https://api.met.no/') ? metResponse(snowyDay()) : nveResponse()))
+
+  it('fetches, validates and scores every place from the start time, prints the report and writes no file', async () => {
+    const catalogPath = await writeCatalog()
+    const lines: string[] = []
+    const report = await runLive({ catalogPath, fetchFn: valid, clock: clock(), log: (l) => lines.push(l) })
+
+    expect(report).toMatchObject({
+      mode: 'live',
+      start: REFERENCE_TIME,
+      varighetMs: 75_000,
+      antallSteder: 4,
+      andelGyldige: 1,
+      avvistePerKilde: { met: 0, nve: 0 },
+      antallUfullstendige: 0,
+      publisert: false,
+      ikkePublisertFordi: LIVE_NOT_PUBLISHED,
+      avviste: [],
+    })
+    expect(report.runId).toMatch(/^20261007T203000Z-[0-9a-f]{8}$/)
+    expect(lines.join('\n')).toContain(LIVE_NOT_PUBLISHED)
+    expect(await readdir(dir)).toEqual(['catalog.json'])
+  })
+
+  it('records failed calls per place and source, and keeps going', async () => {
+    const catalogPath = await writeCatalog()
+    const fetchFn: FetchFn = async (url, init) => {
+      if (url.includes(`lat=${catalogEntry('b').lat}&`)) return new Response('', { status: 503 })
+      if (url.startsWith('https://gts.nve.no/')) return new Response('{"Error":"No cell exists"}', { status: 400 })
+      return valid(url, init)
+    }
+    const report = await runLive({ catalogPath, fetchFn, clock: clock(), log: () => {} })
+
+    expect(report.andelGyldige).toBe(0.75)
+    expect(report.avvistePerKilde).toEqual({ met: 1, nve: 4 })
+    expect(report.avviste).toContainEqual({ stedId: 'b', kilde: 'met', arsak: 'HTTP 503' })
+    expect(report.avviste).toContainEqual({ stedId: 'a', kilde: 'nve', arsak: 'HTTP 400: {"Error":"No cell exists"}' })
+    expect(report.ikkePublisertFordi).toBe(LIVE_NOT_PUBLISHED)
+  })
+
+  it('gives every run its own run ID, even with the same start time', () => {
+    expect(liveRunId(REFERENCE_TIME)).not.toBe(liveRunId(REFERENCE_TIME))
+  })
+
+  it('still writes a report when the catalog cannot be read', async () => {
+    const lines: string[] = []
+    const report = await runLive({ catalogPath: join(dir, 'missing.json'), fetchFn: valid, log: (l) => lines.push(l) })
     expect(report.publisert).toBe(false)
     expect(report.ikkePublisertFordi).toContain('Kjøringen feilet')
     expect(lines.length).toBeGreaterThan(0)

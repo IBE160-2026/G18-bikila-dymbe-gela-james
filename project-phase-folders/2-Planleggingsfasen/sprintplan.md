@@ -47,7 +47,8 @@ De står i `sprint-status.yaml` med kommentaren «Ikke i v1» og bygges ikke.
 | 1.1 Prosjekt-skaffolding og CI | Ferdig (`done`) | Merget i PR #10. |
 | 1.2 Bygg stedskatalogen | Ferdig (`done`) | Merget i PR #18. Fil i stedet for database. 300 steder i `data/catalog.json`. Navnelista bør gjennomgås av gruppa. |
 | 1.4 Den delte SnowScore-modulen | Ferdig (`done`, PR #20) | `shared/snowscore.ts` med fasittabell og egenskapstester. Tidsvinduets lengde velges i 1.5. |
-| 1.10 Lokal kjøring med demodata | Implementert og gjennomgått (`review`) | Kjernen i dataprogrammet mot innspilte MET- og NVE-svar; `public/data/demo.json` med 24 steder; datalaster, klokke og demobanner. SnowScore over neste 24 t. |
+| 1.10 Lokal kjøring med demodata | Ferdig (`done`, PR #22) | Kjernen i dataprogrammet mot innspilte MET- og NVE-svar; `public/data/demo.json` med 24 steder; datalaster, klokke og demobanner. SnowScore over neste 24 t. |
+| 1.3 Hent og valider værdata | Implementert og gjennomgått (`review`) | `npm run data` henter MET og NVE for alle 300 steder (høyst 5 samtidige kall per kilde, 20 s tidsavbrudd) og skriver ut kvalitetsrapporten. Publisering kommer i 1.5. |
 | 2.1–2.4 | Ikke startet | |
 
 ## Dette må gruppa sette opp før sprint 2

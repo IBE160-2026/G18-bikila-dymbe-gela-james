@@ -28,3 +28,9 @@
 - source_spec: `project-workspace/implementation-artifacts/spec-1-10-kjor-snowfinder-lokalt-med-demodata.md`
   summary: Test at ESLint-regelen mot Date.now()/new Date() i src/ faktisk slår til (ESLint Node-API i Vitest).
   evidence: Story 1.10-gjennomgang (Verification Gap). I dag går lint grønt også hvis selektoren er feil, fordi ingen kode i src/ leser klokka.
+- source_spec: `spec-1-3-hent-og-valider-vaerdata-hver-time.md`
+  summary: Test exit-koden til `main()` i scripts/pipeline/run.ts med de nye reglene (demo ikke publisert → 1; live krasjet eller under 95 % gyldige → 1; uten `--demo` kjøres live, exit 2 finnes ikke lenger).
+  evidence: Story 1.3-gjennomgang (Verification Gap, Blind Hunter). `main` er ikke eksportert, og ingen test dekker rutingen eller exit-koden. Erstatter forutsetningen om exit 2 i punktet fra Story 1.10.
+- source_spec: `spec-1-3-hent-og-valider-vaerdata-hver-time.md`
+  summary: Sjekk om NVE-perioden bør regnes etter norsk dato i stedet for UTC (nveUrl i scripts/pipeline/fetch.ts).
+  evidence: maybe-false, ville vært medium. Mellom 00 og 02 norsk tid slutter perioden på forrige norske dato. Avgjøres ved å hente NVE-svar like etter midnatt og se om `latestNveValue` da velger en eldre dag.
