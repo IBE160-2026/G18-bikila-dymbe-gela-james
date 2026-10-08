@@ -41,3 +41,6 @@
 - source_spec: `spec-1-8-listevisning.md`
   summary: Legg sorteringsvalget i listen inn i URL-en (f.eks. `?visning=liste&sortering=navn`) sammen med filterparametrene i Epic 3 (FR-21), så valget overlever Tilbake og delte lenker.
   evidence: Story 1.8-gjennomgang (alle tre lag). Sorteringen ligger i `useState` i ListeVisning og går tilbake til score når komponenten lastes på nytt.
+- source_spec: `spec-1-7b-markorer-etter-zoom.md`
+  summary: Oppdater DESIGN.md (begge kopier) via `bmad-ux`: kartmarkøren er 28 px fra zoom 8 og krymper til 10 px på landsnivå. Vurder også en usynlig, større trykkflate rundt små markører (kravet om 44 px på mobil).
+  evidence: Manuell sjekk 2026-10-08 med 300 steder: 28 px-markørene overlappet på landsnivå. Aksel valgte mindre markører ut zoomet. Blind Hunter påpekte at 10 px er under kravet om trykkflate.

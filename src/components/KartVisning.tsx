@@ -2,7 +2,7 @@ import 'leaflet/dist/leaflet.css'
 import { useEffect, useRef, useState } from 'react'
 import type { Sted } from '../../shared/contracts/published'
 import { navigate } from '../lib/router'
-import { MARKER_SIZE_PX, NORWAY_BOUNDS, TILE_ATTRIBUTION, TILE_URL, markerStyle, tooltipText } from './kartMarkor'
+import { NORWAY_BOUNDS, TILE_ATTRIBUTION, TILE_URL, markerSizeForZoom, markerSizeStyle, markerStyle, tooltipText } from './kartMarkor'
 
 export const MAP_LOAD_ERROR = 'Kartet kunne ikke lastes. Last siden på nytt.'
 
@@ -23,17 +23,31 @@ export default function KartVisning({ steder }: { steder: Sted[] }) {
     import('leaflet')
       .then(({ default: L }) => {
         if (cancelled) return
-        const map = L.map(element, { zoomSnap: 0.5 })
+        // A finer zoom step lets Norway fill more of the map on load.
+        const map = L.map(element, { zoomSnap: 0.25 })
         map.fitBounds(NORWAY_BOUNDS)
         L.tileLayer(TILE_URL, { attribution: TILE_ATTRIBUTION, maxZoom: 18 }).addTo(map)
-        for (const sted of steder) {
-          const marker = L.circleMarker([sted.lat, sted.lon], markerStyle(sted))
-            .bindTooltip(tooltipText(sted), { direction: 'top', offset: [0, -MARKER_SIZE_PX / 2] })
+        const size = markerSizeForZoom(map.getZoom())
+        const markers = steder.map((sted) => {
+          const marker = L.circleMarker([sted.lat, sted.lon], markerStyle(sted, size))
+            .bindTooltip(tooltipText(sted), { direction: 'top', offset: [0, -size / 2] })
             .on('click', () => navigate({ name: 'sted', id: sted.id }))
             .addTo(map)
           // Lets the E2E smoke test find a specific place's marker.
           marker.getElement()?.setAttribute('data-sted-id', sted.id)
-        }
+          return marker
+        })
+        // Markers grow as the user zooms in, so they do not hide each other at country level.
+        map.on('zoomend', () => {
+          const zoomedSize = markerSizeForZoom(map.getZoom())
+          for (const marker of markers) {
+            // setStyle also applies the radius on a circle marker.
+            const sizeStyle = markerSizeStyle(zoomedSize)
+            marker.setStyle(marker.options.dashArray ? { radius: sizeStyle.radius } : sizeStyle)
+            const tooltip = marker.getTooltip()
+            if (tooltip) tooltip.options.offset = [0, -zoomedSize / 2]
+          }
+        })
         remove = () => map.remove()
       })
       .catch((error: unknown) => {

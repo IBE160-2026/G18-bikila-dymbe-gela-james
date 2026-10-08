@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { PublishedData, type Sted } from '../../shared/contracts/published'
 import { colors } from '../lib/theme'
-import { MARKER_CLASS, markerStyle, tooltipText } from './kartMarkor'
+import { MARKER_CLASS, markerSizeForZoom, markerSizeStyle, markerStyle, tooltipText } from './kartMarkor'
 
 const demo = PublishedData.parse(
   JSON.parse(readFileSync(new URL('../../public/data/demo.json', import.meta.url), 'utf8')),
@@ -44,6 +44,31 @@ describe('markerStyle', () => {
     const style = markerStyle(withScore({ kind: 'incomplete', missingShare: 0.4 }))
     expect(style).toMatchObject({ fillColor: colors['surface-raised'], color: colors['snowscore-0'] })
     expect(style.dashArray).toBe('4 3')
+  })
+})
+
+describe('markerSizeForZoom', () => {
+  it.each([
+    [3, 10],
+    [5, 10],
+    [6.5, 19],
+    [8, 28],
+    [12, 28],
+  ])('zoom %s gives a %spx marker', (zoom, size) => {
+    expect(markerSizeForZoom(zoom)).toBe(size)
+  })
+
+  it('uses a 1px border below 16px and the DESIGN.md 2px border from 16px', () => {
+    expect(markerSizeStyle(10)).toEqual({ radius: 5, weight: 1 })
+    expect(markerSizeStyle(16)).toEqual({ radius: 8, weight: 2 })
+  })
+
+  it('keeps the 2px dashed border on a small incomplete marker', () => {
+    expect(markerStyle(withScore({ kind: 'incomplete', missingShare: 0.4 }), 10)).toMatchObject({ radius: 5, weight: 2, dashArray: '4 3' })
+  })
+
+  it('keeps colour and shape when a smaller size is passed', () => {
+    expect(markerStyle(withScore(score(82)), 10)).toMatchObject({ radius: 5, weight: 1, fillColor: colors['snowscore-3'] })
   })
 })
 
