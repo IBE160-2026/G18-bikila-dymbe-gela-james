@@ -5,7 +5,7 @@ import tseslint from 'typescript-eslint'
 
 export default tseslint.config(
   // BMAD tooling and course documentation are not application code.
-  { ignores: ['dist', 'coverage', '_bmad', '.claude', '.agents', 'ai-log', 'project-*'] },
+  { ignores: ['dist', 'coverage', 'test-results', 'playwright-report', '_bmad', '.claude', '.agents', 'ai-log', 'project-*'] },
   {
     files: ['**/*.{ts,tsx,js}'],
     extends: [js.configs.recommended, tseslint.configs.recommended, reactHooks.configs.flat.recommended],
@@ -16,7 +16,7 @@ export default tseslint.config(
   {
     // shared/ runs in both Vite and Node, so it gets neither browser nor Node globals.
     files: ['**/*.{ts,tsx,js}'],
-    ignores: ['scripts/**', 'shared/**', 'tests/contract/**'],
+    ignores: ['scripts/**', 'shared/**', 'tests/contract/**', 'tests/e2e/**', 'playwright.config.ts'],
     languageOptions: {
       globals: globals.browser,
     },
@@ -30,8 +30,8 @@ export default tseslint.config(
     },
   },
   {
-    // AD-5: scripts/ runs in Node, never in the browser. So do the contract tests and the recorder.
-    files: ['scripts/**/*.{ts,js}', 'tests/contract/**/*.{ts,js}'],
+    // AD-5: scripts/ runs in Node, never in the browser. So do the contract tests, the recorder and Playwright.
+    files: ['scripts/**/*.{ts,js}', 'tests/contract/**/*.{ts,js}', 'tests/e2e/**/*.ts', 'playwright.config.ts'],
     languageOptions: {
       globals: globals.node,
     },
