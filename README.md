@@ -28,8 +28,8 @@ npm run build       # bygg produksjonsversjonen
 
 Et rent klon trenger verken nøkler eller nett. `npm run dev` viser da demodataene i
 `public/data/demo.json`, med banneret «Demodata – ikke ekte prognoser». Appen laster
-`public/data/latest.json` hvis den finnes, og ellers `demo.json`. `latest.json` lages av
-dataprogrammet når live-henting er på plass, og committes ikke.
+`public/data/latest.json` hvis den finnes, og ellers `demo.json`. `latest.json` skal lages av
+dataprogrammet (fra Story 1.5), og committes ikke.
 
 Demodataene er 24 steder med ekte, innspilte MET- og NVE-svar fra `tests/contract/fixtures/`. Ett
 sted har ufullstendige data, og ett har kildedata som er eldre enn 3 timer (merkingen «Utdatert» i
@@ -40,6 +40,17 @@ uansett når du åpner appen.
 npm run data:demo        # lag public/data/demo.json på nytt fra fixturene (uten nett, gir byte-lik fil)
 npm run fixtures:record  # ta opp nye MET- og NVE-svar (krever nett, se tests/contract/fixtures/README.md)
 ```
+
+### Live-data
+
+```sh
+npm run data   # hent MET- og NVE-data for alle stedene i data/catalog.json (krever nett, ingen nøkler)
+```
+
+Dataprogrammet henter værprognosen fra MET og nysnø siste døgn fra NVE for hvert sted, sjekker svarene
+og regner ut SnowScore. Til slutt skriver det ut kvalitetsrapporten: hvor mange steder som har gyldige
+data, og hvilke svar som ble avvist og hvorfor. Foreløpig skrives ingen fil; `latest.json` kommer i
+Story 1.5.
 
 Feltene i datafila og kildesvarene er beskrevet i
 [`shared/contracts/data-dictionary.md`](shared/contracts/data-dictionary.md).

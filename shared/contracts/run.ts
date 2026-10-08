@@ -14,6 +14,8 @@ export const RawResponses = z.strictObject({
   stedId: z.string(),
   met: z.unknown(),
   nve: z.unknown(),
+  /** Why a call failed (network, timeout, HTTP error, not JSON), per source; validate.ts reports it. */
+  feil: z.strictObject({ met: z.string().min(1).optional(), nve: z.string().min(1).optional() }).optional(),
 })
 
 export type RawResponses = z.infer<typeof RawResponses>

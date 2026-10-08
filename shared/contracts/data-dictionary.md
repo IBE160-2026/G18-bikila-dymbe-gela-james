@@ -11,6 +11,11 @@ Felles regler:
   kilde og årsak. Det rettes aldri automatisk.
 - Ukjente felt i kildesvarene ignoreres, fordi MET og NVE legger til felt uten ny versjon. Alle felt
   vi leser, er påkrevde og sjekkes mot gyldig område.
+- `npm run data` henter svarene live (`scripts/pipeline/fetch.ts`, krever nett): ett kall per sted og
+  kilde, høyst 5 samtidige kall per kilde, 20 s tidsavbrudd og ingen nye forsøk. Et kall som feiler
+  (nettverksfeil, tidsavbrudd, HTTP-feil eller svar som ikke er JSON), gir ikke noe svar, og årsaken
+  står i kjøringsrapporten, for eksempel `HTTP 503` eller `Tidsavbrudd etter 20 s`. Kjøringen skriver
+  ut rapporten, men skriver ingen fil ennå (publisering kommer i Story 1.5).
 
 ## MET Locationforecast 2.0 compact (`met.ts`)
 
@@ -37,7 +42,8 @@ identifiserende User-Agent.
 
 Kilde: `GET https://gts.nve.no/api/GridTimeSeries/{x}/{y}/{fra}/{til}/fsw.json`. `x` og `y` er
 UTM sone 33 (EPSG:25833) i meter, regnet ut fra stedets lat/lon med `shared/geo.ts`. Et punkt uten
-rutecelle (for eksempel på sjøen) gir HTTP 400 med `{"Error": …}`, som avvises.
+rutecelle (for eksempel på sjøen) gir HTTP 400 med `{"Error": …}`, som avvises. Perioden er de seks
+døgnene før referansedatoen og selve datoen.
 
 | Felt | Enhet | Gyldig område | Merknad |
 | --- | --- | --- | --- |
@@ -101,4 +107,4 @@ newSnowMm, precipitationMm, meanTemperatureC }` eller `{ kind: "incomplete", mis
 | `antallUfullstendige` | – | heltall ≥ 0 | Steder med gyldig MET-svar der mer enn 10 % av timene mangler (`snowScore.kind = "incomplete"`). Steder med avvist eller manglende MET-svar vises også som ufullstendige i datafila, men telles i `avvistePerKilde`, ikke her. |
 | `publisert` | – | boolsk | |
 | `ikkePublisertFordi` | – | tekst eller `null` | Årsaken når kjøringen ikke ble publisert. |
-| `avviste[]` | – | `{ stedId, kilde, arsak }` | Hvert avviste eller manglende svar. |
+| `avviste[]` | – | `{ stedId, kilde, arsak }` | Hvert avviste eller manglende svar. Årsaken er skjemafeilen, feilen fra kallet (live), eller `Mangler svar`. |
