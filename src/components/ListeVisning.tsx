@@ -1,5 +1,6 @@
 import { useState, type ChangeEvent } from 'react'
 import type { Sted } from '../../shared/contracts/published'
+import { medEnhet, utdatertTekst } from '../lib/format'
 import { SORTERINGER, avstandKm, sorterSteder, type Posisjon, type Sortering } from '../lib/sortering'
 import Lenke from './Lenke'
 import ScoreBadge from './ScoreBadge'
@@ -10,24 +11,18 @@ const POSISJON_TIMEOUT_MS = 10_000
 
 const SORTERINGSTEKST: Record<Sortering, string> = { score: 'Score', avstand: 'Avstand', navn: 'Navn' }
 
-const tallFormat = new Intl.NumberFormat('nb-NO', { maximumFractionDigits: 1 })
 const kmFormat = new Intl.NumberFormat('nb-NO', { maximumFractionDigits: 0 })
-
-/** A value with its unit, or "–" when the data file has none. */
-export function medEnhet(verdi: number | null, enhet: string): string {
-  if (verdi === null) return '–'
-  // Round first and add 0, so -0.04 °C shows as "0 °C" and not "−0 °C".
-  return `${tallFormat.format(Math.round(verdi * 10) / 10 + 0)} ${enhet}`
-}
 
 // Read by screen readers only, so a row's link is announced as "Gaustatoppen, 58 · Godt, Nysnø 10 cm, …".
 const Skille = () => <span className="visually-hidden">, </span>
+
+type Props = { steder: Sted[]; utdatert: ReadonlySet<string> }
 
 /**
  * Story 1.8: the accessible alternative to the map (FR-13, NFR-7). Each row is one link to the place
  * page. The position is asked for only when the user picks distance, kept in memory and never sent.
  */
-export default function ListeVisning({ steder }: { steder: Sted[] }) {
+export default function ListeVisning({ steder, utdatert }: Props) {
   const [sortering, setSortering] = useState<Sortering>('score')
   const [posisjon, setPosisjon] = useState<Posisjon | null>(null)
   const [status, setStatus] = useState('')
@@ -91,6 +86,12 @@ export default function ListeVisning({ steder }: { steder: Sted[] }) {
                 <Skille />
                 <ScoreBadge snowScore={sted.snowScore} />
                 <Skille />
+                {utdatert.has(sted.id) && (
+                  <>
+                    <span className="utdatert">{utdatertTekst(sted.kildeTidspunkt)}</span>
+                    <Skille />
+                  </>
+                )}
                 <span className="liste-detaljer">
                   {detaljer.map((tekst, i) => (
                     <span key={tekst}>

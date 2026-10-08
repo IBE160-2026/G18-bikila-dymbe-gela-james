@@ -44,3 +44,6 @@
 - source_spec: `spec-1-7b-markorer-etter-zoom.md`
   summary: Oppdater DESIGN.md (begge kopier) via `bmad-ux`: kartmarkøren er 28 px fra zoom 8 og krymper til 10 px på landsnivå. Vurder også en usynlig, større trykkflate rundt små markører (kravet om 44 px på mobil).
   evidence: Manuell sjekk 2026-10-08 med 300 steder: 28 px-markørene overlappet på landsnivå. Aksel valgte mindre markører ut zoomet. Blind Hunter påpekte at 10 px er under kravet om trykkflate.
+- source_spec: `spec-1-9-stedsside.md`
+  summary: Regn dataalderen på nytt mens siden er åpen (ikke bare ved lasting), så «Utdatert» og fjerning etter 12 t også gjelder en fane som har stått åpen lenge i live-modus. Naturlig sammen med banneret for gamle data i Story 1.6.
+  evidence: Story 1.9-gjennomgang (Blind Hunter, Edge Case Hunter). `medFerskhet` kjøres én gang i den delte loaderen, og resultatet hurtigbufres for hele sideinnlastingen.

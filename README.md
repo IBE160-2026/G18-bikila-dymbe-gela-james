@@ -36,10 +36,14 @@ krever nøkkel, men som trenger nett for å vise kartbildene.
 Velg «Liste» under navigasjonen (eller åpne `/?visning=liste`) for å se de samme stedene som en
 liste som virker med tastatur og skjermleser, sortert etter score, avstand eller navn.
 
+Stedssiden (`/sted/<id>`) viser SnowScore med delpoengene A, B og C, værdataene bak dem og når MET
+sist oppdaterte prognosen. Data eldre enn 3 timer merkes «Utdatert», og steder med data eldre enn
+12 timer vises ikke i kartet, listen eller på stedssiden (i demo regnes alderen mot demodatasettets egen «nå»).
+
 ### Røyktest i nettleser (E2E)
 
 Playwright-testene i `tests/e2e/` bygger appen, starter `npm run preview` og sjekker kart → stedsside
-→ tilbake, listevisningen med tastatur og en axe-sjekk av tilgjengeligheten i Chromium på demodataene.
+→ tilbake, listevisningen med tastatur, stedssiden og en axe-sjekk av tilgjengeligheten i Chromium på demodataene.
 De henter ingenting fra nett. Nettleseren lastes ned én gang:
 
 ```sh

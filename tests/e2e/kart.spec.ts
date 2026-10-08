@@ -22,11 +22,16 @@ test('the map shows every demo place and a marker opens its place page', async (
   await expect(page.locator(markers)).toHaveCount(24)
 
   // Markers start small at country level and grow when the user zooms in (Story 1.7b).
-  const width = async () => (await page.locator(hemsedal).boundingBox())?.width ?? 0
+  // The largest marker on screen: zooming moves single places (Hemsedal too) out of view.
+  const width = () =>
+    page.locator(markers).evaluateAll((paths) => Math.max(...paths.map((p) => p.getBoundingClientRect().width)))
   const before = await width()
+  // The first fit can be below zoom 5, where markers are still at their minimum, so zoom in twice.
+  await page.getByRole('button', { name: 'Zoom in' }).click()
   await page.getByRole('button', { name: 'Zoom in' }).click()
   await expect.poll(width).toBeGreaterThan(before + 2)
   const zoomedIn = await width()
+  await page.getByRole('button', { name: 'Zoom out' }).click()
   await page.getByRole('button', { name: 'Zoom out' }).click()
   await expect.poll(width).toBeLessThan(zoomedIn - 2)
 
