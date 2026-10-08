@@ -72,6 +72,12 @@ describe('computeSnowScore golden table', () => {
     expect(result.b).toBeGreaterThan(0)
     expect(result.c).toBeGreaterThan(0)
   })
+
+  it('keeps C at exactly 15 when all of P = 0.7 mm falls as snow', () => {
+    // (15 × 0.7) / 0.7 is 15.000000000000002 in floating point; the published file allows at most 15.
+    const result = expectScore(computeSnowScore([{ precipitationMm: 0.7, temperatureC: -3 }]))
+    expect(result.c).toBe(15)
+  })
 })
 
 describe('snowFraction', () => {
@@ -100,6 +106,10 @@ describe('computeSnowScore properties', () => {
         expect(Number.isInteger(result.score)).toBe(true)
         expect(result.score).toBeGreaterThanOrEqual(0)
         expect(result.score).toBeLessThanOrEqual(100)
+        // The same bounds PublishedData checks before the file is written.
+        expect(result.a).toBeLessThanOrEqual(60)
+        expect(result.b).toBeLessThanOrEqual(25)
+        expect(result.c).toBeLessThanOrEqual(15)
       }),
       RUNS,
     )

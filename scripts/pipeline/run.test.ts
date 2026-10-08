@@ -4,7 +4,7 @@ import { join } from 'node:path'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { PublishedData } from '../../shared/contracts/published'
 import type { FetchFn } from './fetch'
-import { DEMO_OUT_PATH, LIVE_NOT_PUBLISHED, liveRunId, runDemo, runLive } from './run'
+import { DEMO_OUT_PATH, liveRunId, runDemo, runLive } from './run'
 import { DEFAULT_FIXTURES_DIR } from './sources/fixtures'
 import { catalogEntry, metResponse, nveResponse, REFERENCE_TIME, snowyDay } from './testing'
 
@@ -87,10 +87,9 @@ describe('runDemo', () => {
 })
 
 describe('runLive', () => {
-  const ids = ['a', 'b', 'c', 'd']
   const END = '2026-10-07T20:31:15Z'
 
-  async function writeCatalog(): Promise<string> {
+  async function writeCatalog(ids: string[]): Promise<string> {
     const path = join(dir, 'catalog.json')
     await writeFile(path, JSON.stringify({ generert: REFERENCE_TIME, steder: ids.map(catalogEntry) }))
     return path
@@ -105,10 +104,19 @@ describe('runLive', () => {
   const valid: FetchFn = async (url) =>
     new Response(JSON.stringify(url.startsWith('https://api.met.no/') ? metResponse(snowyDay()) : nveResponse()))
 
-  it('fetches, validates and scores every place from the start time, prints the report and writes no file', async () => {
-    const catalogPath = await writeCatalog()
+  /** MET fails with 503 for the given places; everything else answers validly. */
+  const metFailsFor =
+    (ids: string[]): FetchFn =>
+    async (url, init) =>
+      ids.some((id) => url.includes(`lat=${catalogEntry(id).lat}&`)) ? new Response('', { status: 503 }) : valid(url, init)
+
+  const ids = (n: number) => Array.from({ length: n }, (_, i) => `sted-${i}`)
+
+  it('publishes latest.json atomically with mode live, the run ID and the source timestamp on every place', async () => {
+    const catalogPath = await writeCatalog(ids(4))
+    const outPath = join(dir, 'latest.json')
     const lines: string[] = []
-    const report = await runLive({ catalogPath, fetchFn: valid, clock: clock(), log: (l) => lines.push(l) })
+    const report = await runLive({ catalogPath, outPath, fetchFn: valid, clock: clock(), log: (l) => lines.push(l) })
 
     expect(report).toMatchObject({
       mode: 'live',
@@ -118,40 +126,94 @@ describe('runLive', () => {
       andelGyldige: 1,
       avvistePerKilde: { met: 0, nve: 0 },
       antallUfullstendige: 0,
-      publisert: false,
-      ikkePublisertFordi: LIVE_NOT_PUBLISHED,
+      publisert: true,
+      ikkePublisertFordi: null,
       avviste: [],
     })
     expect(report.runId).toMatch(/^20261007T203000Z-[0-9a-f]{8}$/)
-    expect(lines.join('\n')).toContain(LIVE_NOT_PUBLISHED)
-    expect(await readdir(dir)).toEqual(['catalog.json'])
+
+    const data = PublishedData.parse(JSON.parse(await readFile(outPath, 'utf8')))
+    expect(data).toMatchObject({ mode: 'live', referenceTime: REFERENCE_TIME, runId: report.runId, generert: END, report })
+    expect(data.steder).toHaveLength(4)
+    for (const sted of data.steder) {
+      expect(sted.runId).toBe(report.runId)
+      expect(sted.kildeTidspunkt).toBe(REFERENCE_TIME)
+      expect(sted.snowScore.kind).toBe('score')
+    }
+    // Written to a temporary name and renamed, so no temporary file is left behind.
+    expect((await readdir(dir)).sort()).toEqual(['catalog.json', 'latest.json'])
+    expect(lines.join('\n')).toContain('Publisert (live')
   })
 
-  it('records failed calls per place and source, and keeps going', async () => {
-    const catalogPath = await writeCatalog()
-    const fetchFn: FetchFn = async (url, init) => {
-      if (url.includes(`lat=${catalogEntry('b').lat}&`)) return new Response('', { status: 503 })
-      if (url.startsWith('https://gts.nve.no/')) return new Response('{"Error":"No cell exists"}', { status: 400 })
-      return valid(url, init)
-    }
-    const report = await runLive({ catalogPath, fetchFn, clock: clock(), log: () => {} })
+  it('publishes at exactly 95 % valid, showing a failed place as incomplete with no values from an earlier run', async () => {
+    const catalogPath = await writeCatalog(ids(20))
+    const outPath = join(dir, 'latest.json')
+    await writeFile(outPath, 'previous run')
+    const report = await runLive({ catalogPath, outPath, fetchFn: metFailsFor(['sted-3']), clock: clock(), log: silent })
 
-    expect(report.andelGyldige).toBe(0.75)
-    expect(report.avvistePerKilde).toEqual({ met: 1, nve: 4 })
-    expect(report.avviste).toContainEqual({ stedId: 'b', kilde: 'met', arsak: 'HTTP 503' })
-    expect(report.avviste).toContainEqual({ stedId: 'a', kilde: 'nve', arsak: 'HTTP 400: {"Error":"No cell exists"}' })
-    expect(report.ikkePublisertFordi).toBe(LIVE_NOT_PUBLISHED)
+    expect(report).toMatchObject({ publisert: true, andelGyldige: 0.95, avvistePerKilde: { met: 1, nve: 0 } })
+    expect(report.avviste).toEqual([{ stedId: 'sted-3', kilde: 'met', arsak: 'HTTP 503' }])
+    // The failed place counts as rejected, not as incomplete hours.
+    expect(report.antallUfullstendige).toBe(0)
+
+    const data = PublishedData.parse(JSON.parse(await readFile(outPath, 'utf8')))
+    expect(data.steder.find((s) => s.id === 'sted-3')).toMatchObject({
+      runId: report.runId,
+      kildeTidspunkt: null,
+      snowScore: { kind: 'incomplete', missingShare: 1 },
+      nysnoCm: null,
+      temperatur: null,
+      vindMaks: null,
+      skydekke: null,
+    })
+  })
+
+  it('leaves the previous file untouched below 95 % valid and logs the report with the reason', async () => {
+    const catalogPath = await writeCatalog(ids(4))
+    const outPath = join(dir, 'latest.json')
+    await writeFile(outPath, 'previous run')
+    const lines: string[] = []
+    const report = await runLive({
+      catalogPath,
+      outPath,
+      fetchFn: metFailsFor(['sted-1']),
+      clock: clock(),
+      log: (l) => lines.push(l),
+    })
+
+    expect(report).toMatchObject({ publisert: false, andelGyldige: 0.75, avvistePerKilde: { met: 1, nve: 0 } })
+    expect(report.ikkePublisertFordi).toBe('Bare 75.0 % av stedene har gyldige data; minst 95 % kreves')
+    expect(await readFile(outPath, 'utf8')).toBe('previous run')
+    expect((await readdir(dir)).sort()).toEqual(['catalog.json', 'latest.json'])
+    expect(lines.join('\n')).toContain('"andelGyldige": 0.75')
+  })
+
+  it('records NVE «no cell» per place without stopping publication, and logs each reason', async () => {
+    const catalogPath = await writeCatalog(ids(4))
+    const outPath = join(dir, 'latest.json')
+    const fetchFn: FetchFn = async (url, init) =>
+      url.startsWith('https://gts.nve.no/') ? new Response('{"Error":"No cell exists"}', { status: 400 }) : valid(url, init)
+    const lines: string[] = []
+    const report = await runLive({ catalogPath, outPath, fetchFn, clock: clock(), log: (l) => lines.push(l) })
+
+    expect(report).toMatchObject({ publisert: true, andelGyldige: 1, avvistePerKilde: { met: 0, nve: 4 } })
+    expect(lines).toContain('  Avvist NVE for sted-0: HTTP 400: {"Error":"No cell exists"}')
+    expect(report.avviste).toContainEqual({ stedId: 'sted-0', kilde: 'nve', arsak: 'HTTP 400: {"Error":"No cell exists"}' })
+    const data = PublishedData.parse(JSON.parse(await readFile(outPath, 'utf8')))
+    expect(data.steder.every((s) => s.nveNysnoSisteDognMm === null && s.snowScore.kind === 'score')).toBe(true)
   })
 
   it('gives every run its own run ID, even with the same start time', () => {
     expect(liveRunId(REFERENCE_TIME)).not.toBe(liveRunId(REFERENCE_TIME))
   })
 
-  it('still writes a report when the catalog cannot be read', async () => {
+  it('still writes a report, and no file, when the catalog cannot be read', async () => {
     const lines: string[] = []
-    const report = await runLive({ catalogPath: join(dir, 'missing.json'), fetchFn: valid, log: (l) => lines.push(l) })
+    const outPath = join(dir, 'latest.json')
+    const report = await runLive({ catalogPath: join(dir, 'missing.json'), outPath, fetchFn: valid, log: (l) => lines.push(l) })
     expect(report.publisert).toBe(false)
     expect(report.ikkePublisertFordi).toContain('Kjøringen feilet')
     expect(lines.length).toBeGreaterThan(0)
+    expect(await readdir(dir)).toEqual([])
   })
 })

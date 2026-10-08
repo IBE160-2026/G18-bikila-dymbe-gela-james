@@ -15,7 +15,7 @@ Felles regler:
   kilde, høyst 5 samtidige kall per kilde, 20 s tidsavbrudd og ingen nye forsøk. Et kall som feiler
   (nettverksfeil, tidsavbrudd, HTTP-feil eller svar som ikke er JSON), gir ikke noe svar, og årsaken
   står i kjøringsrapporten, for eksempel `HTTP 503` eller `Tidsavbrudd etter 20 s`. Kjøringen skriver
-  ut rapporten, men skriver ingen fil ennå (publisering kommer i Story 1.5).
+  `public/data/latest.json` når minst 95 % av stedene har gyldig MET-svar, ellers står forrige fil urørt.
 
 ## MET Locationforecast 2.0 compact (`met.ts`)
 

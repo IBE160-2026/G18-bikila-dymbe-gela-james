@@ -106,7 +106,8 @@ export function computeSnowScore(hours: readonly HourlyValue[]): SnowScoreResult
   const b = enoughPrecipitation
     ? maxB * Math.min(1, Math.max(0, (noSnowAtOrAboveC - meanTemperatureC) / coldRangeC))
     : 0
-  const c = enoughPrecipitation ? (maxC * newSnowMm) / precipitationMm : 0
+  // Divide first: (15 × 0.7) / 0.7 is 15.000000000000002, which breaks the published c ≤ 15 bound.
+  const c = enoughPrecipitation ? maxC * Math.min(1, newSnowMm / precipitationMm) : 0
 
   return {
     kind: 'score',

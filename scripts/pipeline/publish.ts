@@ -122,6 +122,8 @@ export function writeRunReport(ctx: RunContext, error: unknown, now: string, log
         `${(report.andelGyldige * 100).toFixed(1)} % gyldige, ${report.antallUfullstendige} ufullstendige, ` +
         `avviste MET ${report.avvistePerKilde.met}, NVE ${report.avvistePerKilde.nve}`,
     )
+    // The reasons also belong in the job log, not only in the published file.
+    for (const a of report.avviste) log(`  Avvist ${a.kilde.toUpperCase()} for ${a.stedId}: ${a.arsak}`)
   } else {
     log(`Ikke publisert: ${report.ikkePublisertFordi}. Forrige datafil står urørt.`)
     log(JSON.stringify(report, null, 2))
