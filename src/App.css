@@ -15,12 +15,14 @@ body {
   border-bottom: 1px solid var(--color-border-hairline);
 }
 
+/* The product name links home; each page has its own h1. */
 .app-title {
-  margin: 0;
-  font-family: var(--typography-display-font-family);
-  font-size: var(--typography-display-font-size);
-  font-weight: var(--typography-display-font-weight);
-  line-height: var(--typography-display-line-height);
+  color: var(--color-ink-primary);
+  text-decoration: none;
+  font-family: var(--typography-heading-font-family);
+  font-size: var(--typography-heading-font-size);
+  font-weight: var(--typography-heading-font-weight);
+  line-height: var(--typography-heading-line-height);
 }
 
 /* Read by screen readers, not shown. */
@@ -69,4 +71,64 @@ a:focus-visible {
 .error {
   margin: 0;
   color: var(--color-ink-primary);
+}
+
+/* Leaflet fills its container, so the map needs an explicit height. */
+.kart {
+  height: 70vh;
+  min-height: 320px;
+  border-radius: var(--rounded-md);
+  background: var(--color-surface-sunken);
+}
+
+.sted-navn {
+  margin: 0 0 var(--spacing-4);
+  font-family: var(--typography-display-font-family);
+  font-size: var(--typography-display-font-size);
+  font-weight: var(--typography-display-font-weight);
+  line-height: var(--typography-display-line-height);
+}
+
+.app a {
+  color: var(--color-accent);
+}
+
+/* DESIGN.md score-badge: pill in the tier colour; the darkest tier gets white text for 4.5:1 contrast. */
+.score-badge {
+  display: inline-block;
+  padding: var(--spacing-2) var(--spacing-3);
+  border: 2px solid var(--color-surface-raised);
+  border-radius: var(--rounded-full);
+  color: var(--color-ink-primary);
+  font-family: var(--typography-numeric-font-family);
+  font-size: var(--typography-numeric-font-size);
+  font-weight: var(--typography-numeric-font-weight);
+  font-feature-settings: var(--typography-numeric-font-feature-settings);
+}
+
+.score-badge--0 {
+  background: var(--color-snowscore-0);
+}
+
+.score-badge--1 {
+  background: var(--color-snowscore-1);
+}
+
+.score-badge--2 {
+  background: var(--color-snowscore-2);
+}
+
+.score-badge--3 {
+  background: var(--color-snowscore-3);
+  color: var(--color-surface-raised);
+}
+
+.score-incomplete {
+  color: var(--color-ink-secondary);
+}
+
+/* Same height as .kart, so the layout does not jump when the map replaces the skeleton. */
+.kart-skeleton {
+  height: 70vh;
+  min-height: 320px;
 }

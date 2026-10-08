@@ -22,7 +22,29 @@ npm run lint        # kjør ESLint
 npm run typecheck   # sjekk typene
 npm test            # kjør enhetstestene
 npm run build       # bygg produksjonsversjonen
+npm run preview     # vis produksjonsbygget lokalt
 ```
+
+### Kartet
+
+Forsiden er et Norgeskart med én sirkel per sted, fargelagt etter SnowScore: grå «Lite» (0–19),
+lyseblå «Middels» (20–44), blå «Godt» (45–69) og mørkeblå «Svært godt» (70–100). Et sted med
+ufullstendige data er en hul sirkel med stiplet kant. Hold musa over en sirkel for å se navn og
+poengsum, og klikk for å åpne stedet. Bakgrunnskartet er Kartverkets topografiske kart, som ikke
+krever nøkkel, men som trenger nett for å vise kartbildene.
+
+### Røyktest i nettleser (E2E)
+
+Playwright-testen i `tests/e2e/` bygger appen, starter `npm run preview` og sjekker kart → stedsside
+→ tilbake i Chromium på demodataene. Den henter ingenting fra nett. Nettleseren lastes ned én gang:
+
+```sh
+npx playwright install chromium   # last ned Chromium for Playwright (én gang)
+npm run test:e2e                  # kjør røyktesten
+```
+
+På pull requests kjøres den av `.github/workflows/e2e.yml`. `npm test` kjører bare enhetstestene og
+trenger verken nettleser eller nett.
 
 ### Demomodus
 

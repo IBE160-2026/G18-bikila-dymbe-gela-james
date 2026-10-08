@@ -10,6 +10,7 @@
 - source_spec: `project-workspace/implementation-artifacts/spec-1-1-prosjekt-skaffolding-og-ci-skjelett.md`
   summary: Last inn skrifttypen Inter (eller bestem at system-ui er godt nok) i første story med ekte UI, med tanke på ytelseskravet NFR-2.
   evidence: Story 1.1-gjennomgang (Blind Hunter). Alle typografi-tokens navngir 'Inter', men den lastes ikke, så appen faller tilbake til system-ui.
+  resolved: Story 1.7 (2026-10-08) beholder system-ui. Inter lastes ikke, fordi en nettfont ville gitt ekstra nedlasting mot NFR-2 (3 s på 4G); tokenene står uendret, så en maskin med Inter installert bruker den.
 - source_spec: `project-workspace/implementation-artifacts/spec-1-1-prosjekt-skaffolding-og-ci-skjelett.md`
   summary: Favicon, meta description og theme-color i index.html (naturlig sammen med PWA-manifestet i Story 4.1), og SHA-pinning av GitHub Actions og npm audit/Dependabot i CI.
   evidence: Story 1.1-gjennomgang (Blind Hunter). Dev-serveren gir 404 på /favicon.ico; actions er pinnet til @v4; ingen sårbarhetssjekk i CI ennå.
@@ -34,3 +35,6 @@
 - source_spec: `spec-1-3-hent-og-valider-vaerdata-hver-time.md`
   summary: Sjekk om NVE-perioden bør regnes etter norsk dato i stedet for UTC (nveUrl i scripts/pipeline/fetch.ts).
   evidence: maybe-false, ville vært medium. Mellom 00 og 02 norsk tid slutter perioden på forrige norske dato. Avgjøres ved å hente NVE-svar like etter midnatt og se om `latestNveValue` da velger en eldre dag.
+- source_spec: `spec-1-7-se-norgeskartet.md`
+  summary: Lag en SPA-reserve for GitHub Pages (en `404.html` som er kopi av `index.html`, eller en omdirigering) slik at direkte lenker og oppfrisking på `/sted/:id` virker, i Story 1.11.
+  evidence: Story 1.7-gjennomgang (Blind Hunter, Edge Case Hunter). `vite preview` og dev-serveren faller tilbake til index.html, men GitHub Pages gir sin egen 404 for ukjente stier.
