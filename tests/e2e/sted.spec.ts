@@ -33,6 +33,11 @@ test('Gaustatoppen from the list shows the sub-scores, the data and the source t
   await expect(verdi(page, 'NVE-nysnø siste døgn')).toHaveText('0 mm')
   await expect(page.getByText('Prognose fra MET, oppdatert 7. oktober 2026 kl. 22:30')).toBeVisible()
   await expect(page.getByText(/^Utdatert/)).toHaveCount(0)
+
+  // EXPERIENCE.md: touch targets of at least 44px, also for «Tilbake».
+  const tilbake = await page.getByRole('link', { name: 'Tilbake', exact: true }).boundingBox()
+  expect(tilbake?.height ?? 0).toBeGreaterThanOrEqual(44)
+  expect(tilbake?.width ?? 0).toBeGreaterThanOrEqual(44)
 })
 
 test('Kirkenes is marked «Utdatert» with its time, on the page and in the list', async ({ page }) => {

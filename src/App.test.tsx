@@ -1,12 +1,13 @@
 import { readFileSync } from 'node:fs'
 import { renderToStaticMarkup } from 'react-dom/server'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { PublishedData } from '../shared/contracts/published'
 import { FJERNES_ETTER_MS } from '../shared/freshness'
 import { AppView } from './App'
 import { medFerskhet, type StederResult } from './hooks/useSteder'
 import { LOAD_ERROR_MESSAGE } from './lib/data/loadPublishedData'
 import type { Route } from './lib/router'
+import { INGEN_STEDER } from './pages/Utforsk'
 
 const demo = PublishedData.parse(
   JSON.parse(readFileSync(new URL('../public/data/demo.json', import.meta.url), 'utf8')),
@@ -29,10 +30,31 @@ describe('AppView', () => {
   })
 
   it('shows no demo banner for live data', () => {
-    const live = { ...demo, mode: 'live' as const }
-    const html = render(medFerskhet({ status: 'ok', data: live, source: 'latest' }))
-    expect(html).not.toContain('Demodata')
-    expect(html).toContain('class="kart"')
+    // Live age is measured against the wall clock. Unpinned, every demo place would be older than 12 h
+    // and the page would show the empty state instead of the map, so pin the clock to the file's time.
+    vi.useFakeTimers({ now: Date.parse(demo.referenceTime) })
+    try {
+      const live = { ...demo, mode: 'live' as const }
+      const html = render(medFerskhet({ status: 'ok', data: live, source: 'latest' }))
+      expect(html).not.toContain('Demodata')
+      expect(html).toContain('class="kart"')
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
+  it.each(['kart', 'liste'] as const)('explains an empty %s when every place is older than 12 h', (visning) => {
+    vi.useFakeTimers({ now: Date.parse(demo.referenceTime) + 2 * FJERNES_ETTER_MS })
+    try {
+      const live = { ...demo, mode: 'live' as const }
+      const html = render(medFerskhet({ status: 'ok', data: live, source: 'latest' }), { name: 'utforsk', visning })
+      expect(html).toContain(`<div class="tom-tilstand" role="status"><p>${INGEN_STEDER}</p>`)
+      expect(html).toContain('Last inn på nytt</button>')
+      expect(html).not.toContain('class="kart"')
+      expect(html).not.toContain('liste-rad')
+    } finally {
+      vi.useRealTimers()
+    }
   })
 
   it('shows the error message in an alert', () => {
@@ -76,7 +98,7 @@ describe('AppView', () => {
     // 20:30 UTC is 22:30 in Norway in October (CEST).
     expect(html).toContain('Prognose fra MET, oppdatert 7. oktober 2026 kl. 22:30')
     expect(html).not.toContain('Utdatert')
-    expect(html).toContain('<a href="/">Tilbake</a>')
+    expect(html).toContain('<a href="/" class="sted-tilbake">Tilbake</a>')
     expect(html).not.toContain('class="kart"')
   })
 
