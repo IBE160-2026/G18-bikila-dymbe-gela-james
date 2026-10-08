@@ -28,8 +28,8 @@ npm run build       # bygg produksjonsversjonen
 
 Et rent klon trenger verken nøkler eller nett. `npm run dev` viser da demodataene i
 `public/data/demo.json`, med banneret «Demodata – ikke ekte prognoser». Appen laster
-`public/data/latest.json` hvis den finnes, og ellers `demo.json`. `latest.json` skal lages av
-dataprogrammet (fra Story 1.5), og committes ikke.
+`public/data/latest.json` hvis den finnes, og ellers `demo.json`. `latest.json` lages av
+`npm run data` (se under), og committes ikke.
 
 Demodataene er 24 steder med ekte, innspilte MET- og NVE-svar fra `tests/contract/fixtures/`. Ett
 sted har ufullstendige data, og ett har kildedata som er eldre enn 3 timer (merkingen «Utdatert» i
@@ -48,9 +48,12 @@ npm run data   # hent MET- og NVE-data for alle stedene i data/catalog.json (kre
 ```
 
 Dataprogrammet henter værprognosen fra MET og nysnø siste døgn fra NVE for hvert sted, sjekker svarene
-og regner ut SnowScore. Til slutt skriver det ut kvalitetsrapporten: hvor mange steder som har gyldige
-data, og hvilke svar som ble avvist og hvorfor. Foreløpig skrives ingen fil; `latest.json` kommer i
-Story 1.5.
+og regner ut SnowScore. Når minst 95 % av stedene har gyldige data, skrives `public/data/latest.json`,
+og `npm run dev` viser da live-data uten demobanner. Fila blir liggende til neste vellykkede kjøring,
+så dataene kan være gamle; slett den for å gå tilbake til demodataene.
+Under 95 % står forrige fil urørt, og kommandoen avslutter med feilkode 1. Kvalitetsrapporten (hvor
+mange steder som har gyldige data, og hvilke svar som ble avvist og hvorfor) ligger i datafila, eller
+skrives ut når kjøringen ikke ble publisert.
 
 Feltene i datafila og kildesvarene er beskrevet i
 [`shared/contracts/data-dictionary.md`](shared/contracts/data-dictionary.md).

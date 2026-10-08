@@ -1,6 +1,6 @@
 // AD-2: the single entrypoint of the data program. Creates the run ID, calls the stages in order and
 // always writes the run report in `finally`. `npm run data:demo` runs it on the recorded fixtures,
-// `npm run data` on live MET and NVE data. Publishing the live data file comes in Story 1.5.
+// `npm run data` on live MET and NVE data.
 import { randomUUID } from 'node:crypto'
 import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
@@ -8,7 +8,7 @@ import { fileURLToPath } from 'node:url'
 import { Catalog, type CatalogEntry } from '../../shared/contracts/catalog'
 import type { RunContext, RunReport } from '../../shared/contracts/run'
 import { fetchAll, type FetchFn } from './fetch'
-import { buildReport, MIN_VALID_SHARE, publish, writeRunReport } from './publish'
+import { publish, writeRunReport } from './publish'
 import { score } from './score'
 import { DEFAULT_FIXTURES_DIR, demoReferenceTime, loadDemoCatalog, readFixtures } from './sources/fixtures'
 import { validate } from './validate'
@@ -17,11 +17,8 @@ export const DEMO_OUT_PATH = fileURLToPath(new URL('../../public/data/demo.json'
 /** AD-10: the demo's run ID is fixed so regenerating gives a byte-identical file. */
 export const DEMO_RUN_ID = 'demo'
 export const CATALOG_PATH = fileURLToPath(new URL('../../data/catalog.json', import.meta.url))
-/**
- * Why a live run that completed is not published yet. main() exits 1 on any other reason (a crash)
- * and when fewer than MIN_VALID_SHARE of the places are valid, so a total outage is not a success.
- */
-export const LIVE_NOT_PUBLISHED = 'Publisering av live-data kommer i Story 1.5'
+/** Gitignored; the app loads it before falling back to demo.json (AD-10). */
+export const LIVE_OUT_PATH = fileURLToPath(new URL('../../public/data/latest.json', import.meta.url))
 
 export interface DemoOptions {
   fixturesDir?: string
@@ -76,6 +73,7 @@ export async function runDemo({
 
 export interface LiveOptions {
   catalogPath?: string
+  outPath?: string
   /** Injected so tests never use the network. */
   fetchFn?: FetchFn
   /** The wall clock; injected so tests control the start, reference and end time. */
@@ -95,11 +93,12 @@ async function loadCatalog(path: string): Promise<CatalogEntry[]> {
 }
 
 /**
- * Runs the pipeline on live data: fetch → validate → score, then prints the run report. Writes no
- * file yet (publishing is Story 1.5). Never throws: failures end up in the returned report.
+ * Runs the pipeline on live data: fetch → validate → score → publish. Never throws: failures end up
+ * in the returned report, and the previous data file is left as it was.
  */
 export async function runLive({
   catalogPath = CATALOG_PATH,
+  outPath = LIVE_OUT_PATH,
   fetchFn = (url, init) => fetch(url, init),
   clock = () => new Date().toISOString(),
   concurrency,
@@ -116,7 +115,7 @@ export async function runLive({
     ctx = await fetchAll(ctx, { fetchFn, concurrency, timeoutMs })
     ctx = validate(ctx)
     ctx = score(ctx)
-    ctx = { ...ctx, report: buildReport(ctx, { end: clock(), publisert: false, ikkePublisertFordi: LIVE_NOT_PUBLISHED }) }
+    ctx = await publish(ctx, { outPath, now: clock() })
   } catch (caught) {
     error = caught ?? new Error('Ukjent feil')
   } finally {
@@ -126,13 +125,9 @@ export async function runLive({
 }
 
 async function main(argv: string[]): Promise<void> {
-  if (argv.includes('--demo')) {
-    const report = await runDemo()
-    if (!report.publisert) process.exitCode = 1
-    return
-  }
-  const report = await runLive()
-  if (report.ikkePublisertFordi !== LIVE_NOT_PUBLISHED || report.andelGyldige < MIN_VALID_SHARE) process.exitCode = 1
+  // A run that did not publish (crash, or under MIN_VALID_SHARE) fails, so the hourly job turns red.
+  const report = argv.includes('--demo') ? await runDemo() : await runLive()
+  if (!report.publisert) process.exitCode = 1
 }
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1])) {
