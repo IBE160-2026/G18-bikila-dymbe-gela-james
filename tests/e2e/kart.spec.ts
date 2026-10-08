@@ -21,6 +21,15 @@ test('the map shows every demo place and a marker opens its place page', async (
   await expect(page.getByText('Demodata – ikke ekte prognoser')).toBeVisible()
   await expect(page.locator(markers)).toHaveCount(24)
 
+  // Markers start small at country level and grow when the user zooms in (Story 1.7b).
+  const width = async () => (await page.locator(hemsedal).boundingBox())?.width ?? 0
+  const before = await width()
+  await page.getByRole('button', { name: 'Zoom in' }).click()
+  await expect.poll(width).toBeGreaterThan(before + 2)
+  const zoomedIn = await width()
+  await page.getByRole('button', { name: 'Zoom out' }).click()
+  await expect.poll(width).toBeLessThan(zoomedIn - 2)
+
   // The score is never colour alone: the tooltip has the number and the label (demo score 7).
   await page.locator(hemsedal).hover()
   await expect(page.locator('.leaflet-tooltip')).toHaveText('Hemsedal skisenter · 7 · Lite')
