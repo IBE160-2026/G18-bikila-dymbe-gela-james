@@ -47,3 +47,4 @@
 - source_spec: `spec-1-9-stedsside.md`
   summary: Regn dataalderen på nytt mens siden er åpen (ikke bare ved lasting), så «Utdatert» og fjerning etter 12 t også gjelder en fane som har stått åpen lenge i live-modus. Naturlig sammen med banneret for gamle data i Story 1.6.
   evidence: Story 1.9-gjennomgang (Blind Hunter, Edge Case Hunter). `medFerskhet` kjøres én gang i den delte loaderen, og resultatet hurtigbufres for hele sideinnlastingen.
+  status: løst i `spec-1-9b-stedsside-fullfort.md` (2026-10-08). Live-data sjekkes hvert minutt og når fanen blir synlig igjen.

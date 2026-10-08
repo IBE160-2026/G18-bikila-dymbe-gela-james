@@ -45,7 +45,7 @@ development_status:
   1-11-kjør-dataprogrammet-hver-time-og-publiser-appen: backlog
   1-7-se-norgeskartet-med-fargelagte-steder: done
   1-8-bruk-tilgjengelig-listevisning-i-stedet-for-kart: done
-  1-9-åpne-en-stedsside-med-full-poengsum: review
+  1-9-åpne-en-stedsside-med-full-poengsum: done
   1-6-hold-tjenesten-oppe-når-en-datakilde-er-nede: backlog  # Bør ha (v3)
   epic-1-retrospective: optional
 

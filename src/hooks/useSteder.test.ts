@@ -1,8 +1,8 @@
-import { describe, expect, it, vi } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import type { PublishedData, Sted } from '../../shared/contracts/published'
 import { FJERNES_ETTER_MS, UTDATERT_ETTER_MS } from '../../shared/freshness'
 import type { LoadResult } from '../lib/data/loadPublishedData'
-import { createSharedLoader, medFerskhet, type StederResult } from './useSteder'
+import { createSharedLoader, medFerskhet, oppdaterFerskhet, trengerFerskhetssjekk, type StederResult } from './useSteder'
 
 describe('createSharedLoader', () => {
   it('loads once and hands every caller the same result', async () => {
@@ -101,5 +101,61 @@ describe('medFerskhet', () => {
   it('passes an error through unchanged', () => {
     const error: LoadResult = { status: 'error', message: 'x' }
     expect(medFerskhet(error)).toBe(error)
+  })
+})
+
+describe('oppdaterFerskhet', () => {
+  // A live file: age is measured against the (fake) wall clock, which the tests move forward.
+  const LOADED_AT = Date.parse('2026-10-08T12:00:00Z')
+  const sted = (id: string, kildeTidspunkt: string) => ({ id, navn: id, kildeTidspunkt }) as Sted
+  const raw = (steder: Sted[]): LoadResult => ({
+    status: 'ok',
+    data: { mode: 'live', referenceTime: '2026-10-08T12:00:00Z', steder } as PublishedData,
+    source: 'latest',
+  })
+  const file = raw([sted('a', '2026-10-08T11:00:00Z'), sted('b', '2026-10-08T09:30:00Z')])
+
+  afterEach(() => vi.useRealTimers())
+
+  it('returns the very same result while no place changes status', () => {
+    vi.useFakeTimers({ now: LOADED_AT })
+    const first = medFerskhet(file)
+    vi.setSystemTime(LOADED_AT + 60_000)
+    expect(oppdaterFerskhet(first, file)).toBe(first)
+  })
+
+  it('marks a place «Utdatert» once it passes 3 h, keeping the same data so the map is not rebuilt', () => {
+    vi.useFakeTimers({ now: LOADED_AT })
+    const first = medFerskhet(file)
+    vi.setSystemTime(LOADED_AT + 2.5 * 3_600_000)
+    const later = oppdaterFerskhet(first, file)
+    if (first.status !== 'ok' || later.status !== 'ok') throw new Error('expected ok')
+    expect([...later.utdatert].sort()).toEqual(['a', 'b'])
+    expect(later.data).toBe(first.data)
+  })
+
+  it('removes a place once it passes 12 h', () => {
+    vi.useFakeTimers({ now: LOADED_AT })
+    const first = medFerskhet(file)
+    vi.setSystemTime(LOADED_AT + 10 * 3_600_000)
+    const later = oppdaterFerskhet(first, file)
+    if (later.status !== 'ok') throw new Error('expected ok')
+    expect(later.data.steder.map(({ id }) => id)).toEqual(['a'])
+    expect([...later.fjernet]).toEqual(['b'])
+    if (first.status !== 'ok') throw new Error('expected ok')
+    expect(later.data).not.toBe(first.data)
+  })
+
+  it('passes a load error through', () => {
+    const error: LoadResult = { status: 'error', message: 'x' }
+    expect(oppdaterFerskhet(error, error)).toBe(error)
+  })
+
+  it('re-checks only live data, never demo data or an error', () => {
+    expect(trengerFerskhetssjekk(file)).toBe(true)
+    if (file.status !== 'ok') throw new Error('expected ok')
+    expect(trengerFerskhetssjekk({ ...file, data: { ...file.data, mode: 'demo' } })).toBe(false)
+    expect(trengerFerskhetssjekk({ status: 'error', message: 'x' })).toBe(false)
+    expect(trengerFerskhetssjekk(null)).toBe(false)
   })
 })

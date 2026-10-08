@@ -65,7 +65,7 @@ export default function Sted({ sted, utdatert }: Props) {
           </p>
         </section>
       </div>
-      <Lenke to={{ name: 'utforsk', visning: 'kart' }} tilbake>
+      <Lenke to={{ name: 'utforsk', visning: 'kart' }} className="sted-tilbake" tilbake>
         Tilbake
       </Lenke>
     </article>
