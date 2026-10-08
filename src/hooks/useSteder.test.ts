@@ -2,21 +2,117 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import type { PublishedData, Sted } from '../../shared/contracts/published'
 import { FJERNES_ETTER_MS, UTDATERT_ETTER_MS } from '../../shared/freshness'
 import type { LoadResult } from '../lib/data/loadPublishedData'
-import { createSharedLoader, medFerskhet, oppdaterFerskhet, trengerFerskhetssjekk, type StederResult } from './useSteder'
+import {
+  createStederStore,
+  FERSKHET_SJEKK_MS,
+  medFerskhet,
+  oppdaterFerskhet,
+  trengerFerskhetssjekk,
+  type StederResult,
+} from './useSteder'
 
-describe('createSharedLoader', () => {
-  it('loads once and hands every caller the same result', async () => {
-    const loaded: StederResult = { status: 'error', message: 'x' }
-    const loadFn = vi.fn(() => Promise.resolve(loaded))
-    const loader = createSharedLoader(loadFn)
+describe('createStederStore', () => {
+  const LOADED_AT = Date.parse('2026-10-08T12:00:00Z')
+  const stedMed = (id: string, kildeTidspunkt: string) => ({ id, navn: id, kildeTidspunkt }) as Sted
+  const fil = (mode: PublishedData['mode']): LoadResult => ({
+    status: 'ok',
+    data: { mode, referenceTime: '2026-10-08T12:00:00Z', steder: [stedMed('a', '2026-10-08T09:30:00Z')] } as PublishedData,
+    source: mode === 'live' ? 'latest' : 'demo',
+  })
+  const utdatert = (result: StederResult | null) => (result?.status === 'ok' ? [...result.utdatert] : null)
 
-    expect(loader.current()).toBeNull()
-    const [first, second] = await Promise.all([loader.load(), loader.load()])
-    expect(await loader.load()).toBe(loaded)
-    expect(first).toBe(loaded)
-    expect(second).toBe(loaded)
-    expect(loader.current()).toBe(loaded)
+  afterEach(() => vi.useRealTimers())
+
+  it('loads once and gives every subscriber the very same snapshot', async () => {
+    const loadFn = vi.fn(() => Promise.resolve(fil('demo')))
+    const store = createStederStore(loadFn)
+    expect(store.getSnapshot()).toBeNull()
+
+    const first = vi.fn()
+    const second = vi.fn()
+    store.subscribe(first)
+    store.subscribe(second)
+    await vi.waitFor(() => expect(store.getSnapshot()).not.toBeNull())
+
     expect(loadFn).toHaveBeenCalledTimes(1)
+    expect(first).toHaveBeenCalledTimes(1)
+    expect(second).toHaveBeenCalledTimes(1)
+    expect(store.getSnapshot()).toBe(store.getSnapshot())
+  })
+
+  it('re-checks live data every minute and tells every subscriber', async () => {
+    vi.useFakeTimers({ now: LOADED_AT })
+    const store = createStederStore(() => Promise.resolve(fil('live')))
+    const listener = vi.fn()
+    store.subscribe(listener)
+    await vi.waitFor(() => expect(store.getSnapshot()).not.toBeNull())
+    expect(utdatert(store.getSnapshot())).toEqual([])
+
+    // The place is 2 h 30 min old at load; one more hour makes it older than 3 h.
+    vi.setSystemTime(LOADED_AT + 3_600_000)
+    vi.advanceTimersByTime(FERSKHET_SJEKK_MS)
+    expect(utdatert(store.getSnapshot())).toEqual(['a'])
+    expect(listener).toHaveBeenCalledTimes(2)
+  })
+
+  it('never re-checks demo data, and stops checking when the last subscriber leaves', async () => {
+    vi.useFakeTimers({ now: LOADED_AT })
+    const demo = createStederStore(() => Promise.resolve(fil('demo')))
+    demo.subscribe(() => {})
+    await vi.waitFor(() => expect(demo.getSnapshot()).not.toBeNull())
+    expect(vi.getTimerCount()).toBe(0)
+
+    const live = createStederStore(() => Promise.resolve(fil('live')))
+    const unsubscribe = live.subscribe(() => {})
+    await vi.waitFor(() => expect(live.getSnapshot()).not.toBeNull())
+    expect(vi.getTimerCount()).toBe(1)
+    unsubscribe()
+    expect(vi.getTimerCount()).toBe(0)
+  })
+
+  it('starts checking again when a new subscriber arrives after everyone left (route change, StrictMode)', async () => {
+    vi.useFakeTimers({ now: LOADED_AT })
+    const store = createStederStore(() => Promise.resolve(fil('live')))
+    store.subscribe(() => {})()
+    await vi.waitFor(() => expect(store.getSnapshot()).not.toBeNull())
+    expect(vi.getTimerCount()).toBe(0)
+    store.subscribe(() => {})
+    expect(vi.getTimerCount()).toBe(1)
+  })
+
+  it('does not tell subscribers anything when a check changes nothing, so the map is not rebuilt', async () => {
+    vi.useFakeTimers({ now: LOADED_AT })
+    const store = createStederStore(() => Promise.resolve(fil('live')))
+    const listener = vi.fn()
+    store.subscribe(listener)
+    await vi.waitFor(() => expect(store.getSnapshot()).not.toBeNull())
+    const snapshot = store.getSnapshot()
+    vi.advanceTimersByTime(5 * FERSKHET_SJEKK_MS)
+    expect(store.getSnapshot()).toBe(snapshot)
+    expect(listener).toHaveBeenCalledTimes(1)
+  })
+
+  it('checks at once when the tab is shown again', async () => {
+    vi.useFakeTimers({ now: LOADED_AT })
+    const dokument = Object.assign(new EventTarget(), { visibilityState: 'visible' })
+    vi.stubGlobal('document', dokument)
+    try {
+      const store = createStederStore(() => Promise.resolve(fil('live')))
+      store.subscribe(() => {})
+      await vi.waitFor(() => expect(store.getSnapshot()).not.toBeNull())
+      vi.setSystemTime(LOADED_AT + 3_600_000)
+      dokument.dispatchEvent(new Event('visibilitychange'))
+      expect(utdatert(store.getSnapshot())).toEqual(['a'])
+    } finally {
+      vi.unstubAllGlobals()
+    }
+  })
+
+  it('shows the error view instead of a skeleton forever when loading throws', async () => {
+    const store = createStederStore(() => Promise.reject(new Error('boom')))
+    store.subscribe(() => {})
+    await vi.waitFor(() => expect(store.getSnapshot()).not.toBeNull())
+    expect(store.getSnapshot()).toMatchObject({ status: 'error' })
   })
 })
 

@@ -48,7 +48,10 @@ describe('AppView', () => {
     try {
       const live = { ...demo, mode: 'live' as const }
       const html = render(medFerskhet({ status: 'ok', data: live, source: 'latest' }), { name: 'utforsk', visning })
-      expect(html).toContain(`<div class="tom-tilstand" role="status"><p>${INGEN_STEDER}</p>`)
+      expect(html).toContain('<p class="visually-hidden" role="status">Ingen ferske data</p>')
+      expect(html).toContain('<h2 id="tom-overskrift">Ingen ferske data</h2>')
+      expect(html).toContain(`<p>${INGEN_STEDER}</p>`)
+      expect(html).not.toContain('aria-label="Visning"')
       expect(html).toContain('Last inn på nytt</button>')
       expect(html).not.toContain('class="kart"')
       expect(html).not.toContain('liste-rad')

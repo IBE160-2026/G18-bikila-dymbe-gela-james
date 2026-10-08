@@ -98,7 +98,7 @@ test('sorting by distance uses the shared position, and a refusal falls back to 
   const denied = await refused.newPage()
   await denied.goto('/?visning=liste')
   await denied.getByLabel('Sorter etter').selectOption('avstand')
-  await expect(denied.getByRole('status')).toHaveText('Fikk ikke tilgang til posisjonen din. Listen er sortert etter score.')
+  await expect(denied.getByRole('status').filter({ hasText: 'posisjonen' })).toHaveText('Fikk ikke tilgang til posisjonen din. Listen er sortert etter score.')
   await expect(denied.getByLabel('Sorter etter')).toHaveValue('score')
   await expect(rows(denied).first()).toContainText('Gaustatoppen')
   await refused.close()

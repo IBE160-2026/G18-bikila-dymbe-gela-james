@@ -4,7 +4,7 @@ import { useSteder, type StederResult } from './hooks/useSteder'
 import { useRoute, type Route } from './lib/router'
 import IkkeFunnet from './pages/IkkeFunnet'
 import Sted from './pages/Sted'
-import Utforsk from './pages/Utforsk'
+import Utforsk, { INGEN_FERSKE } from './pages/Utforsk'
 
 function Innhold({ result, route }: { result: StederResult | null; route: Route }) {
   if (route.name === 'ikke-funnet') return <IkkeFunnet melding="Fant ikke siden" />
@@ -34,6 +34,11 @@ function Innhold({ result, route }: { result: StederResult | null; route: Route 
   return <Sted sted={sted} utdatert={result.utdatert.has(sted.id)} />
 }
 
+/** What the page-wide status region says; empty unless Utforsk has no places left to show. */
+export function statusMelding(result: StederResult | null, route: Route): string {
+  return route.name === 'utforsk' && result?.status === 'ok' && result.data.steder.length === 0 ? INGEN_FERSKE : ''
+}
+
 /** The shell's rendering, kept pure so it can be tested without a browser. `null` means loading. */
 export function AppView({ result, route }: { result: StederResult | null; route: Route }) {
   return (
@@ -45,6 +50,11 @@ export function AppView({ result, route }: { result: StederResult | null; route:
       </header>
       {result?.status === 'ok' && result.data.mode === 'demo' && <DemoBanner />}
       <main className="app">
+        {/* Rendered from the first paint, also while loading, so a screen reader hears the message when it
+            is filled in, both when the data first arrives and when places run out on an open page. */}
+        <p className="visually-hidden" role="status">
+          {statusMelding(result, route)}
+        </p>
         <Innhold result={result} route={route} />
       </main>
     </>
