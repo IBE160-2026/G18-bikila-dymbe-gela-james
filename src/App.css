@@ -240,3 +240,90 @@ select:focus-visible {
   font-size: var(--typography-numeric-font-size);
   font-feature-settings: var(--typography-numeric-font-feature-settings);
 }
+
+/* «Utdatert» is a small meta text with the source time, never a block (EXPERIENCE, 3–12 h). */
+.utdatert {
+  color: var(--color-ink-secondary);
+  font-family: var(--typography-meta-font-family);
+  font-size: var(--typography-meta-font-size);
+  font-weight: var(--typography-meta-font-weight);
+  line-height: var(--typography-meta-line-height);
+  letter-spacing: var(--typography-meta-letter-spacing);
+}
+
+.liste-rad .utdatert {
+  grid-column: 1 / -1;
+}
+
+/* Story 1.9: one column on mobile, two from the ~768px breakpoint (EXPERIENCE). Media queries cannot
+   read custom properties, so the breakpoint is written out here. */
+.sted-kolonner {
+  display: grid;
+  gap: var(--spacing-4);
+  margin-bottom: var(--spacing-4);
+}
+
+@media (min-width: 768px) {
+  .sted-kolonner {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.sted-kort {
+  padding: var(--spacing-4);
+  border: 1px solid var(--color-border-hairline);
+  border-radius: var(--rounded-md);
+  background: var(--color-surface-raised);
+}
+
+.sted-kort h2 {
+  margin: 0 0 var(--spacing-3);
+  font-family: var(--typography-heading-font-family);
+  font-size: var(--typography-heading-font-size);
+  font-weight: var(--typography-heading-font-weight);
+  line-height: var(--typography-heading-line-height);
+}
+
+/* DESIGN.md: display is used only for the SnowScore number on the place page. */
+.sted-score {
+  margin: 0 0 var(--spacing-4);
+}
+
+.sted-score .score-badge {
+  font-family: var(--typography-display-font-family);
+  font-size: var(--typography-display-font-size);
+  font-weight: var(--typography-display-font-weight);
+  line-height: var(--typography-display-line-height);
+}
+
+.sted-tall {
+  display: grid;
+  gap: var(--spacing-2);
+  margin: 0;
+}
+
+.sted-tall div {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--spacing-3);
+  padding-bottom: var(--spacing-2);
+  border-bottom: 1px solid var(--color-border-hairline);
+}
+
+.sted-tall dd {
+  margin: 0;
+  font-family: var(--typography-numeric-font-family);
+  font-size: var(--typography-numeric-font-size);
+  font-weight: var(--typography-numeric-font-weight);
+  font-feature-settings: var(--typography-numeric-font-feature-settings);
+}
+
+.sted-kilde {
+  margin: var(--spacing-3) 0 0;
+  color: var(--color-ink-secondary);
+  font-family: var(--typography-meta-font-family);
+  font-size: var(--typography-meta-font-size);
+  font-weight: var(--typography-meta-font-weight);
+  line-height: var(--typography-meta-line-height);
+  letter-spacing: var(--typography-meta-letter-spacing);
+}
