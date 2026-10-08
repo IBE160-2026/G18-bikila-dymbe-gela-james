@@ -6,7 +6,7 @@ sources:
   - project-phase-folders/1-Oppstartsfasen/SnowFinder-Produktbrief.md
   - project-workspace/planning-artifacts/sprint-change-proposal-2026-10-07.md
   - project-workspace/planning-artifacts/sprint-change-proposal-2026-10-07-forenkling.md
-updated: 2026-10-07
+updated: 2026-10-08
 ---
 
 # SnowFinder — Experience Spine
@@ -71,7 +71,7 @@ Atferd. Visuelle spesifikasjoner ligger i `SnowFinder-DESIGN.md.Components`.
 
 | Komponent | Bruk | Atferdsregler |
 |---|---|---|
-| Kartmarkør | Utforsk (kart) | Klikk/trykk åpner stedsside. Hover (desktop) viser stedsnavn + score i tooltip. Klynger slås sammen kun ved svært lav zoom (unngår at markører forsvinner inn i en klynge brukeren må zoome for å finne). |
+| Kartmarkør | Utforsk (kart) | Klikk/trykk åpner stedsside. Hover (desktop) viser stedsnavn + score i tooltip. *(v3, 2026-10-08)* Ingen klynging: markørene er små på landsnivå og vokser når brukeren zoomer inn (mål i DESIGN.md `{components.map-marker}`), så ingen sted forsvinner inn i en klynge. |
 | Listerad | Utforsk (liste) | Tab-navigerbar, Enter åpner stedsside. Sorterbar (score/avstand/navn) via en ordinær `<select>` eller knapperad — aldri en museavhengig dra-og-slipp. |
 | Score-badge | Overalt SnowScore vises | Tall + tekstetikett alltid sammen. Trykk/tap gjør ingenting i seg selv (badge er ikke en egen lenke) — hele kortet/raden er klikkmålet. |
 | Filterpanel | Utforsk (kart + liste) | Slidere for nysnø/vind/temperatur (Må ha) + sol/avstand/stedstype (Bør ha). Antall treff oppdateres live (`aria-live="polite"`) mens sliderne justeres. Nullstill-knapp alltid synlig når minst ett filter avviker fra standard. |
@@ -195,10 +195,14 @@ gjentatt varsling samme dag selv om pipelinen kjører hver time).
 
 ## Åpne spørsmål (UX)
 
-1. Bør «Vis som liste» være en fane ved siden av kartet, eller en ren lenke/toggle over det?
-   Spinen antar toggle (enklere IA, samme rute) — bekreft med Winston/Amelia før bygging.
+1. ~~Bør «Vis som liste» være en fane ved siden av kartet, eller en ren lenke/toggle over det?~~
+   *(Løst 2026-10-08, Story 1.8: to lenker «Kart» | «Liste» rett under navigasjonen, med
+   `aria-current`.)*
 2. Nøkkelskjerm-mockuper er ikke generert i denne runden — vurder en oppfølgingsøkt for
    kart/liste-flaten spesifikt, siden layout der er mer kritisk enn tabellene her fanger.
 3. *(v2)* Fra endringsrunde 1 står fortsatt U1 (wireframes for nøkkelskjermene), U2 (kursets
    skjermkrav koblet til SnowFinder) og U3 (brukertestplan med SUS). Koblingen i U2 må gjøres om,
    fordi «profil → snøvarsel» og «innsjekking → tilbakemelding» er tatt ut.
+4. *(v3, 2026-10-08)* Små kartmarkører (10 px på landsnivå) er under kravet om trykkmål ≥ 44 px på
+   mobil. Kartlaget er unntatt AA, og listen er det fulle alternativet. Vurder likevel en større,
+   usynlig trykkflate rundt markørene.

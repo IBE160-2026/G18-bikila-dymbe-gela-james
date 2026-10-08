@@ -89,8 +89,10 @@ components:
     accent: '{colors.accent}'
   map-marker:
     size: '28px'
+    sizeCountryLevel: '10px'
     radius: '{rounded.full}'
     borderWidth: '2px'
+    borderWidthSmall: '1px'
     borderColor: '{colors.surface-raised}'
   banner-stale-data:
     radius: '{rounded.sm}'
@@ -179,9 +181,16 @@ SnowScore-visning, slik at en bruker lærer «rundt = poengsum».
   (`{colors.snowscore-0..3}`), tekst = ink-primary eller hvit (velg for kontrast ≥4.5:1 mot
   bakgrunnen — mørkeste trinn får hvit tekst). Viser **alltid** tallet og en kort tekstetikett
   («82 · Svært godt»), aldri bare farge (WCAG-krav, se EXPERIENCE.md Accessibility Floor).
-- **Kartmarkør** — Sirkel, `{components.map-marker.size}`, farget etter SnowScore-trinn, hvit
-  kant for kontrast mot alle bakgrunnskart-tiles. Valgt sted får en tykkere aksent-kant
-  (`{colors.accent}`).
+- **Kartmarkør** — Sirkel, farget etter SnowScore-trinn, hvit kant for kontrast mot alle
+  bakgrunnskart-tiles. Valgt sted får en tykkere aksent-kant (`{colors.accent}`).
+  - *(v3, 2026-10-08, Story 1.7b)* Størrelsen følger zoomen:
+    - `{components.map-marker.sizeCountryLevel}` ved zoom 5 og lavere;
+    - lineær vekst opp til `{components.map-marker.size}` ved zoom 8 og tettere.
+  - Kanten er `{components.map-marker.borderWidthSmall}` under 16 px og ellers
+    `{components.map-marker.borderWidth}`, så trinnfargen synes på små markører.
+  - Steder med ufullstendige data har hvit fyll og alltid 2 px stiplet grå kant
+    (`{colors.snowscore-0}`), så de aldri leses som score 0.
+  - Grunnen er at 300 steder med 28 px dekket hverandre på landsnivå (manuell sjekk 2026-10-08).
 - **Location-card / listerad** — `{colors.surface-raised}` kort med stedsnavn (`heading`),
   score-badge, og tre nøkkeltall (nysnø/vind/temp) i `numeric`.
 - **Filter-slider** — Tynt spor, stort gripepunkt (24px, langt over 44px trykkmål med padding),
