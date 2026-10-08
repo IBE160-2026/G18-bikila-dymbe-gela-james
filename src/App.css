@@ -359,3 +359,11 @@ select:focus-visible {
   outline: 3px solid var(--color-accent);
   outline-offset: 2px;
 }
+
+.tom-tilstand h2 {
+  margin: 0 0 var(--spacing-3);
+}
+
+.tom-tilstand p {
+  margin: 0;
+}

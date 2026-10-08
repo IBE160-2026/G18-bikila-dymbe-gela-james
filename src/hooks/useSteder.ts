@@ -1,12 +1,13 @@
-import { useEffect, useState } from 'react'
+import { useSyncExternalStore } from 'react'
 import { ferskhet } from '../../shared/freshness'
 import { now } from '../lib/clock'
-import { loadPublishedData, type DataSource, type LoadResult } from '../lib/data/loadPublishedData'
+import { LOAD_ERROR_MESSAGE, loadPublishedData, type DataSource, type LoadResult } from '../lib/data/loadPublishedData'
 import type { PublishedData } from '../../shared/contracts/published'
 
-// AD-8: the only way pages and components get place data. The data file is loaded once per page load
-// and shared, so moving between routes never fetches it again. In live mode the age limits are
-// checked again every minute, so a tab left open still marks and removes places as they age.
+// AD-8: the only way pages and components get place data. One store per page loads the file once and
+// applies the age limits once, so every caller sees the same places and moving between routes never
+// fetches again. In live mode the store re-checks the limits every minute and when the tab is shown
+// again, so a tab left open still marks and removes places as they age.
 
 /** How often a live page re-checks the age limits. */
 export const FERSKHET_SJEKK_MS = 60_000
@@ -64,58 +65,76 @@ export function trengerFerskhetssjekk(raw: LoadResult | null): boolean {
   return raw?.status === 'ok' && raw.data.mode === 'live'
 }
 
-export type SharedLoader<T> = { load: () => Promise<T>; current: () => T | null }
-
-export function createSharedLoader<T>(loadFn: () => Promise<T>): SharedLoader<T> {
-  let pending: Promise<T> | null = null
-  let result: T | null = null
-  return {
-    load() {
-      pending ??= loadFn().then((loaded) => (result = loaded))
-      return pending
-    },
-    current: () => result,
-  }
+export type StederStore = {
+  subscribe: (onChange: () => void) => () => void
+  getSnapshot: () => StederResult | null
 }
 
-// The raw file is shared; the age limits are applied per page, against the current time.
-const shared = createSharedLoader(() => loadPublishedData(undefined, import.meta.env.BASE_URL))
+/**
+ * One store for the whole page: it loads the file once, applies the age limits once and, for live
+ * data, re-checks them every minute and when the tab is shown again. Every useSteder() caller reads
+ * the same snapshot, so map, list and place page can never disagree.
+ */
+export function createStederStore(loadFn: () => Promise<LoadResult>): StederStore {
+  let raw: LoadResult | null = null
+  let result: StederResult | null = null
+  let pending: Promise<void> | null = null
+  let stopSjekk: (() => void) | null = null
+  const listeners = new Set<() => void>()
 
-/** `null` while loading, then the `ok` or `error` result, with too old places already removed. */
-export function useSteder(): StederResult | null {
-  const [raw, setRaw] = useState(shared.current)
-  const [result, setResult] = useState(() => {
-    const loaded = shared.current()
-    return loaded && medFerskhet(loaded)
-  })
+  function publiser(next: StederResult) {
+    if (next === result) return
+    result = next
+    for (const listener of listeners) listener()
+  }
 
-  useEffect(() => {
-    if (raw !== null) return
-    let cancelled = false
-    void shared.load().then((loaded) => {
-      if (cancelled) return
-      setRaw(loaded)
-      setResult(medFerskhet(loaded))
-    })
-    return () => {
-      cancelled = true
-    }
-  }, [raw])
+  function sjekk() {
+    if (raw !== null && result !== null) publiser(oppdaterFerskhet(result, raw))
+  }
 
-  useEffect(() => {
-    if (raw === null || !trengerFerskhetssjekk(raw)) return
-    const sjekk = () => setResult((previous) => (previous ? oppdaterFerskhet(previous, raw) : previous))
+  function startSjekk() {
+    if (stopSjekk || !trengerFerskhetssjekk(raw)) return
     const timer = setInterval(sjekk, FERSKHET_SJEKK_MS)
     // Background tabs throttle timers and computers sleep, so check at once when the tab is shown again.
     const vedSynlig = () => {
       if (document.visibilityState === 'visible') sjekk()
     }
-    document.addEventListener('visibilitychange', vedSynlig)
-    return () => {
+    const harDokument = typeof document !== 'undefined'
+    if (harDokument) document.addEventListener('visibilitychange', vedSynlig)
+    stopSjekk = () => {
       clearInterval(timer)
-      document.removeEventListener('visibilitychange', vedSynlig)
+      if (harDokument) document.removeEventListener('visibilitychange', vedSynlig)
     }
-  }, [raw])
+  }
 
-  return result
+  return {
+    subscribe(onChange) {
+      listeners.add(onChange)
+      pending ??= loadFn()
+        // loadPublishedData never rejects, but an unexpected throw must show the error view, not a
+        // skeleton forever.
+        .catch((): LoadResult => ({ status: 'error', message: LOAD_ERROR_MESSAGE }))
+        .then((loaded) => {
+          raw = loaded
+          publiser(medFerskhet(loaded))
+          if (listeners.size > 0) startSjekk()
+        })
+      if (raw !== null) startSjekk()
+      return () => {
+        listeners.delete(onChange)
+        if (listeners.size === 0) {
+          stopSjekk?.()
+          stopSjekk = null
+        }
+      }
+    },
+    getSnapshot: () => result,
+  }
+}
+
+const store = createStederStore(() => loadPublishedData(undefined, import.meta.env.BASE_URL))
+
+/** `null` while loading, then the `ok` or `error` result, with too old places already removed. */
+export function useSteder(): StederResult | null {
+  return useSyncExternalStore(store.subscribe, store.getSnapshot, store.getSnapshot)
 }
