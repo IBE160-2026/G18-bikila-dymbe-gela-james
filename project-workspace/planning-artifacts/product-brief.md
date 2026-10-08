@@ -127,8 +127,8 @@ Versjon 1 er prosjektets **MVP** (minimum viable product). Kjeden stedskatalog �
 |---|---|
 | MET Norway Locationforecast | Timesprognose for nedbør, temperatur, vind og skydekke |
 | NVE GridTimeSeries (seNorge) | Modellert nysnø siste døgn |
-| Kartverket | Stedsnavn, koordinater og høyde |
-| OpenStreetMap | Skianlegg og kartgrunnlag |
+| Kartverket | Stedsnavn, koordinater og høyde, og topografisk bakgrunnskart |
+| OpenStreetMap | Skianlegg (stedskatalogen) |
 
 Alle kilder krediteres i tråd med lisensene sine (CC BY 4.0, NLOD og ODbL), synlig i kartet og på forklaringssiden.
 
@@ -210,7 +210,7 @@ flowchart LR
 | **Område** | **Teknologi** |
 |---|---|
 | Nettside | React, TypeScript og Vite, publisert som statisk side |
-| Kart | Leaflet og OpenStreetMap |
+| Kart | Leaflet med Kartverkets topografiske kart (endret fra OpenStreetMap 2026-10-08) |
 | Dataprogram | Node.js-script i samme kodebase, med samme beregningsmodul som nettsiden |
 | Validering | Zod |
 | Data | Én JSON-datafil med kvalitetsrapport, ingen database |
