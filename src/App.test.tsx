@@ -3,6 +3,7 @@ import { renderToStaticMarkup } from 'react-dom/server'
 import { describe, expect, it } from 'vitest'
 import { PublishedData } from '../shared/contracts/published'
 import { AppView } from './App'
+import { medEnhet } from './components/ListeVisning'
 import { LOAD_ERROR_MESSAGE, type LoadResult } from './lib/data/loadPublishedData'
 import type { Route } from './lib/router'
 
@@ -11,7 +12,8 @@ const demo = PublishedData.parse(
 )
 
 const demoResult: LoadResult = { status: 'ok', data: demo, source: 'demo' }
-const UTFORSK: Route = { name: 'utforsk' }
+const UTFORSK: Route = { name: 'utforsk', visning: 'kart' }
+const LISTE: Route = { name: 'utforsk', visning: 'liste' }
 
 function render(result: LoadResult | null, route: Route = UTFORSK): string {
   return renderToStaticMarkup(<AppView result={result} route={route} />)
@@ -41,6 +43,7 @@ describe('AppView', () => {
   it('announces loading as a skeleton status, on the map and on a place page', () => {
     const cases = [
       [UTFORSK, '<div class="skeleton kart-skeleton" role="status">'],
+      [LISTE, '<div class="skeleton liste-skeleton" role="status">'],
       [{ name: 'sted', id: 'oslo' }, '<div class="skeleton" role="status">'],
     ] as const
     for (const [route, skeleton] of cases) {
@@ -50,11 +53,11 @@ describe('AppView', () => {
     }
   })
 
-  it('shows a place page with name, score badge and a link back to the map', () => {
+  it('shows a place page with name, score badge and a link back', () => {
     const html = render(demoResult, { name: 'sted', id: 'gaustatoppen' })
     expect(html).toContain('<h1 class="sted-navn">Gaustatoppen</h1>')
     expect(html).toContain('<span class="score-badge score-badge--2">58 · Godt</span>')
-    expect(html).toContain('<a href="/">Tilbake til kartet</a>')
+    expect(html).toContain('<a href="/">Tilbake</a>')
     expect(html).not.toContain('class="kart"')
   })
 
@@ -74,5 +77,55 @@ describe('AppView', () => {
     const html = render(null, { name: 'ikke-funnet' })
     expect(html).toContain('Fant ikke siden')
     expect(html).toContain('<a href="/">Gå til kartet</a>')
+  })
+
+  it('marks the map as the current view by default', () => {
+    const html = render(demoResult)
+    expect(html).toContain('<a href="/" class="visning-valg" aria-current="page">Kart</a>')
+    expect(html).toContain('<a href="/?visning=liste" class="visning-valg">Liste</a>')
+    expect(html).not.toContain('liste-rad')
+  })
+
+  it('shows the list instead of the map for visning=liste, sorted by score', () => {
+    const html = render(demoResult, LISTE)
+    expect(html).toContain('<a href="/?visning=liste" class="visning-valg" aria-current="page">Liste</a>')
+    expect(html).not.toContain('class="kart"')
+    expect(html).toContain('<label for="sortering">Sorter etter</label>')
+    const rows = [...html.matchAll(/<a href="\/sted\/([^"]+)" class="liste-rad">/g)].map((match) => match[1])
+    expect(rows).toHaveLength(24)
+    expect(rows[0]).toBe('gaustatoppen')
+    expect(rows.at(-1)).toBe('trondheim')
+  })
+
+  it('shows score as number and label, numbers with units, and incomplete data as text in the list', () => {
+    const html = render(demoResult, LISTE)
+    // Visually hidden separators, so a screen reader does not run the row's parts together.
+    const s = '<span class="visually-hidden">, </span>'
+    expect(html).toContain(
+      `<a href="/sted/gaustatoppen" class="liste-rad"><span class="liste-navn">Gaustatoppen</span>${s}` +
+        `<span class="score-badge score-badge--2">58 · Godt</span>${s}` +
+        `<span class="liste-detaljer"><span>Nysnø 10 cm</span><span>${s}Vind 12 m/s</span><span>${s}Temp −6,4 °C</span></span></a>`,
+    )
+    expect(html).toContain(
+      `<span class="liste-navn">Trondheim</span>${s}<span class="score-incomplete">Ufullstendige data</span>${s}` +
+        `<span class="liste-detaljer"><span>Nysnø –</span><span>${s}Vind 5,1 m/s</span><span>${s}Temp –</span></span>`,
+    )
+  })
+
+  it('gives each list row link a name that reads as separate parts', () => {
+    const html = render(demoResult, LISTE)
+    const row = /<a href="\/sted\/gaustatoppen" class="liste-rad">(.*?)<\/a>/.exec(html)?.[1] ?? ''
+    expect(row.replace(/<[^>]+>/g, '')).toBe('Gaustatoppen, 58 · Godt, Nysnø 10 cm, Vind 12 m/s, Temp −6,4 °C')
+  })
+})
+
+describe('medEnhet', () => {
+  it('formats in Norwegian with one decimal, and shows a dash for missing data', () => {
+    expect(medEnhet(3.000000000000001, 'cm')).toBe('3 cm')
+    expect(medEnhet(0.285, 'cm')).toBe('0,3 cm')
+    expect(medEnhet(-8.89, '°C')).toBe('−8,9 °C')
+    // -0.04 °C rounds to 0, not "−0".
+    expect(medEnhet(-0.04, '°C')).toBe('0 °C')
+    expect(medEnhet(null, 'm/s')).toBe('–')
   })
 })

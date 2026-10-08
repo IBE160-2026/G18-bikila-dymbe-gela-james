@@ -10,9 +10,10 @@ import Utforsk from './pages/Utforsk'
 function Innhold({ result, route }: { result: LoadResult | null; route: Route }) {
   if (route.name === 'ikke-funnet') return <IkkeFunnet melding="Fant ikke siden" />
   if (result === null) {
-    // On the map route the skeleton takes the map's height, so the layout does not jump when data arrives.
+    // On Utforsk the skeleton takes the map's or the list's shape, so the layout does not jump when data arrives.
+    const shape = route.name === 'utforsk' ? ` ${route.visning}-skeleton` : ''
     return (
-      <div className={route.name === 'utforsk' ? 'skeleton kart-skeleton' : 'skeleton'} role="status">
+      <div className={`skeleton${shape}`} role="status">
         <span className="visually-hidden">Laster stedsdata</span>
       </div>
     )
@@ -24,7 +25,7 @@ function Innhold({ result, route }: { result: LoadResult | null; route: Route })
       </p>
     )
   }
-  if (route.name === 'utforsk') return <Utforsk steder={result.data.steder} />
+  if (route.name === 'utforsk') return <Utforsk steder={result.data.steder} visning={route.visning} />
   const sted = result.data.steder.find(({ id }) => id === route.id)
   return sted ? <Sted sted={sted} /> : <IkkeFunnet melding="Fant ikke stedet" />
 }
@@ -34,7 +35,7 @@ export function AppView({ result, route }: { result: LoadResult | null; route: R
   return (
     <>
       <header className="app-header">
-        <Lenke to={{ name: 'utforsk' }} className="app-title">
+        <Lenke to={{ name: 'utforsk', visning: 'kart' }} className="app-title">
           SnowFinder
         </Lenke>
       </header>

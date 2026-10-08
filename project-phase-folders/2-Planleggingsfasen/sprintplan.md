@@ -50,7 +50,8 @@ De står i `sprint-status.yaml` med kommentaren «Ikke i v1» og bygges ikke.
 | 1.10 Lokal kjøring med demodata | Ferdig (`done`, PR #22) | Kjernen i dataprogrammet mot innspilte MET- og NVE-svar; `public/data/demo.json` med 24 steder; datalaster, klokke og demobanner. SnowScore over neste 24 t. |
 | 1.3 Hent og valider værdata | Ferdig (`done`, PR #23) | `npm run data` henter MET og NVE for alle 300 steder (høyst 5 samtidige kall per kilde, 20 s tidsavbrudd) og skriver ut kvalitetsrapporten. Publisering kommer i 1.5. |
 | 1.5 Beregn og publiser SnowScore | Ferdig (`done`, PR #24) | `npm run data` skriver `public/data/latest.json` atomisk når minst 95 % av stedene er gyldige. Flyttallsfeil i C (over 15) rettet i `shared/snowscore.ts`. |
-| 1.7 Se Norgeskartet | Implementert og gjennomgått (`review`) | Leaflet-kart med Kartverket topo, fire SnowScore-trinn (0–19 Lite, 20–44 Middels, 45–69 Godt, 70–100 Svært godt), hul markør for ufullstendige data, egen liten ruter og Playwright-røyktest (`npm run test:e2e`, `e2e.yml`). |
+| 1.7 Se Norgeskartet | Ferdig (`done`, PR #25) | Leaflet-kart med Kartverket topo, fire SnowScore-trinn (0–19 Lite, 20–44 Middels, 45–69 Godt, 70–100 Svært godt), hul markør for ufullstendige data, egen liten ruter og Playwright-røyktest (`npm run test:e2e`, `e2e.yml`). |
+| 1.8 Tilgjengelig listevisning | Implementert og gjennomgått (`review`) | Kart/liste-veksler (`visning=liste`), tastaturnavigerbar liste med score som tall og etikett, sortering på score/avstand/navn, axe-test uten alvorlige eller kritiske brudd. |
 | 2.1–2.4 | Ikke startet | |
 
 ## Dette må gruppa sette opp før sprint 2
