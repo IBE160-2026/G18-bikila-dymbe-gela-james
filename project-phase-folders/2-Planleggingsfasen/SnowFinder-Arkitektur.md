@@ -131,7 +131,8 @@ flowchart LR
 ### AD-5 — The catalog is built offline into a versioned file *(rewritten v4)*
 
 - **Binds:** `scripts/build-catalog/**`, `data/catalog.json`, `scripts/pipeline/**`
-- **Prevents:** the app or the data program calling OSM or Kartverket at run time, and the data
+- **Prevents:** the app or the data program calling OSM or Kartverket for catalog data at run time
+  (the app's only run-time map call is Kartverket's topo background tiles, decided 2026-10-08), and the data
   program silently inventing locations from MET coordinates instead of going through catalog
   review.
 - **Rule:**

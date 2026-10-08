@@ -300,8 +300,10 @@ fleste, og en tastaturnavigerbar listevisning som gir identisk informasjon og fu
 
 #### FR-12: Interaktivt Norgeskart *(Må ha)*
 
-Systemet viser et kart over Norge (Leaflet/OpenStreetMap) der hvert sted i katalogen er
-fargelagt etter sin gjeldende SnowScore.
+Systemet viser et kart over Norge (Leaflet med Kartverkets topografiske bakgrunnskart, uten
+nøkkel) der hvert sted i katalogen er fargelagt etter sin gjeldende SnowScore.
+*(v4, 2026-10-08: bakgrunnskartet er endret fra OpenStreetMap til Kartverket topo, se
+sprint-change-proposal-2026-10-08-kartverket.md.)*
 
 **Konsekvenser (testbare):**
 - Fargeskalaen går fra grått (lavt snøpotensial) til sterkt blått (høyt), med minst fire trinn.
