@@ -10,7 +10,9 @@ export default function Sted({ sted }: { sted: StedData }) {
       <p>
         SnowScore: <ScoreBadge snowScore={sted.snowScore} />
       </p>
-      <Lenke to={{ name: 'utforsk' }}>Tilbake til kartet</Lenke>
+      <Lenke to={{ name: 'utforsk', visning: 'kart' }} tilbake>
+        Tilbake
+      </Lenke>
     </article>
   )
 }

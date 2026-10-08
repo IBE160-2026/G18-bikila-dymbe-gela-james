@@ -40,7 +40,7 @@ test('the map shows every demo place and a marker opens its place page', async (
   // So does the in-app link on the place page.
   await page.locator(hemsedal).click()
   await expect(page).toHaveURL(/\/sted\/hemsedal-skisenter$/)
-  await page.getByRole('link', { name: 'Tilbake til kartet' }).click()
+  await page.getByRole('link', { name: 'Tilbake', exact: true }).click()
   await expect(page).toHaveURL(/\/$/)
   await expect(page.locator(markers)).toHaveCount(24)
 })

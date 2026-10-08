@@ -2,11 +2,21 @@ import { describe, expect, it } from 'vitest'
 import { href, parseRoute, type Route } from './router'
 
 const BASES = ['/', '/G18-bikila-dymbe-gela-james/']
+const KART: Route = { name: 'utforsk', visning: 'kart' }
+const LISTE: Route = { name: 'utforsk', visning: 'liste' }
 
 describe.each(BASES)('router with base %s', (base) => {
   it('parses the root as utforsk, with and without the trailing slash', () => {
-    expect(parseRoute(base, base)).toEqual({ name: 'utforsk' })
-    expect(parseRoute(base.replace(/\/$/, '') || '/', base)).toEqual({ name: 'utforsk' })
+    expect(parseRoute(base, base)).toEqual(KART)
+    expect(parseRoute(base.replace(/\/$/, '') || '/', base)).toEqual(KART)
+  })
+
+  it('reads visning from the query, defaulting to the map', () => {
+    expect(parseRoute(base, base, '?visning=liste')).toEqual(LISTE)
+    expect(parseRoute(base, base, '?visning=kart')).toEqual(KART)
+    expect(parseRoute(base, base, '?visning=noe')).toEqual(KART)
+    expect(parseRoute(base, base, '?annet=1&visning=liste')).toEqual(LISTE)
+    expect(parseRoute(base, base, '')).toEqual(KART)
   })
 
   it('parses a place page', () => {
@@ -21,12 +31,16 @@ describe.each(BASES)('router with base %s', (base) => {
   })
 
   it('round-trips href and parseRoute', () => {
-    const routes: Route[] = [{ name: 'utforsk' }, { name: 'sted', id: 'hemsedal-skisenter' }, { name: 'sted', id: 'å b/c' }]
-    for (const route of routes) expect(parseRoute(href(route, base), base)).toEqual(route)
+    const routes: Route[] = [KART, LISTE, { name: 'sted', id: 'hemsedal-skisenter' }, { name: 'sted', id: 'å b/c' }]
+    for (const route of routes) {
+      const url = new URL(href(route, base), 'http://x')
+      expect(parseRoute(url.pathname, base, url.search)).toEqual(route)
+    }
   })
 
   it('builds links under the base', () => {
-    expect(href({ name: 'utforsk' }, base)).toBe(base)
+    expect(href(KART, base)).toBe(base)
+    expect(href(LISTE, base)).toBe(`${base}?visning=liste`)
     expect(href({ name: 'sted', id: 'oslo' }, base)).toBe(`${base}sted/oslo`)
   })
 })

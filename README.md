@@ -33,10 +33,14 @@ ufullstendige data er en hul sirkel med stiplet kant. Hold musa over en sirkel f
 poengsum, og klikk for å åpne stedet. Bakgrunnskartet er Kartverkets topografiske kart, som ikke
 krever nøkkel, men som trenger nett for å vise kartbildene.
 
+Velg «Liste» under navigasjonen (eller åpne `/?visning=liste`) for å se de samme stedene som en
+liste som virker med tastatur og skjermleser, sortert etter score, avstand eller navn.
+
 ### Røyktest i nettleser (E2E)
 
-Playwright-testen i `tests/e2e/` bygger appen, starter `npm run preview` og sjekker kart → stedsside
-→ tilbake i Chromium på demodataene. Den henter ingenting fra nett. Nettleseren lastes ned én gang:
+Playwright-testene i `tests/e2e/` bygger appen, starter `npm run preview` og sjekker kart → stedsside
+→ tilbake, listevisningen med tastatur og en axe-sjekk av tilgjengeligheten i Chromium på demodataene.
+De henter ingenting fra nett. Nettleseren lastes ned én gang:
 
 ```sh
 npx playwright install chromium   # last ned Chromium for Playwright (én gang)
