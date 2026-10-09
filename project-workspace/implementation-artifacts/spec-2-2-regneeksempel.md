@@ -27,7 +27,7 @@ context:
 ## Implementation Notes
 
 - Ny komponent `src/components/Regneeksempel.tsx` med `REGNEEKSEMPEL` (eneste kopi i appen) og `timerMedSnoandel()`. Den legges inn i `SlikBeregnerViSnowScore.tsx` mellom «Steg for steg» og «Endringslogg».
-- **Avvik fra Intent:** Intent sier «B = 6,8», men eksempelet viser to desimaler (T̄ = −2,33, B = 6,77). Med én desimal ville den som regner etter for hånd fått B = 6,7 og ikke 6,8, og da kunne ikke eksempelet etterprøves (FR-9). Hensikten i Intent holder fortsatt: tallene vises avrundet, og summen regnes uavrundet. Aksel må godkjenne avviket i PR-en.
+- Eksempelet viser én desimal, slik Intent sier (T̄ = −2,3, B = 6,8). Gjennomgangen viste at en som regner etter for hånd med −2,3 får B = 6,7. Claude foreslo to desimaler, men Aksel valgte én desimal (2026-10-09). Under B står det derfor at B regnes med den nøyaktige T̄ (−2,333 … °C).
 - `Regneeksempel.test.tsx`:
   - timene er de samme som i briefens tilfelle i `tests/golden/snowscore.json`;
   - modulen gir fasitsvaret;
@@ -42,7 +42,7 @@ Blind Hunter (oneshot), 11 funn.
 
 | # | Funn | Vurdering | Rute | Begrunnelse |
 |---|------|-----------|------|-------------|
-| 1 | B kan ikke regnes etter fra de viste tallene (T̄ −2,3 gir 6,7, ikke 6,8) | medium | patch | Eksempelet viser nå to desimaler: T̄ = −2,33 og B = 6,77, som stemmer når man regner for hånd. |
+| 1 | B kan ikke regnes etter fra de viste tallene (T̄ −2,3 gir 6,7, ikke 6,8) | medium | patch | Aksel valgte én desimal. Under B står det at B regnes med den nøyaktige T̄ (−2,333 … °C), så forskjellen er forklart. |
 | 2 | Eksempelet viser aldri en f(T) mellom 0 og 1 | low | patch | Én setning med f(1 °C) = 0,5, regnet med `snowFraction`. |
 | 3 | Det står ikke at en ekte score bruker 24 timer | low | patch | Innledningen sier nå at ekte SnowScore bruker `WINDOW_HOURS` timer og at eksempelet er kortere. |
 | 4 | Påstanden `= ${b}` i testen sjekker nesten ingenting | low | patch | Erstattet av hele fasitlinjene. |

@@ -17,24 +17,17 @@ export const REGNEEKSEMPEL: readonly { precipitationMm: number; temperatureC: nu
   { precipitationMm: 0, temperatureC: -1 },
 ]
 
-const toDesimalerFormat = new Intl.NumberFormat('nb-NO', { maximumFractionDigits: 2 })
-
-/**
- * Two decimals, so a reader can redo each step by hand: with T̄ as −2,3, B would come out as 6,7, but the
- * module's −2,333… gives 6,77.
- */
-function presis(verdi: number): string {
-  return toDesimalerFormat.format(Math.round(verdi * 100) / 100 + 0)
-}
+// Only for the note under B: the example shows one decimal, but B is computed from the exact T̄.
+const treDesimalerFormat = new Intl.NumberFormat('nb-NO', { minimumFractionDigits: 3, maximumFractionDigits: 3 })
 
 /** «a + b + c», with a negative term written as «− 3» after the first one. */
 function sum(verdier: readonly number[]): string {
-  return verdier.map((verdi, i) => (i === 0 ? presis(verdi) : `${verdi < 0 ? '−' : '+'} ${presis(Math.abs(verdi))}`)).join(' ')
+  return verdier.map((verdi, i) => (i === 0 ? tall(verdi) : `${verdi < 0 ? '−' : '+'} ${tall(Math.abs(verdi))}`)).join(' ')
 }
 
-/** A value inside a formula, in parentheses when negative so «2 − (−2,33)» reads right. */
+/** A value inside a formula, in parentheses when negative so «2 − (−2,3)» reads right. */
 function iFormel(verdi: number): string {
-  return verdi < 0 ? `(${presis(verdi)})` : presis(verdi)
+  return verdi < 0 ? `(${tall(verdi)})` : tall(verdi)
 }
 
 function Formel({ children }: { children: string }) {
@@ -82,10 +75,10 @@ export default function Regneeksempel() {
             {timer.map(({ precipitationMm, temperatureC, andel, nysno }, i) => (
               <tr key={i}>
                 <th scope="row">{i + 1}</th>
-                <td className="tall-celle">{presis(precipitationMm)}</td>
-                <td className="tall-celle">{presis(temperatureC)}</td>
-                <td className="tall-celle">{presis(andel)}</td>
-                <td className="tall-celle">{presis(nysno)}</td>
+                <td className="tall-celle">{tall(precipitationMm)}</td>
+                <td className="tall-celle">{tall(temperatureC)}</td>
+                <td className="tall-celle">{tall(andel)}</td>
+                <td className="tall-celle">{tall(nysno)}</td>
               </tr>
             ))}
           </tbody>
@@ -98,19 +91,23 @@ export default function Regneeksempel() {
       </p>
 
       <h3>S, P og T̄</h3>
-      <Formel>{`S = ${sum(timer.map(({ nysno }) => nysno))} = ${presis(S)} mm`}</Formel>
-      <Formel>{`P = ${sum(timer.map(({ precipitationMm }) => precipitationMm))} = ${presis(P)} mm`}</Formel>
-      <Formel>{`T̄ = (${sum(timer.map(({ temperatureC }) => temperatureC))}) / ${timer.length} = ${presis(T)} °C`}</Formel>
+      <Formel>{`S = ${sum(timer.map(({ nysno }) => nysno))} = ${tall(S)} mm`}</Formel>
+      <Formel>{`P = ${sum(timer.map(({ precipitationMm }) => precipitationMm))} = ${tall(P)} mm`}</Formel>
+      <Formel>{`T̄ = (${sum(timer.map(({ temperatureC }) => temperatureC))}) / ${timer.length} = ${tall(T)} °C`}</Formel>
 
       <h3>Delpoengene</h3>
-      <Formel>{`A = ${maxA} · min(1, ${presis(S)} / ${tall(fullSnowMm)}) = ${presis(a)}`}</Formel>
-      <Formel>{`B = ${maxB} · min(1, max(0, (${tall(noSnowAtOrAboveC)} − ${iFormel(T)}) / ${tall(coldRangeC)})) = ${presis(b)}`}</Formel>
-      <Formel>{`C = ${maxC} · ${presis(S)} / ${presis(P)} = ${presis(c)}`}</Formel>
+      <Formel>{`A = ${maxA} · min(1, ${tall(S)} / ${tall(fullSnowMm)}) = ${tall(a)}`}</Formel>
+      <Formel>{`B = ${maxB} · min(1, max(0, (${tall(noSnowAtOrAboveC)} − ${iFormel(T)}) / ${tall(coldRangeC)})) = ${tall(b)}`}</Formel>
+      <p>
+        B regnes med den nøyaktige snittemperaturen, {treDesimalerFormat.format(T)} … °C, ikke med den avrundede
+        {` ${tall(T)}`} °C. Regner du etter med {tall(T)} °C, får du derfor et litt annet svar på andre desimal.
+      </p>
+      <Formel>{`C = ${maxC} · ${tall(S)} / ${tall(P)} = ${tall(c)}`}</Formel>
 
       <h3>Summen</h3>
-      <Formel>{`SnowScore = ${presis(a)} + ${presis(b)} + ${presis(c)} = ${presis(a + b + c)}, avrundet til ${score}`}</Formel>
+      <Formel>{`SnowScore = ${tall(a)} + ${tall(b)} + ${tall(c)} = ${tall(a + b + c)}, avrundet til ${score}`}</Formel>
       <p>
-        Tallene står med to desimaler, men summen regnes med de nøyaktige verdiene før den avrundes til et helt tall.
+        Tallene står med én desimal, men summen regnes med de nøyaktige verdiene før den avrundes til et helt tall.
         Et sted med disse timene ville fått SnowScore {score}.
       </p>
     </section>

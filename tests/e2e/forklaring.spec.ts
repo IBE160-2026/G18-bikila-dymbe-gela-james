@@ -35,7 +35,7 @@ test('the navigation opens the page, with its four sections, three described gra
     await expect(graphs.nth(i)).toHaveAttribute('aria-label', new RegExp(`^Graf for ${delpoeng}: `))
   }
   // Story 2.2: the worked example ends in the brief's score.
-  await expect(page.getByText('SnowScore = 36 + 6,77 + 15 = 57,77, avrundet til 58')).toBeVisible()
+  await expect(page.getByText('SnowScore = 36 + 6,8 + 15 = 57,8, avrundet til 58')).toBeVisible()
   const forsteRad = page.locator('section[aria-labelledby="endringslogg"] tbody tr').first()
   await expect(forsteRad.locator('th')).toHaveText('1.0')
   await expect(forsteRad).toContainText('endret fra 6 til 16')

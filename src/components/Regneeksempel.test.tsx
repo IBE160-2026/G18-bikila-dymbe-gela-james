@@ -45,12 +45,13 @@ describe('Regneeksempel', () => {
     const linjer = [
       'S = 1 + 3 + 4 + 3 + 1 + 0 = 12 mm',
       'P = 1 + 3 + 4 + 3 + 1 + 0 = 12 mm',
-      'T̄ = (−1 − 3 − 4 − 3 − 2 − 1) / 6 = −2,33 °C',
+      'T̄ = (−1 − 3 − 4 − 3 − 2 − 1) / 6 = −2,3 °C',
       'A = 60 · min(1, 12 / 20) = 36',
-      // Redone by hand from the numbers shown: 25 × (2 + 2,33) / 16 = 6,77.
-      'B = 25 · min(1, max(0, (2 − (−2,33)) / 16)) = 6,77',
+      // 6,8 comes from the exact T̄ (−2,333…); with −2,3 by hand it would be 6,7, which the note below explains.
+      'B = 25 · min(1, max(0, (2 − (−2,3)) / 16)) = 6,8',
+      'B regnes med den nøyaktige snittemperaturen, −2,333 … °C, ikke med den avrundede −2,3 °C.',
       'C = 15 · 12 / 12 = 15',
-      'SnowScore = 36 + 6,77 + 15 = 57,77, avrundet til 58',
+      'SnowScore = 36 + 6,8 + 15 = 57,8, avrundet til 58',
     ]
     for (const linje of linjer) expect(text).toContain(linje)
     const order = linjer.map((linje) => text.indexOf(linje))
