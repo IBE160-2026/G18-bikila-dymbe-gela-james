@@ -75,7 +75,10 @@ export default function Regneeksempel() {
             <tr>
               <th scope="col">Time</th>
               <th scope="col" className="tall-celle">Nedbør (mm)</th>
-              <th scope="col" className="tall-celle">Temperatur (°C)</th>
+              {/* Abbreviated so the five columns fit a 375px phone also in wider (Linux) fonts. */}
+              <th scope="col" className="tall-celle">
+                <abbr title="Temperatur">Temp.</abbr> (°C)
+              </th>
               <th scope="col" className="tall-celle">f(T)</th>
               <th scope="col" className="tall-celle">Nysnø (mm)</th>
             </tr>

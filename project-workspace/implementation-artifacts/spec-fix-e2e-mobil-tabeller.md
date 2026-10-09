@@ -33,6 +33,7 @@ context: []
 - **Tester:**
   - Ny E2E ved 320 og 375 px med bred font (Verdana, eller DejaVu Sans på Linux). Den feilet uten rettingen (381 px) og består nå.
   - En ny test sjekker at begge tabellene passer uten indre rulling ved 375 px i sidens egen font, så rullingen bare er et sikkerhetsnett.
+- **Første kjøring i CI:** Testen fra 2.1 ved 375 px besto, så siden rullet ikke lenger. Den nye testen for sidens egen font feilte: regneeksempelet var 348 px mot 343 px med DejaVu Sans. Overskriften «Temperatur (°C)» er derfor forkortet til «Temp. (°C)», med `<abbr title="Temperatur">`, slik listen allerede skriver «Temp».
 - **Sjekker lokalt:** lint, typecheck, test (366), build og `npm run test:e2e` (27) er grønne. `gh pr checks` sjekkes før merge.
 
 ## Review Triage Log
