@@ -2,6 +2,7 @@ import type { Sted } from '../../shared/contracts/published'
 import Datakilder from '../components/Datakilder'
 import Datakvalitet from '../components/Datakvalitet'
 import ForklaringIllustrasjon from '../components/ForklaringIllustrasjon'
+import Kalkulator from '../components/Kalkulator'
 import Regneeksempel from '../components/Regneeksempel'
 import ScoreBadge from '../components/ScoreBadge'
 import { medEnhet, tall } from '../lib/format'
@@ -161,6 +162,8 @@ export default function SlikBeregnerViSnowScore({ result }: { result: StederResu
       <Datakilder />
 
       <Datakvalitet result={result} />
+
+      <Kalkulator />
 
       <section aria-labelledby="endringslogg">
         <h2 id="endringslogg">Endringslogg</h2>
