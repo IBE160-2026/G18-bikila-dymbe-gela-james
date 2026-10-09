@@ -775,7 +775,10 @@ testen kan gjennomføres så snart Må ha er ferdig.
    Det foreslås å koble hvert punkt til nærmeste skjerm i SnowFinder, med begrunnelse i
    EXPERIENCE.md. *(v3: koblingen må gjøres på nytt, fordi snøvarsel og tilbakemelding er tatt
    ut.)* Gruppa og faglærer må bekrefte. Endres produktet, går det gjennom
-   `bmad-correct-course`.
+   `bmad-correct-course`. *(v4, 2026-10-09)* Gruppa har besluttet at pålogging droppes: SnowFinder
+   har ingen kontoer, så det finnes ingen påloggingsskjerm å vise. Profil, innsjekking, sosial feed
+   og arrangementer kobles fortsatt til nærmeste SnowFinder-skjerm i EXPERIENCE.md (steg 8c).
+   Faglærer har ikke bekreftet beslutningen ennå.
 4. **Skalatall for NFR-8:** Er «noen tusen brukere» en reell forventning for
    innleveringen/demoen, eller kun en arkitektonisk forsikring? Påvirker om lasttesting hører
    hjemme i Må ha-QA-minimumet.

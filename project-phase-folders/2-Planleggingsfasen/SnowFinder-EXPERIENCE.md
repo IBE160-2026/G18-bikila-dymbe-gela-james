@@ -202,7 +202,9 @@ gjentatt varsling samme dag selv om pipelinen kjører hver time).
    kart/liste-flaten spesifikt, siden layout der er mer kritisk enn tabellene her fanger.
 3. *(v2)* Fra endringsrunde 1 står fortsatt U1 (wireframes for nøkkelskjermene), U2 (kursets
    skjermkrav koblet til SnowFinder) og U3 (brukertestplan med SUS). Koblingen i U2 må gjøres om,
-   fordi «profil → snøvarsel» og «innsjekking → tilbakemelding» er tatt ut.
+   fordi «profil → snøvarsel» og «innsjekking → tilbakemelding» er tatt ut. *(v4, 2026-10-09)*
+   Pålogging er droppet, fordi SnowFinder ikke har kontoer. U2 gjelder nå profil, innsjekking,
+   sosial feed og arrangementer. Faglærer har ikke bekreftet.
 4. *(v3, 2026-10-08)* Små kartmarkører (10 px på landsnivå) er under kravet om trykkmål ≥ 44 px på
    mobil. Kartlaget er unntatt AA, og listen er det fulle alternativet. Vurder likevel en større,
    usynlig trykkflate rundt markørene.

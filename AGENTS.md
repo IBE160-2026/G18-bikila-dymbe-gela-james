@@ -84,5 +84,5 @@ Kort og bindende. Detaljer om krav, arkitektur og design står i brief, PRD, ark
 
 ## 5. Åpent for gruppa
 
-- Kursets skjermkrav (pålogging, profil, innsjekking, feed, arrangementer) kobles til SnowFinder av Sally (`bmad-ux`) – legg aldri til kontoer eller sosiale funksjoner selv.
+- Kursets skjermkrav (profil, innsjekking, feed, arrangementer; pålogging er droppet 2026-10-09) kobles til SnowFinder av Sally (`bmad-ux`) – legg aldri til kontoer eller sosiale funksjoner selv.
 - `CONTRIBUTING.md` ligger lokalt hos Joseph og overlapper denne filen; avgjør om den skal inn eller slettes.

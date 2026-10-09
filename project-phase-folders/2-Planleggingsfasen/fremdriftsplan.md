@@ -26,7 +26,8 @@ på møtet. Oppdater statusen når et steg er ferdig.
   PR-er.
 - **Neste steg:** Amelia (`bmad-build`) bygger Story 3.1 (filter på nysnø, vind og temperatur).
   De to valgene fra revisjonen er tatt (PR #41): NVE-nedetid stopper ikke publisering (FR-6a v4),
-  og mørk modus er «Ikke i v1».
+  og mørk modus er «Ikke i v1». Pålogging er droppet fra kursets skjermkrav (PR #42). Faglærer
+  har ikke bekreftet det ennå.
 
 ### Tidligere: 7. oktober, faglærers tilbakemelding er innarbeidet, og planen er forenklet
 
@@ -82,7 +83,7 @@ Vi bruker BMad Method med fem agenter. Hvert steg bygger på det forrige.
 | 7 | Epics og stories | John (produktleder) | [Epics og stories](SnowFinder-Epics-og-Stories.md) | Joseph | 2026-09-27 | ✅ Ferdig |
 | 8 | Sprintplanlegging | bmad-sprint-planning | [Sprintplan](sprintplan.md) og [sprint-status.yaml](../../project-workspace/implementation-artifacts/sprint-status.yaml) | Aksel | 2026-09-27 | ✅ Ferdig |
 | 8b | Innarbeide faglærers tilbakemelding og forenkle (to endringsrunder) | `bmad-correct-course`, John, Winston | [Endringsforslag](../../project-workspace/planning-artifacts/), oppdatert brief, PRD v3 og arkitektur v4 | Joseph | 2026-10-07 | ✅ Ferdig |
-| 8c | Wireframes, kursets skjermkrav og brukertestplan | Sally (UX-designer) | Oppdatert EXPERIENCE.md og wireframes | | | ⬜ Neste |
+| 8c | Wireframes, kursets skjermkrav (uten pålogging, droppet 2026-10-09) og brukertestplan | Sally (UX-designer) | Oppdatert EXPERIENCE.md og wireframes | | | ⬜ Neste |
 | 8d | Oppdatere epics, stories og sprintplan etter forenklingen | John og `bmad-sprint-planning` | Epics og stories, sprintplan, `sprint-status.yaml` | Aksel | 2026-10-07 | ✅ Ferdig (epics v3, sprintplan og `sprint-status.yaml`) |
 | 9 | Bygge appen, én story om gangen | Amelia (utvikler) | Kode, tester, PR-er. Story 1.1 ferdig (PR #10). Story 1.2 ferdig (PR #18). Story 1.4 ferdig (PR #20). Story 1.10 ferdig (PR #22). Story 1.3 ferdig (PR #23). Story 1.5 ferdig (PR #24). Story 1.7 ferdig (PR #25). Story 1.8 ferdig (PR #27), 1.7b markører etter zoom (PR #28). Story 1.9 ferdig (PR #30), fullført med 1.9b og 1.9c (alder i åpen fane, tom tilstand, trykkmål, felles datalagring). Story 2.1 forklaringssiden «Slik beregner vi SnowScore» ferdig (PR #33). Story 2.2 regneeksempelet ferdig (PR #34). Story 2.3 datakilder, begrensninger og datakvalitet ferdig (PR #35). Story 2.4 kalkulatoren «Prøv selv» ferdig (PR #36), så hele Epic 2 er bygget. Retrospektiv for Epic 2 ferdig (PR #37, accepted-with-open-items, 11 tiltak). Tiltak A1–A5 og A11 ferdige (PR #38). Rød E2E på GitHub rettet (PR #39), dokumentene oppdatert etter revisjonen (PR #40). | Aksel (sprint 1) | | 🔄 Pågår |
 | 10 | Brukertest, sluttrapport og demo | Hele gruppen | [Avslutningsfasen](../4-Avslutningsfasen/) | | | ⬜ |
