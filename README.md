@@ -2,7 +2,10 @@
 
 Gruppeprosjekt i **IBE160 Programmering med KI** ved Høgskolen i Molde, høsten 2026 (15 studiepoeng).
 
-Repoet inneholder gruppens applikasjon og dokumentasjon av utvikling, testing og kvalitetssikring med KI.
+Repoet inneholder gruppens applikasjon, **SnowFinder**, og dokumentasjon av utvikling, testing og
+kvalitetssikring med KI. SnowFinder er en webapp som rangerer rundt 300 steder i Norge etter
+prognostiserte snøforhold med en poengsum fra 0 til 100, SnowScore, regnet ut fra værprognosen fra
+Meteorologisk institutt.
 
 ## Medlemmer
 
@@ -39,11 +42,23 @@ liste som virker med tastatur og skjermleser, sortert etter score, avstand eller
 Stedssiden (`/sted/<id>`) viser SnowScore med delpoengene A, B og C, værdataene bak dem og når MET
 sist oppdaterte prognosen. Data eldre enn 3 timer merkes «Utdatert», og steder med data eldre enn
 12 timer vises ikke i kartet, listen eller på stedssiden (i demo regnes alderen mot demodatasettets egen «nå»).
+Er alle stedene for gamle, for eksempel fordi `latest.json` fra `npm run data` er mer enn 12 timer
+gammel, viser forsiden «Ingen ferske data». Kjør `npm run data` på nytt, eller slett
+`public/data/latest.json` for å gå tilbake til demodataene.
+
+### Slik beregner vi SnowScore
+
+Forklaringssiden (`/slik-beregner-vi-snowscore`) nås fra toppnavigasjonen og fra en lenke ved hver
+SnowScore. Den viser hva tallet måler og ikke måler, formelen steg for steg med én graf per delpoeng,
+et regneeksempel fra rådata til poengsum, datakilder og lisenser, kvaliteten på siste datakjøring og
+endringsloggen for formelen. Kalkulatoren «Prøv selv» er en læringshjelp: tallene i kartet regnes
+alltid automatisk fra prognosen.
 
 ### Røyktest i nettleser (E2E)
 
 Playwright-testene i `tests/e2e/` bygger appen, starter `npm run preview` og sjekker kart → stedsside
-→ tilbake, listevisningen med tastatur, stedssiden og en axe-sjekk av tilgjengeligheten i Chromium på demodataene.
+→ tilbake, listevisningen med tastatur, stedssiden, forklaringssiden (også ved 320 og 375 px), den tomme
+tilstanden og en axe-sjekk av tilgjengeligheten i Chromium på demodataene.
 De henter ingenting fra nett. Nettleseren lastes ned én gang:
 
 ```sh
@@ -51,8 +66,9 @@ npx playwright install chromium   # last ned Chromium for Playwright (én gang)
 npm run test:e2e                  # kjør røyktesten
 ```
 
-På pull requests kjøres den av `.github/workflows/e2e.yml`. `npm test` kjører bare enhetstestene og
-trenger verken nettleser eller nett.
+På pull requests og ved push til `main` kjøres den av `.github/workflows/e2e.yml` på Ubuntu. Fontene der
+er bredere enn på Windows, så sjekk at E2E er grønn på GitHub, ikke bare lokalt. `npm test` kjører bare
+enhetstestene og trenger verken nettleser eller nett.
 
 ### Demomodus
 
@@ -62,8 +78,8 @@ Et rent klon trenger verken nøkler eller nett. `npm run dev` viser da demodatae
 `npm run data` (se under), og committes ikke.
 
 Demodataene er 24 steder med ekte, innspilte MET- og NVE-svar fra `tests/contract/fixtures/`. Ett
-sted har ufullstendige data, og ett har kildedata som er eldre enn 3 timer (merkingen «Utdatert» i
-appen kommer i Story 1.9). «Nå» i demoen er tidspunktet for de nyeste dataene, så det ser likt ut
+sted har ufullstendige data, og ett har kildedata som er eldre enn 3 timer og merkes «Utdatert».
+«Nå» i demoen er tidspunktet for de nyeste dataene, så det ser likt ut
 uansett når du åpner appen.
 
 ```sh

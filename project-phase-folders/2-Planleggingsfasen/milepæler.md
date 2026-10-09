@@ -5,11 +5,11 @@ Rekkefølgen følger utviklingsprosessen i produktbriefen: stedskatalog og pipel
 
 | # | Milepæl | Frist | Status |
 |---|---|---|---|
-| 1 | Stedskatalog og datapipeline (MET, NVE, Kartverket, OSM) | | Ikke startet |
-| 2 | SnowScore-beregning og forklaringsside | | Ikke startet |
-| 3 | Norgeskart og stedssider | | Ikke startet |
+| 1 | Stedskatalog og datapipeline (MET, NVE, Kartverket, OSM) | | Ferdig unntatt timesjobben (Story 1.11) |
+| 2 | SnowScore-beregning og forklaringsside | | Ferdig (Epic 2) |
+| 3 | Norgeskart og stedssider | | Ferdig (Story 1.7–1.9) |
 | 4 | Filter (nysnø, vind, sol, temperatur, avstand, stedstype) | | Ikke startet |
-| 5 | «Bør ha»: beste skivindu, kalkulator, snøvarsel, tilbakemelding | | Ikke startet |
+| 5 | «Bør ha»: beste skivindu og kalkulator (snøvarsel og tilbakemelding er «Ikke i v1») | | Kalkulatoren er ferdig (Story 2.4) |
 | 6 | Levering og demo | | Ikke startet |
 
 [Sprintplanen](sprintplan.md) viser hvilken sprint som dekker hver milepæl: sprint 1 dekker

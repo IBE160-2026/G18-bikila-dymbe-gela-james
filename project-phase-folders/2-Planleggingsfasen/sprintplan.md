@@ -13,7 +13,7 @@ bygges, men disse punktene er kjent:
 
 | # | Funn | Hva vi gjør |
 |---|---|---|
-| 1 | UX-dokumentene (EXPERIENCE.md og DESIGN.md) er ikke oppdatert etter forenklingen. De har fortsatt tilbakemeldingssiden og PWA, og mangler demobanneret (UX-DR16). | Sally (`bmad-ux`) oppdaterer dem før UI-storyene i sprint 2 (1.7–1.10). |
+| 1 | UX-dokumentene (EXPERIENCE.md og DESIGN.md) var ikke oppdatert etter forenklingen. | Løst: Sally (`bmad-ux`) oppdaterte dem i PR #21. |
 | 2 | Story 1.11 publiserer til GitHub Pages, og Pages kan bare slås på av en administrator (faglærer). GitHub Actions er allerede på, og CI kjører på PR-er. | Be faglærer slå på Pages. Reserve: jobben publiserer bare datafila til grenen `data`, og appen leser den derfra (står i Story 1.11). |
 | 3 | Story 1.6 krever `banner-stale-data` på Utforsk og stedssiden, som først bygges i 1.7 og 1.9. | 1.6 bygges etter 1.9. Den er nå Bør ha. |
 | 4 | NFR-8 (skalerbarhet) har ingen story. | Allerede flagget i PRD §10. Ingen endring. |
@@ -40,7 +40,7 @@ sprint 2. Kvalitetspanelet i 2.3 viser demodataenes rapport til 1.5 er ferdig.
 **Ikke i v1 (v3):** Story 4.1 (PWA), 4.3 og 4.4 (snøvarsel) og hele Epic 5 (tilbakemelding).
 De står i `sprint-status.yaml` med kommentaren «Ikke i v1» og bygges ikke.
 
-### Status i sprint 1 (2026-10-07)
+### Status i sprint 1 og 2 (2026-10-09)
 
 | Story | Status | Merknad |
 |---|---|---|
@@ -53,13 +53,15 @@ De står i `sprint-status.yaml` med kommentaren «Ikke i v1» og bygges ikke.
 | 1.7 Se Norgeskartet | Ferdig (`done`, PR #25) | Leaflet-kart med Kartverket topo, fire SnowScore-trinn (0–19 Lite, 20–44 Middels, 45–69 Godt, 70–100 Svært godt), hul markør for ufullstendige data, egen liten ruter og Playwright-røyktest (`npm run test:e2e`, `e2e.yml`). |
 | 1.8 Tilgjengelig listevisning | Ferdig (`done`, PR #27) | Kart/liste-veksler (`visning=liste`), tastaturnavigerbar liste med score som tall og etikett, sortering på score/avstand/navn, axe-test uten alvorlige eller kritiske brudd. |
 | 1.9 Stedsside med full poengsum | Ferdig (`done`, PR #30 og 1.9b) | Delpoeng A/B/C, rådata, høyde og kildetid i norsk tid; `shared/freshness.ts` merker «Utdatert» over 3 t og fjerner steder over 12 t fra kart, liste og stedsside. axe uten alvorlige eller kritiske brudd. |
-| 2.1–2.4 | Ikke startet | |
+| 2.1–2.4 Forklaringssiden | Ferdig (`done`, PR #33–#36) | Kort fortalt, steg for steg, regneeksempel, datakilder og datakvalitet, kalkulatoren «Prøv selv» og endringslogg. Retrospektiv i PR #37, tiltak i PR #38. E2E var rød på GitHub fra #33 og ble rettet i PR #39. |
+| 1.11 Timesjobb og publisering | Ikke startet | Neste i sprint 2 sammen med Epic 3. |
+| 1.6 Hold tjenesten oppe ved nedetid | Ikke startet | Bør ha, sprint 4. |
 
 ## Dette må gruppa sette opp før sprint 2
 
 - [x] GitHub Actions er på (CI kjører på PR-er)
 - [ ] Be faglærer slå på GitHub Pages (Settings → Pages → Source: GitHub Actions). Ellers brukes reserven i Story 1.11
-- [ ] Sally (`bmad-ux`) oppdaterer UX-dokumentene etter forenklingen
+- [x] Sally (`bmad-ux`) oppdaterer UX-dokumentene etter forenklingen (PR #21)
 
 ## Arbeidsflyt per story
 

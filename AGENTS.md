@@ -1,5 +1,5 @@
 <!-- bmad:context -->
-<!-- Verified 2026-10-07 against 06b3b89. Managed by bmad-project-context; edits inside this block are replaced on refresh. Keep anything you want preserved outside the markers. -->
+<!-- Verified 2026-10-09 against f6a5afe. Managed by bmad-project-context; edits inside this block are replaced on refresh. Keep anything you want preserved outside the markers. -->
 
 ## SnowFinder (G18, IBE160)
 
@@ -29,6 +29,7 @@ Gruppeprosjekt i IBE160 ved Høgskolen i Molde: en statisk webapp som rangerer ~
 
 - Node 24, eller 26 og nyere (`engines` i `package.json`). Node 25 støttes ikke av Vitest.
 - Kjør `npm run lint`, `npm run typecheck`, `npm test` og `npm run build` før hver commit. CI kjører alle fire, og `npm test` alene typesjekker ikke.
+- `npm run test:e2e` kjører i CI (`e2e.yml`), men ikke i pre-push-hooken. Kjør den lokalt før PR når du endrer UI.
 - Lås avhengigheter til eksakte versjoner uten `^`, og commit `package-lock.json`. Bruk TypeScript 6.0.x, ikke 7, fordi typescript-eslint krever <6.1.
 
 ## Conventions that differ from defaults
@@ -42,7 +43,7 @@ Gruppeprosjekt i IBE160 ved Høgskolen i Molde: en statisk webapp som rangerer ~
 
 ## Known pitfalls
 
-- GitHub Actions er ikke slått på i repoet ennå (bare faglærer kan gjøre det), så CI kjører ikke på PR-er. Kjør de fire sjekkene lokalt og lim resultatet inn i PR-beskrivelsen.
+- Merge aldri før `gh pr checks <n> --watch` viser at alle sjekkene er grønne: CI og E2E kjører på hver PR og push til `main`. PR #33–#38 ble merget med rød E2E fordi sjekkene bare var kjørt lokalt. Grønt lokalt på Windows er ikke grønt i CI: E2E kjører på Ubuntu med bredere fonter, så en layout som passer lokalt kan bli for bred der.
 - Push av endringer i `.github/workflows/` blir avvist uten `workflow`-tilgang i gh-innloggingen: kjør `gh auth refresh -h github.com -s workflow`.
 - `ai-log/logg.md` får flettekonflikt når flere PR-er legger til rader. Behold alle radene, i datorekkefølge.
 
@@ -70,9 +71,9 @@ Kort og bindende. Detaljer om krav, arkitektur og design står i brief, PRD, ark
 
 ## 3. Kontinuerlig integrasjon
 
-- Hver PR kjører `npm ci`, lint, typesjekk, tester og bygg (`.github/workflows/ci.yml`). Rød CI stopper merge.
-- Til faglærer har slått på GitHub Actions: kjør de samme fire kommandoene lokalt før push (en pre-push-hook gjør det automatisk når den er på plass), og lim resultatet inn i PR-en.
-- Planlagt: Playwright-røyktest kart → filter → stedsside på demodata.
+- Hver PR kjører `npm ci`, lint, typesjekk, tester og bygg (`.github/workflows/ci.yml`) og E2E (`.github/workflows/e2e.yml`). Rød CI stopper merge.
+- Pre-push-hooken (`.githooks/pre-push`) kjører de fire sjekkene før push, og stopper push til `main`. Lim resultatet inn i PR-en.
+- Playwright-røyktesten i `tests/e2e/` kjører på demodata. Filteret tas med når Epic 3 bygges.
 
 ## 4. Teststrategi
 
@@ -83,6 +84,5 @@ Kort og bindende. Detaljer om krav, arkitektur og design står i brief, PRD, ark
 
 ## 5. Åpent for gruppa
 
-- Be faglærer slå på GitHub Actions.
 - Kursets skjermkrav (pålogging, profil, innsjekking, feed, arrangementer) kobles til SnowFinder av Sally (`bmad-ux`) – legg aldri til kontoer eller sosiale funksjoner selv.
 - `CONTRIBUTING.md` ligger lokalt hos Joseph og overlapper denne filen; avgjør om den skal inn eller slettes.
