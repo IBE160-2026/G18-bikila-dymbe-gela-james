@@ -38,16 +38,16 @@ for full produktbrief.
 - **`AGENTS.md` og `CLAUDE.md`** (repo-roten) — felles regler for KI-agentene: grener og PR,
   loggføring, språk og hvilke filer som må holdes like
 - **Selve produktet (koden)** — verken i `project-phase-folders/` eller `project-workspace/`,
-  men i repo-roten: `src/`, `shared/`, `supabase/`, `scripts/`, `tests/`, `.github/workflows/`
-  (full mappestruktur og begrunnelse i
+  men i repo-roten (full mappestruktur og begrunnelse i
   [`2-Planleggingsfasen/SnowFinder-Arkitektur.md`](2-Planleggingsfasen/SnowFinder-Arkitektur.md)):
-  - **Der nå:** ingenting — mappene er ikke opprettet ennå
-  - **Kommer etter hvert:**
-    - `src/` — frontend: sider, komponenter, hooks (Norgeskart, stedssider, filter,
-      SnowScore-forklaringsside)
-    - `shared/` — den ene SnowScore-formelen, brukt av både frontend-kalkulatoren og pipelinen
-    - `supabase/` — migrasjoner og Edge Functions: datapipeline (fetch → validate → score →
-      stage → publish → alert), tilbakemelding, snøvarsel, sletting av utdaterte data
-    - `scripts/` — engangsskript som bygger stedskatalogen fra OSM/Kartverket
-    - `tests/` — E2E- og kontraktstester
-    - `.github/workflows/` — CI/CD
+  - `src/` — nettappen: Norgeskart, liste, stedsside og forklaringssiden «Slik beregner vi SnowScore»
+  - `shared/` — kode som både appen og dataprogrammet bruker: den ene SnowScore-formelen,
+    datakontraktene og aldersgrensene for data
+  - `scripts/pipeline/` — dataprogrammet (`npm run data`), som henter MET og NVE og publiserer
+    `public/data/latest.json`
+  - `scripts/build-catalog/` — engangsskriptet som bygger stedskatalogen `data/catalog.json` fra
+    OpenStreetMap og Kartverket
+  - `public/data/demo.json` — demodataene som vises uten nett
+  - `tests/` — kontraktstester mot lagrede MET- og NVE-svar, fasittabeller og E2E-tester (Playwright)
+  - `.github/workflows/` — CI og E2E på hver PR, og `.githooks/` — pre-push-hooken
+  - Det finnes ingen database og ingen Supabase. De ble tatt ut av v1 etter faglærers råd.

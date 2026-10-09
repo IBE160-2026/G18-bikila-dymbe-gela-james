@@ -10,7 +10,7 @@ for sprint.
 - **Kodegjennomganger** — funn fra kodegjennomgang
 - **Endringshåndtering** — dokumenterte avvik fra plan
 - **QA / testresultater** — egenskapstester av SnowScore, kontraktstester mot MET/NVE,
-  sikkerhetstester av RLS og Edge Functions, brukertester
+  axe-sjekker av tilgjengeligheten (E2E), brukertester
 
 ## Forrige / neste steg
 

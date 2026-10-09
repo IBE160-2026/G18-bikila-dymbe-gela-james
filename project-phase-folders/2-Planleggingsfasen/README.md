@@ -4,16 +4,16 @@ Formål: oversette produktbrief til konkrete krav, arkitektur og en gjennomførb
 
 ## Innhold
 
-- **[`SnowFinder-PRD.md`](SnowFinder-PRD.md)** — produktkravdokument: 29 funksjonelle og 8
+- **[`SnowFinder-PRD.md`](SnowFinder-PRD.md)** — produktkravdokument: 31 funksjonelle (FR-1–FR-31, flere merket «Ikke i v1») og 12
   ikke-funksjonelle krav, målgruppe og suksessmål
 - **[`SnowFinder-Arkitektur.md`](SnowFinder-Arkitektur.md)** — arkitekturspine: designparadigme,
-  bindende regler (AD-1–AD-9), teknologivalg med versjoner, og repo-mappestruktur for
-  React/TypeScript/Vite-frontend, Supabase (Postgres + Edge Functions), datapipeline mot
+  bindende regler (AD-1–AD-12), teknologivalg med versjoner, og repo-mappestruktur for
+  React/TypeScript/Vite-frontend, et Node-dataprogram som publiserer én JSON-fil (ingen database), datapipeline mot
   MET/NVE/Kartverket/OpenStreetMap og SnowScore-beregning
 - **[`SnowFinder-DESIGN.md`](SnowFinder-DESIGN.md)** og
   **[`SnowFinder-EXPERIENCE.md`](SnowFinder-EXPERIENCE.md)** — hvordan appen ser ut (farger,
   typografi, komponenter) og hvordan den oppfører seg (skjermer, tilstander, brukerflyter)
-- **[`SnowFinder-Epics-og-Stories.md`](SnowFinder-Epics-og-Stories.md)** — 5 epics og 27
+- **[`SnowFinder-Epics-og-Stories.md`](SnowFinder-Epics-og-Stories.md)** — 5 epics og 29
   stories, organisert etter brukerverdi
 - **[`fremdriftsplan.md`](fremdriftsplan.md)** — stegene fra brief til ferdig app, hvilken
   BMad-agent som brukes i hvert steg, og hvor vi er nå

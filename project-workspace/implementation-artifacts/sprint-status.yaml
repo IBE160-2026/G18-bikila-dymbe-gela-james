@@ -29,7 +29,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 # - Retrospective appends its action items to action_items; the status view surfaces open ones
 generated: 09-27-2026 12:00
-last_updated: 10-09-2026 19:34
+last_updated: 10-09-2026 22:14
 project: G18-bikila-dymbe-gela-james
 project_key: NOKEY
 tracking_system: file-system
@@ -49,7 +49,7 @@ development_status:
   1-6-hold-tjenesten-oppe-når-en-datakilde-er-nede: backlog  # Bør ha (v3)
   epic-1-retrospective: optional
 
-  epic-2: in-progress
+  epic-2: done
   2-1-les-kort-fortalt-og-steg-for-steg: done
   2-2-se-det-utledede-regneeksempelet: done
   2-3-les-om-datakilder-og-begrensninger: done
@@ -145,7 +145,7 @@ action_items:
     action: "A10 Be faglærer slå på GitHub Actions; til da kjør npm run test:e2e før
       hver PR"
     owner: "Aksel"
-    status: open
+    status: done
     ref: "project-workspace/implementation-artifacts/epic-2-retro-2026-10-09.md"
   - id: "epic-2-retro-item-11-a11-gjør-tydelig-i-prøv-selv-at-kalkulat"
     epic: 2

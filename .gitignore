@@ -1,19 +1,15 @@
-# Next.js / Node
+# Node / Vite
 node_modules/
-.next/
 out/
 dist/
 build/
-.vercel/
-.turbo/
 *.tsbuildinfo
-next-env.d.ts
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# Python environments, bytecode, packaging and caches
+# Python: the BMAD scripts run with uv and can leave caches
 .venv/
 venv/
 env/
@@ -63,3 +59,4 @@ Thumbs.db
 # Live data file written by `npm run data`; the committed demo.json is the fallback (AD-10)
 public/data/latest.json
 public/data/*.tmp
+data/*.tmp
