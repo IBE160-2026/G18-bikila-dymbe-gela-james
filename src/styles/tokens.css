@@ -1,5 +1,5 @@
 /* AD-9: CSS mirror of src/lib/theme.ts. Edit both together; theme.test.ts fails CI on any drift.
-   Dark-mode switching is deferred to the first story with real UI, so the -dark tokens are plain variables. */
+   Dark mode is «Ikke i v1» (DESIGN.md); the -dark tokens are kept for a later version and are not used yet. */
 :root {
   --color-surface-base: #F5F8FB;
   --color-surface-raised: #FFFFFF;

@@ -219,8 +219,12 @@ denne kjøringen; ellers beholdes forrige gyldige batch uendret.
 Systemet håndterer at MET eller NVE ikke svarer, uten at brukeropplevelsen bryter sammen.
 
 **FR-6a — Siste gyldige data *(Må ha)*. Konsekvenser (testbare):**
-- Når en datakilde feiler, publiseres ingen ny batch, og klienten viser forrige gyldige batch
-  (følger av FR-5). Verifiseres ved å simulere nedetid i test (NFR-4).
+- Når MET feiler for mer enn 5 % av stedene, publiseres ingen ny batch, og klienten viser forrige
+  gyldige batch (følger av FR-5). Verifiseres ved å simulere nedetid i test (NFR-4).
+- *(v4, 2026-10-09)* NVE er tilleggsdata. NVE-nysnø inngår ikke i SnowScore og teller ikke mot
+  95 %-terskelen. Når NVE feiler, publiseres batchen likevel: NVE-feltet er tomt («–» på
+  stedssiden), og avvisningene står i kvalitetsrapporten. Å stoppe hele tjenesten fordi en
+  tilleggsverdi mangler, ville gitt brukerne gamle poengsummer uten å gjøre dem bedre.
 - Feilen registreres i kjøringens kvalitetsrapport (NFR-DQ2).
 - *(v3)* Et sted som feiler i en kjøring som likevel publiseres (inntil 5 % av stedene), vises
   som «ufullstendige data» uten poengsum. Datafilen bærer aldri verdier fra en tidligere kjøring.
@@ -606,8 +610,9 @@ database. Begrunnelsen står i §0.
 - **NFR-3:** Publiserte data er normalt under 90 minutter gamle; data eldre enn tre timer
   merkes «utdatert», og steder med data eldre enn tolv timer fjernes fra kart og filter.
   Validerer FR-16.
-- **NFR-4:** Tjenesten fungerer med siste gyldige data når én datakilde (MET eller NVE) er
-  utilgjengelig — verifisert ved å simulere nedetid i test. Validerer FR-6a.
+- **NFR-4:** Tjenesten fungerer med siste gyldige data når MET er utilgjengelig, og publiserer uten
+  NVE-verdier når NVE er utilgjengelig *(presisert v4, 2026-10-09)* — verifisert ved å simulere
+  nedetid i test. Validerer FR-6a.
 
 ### 7.2b Datakvalitet og sporbarhet *(v2)*
 
