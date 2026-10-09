@@ -21,12 +21,12 @@ async function expectExplanation(page: Page): Promise<void> {
   await expect(nav(page).getByRole('link', { name: NAVN })).toHaveAttribute('aria-current', 'page')
 }
 
-test('the navigation opens the page, with its six sections, three described graphs and the worked example', async ({ page }) => {
+test('the navigation opens the page, with its seven sections, three described graphs and the worked example', async ({ page }) => {
   await page.goto('/')
   await nav(page).getByRole('link', { name: NAVN }).click()
   await expectExplanation(page)
 
-  for (const name of ['Kort fortalt', 'Steg for steg', 'Regneeksempel', 'Datakilder og begrensninger', 'Datakvalitet', 'Endringslogg']) {
+  for (const name of ['Kort fortalt', 'Steg for steg', 'Regneeksempel', 'Datakilder og begrensninger', 'Datakvalitet', 'Prøv selv', 'Endringslogg']) {
     await expect(page.getByRole('heading', { level: 2, name })).toBeVisible()
   }
   const graphs = page.getByRole('img')
@@ -74,6 +74,32 @@ test('a direct address with a trailing slash shows the page; an unknown sub-path
   await expect(page.getByRole('heading', { level: 1 })).toHaveText(NAVN)
   await page.goto('/slik-beregner-vi-snowscore/x')
   await expect(page.getByText('Fant ikke siden')).toBeVisible()
+})
+
+test('the calculator updates A, B, C and the score as you type, and explains an invalid value', async ({ page }) => {
+  await page.goto('/slik-beregner-vi-snowscore')
+  const resultat = page.locator('.kalkulator-resultat')
+  const nedbor = page.getByLabel('Nedbør i 24 timer (mm)')
+  const temperatur = page.getByLabel('Snittemperatur (°C)')
+  await expect(resultat).toContainText('57 · Godt')
+
+  // 20 mm at −14 °C gives full A and full B: 60 + 25 + 15 = 100. No reload: the URL stays the same.
+  await nedbor.fill('20')
+  await temperatur.fill('-14')
+  await expect(resultat).toContainText('60,0 av 60')
+  await expect(resultat).toContainText('25,0 av 25')
+  await expect(resultat).toContainText('100 · Svært godt')
+  await expect(page).toHaveURL(/\/slik-beregner-vi-snowscore$/)
+
+  // Rain at 5 °C gives no new snow, no cold bonus and no snow share.
+  await temperatur.fill('5')
+  await expect(resultat).toContainText('0 · Lite')
+
+  await nedbor.fill('mye')
+  await expect(nedbor).toHaveAttribute('aria-invalid', 'true')
+  await expect(nedbor).toHaveAttribute('aria-describedby', 'kalkulator-nedbor-feil')
+  await expect(page.locator('#kalkulator-nedbor-feil')).toHaveText('Skriv et tall, for eksempel 12 eller −2,5.')
+  await expect(resultat).toHaveText('Rett verdiene over for å se SnowScore.')
 })
 
 test.describe('at 375px', () => {
