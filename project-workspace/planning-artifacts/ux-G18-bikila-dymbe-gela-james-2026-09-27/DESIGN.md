@@ -1,6 +1,6 @@
 ---
 name: SnowFinder
-description: Norsk snø-utforsker. Kald, klar, tillitsbyggende — tallet skal aldri virke gjettet. Lys som standard (utendørs, blendingsutsatt bruk), mørk modus støttet for kveldsplanlegging.
+description: Norsk snø-utforsker. Kald, klar, tillitsbyggende — tallet skal aldri virke gjettet. Lys som standard (utendørs, blendingsutsatt bruk), mørk modus er «Ikke i v1» (tokenene står klare).
 colors:
   surface-base: '#F5F8FB'
   surface-raised: '#FFFFFF'
@@ -116,8 +116,9 @@ blått og nøytralt grått, én tydelig aksentfarge for handling, og typografi s
 solbriller på en fjelltopp eller på en frostet mobilskjerm i bilen.
 
 Lys modus er standard, fordi mesteparten av bruken skjer utendørs eller i sterkt dagslys der en
-mørk flate blender mindre men er vanskeligere å lese i sollys. Mørk modus følger systeminnstilling
-for kveldsplanlegging hjemme. `[ASSUMPTION: lys som standard, ikke mørk — brief nevner begge
+mørk flate blender mindre men er vanskeligere å lese i sollys. Mørk modus er «Ikke i v1»
+(2026-10-09, revisjonen): den krever egne kontrastsjekker og axe-tester i begge moduser.
+`-dark`-tokenene står klare for en senere versjon. `[ASSUMPTION: lys som standard, ikke mørk — brief nevner begge
 bruksmønstre («rett før en tur» og planlegging kvelden før); dette kan snus hvis gruppa er uenig.]`
 
 ## Colors

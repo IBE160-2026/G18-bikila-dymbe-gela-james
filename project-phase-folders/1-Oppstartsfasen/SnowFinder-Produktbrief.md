@@ -138,7 +138,7 @@ Alle kilder krediteres i tråd med lisensene sine (CC BY 4.0, NLOD og ODbL), syn
 1. Det henter prognoser for stedene, og respekterer METs vilkår (identifiserende User-Agent, begrenset antall samtidige kall).
 2. Hvert svar kontrolleres mot et strengt skjema. Ugyldige svar avvises og logges, og de rettes aldri automatisk.
 3. SnowScore beregnes.
-4. Resultatet publiseres som én datafil bare hvis minst 95 % av stedene har gyldige data. Ellers beholdes forrige versjon.
+4. Resultatet publiseres som én datafil bare hvis minst 95 % av stedene har gyldige data fra MET (NVE-nysnø er tilleggsdata). Ellers beholdes forrige versjon.
 
 Hver kjøring skriver en kort kvalitetsrapport: andel gyldige steder, avviste svar og manglende timer. Hver publisert poengsum kan spores tilbake til kjøringen og kildedataenes tidspunkt. Den planlagte jobben publiserer datafilen til nettsiden uten å lage commits i repoet. En feilet kjøring vises i Actions-fanen i GitHub, med kvalitetsrapporten som vedlegg.
 
@@ -186,9 +186,9 @@ Mangler mer enn 10 % av timene, vises «ufullstendige data» i stedet for en poe
 
 ## Robustness and Security
 
-- **Frakoblet arkitektur:** nettsiden leser bare den publiserte datafilen. Faller MET eller NVE ut, fungerer SnowFinder videre med siste gyldige data.
+- **Frakoblet arkitektur:** nettsiden leser bare den publiserte datafilen. Faller MET ut, fungerer SnowFinder videre med siste gyldige data. Faller NVE ut, publiseres dataene uten NVE-nysnø, som ikke inngår i SnowScore.
 - **Ærlig alder på data:** data eldre enn tre timer merkes «utdatert», og steder med data eldre enn tolv timer tas ut av kart og filter.
-- **Kvalitetsterskel:** en kjøring publiseres bare når minst 95 % av stedene har gyldige data, og to kjøringer kan ikke publisere samtidig.
+- **Kvalitetsterskel:** en kjøring publiseres bare når minst 95 % av stedene har gyldige data fra MET, og to kjøringer kan ikke publisere samtidig.
 - **Ingen skriving og ingen hemmeligheter:** brukere sender ingen data til SnowFinder, og verken nettsiden eller dataprogrammet trenger nøkler. Det fjerner hele kategorien av angrep mot skjemaer og databaser.
 - **Overvåking:** hver kjøring lager en kvalitetsrapport, og feilede kjøringer er synlige i GitHub Actions, som gruppa sjekker fast.
 - **Nye forsøk ved feil (bør ha):** kontrollert ventetid før et feilende kall prøves igjen.

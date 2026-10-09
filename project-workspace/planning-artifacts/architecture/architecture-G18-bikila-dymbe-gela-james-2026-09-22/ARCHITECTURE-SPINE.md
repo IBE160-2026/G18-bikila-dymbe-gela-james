@@ -100,7 +100,8 @@ flowchart LR
   - **One run at a time.** The scheduled job uses a GitHub Actions `concurrency` group without
     cancellation.
   - **Threshold and partial failures.** The 95 % threshold counts only rejected or missing
-    responses; locations with incomplete data count as valid. In a published run, a location
+    MET responses. NVE is supplementary (not part of SnowScore): an NVE failure leaves
+    `nveNysnoSisteDognMm` null and is recorded in the report without blocking publication (FR-6a, v4); locations with incomplete data count as valid. In a published run, a location
     whose response failed appears as incomplete data without a score. The file never carries
     values from an earlier run.
   - **Simple retries are *Should have* (FR-6b).** v1 makes one attempt per location with capped

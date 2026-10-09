@@ -25,8 +25,8 @@ på møtet. Oppdater statusen når et steg er ferdig.
   sjekkene på GitHub er grønne. Revisjonen fant også feil i dataprogrammet og appen, som tas i egne
   PR-er.
 - **Neste steg:** Amelia (`bmad-build`) bygger Story 3.1 (filter på nysnø, vind og temperatur).
-  Gruppa må avgjøre to ting fra revisjonen: om NVE-nedetid skal stoppe publisering (FR-6a), og om
-  mørk modus skal bygges eller merkes «Ikke i v1».
+  De to valgene fra revisjonen er tatt (PR #41): NVE-nedetid stopper ikke publisering (FR-6a v4),
+  og mørk modus er «Ikke i v1».
 
 ### Tidligere: 7. oktober, faglærers tilbakemelding er innarbeidet, og planen er forenklet
 
