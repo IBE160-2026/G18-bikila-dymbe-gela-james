@@ -81,7 +81,7 @@ test('the calculator updates A, B, C and the score as you type, and explains an 
   const resultat = page.locator('.kalkulator-resultat')
   const nedbor = page.getByLabel('Nedbør i 24 timer (mm)')
   const temperatur = page.getByLabel('Snittemperatur (°C)')
-  await expect(resultat).toContainText('57 · Godt')
+  await expect(resultat).toContainText('58 · Godt')
 
   // 20 mm at −14 °C gives full A and full B: 60 + 25 + 15 = 100. No reload: the URL stays the same.
   await nedbor.fill('20')

@@ -72,7 +72,13 @@ describe('SlikBeregnerViSnowScore follows the constants', () => {
     vi.resetModules()
   })
 
-  it('changes every number on the page when SNOWSCORE changes, but keeps the change log as recorded', async () => {
+  // What this covers: every *parameter* the page shows (maxima, thresholds, window, limits) is read from
+  // SNOWSCORE and WINDOW_HOURS, so no old value is left written by hand anywhere outside the change log.
+  // What it does not cover: *computed* numbers (the worked example's A, B, C and sum, the calculator's
+  // result). They come from computeSnowScore, which this mock cannot reach because the module reads its own
+  // SNOWSCORE; they are covered by the golden table (shared/snowscore.test.ts), Regneeksempel.test.tsx and
+  // Kalkulator.test.tsx instead.
+  it('shows every parameter from SNOWSCORE and WINDOW_HOURS, with no old value left outside the change log', async () => {
     vi.resetModules()
     // Values that appear nowhere else on the page.
     const endret = {
@@ -95,14 +101,16 @@ describe('SlikBeregnerViSnowScore follows the constants', () => {
     }))
     const { default: Side } = await import('./SlikBeregnerViSnowScore')
     const html = renderToStaticMarkup(<Side result={null} />)
-    const [forklaring, logg] = html.split('<section aria-labelledby="endringslogg">')
-    // The sources section names NVE's own fixed period («nysnø siste døgn»), which is not the SnowScore window.
-    const [formel, kilder = ''] = forklaring.split('<section aria-labelledby="datakilder">')
-    const kvalitet = kilder.indexOf('<section aria-labelledby="datakvalitet">')
-    // Fail loudly if a section moved, rather than silently checking less text.
-    expect(kilder).not.toBe('')
-    expect(kvalitet).toBeGreaterThan(0)
-    const text = tekst(formel + kilder.slice(kvalitet))
+    // The change log is marked data-fast-tekst on the page; fail loudly if the mark is gone.
+    const fastTekst = /<section[^>]*data-fast-tekst[^>]*>.*?<\/section>/s
+    const logg = fastTekst.exec(html)?.[0] ?? ''
+    expect(logg).toContain('Endringslogg')
+    // The mark must sit on a flat section, or the non-greedy match would stop at a nested one.
+    expect(logg.match(/<section/g)).toHaveLength(1)
+    const forklaring = html.replace(fastTekst, '')
+    // NVE's own fixed period, «nysnø siste døgn», is not the SnowScore window; only that phrase is left out.
+    expect(forklaring).toContain('nysnø siste døgn')
+    const text = tekst(forklaring).replace('nysnø siste døgn', '')
 
     for (const ny of [
       'et tall fra 0 til 101',
@@ -120,6 +128,10 @@ describe('SlikBeregnerViSnowScore follows the constants', () => {
       'for alle 30 timene',
       'mer enn 13 % av timene',
       'fra 70 til 101',
+      // The worked example and the calculator show parameters too, next to their computed results.
+      'En ekte SnowScore regnes over 30 timer',
+      'Nedbør i 30 timer (mm)',
+      'jevnt over alle 30 timene',
     ]) {
       expect(text).toContain(ny)
     }

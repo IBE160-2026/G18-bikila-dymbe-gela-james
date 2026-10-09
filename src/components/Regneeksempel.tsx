@@ -30,6 +30,13 @@ function iFormel(verdi: number): string {
   return verdi < 0 ? `(${tall(verdi)})` : tall(verdi)
 }
 
+/** What the table's f(T) column says, read from its own values so the text cannot contradict the table. */
+export function snoandelSetning(andeler: readonly number[], allSnowAtOrBelowC: number): string {
+  return andeler.every((andel) => andel === 1)
+    ? `Alle timene er ${tall(allSnowAtOrBelowC)} °C eller kaldere, så f(T) er 1 hver time, og all nedbøren blir nysnø.`
+    : `Noen av timene er varmere enn ${tall(allSnowAtOrBelowC)} °C, så der blir bare en del av nedbøren nysnø.`
+}
+
 function Formel({ children }: { children: string }) {
   return <p className="formel">{children}</p>
 }
@@ -85,8 +92,7 @@ export default function Regneeksempel() {
         </table>
       </div>
       <p>
-        Alle timene er {tall(allSnowAtOrBelowC)} °C eller kaldere, så f(T) er 1 hver time, og all nedbøren blir nysnø.
-        Hadde en time vært {tall(halvveis)} °C, ville f(T) vært {tall(snowFraction(halvveis))}, og bare halvparten av
+        {snoandelSetning(timer.map(({ andel }) => andel), allSnowAtOrBelowC)} Hadde en time vært {tall(halvveis)} °C, ville f(T) vært {tall(snowFraction(halvveis))}, og bare halvparten av
         nedbøren den timen ville telt som nysnø.
       </p>
 

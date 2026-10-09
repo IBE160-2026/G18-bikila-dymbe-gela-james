@@ -1,7 +1,17 @@
 import { readFileSync } from 'node:fs'
 import fc from 'fast-check'
 import { describe, expect, it } from 'vitest'
-import { computeSnowScore, mmToCm, selectWindow, snowFraction, WINDOW_HOURS, type HourlyValue, type SnowScoreResult } from './snowscore'
+import {
+  computeSnowScore,
+  mmToCm,
+  selectWindow,
+  snowFraction,
+  SNOWSCORE,
+  SNOWSCORE_VERSION,
+  WINDOW_HOURS,
+  type HourlyValue,
+  type SnowScoreResult,
+} from './snowscore'
 
 interface GoldenCase {
   navn: string
@@ -228,5 +238,36 @@ describe('selectWindow', () => {
 
   it('throws on an invalid reference time', () => {
     expect(() => selectWindow([], 'not a time')).toThrow(RangeError)
+  })
+})
+
+/**
+ * Retro Epic 2 (A4): the parameters of every published version. Never edit an existing entry: it records
+ * what that version was. A parameter change therefore fails the test below until you
+ *  1. bump SNOWSCORE_VERSION in shared/snowscore.ts,
+ *  2. add an entry for the new version here,
+ *  3. add a row to ENDRINGSLOGG in src/pages/SlikBeregnerViSnowScore.tsx, and
+ *  4. update the computed answers that follow from the formula: tests/golden/snowscore.json,
+ *     Regneeksempel.test.tsx and Kalkulator.test.tsx.
+ */
+const PARAMETERE_PER_VERSJON: Record<string, Record<string, number>> = {
+  '1.0': {
+    maxA: 60,
+    maxB: 25,
+    maxC: 15,
+    fullSnowMm: 20,
+    allSnowAtOrBelowC: 0,
+    noSnowAtOrAboveC: 2,
+    coldRangeC: 16,
+    minPrecipitationMm: 0.5,
+    maxMissingShare: 0.1,
+    cmPerMm: 1,
+    WINDOW_HOURS: 24,
+  },
+}
+
+describe('SNOWSCORE_VERSION', () => {
+  it('names a recorded version whose parameters are exactly the current ones', () => {
+    expect(PARAMETERE_PER_VERSJON[SNOWSCORE_VERSION]).toEqual({ ...SNOWSCORE, WINDOW_HOURS })
   })
 })

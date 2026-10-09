@@ -2,7 +2,8 @@ import { readFileSync } from 'node:fs'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { describe, expect, it } from 'vitest'
 import { WINDOW_HOURS, computeSnowScore } from '../lib/snowscore'
-import Kalkulator, { kalkuler, kalkulatorTimer, lesTall, NEDBOR_GRENSER } from './Kalkulator'
+import Kalkulator, { kalkuler, kalkulatorTimer, lesTall, NEDBOR_GRENSER, sammenligning, startverdier } from './Kalkulator'
+import { REGNEEKSEMPEL } from './Regneeksempel'
 
 // Story 2.4: the calculator builds the hourly input and leaves the formula to the shared module (AD-6).
 
@@ -91,16 +92,44 @@ describe('kalkuler', () => {
   })
 })
 
+describe('start values and the comparison with the worked example', () => {
+  it('starts at the worked example’s precipitation and mean temperature, as the page shows them', () => {
+    const eksempel = computeSnowScore(REGNEEKSEMPEL)
+    if (eksempel.kind !== 'score') throw new Error('expected a score')
+    expect(startverdier()).toEqual({ nedbor: '12', temperatur: '−2,3', eksempelScore: eksempel.score })
+  })
+
+  it('gives the same score as the worked example from those values, so no difference is claimed', () => {
+    const { nedbor, temperatur, eksempelScore } = startverdier()
+    const start = kalkuler(nedbor, temperatur)
+    if (start.kind !== 'score') throw new Error('expected a score')
+    // All the example's hours give f(T) = 1, so only T̄ matters, and −2,3 gives the same 58 as −2,333…
+    expect(start.resultat.score).toBe(58)
+    expect(eksempelScore).toBe(58)
+    expect(sammenligning(nedbor, temperatur, start.resultat.score, eksempelScore)).toBe(
+      'Kalkulatoren starter på 12 mm og −2,3 °C, som er nedbøren og snittemperaturen i regneeksempelet over.',
+    )
+  })
+
+  it('explains a difference only when the two computed scores differ', () => {
+    expect(sammenligning('12', '−2', 57, 58)).toBe(
+      'Kalkulatoren starter på 12 mm og −2 °C, som er nedbøren og snittemperaturen i regneeksempelet over. ' +
+        'Den gir likevel SnowScore 57, mens eksempelet gir 58, fordi kalkulatoren bruker samme temperatur hver ' +
+        'time og en snittemperatur avrundet til én desimal.',
+    )
+  })
+})
+
 describe('Kalkulator', () => {
   const html = renderToStaticMarkup(<Kalkulator />)
 
-  it('starts at 12 mm and −2 °C and shows A, B, C and the score', () => {
+  it('starts at 12 mm and −2,3 °C and shows A, B, C and the score', () => {
     expect(html).toContain('value="12"')
-    expect(html).toContain('value="−2"')
+    expect(html).toContain('value="−2,3"')
     expect(html).toContain('<dd>36,0 av 60</dd>')
-    expect(html).toContain('<dd>6,3 av 25</dd>')
+    expect(html).toContain('<dd>6,7 av 25</dd>')
     expect(html).toContain('<dd>15,0 av 15</dd>')
-    expect(html).toContain('57 · Godt')
+    expect(html).toContain('58 · Godt')
   })
 
   it('labels both fields and has no error text while the values are valid', () => {
