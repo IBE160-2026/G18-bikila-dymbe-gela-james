@@ -15,10 +15,10 @@ function imgLabels(html: string): string[] {
 describe('SlikBeregnerViSnowScore', () => {
   const html = renderToStaticMarkup(<SlikBeregnerViSnowScore />)
 
-  it('has one h1 and the three sections in order', () => {
+  it('has one h1 and the four sections in order', () => {
     expect(html.match(/<h1/g)).toHaveLength(1)
     const sections = [...html.matchAll(/<h2[^>]*>([^<]+)<\/h2>/g)].map((match) => match[1])
-    expect(sections).toEqual(['Kort fortalt', 'Steg for steg', 'Endringslogg'])
+    expect(sections).toEqual(['Kort fortalt', 'Steg for steg', 'Regneeksempel', 'Endringslogg'])
   })
 
   it('shows the formula with the current parameters and the 24-hour window', () => {

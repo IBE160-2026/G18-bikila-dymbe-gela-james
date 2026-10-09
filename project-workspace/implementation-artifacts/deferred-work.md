@@ -57,3 +57,6 @@
 - source_spec: `spec-2-1-kort-fortalt-og-steg-for-steg.md`
   summary: Sett `document.title` per rute og flytt fokus til sidens h1 ved navigasjon i appen, så skjermlesere og nettleserfaner viser at en ny side er lastet.
   evidence: Story 2.1-gjennomgang (Blind Hunter). Ingen kode setter `document.title`, og fokus blir liggende på lenken. Dette gjelder alle ruter og fantes før denne storyen.
+- source_spec: `spec-2-2-regneeksempel.md`
+  summary: Gi formlene på forklaringssiden en tekst som skjermlesere kan lese, for eksempel «gjennomsnittstemperatur» for T̄, som er T med en kombinerende strek over.
+  evidence: Story 2.2-gjennomgang (Blind Hunter). Mange skjermlesere leser U+0304 som «macron» eller hopper over tegnet. Det gjelder alle formlene fra 2.1 og 2.2.
