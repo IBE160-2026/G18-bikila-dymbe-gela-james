@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { delpoeng, tall } from '../lib/format'
 import { SNOWSCORE, WINDOW_HOURS, computeSnowScore, type SnowScoreResult } from '../lib/snowscore'
+import { REGNEEKSEMPEL } from './Regneeksempel'
 import ScoreBadge from './ScoreBadge'
 
 // Story 2.4 (FR-10, Bør ha): try your own precipitation and temperature. The calculator only builds the
@@ -48,6 +49,29 @@ export function kalkuler(nedborTekst: string, temperaturTekst: string): Kalkulat
   return { kind: 'score', resultat }
 }
 
+/**
+ * The calculator starts at the worked example's total precipitation and mean temperature (as the page shows
+ * them, with one decimal), so the two sections can be compared. Computed when called, not at module load.
+ */
+export function startverdier() {
+  const eksempel = computeSnowScore(REGNEEKSEMPEL)
+  if (eksempel.kind !== 'score') return { nedbor: '0', temperatur: '0', eksempelScore: null }
+  return { nedbor: tall(eksempel.precipitationMm), temperatur: tall(eksempel.meanTemperatureC), eksempelScore: eksempel.score }
+}
+
+/**
+ * Where the start values come from, and, only when the two computed scores differ, why. The reason is the
+ * one thing the calculator does differently: the same temperature every hour, from a rounded mean.
+ */
+export function sammenligning(nedbor: string, temperatur: string, startScore: number | null, eksempelScore: number | null): string {
+  const fra = `Kalkulatoren starter på ${nedbor} mm og ${temperatur} °C, som er nedbøren og snittemperaturen i regneeksempelet over.`
+  if (startScore === null || eksempelScore === null || startScore === eksempelScore) return fra
+  return (
+    `${fra} Den gir likevel SnowScore ${startScore}, mens eksempelet gir ${eksempelScore}, fordi kalkulatoren ` +
+    'bruker samme temperatur hver time og en snittemperatur avrundet til én desimal.'
+  )
+}
+
 function Inndata({
   id,
   etikett,
@@ -87,19 +111,26 @@ function Inndata({
 }
 
 export default function Kalkulator() {
-  const [nedbor, setNedbor] = useState('12')
-  const [temperatur, setTemperatur] = useState('−2')
+  const start = startverdier()
+  const [nedbor, setNedbor] = useState(start.nedbor)
+  const [temperatur, setTemperatur] = useState(start.temperatur)
   const utregning = kalkuler(nedbor, temperatur)
+  const startUtregning = kalkuler(start.nedbor, start.temperatur)
+  const startScore = startUtregning.kind === 'score' ? startUtregning.resultat.score : null
   const { maxA, maxB, maxC } = SNOWSCORE
 
   return (
     <section aria-labelledby="prov-selv">
       <h2 id="prov-selv">Prøv selv</h2>
       <p>
+        Kalkulatoren er en læringshjelp. Tallene i kartet, i listen og på stedssidene regnes ut automatisk fra
+        prognosen fra Meteorologisk institutt (i demomodus fra innspilte svar), og det du skriver her, endrer dem
+        ikke.
+      </p>
+      <p>
         Skriv inn nedbør og temperatur, så regner vi ut SnowScore med den samme koden som lager tallene i kartet.
         For enkelhets skyld fordeler kalkulatoren nedbøren jevnt over alle {WINDOW_HOURS} timene, med samme
-        temperatur hver time. Derfor gir 12 mm og −2 °C litt annet tall enn regneeksempelet over, der temperaturen
-        varierer fra time til time.
+        temperatur hver time. {sammenligning(start.nedbor, start.temperatur, startScore, start.eksempelScore)}
       </p>
       <div className="kalkulator">
         <Inndata

@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { describe, expect, it } from 'vitest'
 import { computeSnowScore } from '../lib/snowscore'
-import Regneeksempel, { REGNEEKSEMPEL, timerMedSnoandel } from './Regneeksempel'
+import Regneeksempel, { REGNEEKSEMPEL, snoandelSetning, timerMedSnoandel } from './Regneeksempel'
 
 // Story 2.2: the page's worked example and the golden table must be the same example, and the page must
 // show what the shared module computes for it.
@@ -71,6 +71,18 @@ describe('Regneeksempel', () => {
       ['5', '1', '−2', '1', '1'],
       ['6', '0', '−1', '1', '0'],
     ])
+  })
+
+  it('says f(T) is 1 every hour only when the table shows it', () => {
+    const andeler = timerMedSnoandel().map(({ andel }) => andel)
+    expect(text).toContain(snoandelSetning(andeler, 0))
+    expect(snoandelSetning([1, 1, 1], 0)).toBe(
+      'Alle timene er 0 °C eller kaldere, så f(T) er 1 hver time, og all nedbøren blir nysnø.',
+    )
+    // One warm hour in the table must change the sentence.
+    expect(snoandelSetning([1, 0.5, 1], 0)).toBe(
+      'Noen av timene er varmere enn 0 °C, så der blir bare en del av nedbøren nysnø.',
+    )
   })
 
   it('says a real score uses the full window and shows f(T) between 0 and 1', () => {

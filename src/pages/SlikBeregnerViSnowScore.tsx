@@ -10,8 +10,11 @@ import type { StederResult } from '../hooks/useSteder'
 import { TIERS } from '../lib/scoreTier'
 import { SNOWSCORE, SNOWSCORE_VERSION, WINDOW_HOURS } from '../lib/snowscore'
 
-// Story 2.1 (FR-8): what SnowScore measures and how it is computed. Every number on the page comes from
-// SNOWSCORE, WINDOW_HOURS and the tier bounds, never written by hand (AD-6). The page needs no data.
+// Epic 2 (FR-8 to FR-11): what SnowScore measures and how it is computed. Every parameter on the page comes
+// from SNOWSCORE, WINDOW_HOURS and the tier bounds, and every computed number from computeSnowScore (AD-6).
+// Written by hand on purpose: the worked example's hours (Regneeksempel), the calculator's input limits
+// (Kalkulator) and the change log, which records what changed then. Only the quality panel reads `result`;
+// the rest of the page shows at once, without data.
 
 const {
   maxA,
@@ -165,7 +168,8 @@ export default function SlikBeregnerViSnowScore({ result }: { result: StederResu
 
       <Kalkulator />
 
-      <section aria-labelledby="endringslogg">
+      {/* data-fast-tekst: a record of what changed then; the constants test leaves it out on purpose. */}
+      <section aria-labelledby="endringslogg" data-fast-tekst>
         <h2 id="endringslogg">Endringslogg</h2>
         <p>Hver endring i parameterne i formelen får en ny versjon her, med begrunnelse.</p>
         <div className="forklaring-tabell">

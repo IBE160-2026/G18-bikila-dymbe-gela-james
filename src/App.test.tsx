@@ -4,6 +4,7 @@ import { describe, expect, it, vi } from 'vitest'
 import { PublishedData } from '../shared/contracts/published'
 import { FJERNES_ETTER_MS } from '../shared/freshness'
 import { AppView } from './App'
+import { kvalitetLinjer } from './components/Datakvalitet'
 import { medFerskhet, type StederResult } from './hooks/useSteder'
 import { LOAD_ERROR_MESSAGE } from './lib/data/loadPublishedData'
 import type { Route } from './lib/router'
@@ -173,6 +174,10 @@ describe('AppView', () => {
     ['loaded', demoResult],
   ] as const)('shows the explanation page at once when data is %s, without skeleton or error', (_, result) => {
     const html = render(result, { name: 'forklaring' })
+    // The app's own result reaches the quality panel, in every state, with every line of its report.
+    const linjer = kvalitetLinjer(result)
+    expect(linjer.length).toBeGreaterThan(0)
+    expect(html).toContain(`<div class="datakvalitet" role="status">${linjer.map((linje) => `<p>${linje}</p>`).join('')}</div>`)
     expect(html).toContain('<h1 class="forklaring-tittel">Slik beregner vi SnowScore</h1>')
     expect(html).toContain('Kort fortalt')
     expect(html).not.toContain('skeleton')
