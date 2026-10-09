@@ -172,9 +172,11 @@ export default function SlikBeregnerViSnowScore({ result }: { result: StederResu
       <section aria-labelledby="endringslogg" data-fast-tekst>
         <h2 id="endringslogg">Endringslogg</h2>
         <p>Hver endring i parameterne i formelen får en ny versjon her, med begrunnelse.</p>
-        <div className="forklaring-tabell">
+        <div className="forklaring-tabell" tabIndex={0} role="region" aria-labelledby="endringslogg-tabell">
           <table>
-            <caption className="visually-hidden">Endringer i SnowScore-formelen, nyeste først</caption>
+            <caption id="endringslogg-tabell" className="visually-hidden">
+              Endringer i SnowScore-formelen, nyeste først
+            </caption>
             <thead>
               <tr>
                 <th scope="col">Versjon</th>

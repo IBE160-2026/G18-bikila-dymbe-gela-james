@@ -559,7 +559,18 @@ select:focus-visible {
   list-style: none;
 }
 
-/* The cells wrap their text, so the table fits a phone without a scrolling region. */
+/* The cells wrap their text, so a table normally fits a phone. A table cannot shrink below its longest
+   words, though, and with a wider font (Linux CI, user settings) it could make the page scroll sideways.
+   The wrapper scrolls on its own instead; it is focusable so keyboard users can scroll it too. */
+.forklaring-tabell {
+  overflow-x: auto;
+}
+
+.forklaring-tabell:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
 .forklaring-tabell table {
   width: 100%;
   border-collapse: collapse;
@@ -586,10 +597,10 @@ select:focus-visible {
   font-feature-settings: var(--typography-numeric-font-feature-settings);
 }
 
-/* The example's five columns only fit a phone with tighter cells. */
+/* Tighter cells on a phone, so the tables fit without scrolling in the usual fonts. */
 @media (max-width: 767px) {
-  .regneeksempel-tabell th,
-  .regneeksempel-tabell td {
+  .forklaring-tabell th,
+  .forklaring-tabell td {
     padding: var(--spacing-2) var(--spacing-1);
   }
 }
