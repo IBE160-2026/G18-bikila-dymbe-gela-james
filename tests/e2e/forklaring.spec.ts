@@ -148,6 +148,40 @@ test.describe('at 375px', () => {
   })
 })
 
+// CI runs on Linux, whose fonts are wider than Windows'; a page that fits locally overflowed there (PR #33–#38).
+// A deliberately wide font makes the check fail on every platform when anything is too wide for a phone.
+const TABELLER = ['Timesverdier i regneeksempelet', 'Endringer i SnowScore-formelen, nyeste først']
+const BRED_FONT = `* { font-family: Verdana, 'DejaVu Sans', sans-serif !important; }`
+
+for (const width of [320, 375]) {
+  test(`the page does not scroll sideways at ${width}px, even with a wide font`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 740 })
+    await page.goto('/slik-beregner-vi-snowscore')
+    await expect(page.getByRole('img')).toHaveCount(3)
+    await page.addStyleTag({ content: BRED_FONT })
+    const html = page.locator('html')
+    const [scrollWidth, clientWidth] = await html.evaluate((el) => [el.scrollWidth, el.clientWidth])
+    expect(scrollWidth).toBeLessThanOrEqual(clientWidth)
+    // The tables may scroll inside their own region instead, which keyboard users can reach.
+    for (const navn of TABELLER) {
+      await expect(page.getByRole('region', { name: navn })).toHaveAttribute('tabindex', '0')
+    }
+  })
+}
+
+test('both tables fit a 375px phone in the page font, without scrolling inside', async ({ page }) => {
+  // The inner scrolling is only a safety net for wide fonts; with the page's own font the tighter
+  // cells must be enough, or a later column or padding change would quietly hide part of a table.
+  await page.setViewportSize({ width: 375, height: 740 })
+  await page.goto('/slik-beregner-vi-snowscore')
+  for (const navn of TABELLER) {
+    const [scrollWidth, clientWidth] = await page
+      .getByRole('region', { name: navn })
+      .evaluate((el) => [el.scrollWidth, el.clientWidth])
+    expect(scrollWidth, navn).toBeLessThanOrEqual(clientWidth)
+  }
+})
+
 for (const [bredde, viewport] of [
   ['wide', { width: 1280, height: 800 }],
   ['narrow', { width: 375, height: 740 }],

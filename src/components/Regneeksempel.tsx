@@ -66,9 +66,11 @@ export default function Regneeksempel() {
         her et kortere vindu på {REGNEEKSEMPEL.length} timer. Tabellen viser nedbør og temperatur time for time,
         snøandelen f(T) og hvor mye av nedbøren som blir nysnø.
       </p>
-      <div className="forklaring-tabell regneeksempel-tabell">
+      <div className="forklaring-tabell" tabIndex={0} role="region" aria-labelledby="regneeksempel-tabell">
         <table>
-          <caption className="visually-hidden">Timesverdier i regneeksempelet</caption>
+          <caption id="regneeksempel-tabell" className="visually-hidden">
+            Timesverdier i regneeksempelet
+          </caption>
           <thead>
             <tr>
               <th scope="col">Time</th>
