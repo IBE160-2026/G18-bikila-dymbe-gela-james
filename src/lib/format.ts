@@ -12,11 +12,16 @@ const tidFormat = new Intl.DateTimeFormat('nb-NO', {
   minute: '2-digit',
 })
 
+/** A number in Norwegian with at most one decimal and a real minus sign: "0,5", "−14". */
+export function tall(verdi: number): string {
+  // Round first and add 0, so -0.04 shows as "0" and not "−0".
+  return tallFormat.format(Math.round(verdi * 10) / 10 + 0)
+}
+
 /** A value with its unit, or "–" when the data file has none. */
 export function medEnhet(verdi: number | null, enhet: string): string {
   if (verdi === null) return '–'
-  // Round first and add 0, so -0.04 °C shows as "0 °C" and not "−0 °C".
-  return `${tallFormat.format(Math.round(verdi * 10) / 10 + 0)} ${enhet}`
+  return `${tall(verdi)} ${enhet}`
 }
 
 /** A sub-score out of its maximum with one decimal: "19,2 av 60". */

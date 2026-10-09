@@ -7,7 +7,14 @@ export const VISNINGER = ['kart', 'liste'] as const
 export type Visning = (typeof VISNINGER)[number]
 
 // AD-8: map and list are one route; `?visning=liste` picks the list, anything else is the map.
-export type Route = { name: 'utforsk'; visning: Visning } | { name: 'sted'; id: string } | { name: 'ikke-funnet' }
+export type Route =
+  | { name: 'utforsk'; visning: Visning }
+  | { name: 'sted'; id: string }
+  | { name: 'forklaring' }
+  | { name: 'ikke-funnet' }
+
+/** Story 2.1: the path of «Slik beregner vi SnowScore», relative to the base. */
+const FORKLARING_PATH = 'slik-beregner-vi-snowscore'
 
 function withTrailingSlash(base: string): string {
   return base.endsWith('/') ? base : `${base}/`
@@ -25,6 +32,7 @@ export function parseRoute(pathname: string, base: string, search = ''): Route {
   if (!path.startsWith(root)) return { name: 'ikke-funnet' }
   const rest = path.slice(root.length).replace(/\/$/, '')
   if (rest === '') return { name: 'utforsk', visning: parseVisning(search) }
+  if (rest === FORKLARING_PATH) return { name: 'forklaring' }
   const match = /^sted\/([^/]+)$/.exec(rest)
   if (!match) return { name: 'ikke-funnet' }
   try {
@@ -43,6 +51,8 @@ export function href(route: Route, base: string): string {
       return route.visning === 'liste' ? `${root}?visning=liste` : root
     case 'ikke-funnet':
       return root
+    case 'forklaring':
+      return `${root}${FORKLARING_PATH}`
     case 'sted':
       return `${root}sted/${encodeURIComponent(route.id)}`
   }

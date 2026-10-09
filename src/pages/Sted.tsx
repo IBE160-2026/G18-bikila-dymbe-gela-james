@@ -54,6 +54,9 @@ export default function Sted({ sted, utdatert }: Props) {
               ]}
             />
           )}
+          <Lenke to={{ name: 'forklaring' }} className="forklaring-lenke">
+            Slik beregner vi SnowScore
+          </Lenke>
         </section>
         <section className="sted-kort" aria-labelledby="sted-grunnlag">
           <h2 id="sted-grunnlag">Grunnlag</h2>

@@ -1,13 +1,16 @@
 import DemoBanner from './components/DemoBanner'
-import Lenke from './components/Lenke'
+import Toppnavigasjon from './components/Toppnavigasjon'
 import { useSteder, type StederResult } from './hooks/useSteder'
 import { useRoute, type Route } from './lib/router'
 import IkkeFunnet from './pages/IkkeFunnet'
+import SlikBeregnerViSnowScore from './pages/SlikBeregnerViSnowScore'
 import Sted from './pages/Sted'
 import Utforsk, { INGEN_FERSKE } from './pages/Utforsk'
 
 function Innhold({ result, route }: { result: StederResult | null; route: Route }) {
   if (route.name === 'ikke-funnet') return <IkkeFunnet melding="Fant ikke siden" />
+  // The explanation needs no data, so it shows at once, also while loading and when loading failed.
+  if (route.name === 'forklaring') return <SlikBeregnerViSnowScore />
   if (result === null) {
     // On Utforsk the skeleton takes the map's or the list's shape, so the layout does not jump when data arrives.
     const shape = route.name === 'utforsk' ? ` ${route.visning}-skeleton` : ''
@@ -44,9 +47,7 @@ export function AppView({ result, route }: { result: StederResult | null; route:
   return (
     <>
       <header className="app-header">
-        <Lenke to={{ name: 'utforsk', visning: 'kart' }} className="app-title">
-          SnowFinder
-        </Lenke>
+        <Toppnavigasjon route={route} />
       </header>
       {result?.status === 'ok' && result.data.mode === 'demo' && <DemoBanner />}
       <main className="app">

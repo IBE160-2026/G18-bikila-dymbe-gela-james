@@ -48,3 +48,12 @@
   summary: Regn dataalderen på nytt mens siden er åpen (ikke bare ved lasting), så «Utdatert» og fjerning etter 12 t også gjelder en fane som har stått åpen lenge i live-modus. Naturlig sammen med banneret for gamle data i Story 1.6.
   evidence: Story 1.9-gjennomgang (Blind Hunter, Edge Case Hunter). `medFerskhet` kjøres én gang i den delte loaderen, og resultatet hurtigbufres for hele sideinnlastingen.
   status: løst i `spec-1-9b-stedsside-fullfort.md` (2026-10-08). Live-data sjekkes hvert minutt og når fanen blir synlig igjen.
+- source_spec: `spec-2-1-kort-fortalt-og-steg-for-steg.md`
+  summary: Test at ☰-menyen åpnes og lukkes i en sjekk som kjører ved push (i dag bare i Playwright), når CI kjører E2E eller pre-push-hooken tar med `npm run test:e2e`.
+  evidence: Story 2.1-gjennomgang (Verification Gap). `App.test.tsx` ser bare den lukkede markupen. En meny som aldri lukkes ville passert lint, typecheck, test og build.
+- source_spec: `spec-2-1-kort-fortalt-og-steg-for-steg.md`
+  summary: Spør Sally (`bmad-ux`) om ☰ på mobil er riktig når menyen bare skjuler én lenke («Slik beregner vi SnowScore»), eller om lenken kan stå synlig i headeren.
+  evidence: Story 2.1-gjennomgang (Blind Hunter). EXPERIENCE.md sier at navigasjonen kollapser til ☰, men med én lenke koster det et ekstra trykk uten å spare plass.
+- source_spec: `spec-2-1-kort-fortalt-og-steg-for-steg.md`
+  summary: Sett `document.title` per rute og flytt fokus til sidens h1 ved navigasjon i appen, så skjermlesere og nettleserfaner viser at en ny side er lastet.
+  evidence: Story 2.1-gjennomgang (Blind Hunter). Ingen kode setter `document.title`, og fokus blir liggende på lenken. Dette gjelder alle ruter og fantes før denne storyen.
