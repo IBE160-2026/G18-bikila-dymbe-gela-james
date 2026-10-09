@@ -29,7 +29,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 # - Retrospective appends its action items to action_items; the status view surfaces open ones
 generated: 09-27-2026 12:00
-last_updated: 10-09-2026 12:00
+last_updated: 10-09-2026 19:19
 project: G18-bikila-dymbe-gela-james
 project_key: NOKEY
 tracking_system: file-system
@@ -54,7 +54,7 @@ development_status:
   2-2-se-det-utledede-regneeksempelet: done
   2-3-les-om-datakilder-og-begrensninger: done
   2-4-prøv-snowscore-kalkulatoren-selv: done
-  epic-2-retrospective: optional
+  epic-2-retrospective: done
 
   epic-3: backlog
   3-1-filtrer-på-nysnø-vind-og-temperatur: backlog
@@ -78,3 +78,79 @@ development_status:
   5-1-send-en-tilbakemelding-uten-konto: backlog  # Ikke i v1 (v3)
   5-2-automatisk-sletting-av-gamle-tilbakemeldinger: backlog  # Ikke i v1 (v3)
   epic-5-retrospective: optional
+action_items:
+  - id: "epic-2-retro-item-1-a1-gjør-testen-følger-konstantene-ærlig"
+    epic: 2
+    action: "A1 Gjør testen «følger konstantene» ærlig: utledede tall i regneeksempel
+      og kalkulator må følge byttede konstanter"
+    owner: "Aksel"
+    status: open
+    ref: "project-workspace/implementation-artifacts/epic-2-retro-2026-10-09.md"
+  - id: "epic-2-retro-item-2-a2-utled-f-t-er-1-og-kalkulatorens-samme"
+    epic: 2
+    action: "A2 Utled «f(T) er 1» og kalkulatorens sammenligning med regneeksempelet
+      fra utregnede tall, med test"
+    owner: "Aksel"
+    status: open
+    ref: "project-workspace/implementation-artifacts/epic-2-retro-2026-10-09.md"
+  - id: "epic-2-retro-item-3-a3-skriv-om-kommentaren-øverst-i-slikber"
+    epic: 2
+    action: "A3 Skriv om kommentaren øverst i SlikBeregnerViSnowScore.tsx så den stemmer
+      med koden"
+    owner: "Aksel"
+    status: open
+    ref: "project-workspace/implementation-artifacts/epic-2-retro-2026-10-09.md"
+  - id: "epic-2-retro-item-4-a4-test-som-binder-snowscore-verdiene-ti"
+    epic: 2
+    action: "A4 Test som binder SNOWSCORE-verdiene til SNOWSCORE_VERSION"
+    owner: "Aksel"
+    status: open
+    ref: "project-workspace/implementation-artifacts/epic-2-retro-2026-10-09.md"
+  - id: "epic-2-retro-item-5-a5-app-test-sjekker-kvalitetspanelets-te"
+    epic: 2
+    action: "A5 App.test sjekker kvalitetspanelets tekst for lasting, feil og demodata"
+    owner: "Aksel"
+    status: open
+    ref: "project-workspace/implementation-artifacts/epic-2-retro-2026-10-09.md"
+  - id: "epic-2-retro-item-6-a6-avstem-akseptkriteriet-i-story-2-1-le"
+    epic: 2
+    action: "A6 Avstem akseptkriteriet i Story 2.1 (lenke ved score-visning) i epic-teksten
+      via bmad-correct-course"
+    owner: "Aksel"
+    status: open
+    ref: "project-workspace/implementation-artifacts/epic-2-retro-2026-10-09.md"
+  - id: "epic-2-retro-item-7-a7-samle-formel-delte-klasser-for-kort-o"
+    epic: 2
+    action: "A7 Samle Formel, delte klasser for kort og talliste, vurder å dele App.css
+      før Epic 3"
+    owner: "Gruppa"
+    status: open
+    ref: "project-workspace/implementation-artifacts/epic-2-retro-2026-10-09.md"
+  - id: "epic-2-retro-item-8-a8-rett-aria-current-for-snowfinder-på-l"
+    epic: 2
+    action: "A8 Rett aria-current for SnowFinder på listevisningen og menylukking
+      fra Fant ikke siden"
+    owner: "Gruppa"
+    status: open
+    ref: "project-workspace/implementation-artifacts/epic-2-retro-2026-10-09.md"
+  - id: "epic-2-retro-item-9-a9-prosess-ui-stories-med-interaksjon-a1"
+    epic: 2
+    action: "A9 Prosess: UI-stories med interaksjon/a11y kjøres i dispatch med tre
+      gjennomgangslag; regneeksempler skal kunne regnes etter for hånd"
+    owner: "Aksel"
+    status: open
+    ref: "project-workspace/implementation-artifacts/epic-2-retro-2026-10-09.md"
+  - id: "epic-2-retro-item-10-a10-be-faglærer-slå-på-github-actions-ti"
+    epic: 2
+    action: "A10 Be faglærer slå på GitHub Actions; til da kjør npm run test:e2e før
+      hver PR"
+    owner: "Aksel"
+    status: open
+    ref: "project-workspace/implementation-artifacts/epic-2-retro-2026-10-09.md"
+  - id: "epic-2-retro-item-11-a11-gjør-tydelig-i-prøv-selv-at-kalkulat"
+    epic: 2
+    action: "A11 Gjør tydelig i «Prøv selv» at kalkulatoren er en læringshjelp og
+      at kartets tall regnes automatisk fra MET"
+    owner: "Aksel"
+    status: open
+    ref: "project-workspace/implementation-artifacts/epic-2-retro-2026-10-09.md"
