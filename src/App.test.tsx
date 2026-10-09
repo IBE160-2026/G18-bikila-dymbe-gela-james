@@ -24,7 +24,10 @@ function render(result: StederResult | null, route: Route = UTFORSK): string {
 describe('AppView', () => {
   it('shows the header, the demo banner and the map for the committed demo.json', () => {
     const html = render(demoResult)
-    expect(html).toContain('<a href="/" class="app-title">SnowFinder</a>')
+    expect(html).toContain('<a href="/" class="app-title" aria-current="page">SnowFinder</a>')
+    expect(html).toContain('<a href="/slik-beregner-vi-snowscore" class="toppnav-lenke">Slik beregner vi SnowScore</a>')
+    // Story 2.1: one link to the explanation next to the switch covers both map and list.
+    expect(html).toContain('<a href="/slik-beregner-vi-snowscore" class="forklaring-lenke">Slik beregner vi SnowScore</a>')
     expect(html).toContain('Demodata – ikke ekte prognoser')
     expect(html).toContain('class="kart"')
   })
@@ -52,6 +55,7 @@ describe('AppView', () => {
       expect(html).toContain('<h2 id="tom-overskrift">Ingen ferske data</h2>')
       expect(html).toContain(`<p>${INGEN_STEDER}</p>`)
       expect(html).not.toContain('aria-label="Visning"')
+      expect(html).not.toContain('class="forklaring-lenke"')
       expect(html).toContain('Last inn på nytt</button>')
       expect(html).not.toContain('class="kart"')
       expect(html).not.toContain('liste-rad')
@@ -161,6 +165,39 @@ describe('AppView', () => {
     const html = render(null, { name: 'ikke-funnet' })
     expect(html).toContain('Fant ikke siden')
     expect(html).toContain('<a href="/">Gå til kartet</a>')
+  })
+
+  it.each([
+    ['loading', null],
+    ['failed', { status: 'error', message: LOAD_ERROR_MESSAGE }],
+    ['loaded', demoResult],
+  ] as const)('shows the explanation page at once when data is %s, without skeleton or error', (_, result) => {
+    const html = render(result, { name: 'forklaring' })
+    expect(html).toContain('<h1 class="forklaring-tittel">Slik beregner vi SnowScore</h1>')
+    expect(html).toContain('Kort fortalt')
+    expect(html).not.toContain('skeleton')
+    expect(html).not.toContain(LOAD_ERROR_MESSAGE)
+    expect(html).not.toContain('role="alert"')
+    // The nav marks the explanation as the current page, and the product name no longer.
+    expect(html).toContain(
+      '<a href="/slik-beregner-vi-snowscore" class="toppnav-lenke" aria-current="page">Slik beregner vi SnowScore</a>',
+    )
+    expect(html).toContain('<a href="/" class="app-title">SnowFinder</a>')
+  })
+
+  it('has a closed ☰ menu button that controls the nav links', () => {
+    const html = render(demoResult)
+    expect(html).toContain(
+      '<button type="button" class="toppnav-knapp" aria-label="Meny" aria-expanded="false" aria-controls="toppnav-lenker">☰</button>',
+    )
+    expect(html).toContain('<ul id="toppnav-lenker" class="toppnav-lenker">')
+  })
+
+  it.each(['gaustatoppen', 'trondheim'])('links the SnowScore card on the place page %s to the explanation', (id) => {
+    const html = render(demoResult, { name: 'sted', id })
+    const kort = /<section class="sted-kort" aria-labelledby="sted-snowscore">(.*?)<\/section>/.exec(html)?.[1] ?? ''
+    expect(kort).toContain('<a href="/slik-beregner-vi-snowscore" class="forklaring-lenke">Slik beregner vi SnowScore</a>')
+    expect(html).not.toContain('aria-current="page"')
   })
 
   it('marks the map as the current view by default', () => {

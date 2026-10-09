@@ -1,5 +1,6 @@
 import type { Sted } from '../../shared/contracts/published'
 import KartVisning from '../components/KartVisning'
+import Lenke from '../components/Lenke'
 import ListeVisning from '../components/ListeVisning'
 import VisningVeksler from '../components/VisningVeksler'
 import type { Visning } from '../lib/router'
@@ -14,7 +15,16 @@ export default function Utforsk({ steder, utdatert, visning }: Props) {
   return (
     <>
       <h1 className="visually-hidden">Snøforhold i Norge</h1>
-      {steder.length > 0 && <VisningVeksler valgt={visning} />}
+      {steder.length > 0 && (
+        // Story 2.1: one link next to the switch covers both map and list. The map tooltip is hover text
+        // and a list row is already a link, so the link cannot go inside either.
+        <div className="utforsk-verktoy">
+          <VisningVeksler valgt={visning} />
+          <Lenke to={{ name: 'forklaring' }} className="forklaring-lenke">
+            Slik beregner vi SnowScore
+          </Lenke>
+        </div>
+      )}
       {steder.length === 0 ? (
         // EXPERIENCE.md: never an empty surface without an explanation and an action. There is nothing
         // to switch between, so the map/list switch is left out.

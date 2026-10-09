@@ -24,6 +24,12 @@ export const SNOWSCORE = {
   cmPerMm: 1,
 } as const
 
+/**
+ * Version of the SnowScore parameters above, shown in the explanation page's change log (FR-8).
+ * Bump it, and add a change-log row, every time a parameter in SNOWSCORE changes.
+ */
+export const SNOWSCORE_VERSION = '1.0'
+
 export interface HourlyValue {
   precipitationMm: number | null
   temperatureC: number | null

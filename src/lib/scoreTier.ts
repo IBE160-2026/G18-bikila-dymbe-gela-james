@@ -9,7 +9,8 @@ export type TierInfo = { tier: Tier; label: string }
 
 export const INCOMPLETE_LABEL = 'Ufullstendige data'
 
-const TIERS: readonly { min: number; info: TierInfo }[] = [
+/** Highest tier first; the explanation page lists them from here so the bounds live in one place. */
+export const TIERS: readonly { min: number; info: TierInfo }[] = [
   { min: 70, info: { tier: 3, label: 'Svært godt' } },
   { min: 45, info: { tier: 2, label: 'Godt' } },
   { min: 20, info: { tier: 1, label: 'Middels' } },
