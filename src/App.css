@@ -579,6 +579,21 @@ select:focus-visible {
   font-feature-settings: var(--typography-numeric-font-feature-settings);
 }
 
+/* Story 2.2: numbers in the worked example line up on the right. */
+.forklaring-tabell .tall-celle {
+  text-align: right;
+  font-family: var(--typography-numeric-font-family);
+  font-feature-settings: var(--typography-numeric-font-feature-settings);
+}
+
+/* The example's five columns only fit a phone with tighter cells. */
+@media (max-width: 767px) {
+  .regneeksempel-tabell th,
+  .regneeksempel-tabell td {
+    padding: var(--spacing-2) var(--spacing-1);
+  }
+}
+
 .forklaring-versjon {
   color: var(--color-ink-secondary);
   font-family: var(--typography-meta-font-family);

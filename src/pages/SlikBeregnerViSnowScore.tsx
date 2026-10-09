@@ -1,5 +1,6 @@
 import type { Sted } from '../../shared/contracts/published'
 import ForklaringIllustrasjon from '../components/ForklaringIllustrasjon'
+import Regneeksempel from '../components/Regneeksempel'
 import ScoreBadge from '../components/ScoreBadge'
 import { medEnhet, tall } from '../lib/format'
 import { TIERS } from '../lib/scoreTier'
@@ -150,6 +151,8 @@ export default function SlikBeregnerViSnowScore() {
           ))}
         </ul>
       </section>
+
+      <Regneeksempel />
 
       <section aria-labelledby="endringslogg">
         <h2 id="endringslogg">Endringslogg</h2>

@@ -21,12 +21,12 @@ async function expectExplanation(page: Page): Promise<void> {
   await expect(nav(page).getByRole('link', { name: NAVN })).toHaveAttribute('aria-current', 'page')
 }
 
-test('the navigation opens the page, with the three sections and three described graphs', async ({ page }) => {
+test('the navigation opens the page, with its four sections, three described graphs and the worked example', async ({ page }) => {
   await page.goto('/')
   await nav(page).getByRole('link', { name: NAVN }).click()
   await expectExplanation(page)
 
-  for (const name of ['Kort fortalt', 'Steg for steg', 'Endringslogg']) {
+  for (const name of ['Kort fortalt', 'Steg for steg', 'Regneeksempel', 'Endringslogg']) {
     await expect(page.getByRole('heading', { level: 2, name })).toBeVisible()
   }
   const graphs = page.getByRole('img')
@@ -34,7 +34,9 @@ test('the navigation opens the page, with the three sections and three described
   for (const [i, delpoeng] of ['A Nysnøpotensial', 'B Kuldebonus', 'C Snøandel'].entries()) {
     await expect(graphs.nth(i)).toHaveAttribute('aria-label', new RegExp(`^Graf for ${delpoeng}: `))
   }
-  const forsteRad = page.locator('tbody tr').first()
+  // Story 2.2: the worked example ends in the brief's score.
+  await expect(page.getByText('SnowScore = 36 + 6,77 + 15 = 57,77, avrundet til 58')).toBeVisible()
+  const forsteRad = page.locator('section[aria-labelledby="endringslogg"] tbody tr').first()
   await expect(forsteRad.locator('th')).toHaveText('1.0')
   await expect(forsteRad).toContainText('endret fra 6 til 16')
 
