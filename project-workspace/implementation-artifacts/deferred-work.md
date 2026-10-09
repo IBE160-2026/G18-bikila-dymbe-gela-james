@@ -60,3 +60,6 @@
 - source_spec: `spec-2-2-regneeksempel.md`
   summary: Gi formlene på forklaringssiden en tekst som skjermlesere kan lese, for eksempel «gjennomsnittstemperatur» for T̄, som er T med en kombinerende strek over.
   evidence: Story 2.2-gjennomgang (Blind Hunter). Mange skjermlesere leser U+0304 som «macron» eller hopper over tegnet. Det gjelder alle formlene fra 2.1 og 2.2.
+- source_spec: `spec-2-3-datakilder-og-begrensninger.md`
+  summary: La datakvalitetspanelet på forklaringssiden også si hvor mange steder som er merket «Utdatert» eller fjernet fordi dataene er for gamle, når banneret for gamle data kommer i Story 1.6.
+  evidence: Story 2.3-gjennomgang (Blind Hunter). Etter nedetid kan rapporten si «300 av 300 gyldige» mens kartet viser færre steder, fordi alder måles i appen og ikke i kjøringen.

@@ -21,12 +21,12 @@ async function expectExplanation(page: Page): Promise<void> {
   await expect(nav(page).getByRole('link', { name: NAVN })).toHaveAttribute('aria-current', 'page')
 }
 
-test('the navigation opens the page, with its four sections, three described graphs and the worked example', async ({ page }) => {
+test('the navigation opens the page, with its six sections, three described graphs and the worked example', async ({ page }) => {
   await page.goto('/')
   await nav(page).getByRole('link', { name: NAVN }).click()
   await expectExplanation(page)
 
-  for (const name of ['Kort fortalt', 'Steg for steg', 'Regneeksempel', 'Endringslogg']) {
+  for (const name of ['Kort fortalt', 'Steg for steg', 'Regneeksempel', 'Datakilder og begrensninger', 'Datakvalitet', 'Endringslogg']) {
     await expect(page.getByRole('heading', { level: 2, name })).toBeVisible()
   }
   const graphs = page.getByRole('img')
@@ -36,6 +36,10 @@ test('the navigation opens the page, with its four sections, three described gra
   }
   // Story 2.2: the worked example ends in the brief's score.
   await expect(page.getByText('SnowScore = 36 + 6,8 + 15 = 57,8, avrundet til 58')).toBeVisible()
+  // Story 2.3: the sources point to Varsom, and the quality panel describes the demo data set.
+  await expect(page.getByRole('link', { name: 'Varsom.no' })).toHaveAttribute('href', 'https://www.varsom.no/')
+  await expect(page.locator('.datakvalitet')).toContainText('Du ser demodata: innspilte svar fra MET og NVE')
+  await expect(page.locator('.datakvalitet')).toContainText('24 steder')
   const forsteRad = page.locator('section[aria-labelledby="endringslogg"] tbody tr').first()
   await expect(forsteRad.locator('th')).toHaveText('1.0')
   await expect(forsteRad).toContainText('endret fra 6 til 16')

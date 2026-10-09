@@ -1,8 +1,11 @@
 import type { Sted } from '../../shared/contracts/published'
+import Datakilder from '../components/Datakilder'
+import Datakvalitet from '../components/Datakvalitet'
 import ForklaringIllustrasjon from '../components/ForklaringIllustrasjon'
 import Regneeksempel from '../components/Regneeksempel'
 import ScoreBadge from '../components/ScoreBadge'
 import { medEnhet, tall } from '../lib/format'
+import type { StederResult } from '../hooks/useSteder'
 import { TIERS } from '../lib/scoreTier'
 import { SNOWSCORE, SNOWSCORE_VERSION, WINDOW_HOURS } from '../lib/snowscore'
 
@@ -53,7 +56,8 @@ function Formel({ children }: { children: string }) {
   return <p className="formel">{children}</p>
 }
 
-export default function SlikBeregnerViSnowScore() {
+/** `result` is the shared useSteder() result; only the quality panel reads it, so nothing else waits for data. */
+export default function SlikBeregnerViSnowScore({ result }: { result: StederResult | null }) {
   const maksSum = maxA + maxB + maxC
   const kaldest = noSnowAtOrAboveC - coldRangeC
   const minP = medEnhet(minPrecipitationMm, 'mm')
@@ -153,6 +157,10 @@ export default function SlikBeregnerViSnowScore() {
       </section>
 
       <Regneeksempel />
+
+      <Datakilder />
+
+      <Datakvalitet result={result} />
 
       <section aria-labelledby="endringslogg">
         <h2 id="endringslogg">Endringslogg</h2>

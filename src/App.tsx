@@ -9,8 +9,8 @@ import Utforsk, { INGEN_FERSKE } from './pages/Utforsk'
 
 function Innhold({ result, route }: { result: StederResult | null; route: Route }) {
   if (route.name === 'ikke-funnet') return <IkkeFunnet melding="Fant ikke siden" />
-  // The explanation needs no data, so it shows at once, also while loading and when loading failed.
-  if (route.name === 'forklaring') return <SlikBeregnerViSnowScore />
+  // The explanation shows at once, also while loading and when loading failed; only its quality panel uses the data.
+  if (route.name === 'forklaring') return <SlikBeregnerViSnowScore result={result} />
   if (result === null) {
     // On Utforsk the skeleton takes the map's or the list's shape, so the layout does not jump when data arrives.
     const shape = route.name === 'utforsk' ? ` ${route.visning}-skeleton` : ''

@@ -13,12 +13,12 @@ function imgLabels(html: string): string[] {
 }
 
 describe('SlikBeregnerViSnowScore', () => {
-  const html = renderToStaticMarkup(<SlikBeregnerViSnowScore />)
+  const html = renderToStaticMarkup(<SlikBeregnerViSnowScore result={null} />)
 
-  it('has one h1 and the four sections in order', () => {
+  it('has one h1 and the six sections in order', () => {
     expect(html.match(/<h1/g)).toHaveLength(1)
     const sections = [...html.matchAll(/<h2[^>]*>([^<]+)<\/h2>/g)].map((match) => match[1])
-    expect(sections).toEqual(['Kort fortalt', 'Steg for steg', 'Regneeksempel', 'Endringslogg'])
+    expect(sections).toEqual(['Kort fortalt', 'Steg for steg', 'Regneeksempel', 'Datakilder og begrensninger', 'Datakvalitet', 'Endringslogg'])
   })
 
   it('shows the formula with the current parameters and the 24-hour window', () => {
@@ -94,9 +94,15 @@ describe('SlikBeregnerViSnowScore follows the constants', () => {
       WINDOW_HOURS: 30,
     }))
     const { default: Side } = await import('./SlikBeregnerViSnowScore')
-    const html = renderToStaticMarkup(<Side />)
+    const html = renderToStaticMarkup(<Side result={null} />)
     const [forklaring, logg] = html.split('<section aria-labelledby="endringslogg">')
-    const text = tekst(forklaring)
+    // The sources section names NVE's own fixed period («nysnø siste døgn»), which is not the SnowScore window.
+    const [formel, kilder = ''] = forklaring.split('<section aria-labelledby="datakilder">')
+    const kvalitet = kilder.indexOf('<section aria-labelledby="datakvalitet">')
+    // Fail loudly if a section moved, rather than silently checking less text.
+    expect(kilder).not.toBe('')
+    expect(kvalitet).toBeGreaterThan(0)
+    const text = tekst(formel + kilder.slice(kvalitet))
 
     for (const ny of [
       'et tall fra 0 til 101',
