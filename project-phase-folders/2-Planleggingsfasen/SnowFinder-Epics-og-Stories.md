@@ -351,10 +351,11 @@ So that jeg alltid ser et oppdatert, kvalitetssikret tall på kartet og stedssid
 **Given** validerte data i `RunContext` fra Story 1.3 og modulen fra Story 1.4
 **When** `score.ts` beregner SnowScore for hvert sted via `shared/snowscore.ts`
 **Then** skriver `publish.ts` hele datafilen (`public/data/latest.json`) til et midlertidig navn og
-bytter den inn atomisk, men bare hvis minst 95 % av stedene fikk gyldige data — ellers står
+bytter den inn atomisk, men bare hvis minst 95 % av stedene fikk poengsum — ellers står
 forrige fil urørt
 **And** et sted med mer enn 10 % manglende timer får «ufullstendige data» i stedet for en
-tallverdi, og teller som gyldig mot terskelen
+tallverdi, og teller ikke som gyldig mot terskelen *(endret 2026-10-22, FR-5; før talte det som
+gyldig)*
 **And** et sted som feilet i en kjøring som likevel publiseres, vises som «ufullstendige data»;
 fila bærer aldri verdier fra en tidligere kjøring
 **And** fila valideres mot `PublishedData` før den skrives, har `mode: "live"`, og hver

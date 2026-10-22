@@ -182,10 +182,26 @@ describe('runLive', () => {
     })
 
     expect(report).toMatchObject({ publisert: false, andelGyldige: 0.75, avvistePerKilde: { met: 1, nve: 0 } })
-    expect(report.ikkePublisertFordi).toBe('Bare 75.0 % av stedene har gyldige data; minst 95 % kreves')
+    expect(report.ikkePublisertFordi).toBe('Bare 75.0 % av stedene har poengsum; minst 95 % kreves')
     expect(await readFile(outPath, 'utf8')).toBe('previous run')
     expect((await readdir(dir)).sort()).toEqual(['catalog.json', 'latest.json'])
     expect(lines.join('\n')).toContain('"andelGyldige": 0.75')
+  })
+
+  it('leaves the previous file untouched when MET answers validly but every forecast is outdated', async () => {
+    const catalogPath = await writeCatalog(ids(4))
+    const outPath = join(dir, 'latest.json')
+    await writeFile(outPath, 'previous run')
+    // A day old: the forecast ends before the window starts, so every place is incomplete.
+    const outdated: FetchFn = async (url, init) =>
+      url.startsWith('https://api.met.no/')
+        ? new Response(JSON.stringify(metResponse(snowyDay(), undefined, '2026-10-06T20:00:00Z')))
+        : valid(url, init)
+    const report = await runLive({ catalogPath, outPath, fetchFn: outdated, clock: clock(), log: silent })
+
+    expect(report).toMatchObject({ publisert: false, andelGyldige: 1, antallUfullstendige: 4 })
+    expect(report.ikkePublisertFordi).toBe('Bare 0.0 % av stedene har poengsum; minst 95 % kreves')
+    expect(await readFile(outPath, 'utf8')).toBe('previous run')
   })
 
   it('records NVE «no cell» per place without stopping publication, and logs each reason', async () => {

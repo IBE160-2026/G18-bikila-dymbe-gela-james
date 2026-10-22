@@ -95,13 +95,16 @@ flowchart LR
     always calls `publish.ts`'s run-report step last, in a `finally`, so a failed run still
     records why (AD-11).
   - **Atomic publish.** `publish.ts` writes the new data file to a temporary name and renames it
-    into place, and only when at least 95 % of locations are valid. Otherwise the previous file
+    into place, and only when at least 95 % of locations have a score. Otherwise the previous file
     stays untouched.
   - **One run at a time.** The scheduled job uses a GitHub Actions `concurrency` group without
     cancellation.
-  - **Threshold and partial failures.** The 95 % threshold counts only rejected or missing
-    MET responses. NVE is supplementary (not part of SnowScore): an NVE failure leaves
-    `nveNysnoSisteDognMm` null and is recorded in the report without blocking publication (FR-6a, v4); locations with incomplete data count as valid. In a published run, a location
+  - **Threshold and partial failures.** The 95 % threshold counts locations with a score. A
+    rejected or missing MET response, and incomplete data, both leave a location without one
+    (changed 2026-10-22: incomplete locations used to count as valid, so a run of outdated
+    forecasts could replace good data). The report's `andelGyldige` still counts valid MET
+    responses. NVE is supplementary (not part of SnowScore): an NVE failure leaves
+    `nveNysnoSisteDognMm` null and is recorded in the report without blocking publication (FR-6a, v4). In a published run, a location
     whose response failed appears as incomplete data without a score. The file never carries
     values from an earlier run.
   - **Simple retries are *Should have* (FR-6b).** v1 makes one attempt per location with capped

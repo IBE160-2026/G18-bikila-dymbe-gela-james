@@ -43,7 +43,7 @@ export const RunReport = z.strictObject({
   start: isoUtc,
   varighetMs: z.number().int().min(0),
   antallSteder: z.number().int().min(0),
-  /** Share of places whose MET response was present and valid; incomplete places count as valid. */
+  /** Share of places whose MET response was present and valid; incomplete places are included. */
   andelGyldige: share,
   avvistePerKilde: z.strictObject({ met: z.number().int().min(0), nve: z.number().int().min(0) }),
   antallUfullstendige: z.number().int().min(0),

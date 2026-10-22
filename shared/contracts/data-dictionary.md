@@ -102,7 +102,7 @@ newSnowMm, precipitationMm, meanTemperatureC }` eller `{ kind: "incomplete", mis
 | `start` | ISO 8601 UTC | | Når kjøringen startet. I demo lik `referenceTime`. |
 | `varighetMs` | ms | heltall ≥ 0 | 0 i demo. |
 | `antallSteder` | – | heltall ≥ 0 | Steder i katalogen. |
-| `andelGyldige` | andel | 0–1 | Steder med gyldig MET-svar. Ufullstendige steder teller som gyldige; NVE teller ikke, fordi SnowScore bare bygger på MET. Under 0,95 publiseres ingenting. |
+| `andelGyldige` | andel | 0–1 | Steder med gyldig MET-svar, også de med ufullstendige data. NVE teller ikke, fordi SnowScore bare bygger på MET. Terskelen bruker ikke dette tallet: kjøringen publiseres bare når minst 95 % av stedene har poengsum (FR-5). |
 | `avvistePerKilde` | – | `{ met, nve }` | Antall avviste eller manglende svar per kilde. |
 | `antallUfullstendige` | – | heltall ≥ 0 | Steder med gyldig MET-svar der mer enn 10 % av timene mangler (`snowScore.kind = "incomplete"`). Steder med avvist eller manglende MET-svar vises også som ufullstendige i datafila, men telles i `avvistePerKilde`, ikke her. |
 | `publisert` | – | boolsk | |

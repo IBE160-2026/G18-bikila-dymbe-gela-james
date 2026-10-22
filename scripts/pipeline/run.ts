@@ -125,7 +125,7 @@ export async function runLive({
 }
 
 async function main(argv: string[]): Promise<void> {
-  // A run that did not publish (crash, or under MIN_VALID_SHARE) fails, so the hourly job turns red.
+  // A run that did not publish (crash, or under MIN_SCORED_SHARE) fails, so the hourly job turns red.
   const report = argv.includes('--demo') ? await runDemo() : await runLive()
   if (!report.publisert) process.exitCode = 1
 }
