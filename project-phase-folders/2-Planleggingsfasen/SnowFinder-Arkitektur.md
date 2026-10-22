@@ -109,6 +109,8 @@ flowchart LR
     values from an earlier run.
   - **Simple retries are *Should have* (FR-6b).** v1 makes one attempt per location with capped
     concurrency. There is no circuit breaker, because there is no state between runs.
+  - **Call rate.** `fetch.ts` starts at most one call per 100 ms per source (10/s), on top of the
+    concurrency cap. MET's terms require an agreement above 20 requests/s per application (FR-2).
   - When the Should-have best ski window (FR-17) is built, `score.ts` writes an explicit
     `skivinduUtenDagslys` flag. The app reads it verbatim and never re-derives mørketid.
 

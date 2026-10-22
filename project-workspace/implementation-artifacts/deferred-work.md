@@ -63,3 +63,6 @@
 - source_spec: `spec-2-3-datakilder-og-begrensninger.md`
   summary: La datakvalitetspanelet på forklaringssiden også si hvor mange steder som er merket «Utdatert» eller fjernet fordi dataene er for gamle, når banneret for gamle data kommer i Story 1.6.
   evidence: Story 2.3-gjennomgang (Blind Hunter). Etter nedetid kan rapporten si «300 av 300 gyldige» mens kartet viser færre steder, fordi alder måles i appen og ikke i kjøringen.
+- source_spec: `spec-fix-met-hastighet.md`
+  summary: Demotesten «rejects broken fixtures into the report and does not publish below 95 %» i `scripts/pipeline/run.test.ts` går av og til over Vitests grense på 5 s når hele suiten kjører lokalt på Windows. Gjør den rask (for eksempel uten `cp` av hele fixture-mappa) eller gi den en egen tidsgrense.
+  evidence: 2026-10-22 feilet den to av seks ganger på `main` uten endringer (5,2 s og 5,9 s), og like ofte på grenen. Alene bruker den under 0,4 s. Den kopierer fixture-mappa til en midlertidig mappe, så filsystemet (for eksempel virusskanning) er en sannsynlig årsak. Ikke sett i CI.

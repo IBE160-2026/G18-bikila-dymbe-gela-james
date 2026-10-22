@@ -10,6 +10,8 @@ import { catalogEntry, metResponse, nveResponse, REFERENCE_TIME, snowyDay } from
 
 const HOUR_MS = 3_600_000
 const silent = () => {}
+/** The call rate is tested in fetch.test.ts; here it would only make the runs slow. */
+const noRateLimit = { minIntervalMs: 0 }
 
 let dir: string
 
@@ -116,7 +118,7 @@ describe('runLive', () => {
     const catalogPath = await writeCatalog(ids(4))
     const outPath = join(dir, 'latest.json')
     const lines: string[] = []
-    const report = await runLive({ catalogPath, outPath, fetchFn: valid, clock: clock(), log: (l) => lines.push(l) })
+    const report = await runLive({ ...noRateLimit, catalogPath, outPath, fetchFn: valid, clock: clock(), log: (l) => lines.push(l) })
 
     expect(report).toMatchObject({
       mode: 'live',
@@ -149,7 +151,7 @@ describe('runLive', () => {
     const catalogPath = await writeCatalog(ids(20))
     const outPath = join(dir, 'latest.json')
     await writeFile(outPath, 'previous run')
-    const report = await runLive({ catalogPath, outPath, fetchFn: metFailsFor(['sted-3']), clock: clock(), log: silent })
+    const report = await runLive({ ...noRateLimit, catalogPath, outPath, fetchFn: metFailsFor(['sted-3']), clock: clock(), log: silent })
 
     expect(report).toMatchObject({ publisert: true, andelGyldige: 0.95, avvistePerKilde: { met: 1, nve: 0 } })
     expect(report.avviste).toEqual([{ stedId: 'sted-3', kilde: 'met', arsak: 'HTTP 503' }])
@@ -174,6 +176,7 @@ describe('runLive', () => {
     await writeFile(outPath, 'previous run')
     const lines: string[] = []
     const report = await runLive({
+      ...noRateLimit,
       catalogPath,
       outPath,
       fetchFn: metFailsFor(['sted-1']),
@@ -197,7 +200,7 @@ describe('runLive', () => {
       url.startsWith('https://api.met.no/')
         ? new Response(JSON.stringify(metResponse(snowyDay(), undefined, '2026-10-06T20:00:00Z')))
         : valid(url, init)
-    const report = await runLive({ catalogPath, outPath, fetchFn: outdated, clock: clock(), log: silent })
+    const report = await runLive({ ...noRateLimit, catalogPath, outPath, fetchFn: outdated, clock: clock(), log: silent })
 
     expect(report).toMatchObject({ publisert: false, andelGyldige: 1, antallUfullstendige: 4 })
     expect(report.ikkePublisertFordi).toBe('Bare 0.0 % av stedene har poengsum; minst 95 % kreves')
@@ -210,7 +213,7 @@ describe('runLive', () => {
     const fetchFn: FetchFn = async (url, init) =>
       url.startsWith('https://gts.nve.no/') ? new Response('{"Error":"No cell exists"}', { status: 400 }) : valid(url, init)
     const lines: string[] = []
-    const report = await runLive({ catalogPath, outPath, fetchFn, clock: clock(), log: (l) => lines.push(l) })
+    const report = await runLive({ ...noRateLimit, catalogPath, outPath, fetchFn, clock: clock(), log: (l) => lines.push(l) })
 
     expect(report).toMatchObject({ publisert: true, andelGyldige: 1, avvistePerKilde: { met: 0, nve: 4 } })
     expect(lines).toContain('  Avvist NVE for sted-0: HTTP 400: {"Error":"No cell exists"}')
@@ -226,7 +229,7 @@ describe('runLive', () => {
   it('still writes a report, and no file, when the catalog cannot be read', async () => {
     const lines: string[] = []
     const outPath = join(dir, 'latest.json')
-    const report = await runLive({ catalogPath: join(dir, 'missing.json'), outPath, fetchFn: valid, log: (l) => lines.push(l) })
+    const report = await runLive({ ...noRateLimit, catalogPath: join(dir, 'missing.json'), outPath, fetchFn: valid, log: (l) => lines.push(l) })
     expect(report.publisert).toBe(false)
     expect(report.ikkePublisertFordi).toContain('Kjøringen feilet')
     expect(lines.length).toBeGreaterThan(0)

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { wgs84ToUtm33 } from '../../shared/geo'
-import { fetchAll, metUrl, nveUrl, USER_AGENT, type FetchFn } from './fetch'
+import { DEFAULT_MIN_INTERVAL_MS, fetchAll, metUrl, nveUrl, startGate, USER_AGENT, type FetchFn } from './fetch'
 import { score } from './score'
 import { catalogEntry, metResponse, nveResponse, rawContext, REFERENCE_TIME, snowyDay } from './testing'
 import { validate } from './validate'
@@ -51,7 +51,7 @@ describe('URL builders', () => {
 describe('fetchAll', () => {
   it('fetches one MET and one NVE response per place, with an identifying User-Agent and a timeout', async () => {
     const { fetchFn, calls } = fakeFetch()
-    const ctx = await fetchAll(contextFor(['a', 'b', 'c']), { fetchFn })
+    const ctx = await fetchAll(contextFor(['a', 'b', 'c']), { fetchFn, minIntervalMs: 0 })
 
     expect(ctx.raw.map((r) => r.stedId)).toEqual(['a', 'b', 'c'])
     expect(ctx.raw.every((r) => r.met !== undefined && r.nve !== undefined && r.feil === undefined)).toBe(true)
@@ -73,7 +73,7 @@ describe('fetchAll', () => {
       if (url.includes(`lat=${catalogEntry('b').lat}&`)) return new Response('<html>Bad gateway</html>', { status: 502 })
       return new Response('', { status: 429 })
     })
-    const ctx = await fetchAll(contextFor(['a', 'b', 'c']), { fetchFn })
+    const ctx = await fetchAll(contextFor(['a', 'b', 'c']), { fetchFn, minIntervalMs: 0 })
 
     expect(ctx.raw.map((r) => r.feil)).toEqual([
       { met: 'Nettverksfeil: fetch failed: ECONNRESET' },
@@ -96,7 +96,7 @@ describe('fetchAll', () => {
   it('reports NVE «no cell» (HTTP 400) for a place at sea, and the place keeps its MET data', async () => {
     const noCell = { Error: 'Tema: fsw. No cell exists for coordinates 473070, 7463031.' }
     const { fetchFn } = fakeFetch((url) => (isMet(url) ? json(metResponse(snowyDay())) : json(noCell, 400)))
-    const ctx = score(validate(await fetchAll(contextFor(['kyst']), { fetchFn })))
+    const ctx = score(validate(await fetchAll(contextFor(['kyst']), { fetchFn, minIntervalMs: 0 })))
 
     expect(ctx.avviste).toEqual([{ stedId: 'kyst', kilde: 'nve', arsak: `HTTP 400: ${JSON.stringify(noCell)}` }])
     expect(ctx.steder[0].nveNysnoSisteDognMm).toBeNull()
@@ -107,21 +107,21 @@ describe('fetchAll', () => {
     // Like the real fetch, the fake only stops when the signal aborts.
     const hang: FetchFn = (_url, init) =>
       new Promise((_resolve, reject) => init.signal?.addEventListener('abort', () => reject(init.signal?.reason)))
-    const ctx = await fetchAll(contextFor(['a']), { fetchFn: hang, timeoutMs: 10 })
+    const ctx = await fetchAll(contextFor(['a']), { fetchFn: hang, minIntervalMs: 0, timeoutMs: 10 })
     expect(ctx.raw[0].feil).toEqual({ met: 'Tidsavbrudd etter 0.01 s', nve: 'Tidsavbrudd etter 0.01 s' })
     expect(validate(ctx).avviste.map((a) => a.kilde)).toEqual(['met', 'nve'])
   })
 
   it('treats a 200 response that is not JSON as a failed call', async () => {
     const { fetchFn } = fakeFetch((url) => (isMet(url) ? new Response('<html>Maintenance</html>') : json(nveResponse())))
-    const ctx = await fetchAll(contextFor(['a']), { fetchFn })
+    const ctx = await fetchAll(contextFor(['a']), { fetchFn, minIntervalMs: 0 })
     expect(ctx.raw[0]).toMatchObject({ met: undefined, feil: { met: 'Svaret er ikke JSON' } })
   })
 
   it('passes invalid JSON on unchanged, so validate.ts rejects it and nothing is repaired', async () => {
     const broken = metResponse([{ precipitation: -1 }])
     const { fetchFn } = fakeFetch((url) => (isMet(url) ? json(broken) : json(nveResponse())))
-    const ctx = await fetchAll(contextFor(['a']), { fetchFn })
+    const ctx = await fetchAll(contextFor(['a']), { fetchFn, minIntervalMs: 0 })
     expect(ctx.raw[0].met).toEqual(broken)
     expect(validate(ctx).avviste).toEqual([expect.objectContaining({ stedId: 'a', kilde: 'met' })])
   })
@@ -138,10 +138,90 @@ describe('fetchAll', () => {
       return defaultAnswer(url)
     })
     const ids = Array.from({ length: 300 }, (_, i) => `sted-${i}`)
-    const ctx = await fetchAll(contextFor(ids), { fetchFn })
+    const ctx = await fetchAll(contextFor(ids), { fetchFn, minIntervalMs: 0 })
 
     expect(calls).toHaveLength(600)
     expect(highest).toEqual({ met: 5, nve: 5 })
     expect(ctx.raw.map((r) => r.stedId)).toEqual(ids)
+  })
+})
+
+describe('startGate', () => {
+  /** A fake clock whose sleep moves time forward by `ms`; the first sleep can end `early` ms too soon. */
+  function fakeTime(early = 0) {
+    const time = { now: 1000, slept: [] as number[] }
+    const sleep = async (ms: number) => {
+      time.slept.push(ms)
+      time.now += time.slept.length === 1 ? ms - early : ms
+    }
+    return { time, sleep, now: () => time.now }
+  }
+
+  it('spaces starts at least the interval apart, also when callers arrive together', async () => {
+    const { time, sleep, now } = fakeTime()
+    const gate = startGate(100, sleep, now)
+    const starts: number[] = []
+    const call = async () => {
+      await gate()
+      starts.push(time.now)
+    }
+
+    await Promise.all([call(), call(), call()])
+    expect(starts).toEqual([1000, 1100, 1200])
+
+    // A caller after a quiet spell starts at once.
+    time.now = 5000
+    await call()
+    expect(time.slept).toEqual([100, 100])
+  })
+
+  it('waits again when a timer fires early', async () => {
+    const { time, sleep, now } = fakeTime(5)
+    const gate = startGate(100, sleep, now)
+    await gate()
+    await gate()
+    expect(time.now).toBeGreaterThanOrEqual(1100)
+    expect(time.slept).toEqual([100, 5])
+  })
+
+  it('fails only the caller whose wait failed, and lets the next one through', async () => {
+    const { time, now } = fakeTime()
+    const gate = startGate(100, async (ms) => {
+      time.slept.push(ms)
+      if (time.slept.length === 1) throw new Error('timer broke')
+      time.now += ms
+    }, now)
+    await gate()
+    await expect(gate()).rejects.toThrow('timer broke')
+    await expect(gate()).resolves.toBeUndefined()
+  })
+})
+
+describe('fetchAll call rate', () => {
+  it('limits each source to 10 calls per second by default, half the 20 MET allows without an agreement', async () => {
+    const metStarts: number[] = []
+    const { fetchFn } = fakeFetch((url) => {
+      if (isMet(url)) metStarts.push(performance.now())
+      return defaultAnswer(url)
+    })
+    await fetchAll(contextFor(['a', 'b', 'c']), { fetchFn })
+
+    expect(DEFAULT_MIN_INTERVAL_MS).toBe(100)
+    expect(metStarts[2] - metStarts[0]).toBeGreaterThanOrEqual(2 * DEFAULT_MIN_INTERVAL_MS - 1)
+  })
+
+  it('starts calls to each source at least the interval apart, even with free concurrency slots', async () => {
+    const starts = { met: [] as number[], nve: [] as number[] }
+    const { fetchFn } = fakeFetch((url) => {
+      starts[isMet(url) ? 'met' : 'nve'].push(performance.now())
+      return defaultAnswer(url)
+    })
+    await fetchAll(contextFor(['a', 'b', 'c', 'd', 'e', 'f']), { fetchFn, minIntervalMs: 20 })
+
+    for (const times of [starts.met, starts.nve]) {
+      expect(times).toHaveLength(6)
+      // The fake fetch runs a moment after the gate opens, so allow a millisecond of slack.
+      for (let i = 1; i < times.length; i++) expect(times[i] - times[i - 1]).toBeGreaterThanOrEqual(19)
+    }
   })
 })
