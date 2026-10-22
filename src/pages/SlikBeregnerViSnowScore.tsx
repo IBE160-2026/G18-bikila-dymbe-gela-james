@@ -2,6 +2,7 @@ import type { Sted } from '../../shared/contracts/published'
 import Datakilder from '../components/Datakilder'
 import Datakvalitet from '../components/Datakvalitet'
 import ForklaringIllustrasjon from '../components/ForklaringIllustrasjon'
+import Formel from '../components/Formel'
 import Kalkulator from '../components/Kalkulator'
 import Regneeksempel from '../components/Regneeksempel'
 import ScoreBadge from '../components/ScoreBadge'
@@ -54,10 +55,6 @@ function eksempel(score: number): Sted['snowScore'] {
 function trinnSpenn(index: number): string {
   const ovre = index === 0 ? maxA + maxB + maxC : TIERS[index - 1].min - 1
   return `${TIERS[index].min} til ${ovre}`
-}
-
-function Formel({ children }: { children: string }) {
-  return <p className="formel">{children}</p>
 }
 
 /** `result` is the shared useSteder() result; only the quality panel reads it, so nothing else waits for data. */

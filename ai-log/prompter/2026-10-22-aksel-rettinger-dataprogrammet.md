@@ -39,3 +39,4 @@
 
 **Hva vi gjorde med det:**
 - **A8:** «SnowFinder» er markert som gjeldende side bare på kartet, ikke på listen. Menyen ☰ lukkes når brukeren går fra «Fant ikke siden» til kartet. Spec: [`spec-a8-toppnav-avvik.md`](../../project-workspace/implementation-artifacts/spec-a8-toppnav-avvik.md).
+- **A7:** `Formel` er én komponent, kortstilen ligger i en delt `.kort`, og tallisten heter `.tall-liste`. `App.css` deles ikke opp nå, fordi rekkefølgen styrer kaskaden. Beregnet stil er sammenlignet før og etter og er lik. Spec: [`spec-a7-delt-kortstil.md`](../../project-workspace/implementation-artifacts/spec-a7-delt-kortstil.md).

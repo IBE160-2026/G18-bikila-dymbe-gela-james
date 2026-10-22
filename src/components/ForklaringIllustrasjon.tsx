@@ -112,7 +112,7 @@ export default function ForklaringIllustrasjon({ delpoeng }: { delpoeng: Delpoen
   const py = (verdi: number) => BUNN - ((verdi - y.min) / (y.max - y.min)) * (BUNN - TOPP)
 
   return (
-    <figure className="forklaring-figur">
+    <figure className="forklaring-figur kort">
       <figcaption>{tittel}</figcaption>
       <svg
         viewBox={`0 0 ${BREDDE} ${HOYDE}`}

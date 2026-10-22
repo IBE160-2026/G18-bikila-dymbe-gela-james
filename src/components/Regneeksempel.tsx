@@ -1,5 +1,6 @@
 import { tall } from '../lib/format'
 import { SNOWSCORE, WINDOW_HOURS, computeSnowScore, snowFraction } from '../lib/snowscore'
+import Formel from './Formel'
 
 // Story 2.2 (FR-9): the brief's worked example, from hourly values to the final score. Every number is
 // computed by the shared module, so the example cannot drift from the formula (AD-6).
@@ -35,10 +36,6 @@ export function snoandelSetning(andeler: readonly number[], allSnowAtOrBelowC: n
   return andeler.every((andel) => andel === 1)
     ? `Alle timene er ${tall(allSnowAtOrBelowC)} °C eller kaldere, så f(T) er 1 hver time, og all nedbøren blir nysnø.`
     : `Noen av timene er varmere enn ${tall(allSnowAtOrBelowC)} °C, så der blir bare en del av nedbøren nysnø.`
-}
-
-function Formel({ children }: { children: string }) {
-  return <p className="formel">{children}</p>
 }
 
 /** Each hour with its snow fraction f(T) and the new snow it adds, p × f(T). */

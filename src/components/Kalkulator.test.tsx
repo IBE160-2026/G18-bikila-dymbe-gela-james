@@ -153,4 +153,9 @@ describe('Kalkulator', () => {
     expect(html.match(/aria-live/g)).toHaveLength(1)
     expect(html).toContain('<p class="kalkulator-sum" aria-live="polite">SnowScore: ')
   })
+
+  it('shows the result in the shared card with the shared number list', () => {
+    expect(html).toContain('class="kalkulator-resultat kort"')
+    expect(html).toContain('class="tall-liste"')
+  })
 })

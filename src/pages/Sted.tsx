@@ -9,7 +9,7 @@ type Props = { sted: StedData; utdatert: boolean }
 /** A definition list of label/value pairs; the div wrappers let CSS lay each pair out as one row. */
 function Tall({ rader }: { rader: [string, string][] }) {
   return (
-    <dl className="sted-tall">
+    <dl className="tall-liste">
       {rader.map(([navn, verdi]) => (
         <div key={navn}>
           <dt>{navn}</dt>
@@ -40,7 +40,7 @@ export default function Sted({ sted, utdatert }: Props) {
       <h1 className="sted-navn">{sted.navn}</h1>
       {utdatert && <p className="utdatert">{utdatertTekst(sted.kildeTidspunkt)}</p>}
       <div className="sted-kolonner">
-        <section className="sted-kort" aria-labelledby="sted-snowscore">
+        <section className="sted-kort kort" aria-labelledby="sted-snowscore">
           <h2 id="sted-snowscore">SnowScore</h2>
           <p className="sted-score">
             <ScoreBadge snowScore={snowScore} />
@@ -58,7 +58,7 @@ export default function Sted({ sted, utdatert }: Props) {
             Slik beregner vi SnowScore
           </Lenke>
         </section>
-        <section className="sted-kort" aria-labelledby="sted-grunnlag">
+        <section className="sted-kort kort" aria-labelledby="sted-grunnlag">
           <h2 id="sted-grunnlag">Grunnlag</h2>
           <Tall rader={grunnlag} />
           <p className="sted-kilde">

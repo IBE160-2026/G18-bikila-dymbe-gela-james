@@ -179,7 +179,7 @@ describe('AppView', () => {
     // The app's own result reaches the quality panel, in every state, with every line of its report.
     const linjer = kvalitetLinjer(result)
     expect(linjer.length).toBeGreaterThan(0)
-    expect(html).toContain(`<div class="datakvalitet" role="status">${linjer.map((linje) => `<p>${linje}</p>`).join('')}</div>`)
+    expect(html).toContain(`<div class="datakvalitet kort" role="status">${linjer.map((linje) => `<p>${linje}</p>`).join('')}</div>`)
     expect(html).toContain('<h1 class="forklaring-tittel">Slik beregner vi SnowScore</h1>')
     expect(html).toContain('Kort fortalt')
     expect(html).not.toContain('skeleton')
@@ -202,7 +202,7 @@ describe('AppView', () => {
 
   it.each(['gaustatoppen', 'trondheim'])('links the SnowScore card on the place page %s to the explanation', (id) => {
     const html = render(demoResult, { name: 'sted', id })
-    const kort = /<section class="sted-kort" aria-labelledby="sted-snowscore">(.*?)<\/section>/.exec(html)?.[1] ?? ''
+    const kort = /<section class="sted-kort kort" aria-labelledby="sted-snowscore">(.*?)<\/section>/.exec(html)?.[1] ?? ''
     expect(kort).toContain('<a href="/slik-beregner-vi-snowscore" class="forklaring-lenke">Slik beregner vi SnowScore</a>')
     expect(html).not.toContain('aria-current="page"')
   })
