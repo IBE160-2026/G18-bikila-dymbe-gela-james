@@ -29,7 +29,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 # - Retrospective appends its action items to action_items; the status view surfaces open ones
 generated: 09-27-2026 12:00
-last_updated: 10-09-2026 22:14
+last_updated: 10-22-2026 20:00
 project: G18-bikila-dymbe-gela-james
 project_key: NOKEY
 tracking_system: file-system
@@ -131,7 +131,7 @@ action_items:
     action: "A8 Rett aria-current for SnowFinder på listevisningen og menylukking
       fra Fant ikke siden"
     owner: "Gruppa"
-    status: open
+    status: done
     ref: "project-workspace/implementation-artifacts/epic-2-retro-2026-10-09.md"
   - id: "epic-2-retro-item-9-a9-prosess-ui-stories-med-interaksjon-a1"
     epic: 2
