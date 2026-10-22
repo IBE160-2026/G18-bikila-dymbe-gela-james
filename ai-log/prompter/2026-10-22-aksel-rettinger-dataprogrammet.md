@@ -31,3 +31,11 @@
 - **Retting 2:** Hver kilde får høyst 10 kall i sekundet (ett kall per 100 ms), halvparten av det MET tillater uten avtale. PRD (FR-2), arkitektur og README er oppdatert.
 - **Retting 3:** En NVE-verdi brukes bare når dagen den gjelder, er stemplet mindre enn 24 timer før kjøringen. Claude sjekket med ett ekte kall at NVE svarer for hele perioden, så regelen slår ikke til i vanlig drift. PRD (FR-6a) og datakatalogen er oppdatert.
 - **Ustabile tester lokalt:** En stoppet testkjøring etterlot en vitest-prosess i evig løkke, som Claude avsluttet. Maskinen var også tregere utover kvelden. Demotestene fikk en tidsgrense på 15 s, og tidstestene fra retting 2 sjekker nå det totale spennet i stedet for hvert enkelt kall.
+
+### 4
+> ok gå videre
+
+**Svar (kort):** Claude tok neste punkt i planen, tiltak A8 fra retrospektiven for Epic 2, i dispatch-ruten med alle tre gjennomgangslagene (som A9 krever for UI med tilgjengelighet).
+
+**Hva vi gjorde med det:**
+- **A8:** «SnowFinder» er markert som gjeldende side bare på kartet, ikke på listen. Menyen ☰ lukkes når brukeren går fra «Fant ikke siden» til kartet. Spec: [`spec-a8-toppnav-avvik.md`](../../project-workspace/implementation-artifacts/spec-a8-toppnav-avvik.md).

@@ -166,6 +166,8 @@ describe('AppView', () => {
     const html = render(null, { name: 'ikke-funnet' })
     expect(html).toContain('Fant ikke siden')
     expect(html).toContain('<a href="/">Gå til kartet</a>')
+    // «SnowFinder» links to the map, which is not this page.
+    expect(html).toContain('<a href="/" class="app-title">SnowFinder</a>')
   })
 
   it.each([
@@ -215,6 +217,11 @@ describe('AppView', () => {
   it('shows the list instead of the map for visning=liste, sorted by score', () => {
     const html = render(demoResult, LISTE)
     expect(html).toContain('<a href="/?visning=liste" class="visning-valg" aria-current="page">Liste</a>')
+    // «SnowFinder» opens the map, so on the list no nav link is the current page (R9, A8).
+    expect(html).toContain('<a href="/" class="app-title">SnowFinder</a>')
+    const toppnav = /<nav class="toppnav".*?<\/nav>/.exec(html)?.[0] ?? ''
+    expect(toppnav).toContain('SnowFinder')
+    expect(toppnav).not.toContain('aria-current')
     expect(html).not.toContain('class="kart"')
     expect(html).toContain('<label for="sortering">Sorter etter</label>')
     const rows = [...html.matchAll(/<a href="\/sted\/([^"]+)" class="liste-rad">/g)].map((match) => match[1])

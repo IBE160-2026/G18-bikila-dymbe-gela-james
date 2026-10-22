@@ -146,6 +146,21 @@ test.describe('at 375px', () => {
     await expect(knapp).toHaveAttribute('aria-expanded', 'false')
     await expect(nav(page).getByRole('link', { name: NAVN })).toBeHidden()
   })
+
+  test('«SnowFinder» from «Fant ikke siden» closes an open ☰ menu', async ({ page }) => {
+    // «Fant ikke siden» and the map share the root as their link address, so the menu keys on the route too.
+    await page.goto('/finnes-ikke')
+    await expect(page.getByText('Fant ikke siden')).toBeVisible()
+    const knapp = nav(page).getByRole('button', { name: 'Meny' })
+    await knapp.click()
+    await expect(knapp).toHaveAttribute('aria-expanded', 'true')
+
+    await nav(page).getByRole('link', { name: 'SnowFinder' }).click()
+    await expect(page).toHaveURL(/\/$/)
+    await expect(page.locator('.kart')).toBeVisible()
+    await expect(knapp).toHaveAttribute('aria-expanded', 'false')
+    await expect(nav(page).getByRole('link', { name: NAVN })).toBeHidden()
+  })
 })
 
 // CI runs on Linux, whose fonts are wider than Windows'; a page that fits locally overflowed there (PR #33–#38).
