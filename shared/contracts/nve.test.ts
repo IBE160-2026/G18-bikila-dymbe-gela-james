@@ -53,3 +53,25 @@ describe('NveGridTimeSeries', () => {
     expect(NveGridTimeSeries.safeParse(series({ Data: [0, -1, 5] })).success).toBe(false)
   })
 })
+
+describe('latestNveValue', () => {
+  // Days start 05.10, 06.10 and 07.10 at 06:00 UTC, with 0, 2 and 5 mm.
+  const parsed = NveGridTimeSeries.parse(series())
+
+  it.each([
+    ['2026-10-07T06:00:00Z', 5, 'the newest day, the moment it starts'],
+    ['2026-10-07T20:30:00Z', 5, 'the newest day, later the same day'],
+    ['2026-10-08T05:59:59Z', 5, 'the newest day, a second before it is 24 h old'],
+    ['2026-10-07T05:59:59Z', 2, 'the day before, while the newest has not started'],
+  ])('at %s gives %s mm (%s)', (reference, expected) => {
+    expect(latestNveValue(parsed, reference)).toBe(expected)
+  })
+
+  it.each([
+    ['2026-10-08T06:00:00Z', 'the newest day is exactly 24 h old'],
+    ['2026-10-10T20:30:00Z', 'the series ended three days ago'],
+    ['2026-10-05T05:59:59Z', 'the series starts after the reference time'],
+  ])('gives null at %s (%s)', (reference) => {
+    expect(latestNveValue(parsed, reference)).toBeNull()
+  })
+})

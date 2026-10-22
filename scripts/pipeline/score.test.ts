@@ -80,6 +80,13 @@ describe('score', () => {
     expect(missing.steder[0].nveNysnoSisteDognMm).toBeNull()
   })
 
+  it('leaves NVE empty when its newest day is 24 h old or more, and still scores the place', () => {
+    // Days 05.10 and 06.10 only: the newest is 38.5 h old at 07.10 20:30, so it is not «nysnø siste døgn».
+    const outdated = scored([{ id: 'a', met: metResponse(snowyDay()), nve: nveResponse([1, 9]) }])
+    expect(outdated.steder[0].nveNysnoSisteDognMm).toBeNull()
+    expect(outdated.steder[0].snowScore.kind).toBe('score')
+  })
+
   it('gives no wind, cloud or score when the valid forecast has no step inside the window', () => {
     // 24 hours ending at 18:00, before the window starts at 20:00.
     const met = metResponse(snowyDay(), undefined, '2026-10-06T18:00:00Z')

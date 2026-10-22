@@ -66,3 +66,4 @@
 - source_spec: `spec-fix-met-hastighet.md`
   summary: Demotesten «rejects broken fixtures into the report and does not publish below 95 %» i `scripts/pipeline/run.test.ts` går av og til over Vitests grense på 5 s når hele suiten kjører lokalt på Windows. Gjør den rask (for eksempel uten `cp` av hele fixture-mappa) eller gi den en egen tidsgrense.
   evidence: 2026-10-22 feilet den to av seks ganger på `main` uten endringer (5,2 s og 5,9 s), og like ofte på grenen. Alene bruker den under 0,4 s. Den kopierer fixture-mappa til en midlertidig mappe, så filsystemet (for eksempel virusskanning) er en sannsynlig årsak. Ikke sett i CI.
+  resolved: Delvis i `spec-fix-gamle-nve-verdier.md` (2026-10-22). Demotestene har en tidsgrense på 15 s. Andre tunge tester kan fortsatt gå over 5 s på en travel maskin.

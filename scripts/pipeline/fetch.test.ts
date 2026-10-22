@@ -197,6 +197,9 @@ describe('startGate', () => {
   })
 })
 
+// In real time. The exact spacing is tested with the fake clock above; here the fake fetch is called
+// a moment after the gate opens, and on a busy machine other work can delay one call by a few ms.
+// So these check the span, which without the gate is about 1 ms for all calls.
 describe('fetchAll call rate', () => {
   it('limits each source to 10 calls per second by default, half the 20 MET allows without an agreement', async () => {
     const metStarts: number[] = []
@@ -207,10 +210,11 @@ describe('fetchAll call rate', () => {
     await fetchAll(contextFor(['a', 'b', 'c']), { fetchFn })
 
     expect(DEFAULT_MIN_INTERVAL_MS).toBe(100)
-    expect(metStarts[2] - metStarts[0]).toBeGreaterThanOrEqual(2 * DEFAULT_MIN_INTERVAL_MS - 1)
+    // Two intervals: 200 ms, less the slack.
+    expect(metStarts[2] - metStarts[0]).toBeGreaterThanOrEqual(150)
   })
 
-  it('starts calls to each source at least the interval apart, even with free concurrency slots', async () => {
+  it('spreads the calls to each source out, even with free concurrency slots', async () => {
     const starts = { met: [] as number[], nve: [] as number[] }
     const { fetchFn } = fakeFetch((url) => {
       starts[isMet(url) ? 'met' : 'nve'].push(performance.now())
@@ -220,8 +224,8 @@ describe('fetchAll call rate', () => {
 
     for (const times of [starts.met, starts.nve]) {
       expect(times).toHaveLength(6)
-      // The fake fetch runs a moment after the gate opens, so allow a millisecond of slack.
-      for (let i = 1; i < times.length; i++) expect(times[i] - times[i - 1]).toBeGreaterThanOrEqual(19)
+      // Five intervals: 100 ms, less the slack.
+      expect(times[5] - times[0]).toBeGreaterThanOrEqual(75)
     }
   })
 })

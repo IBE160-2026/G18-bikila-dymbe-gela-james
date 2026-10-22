@@ -84,7 +84,7 @@ Katalogfeltene (`id`, `navn`, `lat`, `lon`, `hoyde`, `type`, `kilde`, se `catalo
 | `temperatur` | °C | tall eller `null` | T̄ over timene som finnes. `null` når resultatet er ufullstendig. |
 | `vindMaks` | m/s | ≥ 0 eller `null` | Høyeste `wind_speed` i vinduet. `null` når ingen time finnes. |
 | `skydekke` | % | 0–100 eller `null` | Snitt av `cloud_area_fraction` i vinduet. `null` når ingen time finnes. |
-| `nveNysnoSisteDognMm` | mm | ≥ 0 eller `null` | NVEs siste døgnverdi kl. 06 UTC på eller før `referenceTime`. `null` ved `NoDataValue` eller manglende/avvist svar. |
+| `nveNysnoSisteDognMm` | mm | ≥ 0 eller `null` | NVEs siste døgnverdi kl. 06 UTC på eller før `referenceTime`. `null` ved `NoDataValue`, manglende/avvist svar, eller når den nyeste dagsverdien er stemplet 24 timer eller mer før `referenceTime` (NVE henger etter, eller svaret slutter tidligere enn vi ba om), fordi verdien da ikke er «siste døgn». |
 
 **Vinduet** er de 24 timene fra og med timen som inneholder `referenceTime`. En time mangler når
 MET-serien ikke har steget, eller steget mangler `next_1_hours`. Mangler mer enn 10 % av timene, er

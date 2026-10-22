@@ -74,14 +74,19 @@ export const NveGridTimeSeries = z
 export type NveGridTimeSeries = z.infer<typeof NveGridTimeSeries>
 
 /**
- * NVE's latest daily value at or before `referenceTime`, in mm; null when there is none or the
- * day is NoDataValue.
+ * NVE's latest daily value at or before `referenceTime`, in mm; null when there is none, the day
+ * is NoDataValue, or the day is stamped 24 h or more before `referenceTime`. Days are 24 h apart, so
+ * an up-to-date series always has a newer day (NVE returns the whole period asked for); an older
+ * one, from a lagging or shortened response, would show days-old snow as
+ * «nysnø siste døgn».
  */
 export function latestNveValue(series: NveGridTimeSeries, referenceTime: string): number | null {
   const start = parseNveDate(series.StartDate)
   const reference = Date.parse(referenceTime)
   for (let i = series.Data.length - 1; i >= 0; i--) {
-    if (start + i * DAY_MS <= reference) {
+    const day = start + i * DAY_MS
+    if (day <= reference) {
+      if (reference - day >= DAY_MS) return null
       const value = series.Data[i]
       return value === series.NoDataValue ? null : value
     }

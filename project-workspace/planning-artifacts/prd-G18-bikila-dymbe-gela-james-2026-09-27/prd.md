@@ -233,6 +233,10 @@ Systemet håndterer at MET eller NVE ikke svarer, uten at brukeropplevelsen bryt
   95 %-terskelen. Når NVE feiler, publiseres batchen likevel: NVE-feltet er tomt («–» på
   stedssiden), og avvisningene står i kvalitetsrapporten. Å stoppe hele tjenesten fordi en
   tilleggsverdi mangler, ville gitt brukerne gamle poengsummer uten å gjøre dem bedre.
+- *(v4, 2026-10-22)* NVE-feltet er også tomt når NVEs nyeste dagsverdi er stemplet 24 timer eller
+  mer før kjøringen, fordi NVE henger etter eller svaret slutter tidligere enn vi ba om. I vanlig
+  drift skjer det ikke: NVE svarer for hele perioden. En flere dager gammel verdi skal ikke vises som
+  «nysnø siste døgn» (funnet i revisjonen 2026-10-09).
 - Feilen registreres i kjøringens kvalitetsrapport (NFR-DQ2).
 - *(v3)* Et sted som feiler i en kjøring som likevel publiseres (inntil 5 % av stedene), vises
   som «ufullstendige data» uten poengsum. Datafilen bærer aldri verdier fra en tidligere kjøring.
