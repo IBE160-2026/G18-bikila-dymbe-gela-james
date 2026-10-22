@@ -141,7 +141,7 @@ sjekker før de bestemmer seg for hvor de skal denne helgen.
 - **Datafil** *(v3)* — Den publiserte JSON-filen med alle steder, poengsummer og kvalitetsrapport,
   som appen leser. Erstatter databasetabellene fra v1/v2.
 - **Publisert batch** — Resultatet av én pipeline-kjøring, gjort synlig for klienten kun hvis
-  minst 95 % av stedene fikk gyldige data (arkitektur AD-2).
+  minst 95 % av stedene fikk gyldige data, det vil si en poengsum (FR-5, arkitektur AD-2).
 - **Ufullstendige data** — Tilstanden når mer enn 10 % av timesverdiene for et sted mangler; vises
   i stedet for en poengsum (ikke som SnowScore 0, som ville feiltolkes som «ingen snø»).
 - **Datakilde-nedetid** — Tilstanden når MET eller NVE ikke svarer; pipelinen fortsetter å
@@ -203,12 +203,16 @@ ha-funksjonen FR-17 bygges.
 
 #### FR-5: Atomisk publisering med kvalitetsterskel *(Må ha)*
 
-Systemet publiserer en ny batch bare når minst 95 % av stedene i katalogen fikk gyldige data i
-denne kjøringen; ellers beholdes forrige gyldige batch uendret.
+Systemet publiserer en ny batch bare når minst 95 % av stedene i katalogen fikk gyldige data (en
+poengsum) i denne kjøringen; ellers beholdes forrige gyldige batch uendret.
 
 **Konsekvenser (testbare):**
 - Simulert nedetid hos én datakilde som fører til at andelen gyldige steder faller under 95 %,
   medfører at klienten fortsatt viser forrige batch — ikke delvise eller tomme data.
+- *(v4, 2026-10-22)* «Gyldige data» betyr at stedet fikk en poengsum. Et sted med «ufullstendige
+  data» teller ikke som gyldig. Ellers kunne en kjøring der MET svarer, men prognosene ikke dekker
+  vinduet, erstatte gode data med et kart uten en eneste poengsum (funnet i revisjonen
+  2026-10-09).
 - Publisering er idempotent: samme input gir samme resultat ved gjentatt kjøring, og samtidige
   kjøringer blokkeres (arkitektur AD-2). *(v3)* Publiseringen skriver hele den nye datafilen
   først og bytter den inn i én operasjon, så appen aldri ser en halv fil. Den planlagte jobben
@@ -511,8 +515,9 @@ krever ikke nøkler eller nettverkskall til MET og NVE. Appen viser da et demoda
   (ca. 20–30 steder) er committet, så `npm run dev` virker uten at noe må kjøres først.
   - Demo har sin egen lille katalog, og fixtures dekker hvert sted i den. Da møter demokjøringen
     95 %-terskelen.
-  - Terskelen teller bare avviste eller manglende svar. Steder med «ufullstendige data» teller
-    som gyldige.
+  - *(endret v4, 2026-10-22)* Terskelen teller steder med poengsum (FR-5). Før talte steder med
+    «ufullstendige data» som gyldige. Demo har ett ufullstendig sted av 24, så 95,8 % har
+    poengsum, og demokjøringen møter fortsatt terskelen.
   - Demokjøringen er deterministisk: fast referansetidspunkt (det nyeste tidspunktet i
     fixtures), fast kjørings-ID og varighet 0. Ingen
   poengsum skrives for hånd.

@@ -1,12 +1,12 @@
-// AD-2 stage: publishes the data file atomically when enough places are valid, and owns the run
+// AD-2 stage: publishes the data file atomically when enough places have a score, and owns the run
 // report (AD-11) that run.ts writes in its `finally`.
 import { mkdir, rename, rm, writeFile } from 'node:fs/promises'
 import { dirname } from 'node:path'
 import { PublishedData, RunReport } from '../../shared/contracts/published'
 import type { RunContext } from '../../shared/contracts/run'
 
-/** AD-2: publish only when at least this share of places is valid. */
-export const MIN_VALID_SHARE = 0.95
+/** AD-2: publish only when at least this share of places has a score. */
+export const MIN_SCORED_SHARE = 0.95
 
 export interface ReportOutcome {
   /** When the run ended; duration is measured from ctx.start. */
@@ -15,11 +15,24 @@ export interface ReportOutcome {
   ikkePublisertFordi: string | null
 }
 
-/** A place is valid when its MET response was present and passed validation (AD-2). NVE is optional. */
+/**
+ * A place is valid when its MET response was present and passed validation (AD-2). NVE is optional.
+ * Reported as `andelGyldige`; the threshold uses scoredShare.
+ */
 export function validShare(ctx: RunContext): number {
   if (ctx.catalog.length === 0) return 0
   const valid = ctx.validated.filter((v) => v.met !== null).length
   return valid / ctx.catalog.length
+}
+
+/**
+ * The share the threshold checks (FR-5): places with a score. A place whose MET response
+ * failed, or whose forecast misses too many hours, has none. So a run where MET answers but the
+ * forecasts do not cover the window cannot replace good data with a map of incomplete places.
+ */
+export function scoredShare(ctx: RunContext): number {
+  if (ctx.catalog.length === 0) return 0
+  return ctx.steder.filter((s) => s.snowScore.kind === 'score').length / ctx.catalog.length
 }
 
 export function buildReport(ctx: RunContext, outcome: ReportOutcome): RunReport {
@@ -67,17 +80,17 @@ export interface PublishOptions {
 }
 
 /**
- * Publishes when the valid share is at least MIN_VALID_SHARE. Below it, nothing is written and the
- * previous file stays untouched; the returned context carries a report saying why.
+ * Publishes when the share of places with a score is at least MIN_SCORED_SHARE. Below it, nothing
+ * is written and the previous file stays untouched; the returned context carries a report saying why.
  */
 export async function publish(ctx: RunContext, { outPath, now }: PublishOptions): Promise<RunContext> {
-  const share = validShare(ctx)
-  if (share < MIN_VALID_SHARE) {
+  const share = scoredShare(ctx)
+  if (share < MIN_SCORED_SHARE) {
     const percent = (share * 100).toFixed(1)
     const report = buildReport(ctx, {
       end: now,
       publisert: false,
-      ikkePublisertFordi: `Bare ${percent} % av stedene har gyldige data; minst ${MIN_VALID_SHARE * 100} % kreves`,
+      ikkePublisertFordi: `Bare ${percent} % av stedene har poengsum; minst ${MIN_SCORED_SHARE * 100} % kreves`,
     })
     return { ...ctx, report }
   }

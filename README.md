@@ -94,7 +94,7 @@ npm run data   # hent MET- og NVE-data for alle stedene i data/catalog.json (kre
 ```
 
 Dataprogrammet henter værprognosen fra MET og nysnø siste døgn fra NVE for hvert sted, sjekker svarene
-og regner ut SnowScore. Når minst 95 % av stedene har gyldige data, skrives `public/data/latest.json`,
+og regner ut SnowScore. Når minst 95 % av stedene har fått en poengsum, skrives `public/data/latest.json`,
 og `npm run dev` viser da live-data uten demobanner. Fila blir liggende til neste vellykkede kjøring,
 så dataene kan være gamle; slett den for å gå tilbake til demodataene.
 Under 95 % står forrige fil urørt, og kommandoen avslutter med feilkode 1. Kvalitetsrapporten (hvor

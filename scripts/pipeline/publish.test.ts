@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { PublishedData } from '../../shared/contracts/published'
-import { MIN_VALID_SHARE, publish, writeRunReport } from './publish'
+import { MIN_SCORED_SHARE, publish, writeRunReport } from './publish'
 import { score } from './score'
 import { metResponse, nveResponse, rawContext, REFERENCE_TIME, snowyDay } from './testing'
 import { validate } from './validate'
@@ -49,9 +49,45 @@ describe('publish', () => {
     expect(data.report.avviste).toEqual([expect.objectContaining({ stedId: 'sted-00', kilde: 'met' })])
   })
 
-  it('counts incomplete places as valid towards the threshold', async () => {
-    const ctx = await publish(context(24, 0, 6), { outPath, now: REFERENCE_TIME })
-    expect(ctx.report).toMatchObject({ publisert: true, andelGyldige: 1, antallUfullstendige: 6 })
+  it('counts only places with a score towards the threshold: one incomplete of 24 still publishes', async () => {
+    // 23 of 24 = 95.8 % with a score, as in the demo data set.
+    const ctx = await publish(context(24, 0, 1), { outPath, now: REFERENCE_TIME })
+    expect(ctx.report).toMatchObject({ publisert: true, andelGyldige: 1, antallUfullstendige: 1 })
+  })
+
+  it('publishes at exactly 95 % with a score when the missing place is incomplete, not rejected', async () => {
+    // 19 of 20 = 95 %.
+    const ctx = await publish(context(20, 0, 1), { outPath, now: REFERENCE_TIME })
+    expect(ctx.report).toMatchObject({ publisert: true, antallUfullstendige: 1 })
+  })
+
+  it('adds rejected and incomplete places together: one of each in 24 does not publish', async () => {
+    // 22 of 24 = 91.7 % with a score, though 23 of 24 MET responses are valid.
+    const ctx = await publish(context(24, 1, 1), { outPath, now: REFERENCE_TIME })
+    expect(ctx.report).toMatchObject({ publisert: false, avvistePerKilde: { met: 1, nve: 0 }, antallUfullstendige: 1 })
+    expect(ctx.report?.andelGyldige).toBeCloseTo(23 / 24)
+    expect(ctx.report?.ikkePublisertFordi).toBe('Bare 91.7 % av stedene har poengsum; minst 95 % kreves')
+  })
+
+  it('does not publish when valid MET responses leave too many places incomplete', async () => {
+    await publish(context(24, 0), { outPath, now: REFERENCE_TIME })
+    const previous = await readFile(outPath, 'utf8')
+
+    // Every MET response is valid, but 2 of 24 miss hours: 22 of 24 = 91.7 % with a score.
+    const ctx = await publish(context(24, 0, 2), { outPath, now: '2026-10-07T21:30:00Z' })
+    expect(ctx.report).toMatchObject({ publisert: false, andelGyldige: 1, antallUfullstendige: 2 })
+    expect(ctx.report?.ikkePublisertFordi).toBe('Bare 91.7 % av stedene har poengsum; minst 95 % kreves')
+    expect(await readFile(outPath, 'utf8')).toBe(previous)
+  })
+
+  it('does not replace good data with a run where every place is incomplete', async () => {
+    await publish(context(24, 0), { outPath, now: REFERENCE_TIME })
+    const previous = await readFile(outPath, 'utf8')
+
+    const ctx = await publish(context(24, 0, 24), { outPath, now: '2026-10-07T21:30:00Z' })
+    expect(ctx.report).toMatchObject({ publisert: false, andelGyldige: 1, antallUfullstendige: 24 })
+    expect(ctx.report?.ikkePublisertFordi).toBe('Bare 0.0 % av stedene har poengsum; minst 95 % kreves')
+    expect(await readFile(outPath, 'utf8')).toBe(previous)
   })
 
   it('writes nothing and leaves the previous file untouched below 95 %', async () => {
@@ -61,7 +97,7 @@ describe('publish', () => {
     // 22 of 24 = 91.7 %.
     const ctx = await publish(context(24, 2), { outPath, now: '2026-10-07T21:30:00Z' })
     expect(ctx.report).toMatchObject({ publisert: false, avvistePerKilde: { met: 2, nve: 0 } })
-    expect(ctx.report?.ikkePublisertFordi).toContain(`${MIN_VALID_SHARE * 100} %`)
+    expect(ctx.report?.ikkePublisertFordi).toContain(`${MIN_SCORED_SHARE * 100} %`)
     expect(await readFile(outPath, 'utf8')).toBe(previous)
     expect(await readdir(join(dir, 'data'))).toEqual(['demo.json'])
   })
