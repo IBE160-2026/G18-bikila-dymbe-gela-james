@@ -23,7 +23,9 @@ afterEach(async () => {
   await rm(dir, { recursive: true, force: true })
 })
 
-describe('runDemo', () => {
+// The demo runs parse every fixture and copy the fixture folder; on a busy Windows machine with the
+// whole suite running in parallel they have taken over Vitest's default 5 s (deferred-work.md).
+describe('runDemo', { timeout: 15_000 }, () => {
   it('is deterministic: two runs give byte-identical files, equal to the committed demo.json', async () => {
     const first = join(dir, 'first.json')
     const second = join(dir, 'second.json')
@@ -56,6 +58,8 @@ describe('runDemo', () => {
     const stale = data.steder.filter((s) => Date.parse(data.referenceTime) - Date.parse(s.kildeTidspunkt ?? '') > 3 * HOUR_MS)
     expect(stale.length).toBeGreaterThanOrEqual(1)
     expect(stale.every((s) => s.snowScore.kind === 'score')).toBe(true)
+    // NVE values survive the 24 h rule, so a fixture recording that lags a day shows up here.
+    expect(data.steder.some((s) => (s.nveNysnoSisteDognMm ?? 0) > 0)).toBe(true)
   })
 
   it('rejects broken fixtures into the report and does not publish below 95 %, leaving the old file', async () => {

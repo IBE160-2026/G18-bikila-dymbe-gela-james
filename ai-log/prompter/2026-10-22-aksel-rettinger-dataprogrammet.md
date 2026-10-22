@@ -3,7 +3,7 @@
 **Hvem:** Aksel
 **Verktøy / agent:** Claude Code (Opus 5.5). `bmad-build` (oneshot) med Blind Hunter-gjennomgang i en underagent, én PR per feil.
 **Fase:** Gjennomføring
-**Resultat:** Retting 1: [`spec-fix-terskel-poengsum.md`](../../project-workspace/implementation-artifacts/spec-fix-terskel-poengsum.md) (PR #43). Retting 2: [`spec-fix-met-hastighet.md`](../../project-workspace/implementation-artifacts/spec-fix-met-hastighet.md).
+**Resultat:** Retting 1: [`spec-fix-terskel-poengsum.md`](../../project-workspace/implementation-artifacts/spec-fix-terskel-poengsum.md) (PR #43). Retting 2: [`spec-fix-met-hastighet.md`](../../project-workspace/implementation-artifacts/spec-fix-met-hastighet.md) (PR #44). Retting 3: [`spec-fix-gamle-nve-verdier.md`](../../project-workspace/implementation-artifacts/spec-fix-gamle-nve-verdier.md).
 
 ## Prompter
 
@@ -29,3 +29,5 @@
 **Hva vi gjorde med det:**
 - **Retting 1:** Terskelen teller steder med poengsum. Rapportfeltet `andelGyldige` beholder betydningen, så datakvalitetspanelet og demodataene er uendret. Brief, PRD, arkitektur, epics, datakatalog og README er oppdatert.
 - **Retting 2:** Hver kilde får høyst 10 kall i sekundet (ett kall per 100 ms), halvparten av det MET tillater uten avtale. PRD (FR-2), arkitektur og README er oppdatert.
+- **Retting 3:** En NVE-verdi brukes bare når dagen den gjelder, er stemplet mindre enn 24 timer før kjøringen. Claude sjekket med ett ekte kall at NVE svarer for hele perioden, så regelen slår ikke til i vanlig drift. PRD (FR-6a) og datakatalogen er oppdatert.
+- **Ustabile tester lokalt:** En stoppet testkjøring etterlot en vitest-prosess i evig løkke, som Claude avsluttet. Maskinen var også tregere utover kvelden. Demotestene fikk en tidsgrense på 15 s, og tidstestene fra retting 2 sjekker nå det totale spennet i stedet for hvert enkelt kall.
