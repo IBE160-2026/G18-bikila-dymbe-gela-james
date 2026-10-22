@@ -67,3 +67,9 @@
   summary: Demotesten «rejects broken fixtures into the report and does not publish below 95 %» i `scripts/pipeline/run.test.ts` går av og til over Vitests grense på 5 s når hele suiten kjører lokalt på Windows. Gjør den rask (for eksempel uten `cp` av hele fixture-mappa) eller gi den en egen tidsgrense.
   evidence: 2026-10-22 feilet den to av seks ganger på `main` uten endringer (5,2 s og 5,9 s), og like ofte på grenen. Alene bruker den under 0,4 s. Den kopierer fixture-mappa til en midlertidig mappe, så filsystemet (for eksempel virusskanning) er en sannsynlig årsak. Ikke sett i CI.
   resolved: Delvis i `spec-fix-gamle-nve-verdier.md` (2026-10-22). Demotestene har en tidsgrense på 15 s. Andre tunge tester kan fortsatt gå over 5 s på en travel maskin.
+- source_spec: `spec-3-1-filtrer-nysno-vind-temperatur.md`
+  summary: Oppdater EXPERIENCE.md (begge kopier) via `bmad-ux`: bunn-arket med filteret åpnes med knappen «Filter», ikke ved å dra det opp. Lukket viser det knappen, de aktive kravene som chips og «Nullstill». DESIGN.md sier også at filter og kart deler skjermen 50/50 på desktop; appen har et fast venstre sidepanel (18rem), som spec-en ber om.
+  evidence: Aksels beslutning 2026-10-22 i Story 3.1: en knapp virker med tastatur og skjermleser og er stabil å teste. EXPERIENCE.md (Responsive & Platform og UJ-1 steg 2) beskriver fortsatt et ark som «kan dras opp».
+- source_spec: `spec-3-1-filtrer-nysno-vind-temperatur.md`
+  summary: Filteret nullstilles når brukeren åpner en stedsside og går tilbake, fordi tilstanden ligger i `Utforsk`, som avmonteres. Story 3.2 flytter filteret inn i URL-en og skal ha en E2E-test for kart → sted → Tilbake med filteret i behold.
+  evidence: Gjennomgangen av 3.1 (Blind Hunter, Edge Case Hunter). `useState` i `src/pages/Utforsk.tsx`; `App.tsx` rendrer `Sted` i stedet for `Utforsk` på `/sted/:id`.

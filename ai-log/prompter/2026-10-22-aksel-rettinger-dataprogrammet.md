@@ -40,3 +40,21 @@
 **Hva vi gjorde med det:**
 - **A8:** «SnowFinder» er markert som gjeldende side bare på kartet, ikke på listen. Menyen ☰ lukkes når brukeren går fra «Fant ikke siden» til kartet. Spec: [`spec-a8-toppnav-avvik.md`](../../project-workspace/implementation-artifacts/spec-a8-toppnav-avvik.md).
 - **A7:** `Formel` er én komponent, kortstilen ligger i en delt `.kort`, og tallisten heter `.tall-liste`. `App.css` deles ikke opp nå, fordi rekkefølgen styrer kaskaden. Beregnet stil er sammenlignet før og etter og er lik. Spec: [`spec-a7-delt-kortstil.md`](../../project-workspace/implementation-artifacts/spec-a7-delt-kortstil.md).
+
+### 5
+> ok gå videre til story 3.1
+
+**Svar (kort):** Claude bygde Story 3.1 med `bmad-build` i dispatch-ruten og spurte først om fire valg. Alle fire anbefalinger ble valgt:
+- **Temperatur** er en maksgrense.
+- **Sliderne** står som standard i ytterpunktet, som betyr «Alle», så ingenting skjules før brukeren endrer noe.
+- **Et sted som mangler verdien** skjules når kravet er aktivt.
+- **Bunn-arket på mobil** åpnes med en knapp, ikke ved å dra.
+
+Spec-en ble større enn anbefalt (omtrent 2 800 tokens). Aksel valgte å beholde den samlet.
+
+**Hva vi gjorde med det:**
+- **Filterlogikk og fasittabell:** `shared/filter.ts` og fasittabellen `tests/golden/filter.json` låser reglene.
+- **Panelet:** sidepanel fra 768 px og bunn-ark under, med tre slidere og «Nullstill».
+- **Null treff:** gir en forklaring og en vei tilbake.
+- **Kartet:** beholder zoom og utsnitt når filteret endres.
+- Spec: [`spec-3-1-filtrer-nysno-vind-temperatur.md`](../../project-workspace/implementation-artifacts/spec-3-1-filtrer-nysno-vind-temperatur.md).

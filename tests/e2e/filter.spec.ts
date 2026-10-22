@@ -1,0 +1,227 @@
+import AxeBuilder from '@axe-core/playwright'
+import { expect, test, type Locator, type Page } from '@playwright/test'
+import { zoomStep } from './kartZoom'
+
+// Story 3.1: filter on new snow, wind and temperature, on the committed demo data. A side panel from
+// 768px and a bottom sheet below; map and list show the same places.
+
+test.beforeEach(async ({ context }) => {
+  // Same isolation as kart.spec.ts: nothing from the network, and no leftover latest.json.
+  await context.route('**/*', (route) => {
+    const { hostname } = new URL(route.request().url())
+    return hostname === 'localhost' ? route.continue() : route.abort()
+  })
+  await context.route('**/data/latest.json', (route) => route.fulfill({ status: 404, body: '' }))
+})
+
+const DESKTOP = { width: 1280, height: 800 }
+const MOBIL = { width: 375, height: 740 }
+
+// Demo places with at least 2 cm new snow and at most 0 °C, as the app rounds them (Oppdal is −0,04 °C).
+const SEKS = ['galdhopiggen', 'gaustatoppen', 'jiehkkevarri', 'oksskolten', 'oppdal-skisenter', 'rondeslottet']
+const NAVN_SEKS = ['Galdhøpiggen', 'Gaustatoppen', 'Jiehkkevárri', 'Oksskolten', 'Oppdal Skisenter', 'Rondeslottet']
+
+const markers = (page: Page) => page.locator('path.kart-markor')
+const rows = (page: Page) => page.locator('a.liste-rad')
+const panel = (page: Page) => page.getByRole('complementary', { name: 'Filter' })
+const nysno = (page: Page) => page.getByRole('slider', { name: 'Nysnø' })
+const vind = (page: Page) => page.getByRole('slider', { name: 'Vind' })
+const temperatur = (page: Page) => page.getByRole('slider', { name: 'Temperatur' })
+const filterKnapp = (page: Page) => page.getByRole('button', { name: 'Filter', exact: true })
+
+const BRED_FONT = `* { font-family: Verdana, 'DejaVu Sans', sans-serif !important; }`
+
+async function expectNoBlockingViolations(page: Page): Promise<void> {
+  const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa']).analyze()
+  const blocking = results.violations.filter(({ impact }) => impact === 'serious' || impact === 'critical')
+  expect(blocking, JSON.stringify(blocking, null, 2)).toEqual([])
+}
+
+async function box(locator: Locator) {
+  const result = await locator.boundingBox()
+  if (!result) throw new Error(`${locator.toString()} has no box`)
+  return result
+}
+
+async function expectNoSidewaysScroll(page: Page): Promise<void> {
+  const [scrollWidth, clientWidth] = await page.locator('html').evaluate((el) => [el.scrollWidth, el.clientWidth])
+  expect(scrollWidth).toBeLessThanOrEqual(clientWidth)
+}
+
+test.describe('at 1280px', () => {
+  test.use({ viewport: DESKTOP })
+
+  test('the panel is a fixed left side panel, and map and list show the same six places', async ({ page }) => {
+    await page.goto('/')
+    await expect(markers(page)).toHaveCount(24)
+    await expect(filterKnapp(page)).toBeHidden()
+    await expect(page.getByRole('heading', { level: 2, name: 'Filter' })).toBeVisible()
+
+    const panelBox = await box(panel(page))
+    const kartBox = await box(page.locator('.kart'))
+    expect(panelBox.x + panelBox.width).toBeLessThanOrEqual(kartBox.x)
+    expect(Math.abs(panelBox.y - kartBox.y)).toBeLessThan(2)
+
+    // Every requirement starts at «Alle», and nothing is hidden.
+    for (const slider of [nysno(page), vind(page), temperatur(page)]) {
+      await expect(slider).toHaveAttribute('aria-valuetext', 'Alle')
+    }
+    await expect(page.getByRole('button', { name: 'Nullstill' })).toHaveCount(0)
+
+    // The keyboard moves a slider one step at a time.
+    await nysno(page).focus()
+    await page.keyboard.press('ArrowRight')
+    await page.keyboard.press('ArrowRight')
+    await expect(nysno(page)).toHaveAttribute('aria-valuetext', 'minst 2 cm')
+    await expect(markers(page)).toHaveCount(8)
+    await temperatur(page).fill('0')
+    await expect(temperatur(page)).toHaveAttribute('aria-valuetext', 'høyst 0 °C')
+    await expect(markers(page)).toHaveCount(6)
+    for (const id of SEKS) await expect(page.locator(`path[data-sted-id="${id}"]`)).toHaveCount(1)
+    await expect(page.getByRole('button', { name: 'Nullstill' })).toBeVisible()
+
+    // The filter survives the switch to the list, which shows the same six places.
+    await page.getByRole('link', { name: 'Liste', exact: true }).click()
+    await expect(page).toHaveURL(/\/\?visning=liste$/)
+    await expect(rows(page)).toHaveCount(6)
+    const names = await page.locator('.liste-navn').allTextContents()
+    expect([...names].sort(new Intl.Collator('nb').compare)).toEqual(NAVN_SEKS)
+    await expect(nysno(page)).toHaveValue('2')
+    await expect(temperatur(page)).toHaveValue('0')
+  })
+
+  test('changing a requirement keeps the zoom and position of the map', async ({ page }) => {
+    await page.goto('/')
+    await expect(markers(page)).toHaveCount(24)
+    // Oksskolten lies near the middle of Norway, so it stays in view when zooming in on the centre.
+    const oksskolten = page.locator('path[data-sted-id="oksskolten"]')
+    const start = await box(oksskolten)
+    await zoomStep(page, 'Zoom in')
+    await zoomStep(page, 'Zoom in')
+    const zoomed = await box(oksskolten)
+    expect(zoomed.width).toBeGreaterThan(start.width + 2)
+
+    await nysno(page).fill('2')
+    await expect(markers(page)).toHaveCount(8)
+    // A new fit to Norway would shrink the marker and move it back; it stays where the user left it.
+    const after = await box(oksskolten)
+    expect(after.x).toBeCloseTo(zoomed.x, 0)
+    expect(after.y).toBeCloseTo(zoomed.y, 0)
+    expect(after.width).toBeCloseTo(zoomed.width, 0)
+  })
+
+  test('zero hits say so, show no markers, and «Nullstill» brings every place back', async ({ page }) => {
+    await page.goto('/')
+    await expect(markers(page)).toHaveCount(24)
+    await nysno(page).fill('30')
+    await expect(page.getByText('Ingen steder oppfyller alle kravene.')).toBeVisible()
+    await expect(markers(page)).toHaveCount(0)
+
+    await page.locator('.ingen-treff').getByRole('button', { name: 'Nullstill' }).click()
+    await expect(markers(page)).toHaveCount(24)
+    await expect(page.getByText('Ingen steder oppfyller alle kravene.')).toHaveCount(0)
+    for (const slider of [nysno(page), vind(page), temperatur(page)]) {
+      await expect(slider).toHaveAttribute('aria-valuetext', 'Alle')
+    }
+    await expect(page.getByRole('button', { name: 'Nullstill' })).toHaveCount(0)
+    // Focus is not lost with the button: it moves to the first slider.
+    await expect(nysno(page)).toBeFocused()
+  })
+
+  test('zero hits in the list say so too, and «Nullstill» brings every row back', async ({ page }) => {
+    await page.goto('/?visning=liste')
+    await expect(rows(page)).toHaveCount(24)
+    await nysno(page).fill('30')
+    const melding = page.getByRole('status').filter({ hasText: 'Ingen steder oppfyller alle kravene.' })
+    await expect(melding).toBeVisible()
+    await expect(rows(page)).toHaveCount(0)
+
+    await page.locator('.ingen-treff').getByRole('button', { name: 'Nullstill' }).click()
+    await expect(rows(page)).toHaveCount(24)
+    await expect(melding).toHaveCount(0)
+  })
+
+  test('the page with an active filter has no serious or critical WCAG 2.1 AA violations', async ({ page }) => {
+    await page.goto('/?visning=liste')
+    await expect(rows(page)).toHaveCount(24)
+    await vind(page).fill('10')
+    await expect(page.getByRole('button', { name: 'Nullstill' })).toBeVisible()
+    await expectNoBlockingViolations(page)
+  })
+})
+
+test.describe('at 375px', () => {
+  test.use({ viewport: MOBIL })
+
+  test('the panel is a bottom sheet that opens with «Filter» and shows active requirements as chips', async ({ page }) => {
+    await page.goto('/')
+    await expect(markers(page)).toHaveCount(24)
+
+    // Closed: the sheet sits at the bottom of the screen, full width, with only the button showing.
+    const sheet = await box(panel(page))
+    expect(Math.abs(sheet.y + sheet.height - MOBIL.height)).toBeLessThan(2)
+    expect(sheet.x).toBeLessThanOrEqual(0)
+    expect(sheet.width).toBeGreaterThanOrEqual(MOBIL.width - 1)
+    const knapp = filterKnapp(page)
+    const knappBox = await box(knapp)
+    expect(knappBox.height).toBeGreaterThanOrEqual(44)
+    await expect(knapp).toHaveAttribute('aria-expanded', 'false')
+    await expect(knapp).toHaveAttribute('aria-controls', 'filter-innhold')
+    await expect(nysno(page)).toBeHidden()
+
+    await knapp.click()
+    await expect(knapp).toHaveAttribute('aria-expanded', 'true')
+    await expect(nysno(page)).toBeVisible()
+    const sliderBox = await box(nysno(page))
+    expect(sliderBox.height).toBeGreaterThanOrEqual(44)
+    await nysno(page).fill('2')
+    await temperatur(page).fill('0')
+    await expect(markers(page)).toHaveCount(6)
+
+    await knapp.click()
+    await expect(knapp).toHaveAttribute('aria-expanded', 'false')
+    await expect(nysno(page)).toBeHidden()
+    const chips = page.getByRole('list', { name: 'Aktive krav' }).getByRole('listitem')
+    await expect(chips).toHaveText(['Nysnø minst 2 cm', 'Temperatur høyst 0 °C'])
+
+    // The list shows the same six, and the filter is still set.
+    await page.getByRole('link', { name: 'Liste', exact: true }).click()
+    await expect(rows(page)).toHaveCount(6)
+    await expect(chips).toHaveCount(2)
+
+    // «Nullstill» on the closed sheet clears everything and leaves focus on «Filter».
+    await panel(page).getByRole('button', { name: 'Nullstill' }).click()
+    await expect(rows(page)).toHaveCount(24)
+    await expect(chips).toHaveCount(0)
+    await expect(knapp).toBeFocused()
+  })
+
+  test('the sheet does not scroll the page sideways, even with a wide font', async ({ page }) => {
+    for (const width of [320, 375]) {
+      await page.setViewportSize({ width, height: MOBIL.height })
+      await page.goto('/')
+      await expect(markers(page)).toHaveCount(24)
+      await page.addStyleTag({ content: BRED_FONT })
+      await expectNoSidewaysScroll(page)
+
+      await filterKnapp(page).click()
+      await nysno(page).fill('10')
+      await vind(page).fill('8')
+      await temperatur(page).fill('-15')
+      await expectNoSidewaysScroll(page)
+      await filterKnapp(page).click()
+      await expect(page.getByRole('list', { name: 'Aktive krav' }).getByRole('listitem')).toHaveCount(3)
+      await expectNoSidewaysScroll(page)
+    }
+  })
+
+  test('the open sheet has no serious or critical WCAG 2.1 AA violations', async ({ page }) => {
+    await page.goto('/')
+    await expect(markers(page)).toHaveCount(24)
+    await filterKnapp(page).click()
+    await temperatur(page).fill('-5')
+    await expectNoBlockingViolations(page)
+    await filterKnapp(page).click()
+    await expectNoBlockingViolations(page)
+  })
+})

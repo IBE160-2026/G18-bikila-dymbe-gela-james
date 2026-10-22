@@ -1,3 +1,5 @@
+import { rundTilEnDesimal } from '../../shared/avrunding'
+
 // Norwegian number and time formatting for the UI. Timestamps are stored in UTC and shown in Norwegian
 // local time only here (architecture conventions).
 
@@ -14,8 +16,9 @@ const tidFormat = new Intl.DateTimeFormat('nb-NO', {
 
 /** A number in Norwegian with at most one decimal and a real minus sign: "0,5", "−14". */
 export function tall(verdi: number): string {
-  // Round first and add 0, so -0.04 shows as "0" and not "−0".
-  return tallFormat.format(Math.round(verdi * 10) / 10 + 0)
+  // The filter compares with the same rounding (shared/avrunding.ts), so a place it keeps shows a
+  // matching number. Rounding first also shows -0.04 as "0" and not "−0".
+  return tallFormat.format(rundTilEnDesimal(verdi))
 }
 
 /** A value with its unit, or "–" when the data file has none. */
