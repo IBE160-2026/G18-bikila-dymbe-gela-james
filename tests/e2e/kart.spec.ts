@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test'
+import { zoomStep } from './kartZoom'
 
 // Story 1.7 smoke test: map -> place page -> back, on the committed demo data.
 
@@ -26,13 +27,14 @@ test('the map shows every demo place and a marker opens its place page', async (
   const width = () =>
     page.locator(markers).evaluateAll((paths) => Math.max(...paths.map((p) => p.getBoundingClientRect().width)))
   const before = await width()
-  // The first fit can be below zoom 5, where markers are still at their minimum, so zoom in twice.
-  await page.getByRole('button', { name: 'Zoom in' }).click()
-  await page.getByRole('button', { name: 'Zoom in' }).click()
+  // The first fit can be below zoom 5, where markers are still at their minimum, so zoom in twice. Each step
+  // waits for Leaflet's animation, which would otherwise swallow the second click (Story 3.1 made this visible).
+  await zoomStep(page, 'Zoom in')
+  await zoomStep(page, 'Zoom in')
   await expect.poll(width).toBeGreaterThan(before + 2)
   const zoomedIn = await width()
-  await page.getByRole('button', { name: 'Zoom out' }).click()
-  await page.getByRole('button', { name: 'Zoom out' }).click()
+  await zoomStep(page, 'Zoom out')
+  await zoomStep(page, 'Zoom out')
   await expect.poll(width).toBeLessThan(zoomedIn - 2)
 
   // The score is never colour alone: the tooltip has the number and the label (demo score 7).

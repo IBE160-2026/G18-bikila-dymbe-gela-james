@@ -39,6 +39,11 @@ krever nøkkel, men som trenger nett for å vise kartbildene.
 Velg «Liste» under navigasjonen (eller åpne `/?visning=liste`) for å se de samme stedene som en
 liste som virker med tastatur og skjermleser, sortert etter score, avstand eller navn.
 
+Filteret (til venstre på store skjermer, bak knappen «Filter» nederst på mobil) har tre krav:
+minst så mye nysnø, høyst så mye vind og høyst så høy temperatur. Kart og liste viser bare stedene
+som oppfyller alle kravene. Et sted som mangler verdien for et aktivt krav, vises ikke. «Nullstill»
+setter alle kravene tilbake til «Alle». Filteret lagres ennå ikke i nettadressen.
+
 Stedssiden (`/sted/<id>`) viser SnowScore med delpoengene A, B og C, værdataene bak dem og når MET
 sist oppdaterte prognosen. Data eldre enn 3 timer merkes «Utdatert», og steder med data eldre enn
 12 timer vises ikke i kartet, listen eller på stedssiden (i demo regnes alderen mot demodatasettets egen «nå»).
@@ -57,7 +62,7 @@ alltid automatisk fra prognosen.
 ### Røyktest i nettleser (E2E)
 
 Playwright-testene i `tests/e2e/` bygger appen, starter `npm run preview` og sjekker kart → stedsside
-→ tilbake, listevisningen med tastatur, stedssiden, forklaringssiden (også ved 320 og 375 px), den tomme
+→ tilbake, listevisningen med tastatur, filteret (ved 1280 og 375 px), stedssiden, forklaringssiden (også ved 320 og 375 px), den tomme
 tilstanden og en axe-sjekk av tilgjengeligheten i Chromium på demodataene.
 De henter ingenting fra nett. Nettleseren lastes ned én gang:
 

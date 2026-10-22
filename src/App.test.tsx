@@ -31,6 +31,9 @@ describe('AppView', () => {
     expect(html).toContain('<a href="/slik-beregner-vi-snowscore" class="forklaring-lenke">Slik beregner vi SnowScore</a>')
     expect(html).toContain('Demodata – ikke ekte prognoser')
     expect(html).toContain('class="kart"')
+    // Story 3.1: the filter panel, with nothing hidden until the user sets a requirement.
+    expect(html).toContain('<aside class="filter kort" aria-label="Filter">')
+    expect(html).not.toContain('Ingen steder oppfyller alle kravene.')
   })
 
   it('shows no demo banner for live data', () => {
@@ -57,6 +60,7 @@ describe('AppView', () => {
       expect(html).toContain(`<p>${INGEN_STEDER}</p>`)
       expect(html).not.toContain('aria-label="Visning"')
       expect(html).not.toContain('class="forklaring-lenke"')
+      expect(html).not.toContain('aria-label="Filter"')
       expect(html).toContain('Last inn på nytt</button>')
       expect(html).not.toContain('class="kart"')
       expect(html).not.toContain('liste-rad')

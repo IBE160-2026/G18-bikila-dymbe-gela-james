@@ -1,0 +1,65 @@
+{
+  "grenser": "Kravene kombineres med OG: et sted vises bare når det oppfyller alle aktive krav. Alle grenser er inkluderende: nysnø ≥ X cm, vind ≤ Y m/s og temperatur ≤ Z °C. Verdien avrundes som Math.round(verdi × 10) / 10, samme som visningen, før sammenligningen. Derfor teller 2,96 cm og 3,000000000000001 cm begge som 3,0, −0,04 °C som 0, og både −5,04 °C og −4,96 °C som −5,0. Et krav er av når grensen er null eller står i ytterpunktet som betyr «ingen grense» (nysnø 0, vind 25, temperatur +10); da vises også steder over ytterpunktet, som vind 30 m/s eller +12 °C. Mangler stedet verdien for et aktivt krav (null), vises det ikke. En verdi på 0 er en ekte verdi, ikke en manglende. Uten aktive krav vises alle steder, også de med ufullstendige data. Rekkefølgen er stedenes egen rekkefølge.",
+  "steder": [
+    { "id": "dyp", "nysnoCm": 12, "vindMaks": 4, "temperatur": -5.04 },
+    { "id": "grense-eksakt", "nysnoCm": 3.000000000000001, "vindMaks": 10, "temperatur": 0 },
+    { "id": "grense-avrundet", "nysnoCm": 2.96, "vindMaks": 10.04, "temperatur": -0.04 },
+    { "id": "rett-over", "nysnoCm": 2.94, "vindMaks": 10.1, "temperatur": 0.1 },
+    { "id": "storm", "nysnoCm": 8, "vindMaks": 30, "temperatur": -10 },
+    { "id": "varmt", "nysnoCm": 0, "vindMaks": 3, "temperatur": 12 },
+    { "id": "ufullstendig", "nysnoCm": null, "vindMaks": 5, "temperatur": null },
+    { "id": "uten-vind", "nysnoCm": 4, "vindMaks": null, "temperatur": -4.96 }
+  ],
+  "tilfeller": [
+    {
+      "navn": "Ingen krav viser alle, også ufullstendige og de over ytterpunktene",
+      "filter": { "minNysnoCm": null, "maksVindMs": null, "maksTemperaturC": null },
+      "forventet": ["dyp", "grense-eksakt", "grense-avrundet", "rett-over", "storm", "varmt", "ufullstendig", "uten-vind"]
+    },
+    {
+      "navn": "Grenser i ytterpunktet er av, også for vind 30 m/s og +12 °C",
+      "filter": { "minNysnoCm": 0, "maksVindMs": 25, "maksTemperaturC": 10 },
+      "forventet": ["dyp", "grense-eksakt", "grense-avrundet", "rett-over", "storm", "varmt", "ufullstendig", "uten-vind"]
+    },
+    {
+      "navn": "Nysnø minst 3 cm, inkludert det som vises som 3",
+      "filter": { "minNysnoCm": 3, "maksVindMs": null, "maksTemperaturC": null },
+      "forventet": ["dyp", "grense-eksakt", "grense-avrundet", "storm", "uten-vind"]
+    },
+    {
+      "navn": "Nysnø minst 1 cm skjuler 0 cm for verdien, og null fordi den mangler",
+      "filter": { "minNysnoCm": 1, "maksVindMs": null, "maksTemperaturC": null },
+      "forventet": ["dyp", "grense-eksakt", "grense-avrundet", "rett-over", "storm", "uten-vind"]
+    },
+    {
+      "navn": "Vind høyst 10 m/s, inkludert 10,04",
+      "filter": { "minNysnoCm": null, "maksVindMs": 10, "maksTemperaturC": null },
+      "forventet": ["dyp", "grense-eksakt", "grense-avrundet", "varmt", "ufullstendig"]
+    },
+    {
+      "navn": "Temperatur høyst 0 °C, inkludert −0,04, og ufullstendige skjules",
+      "filter": { "minNysnoCm": null, "maksVindMs": null, "maksTemperaturC": 0 },
+      "forventet": ["dyp", "grense-eksakt", "grense-avrundet", "storm", "uten-vind"]
+    },
+    {
+      "navn": "Temperatur høyst −5 °C: −5,04 og −4,96 avrundes begge til −5,0 og vises",
+      "filter": { "minNysnoCm": null, "maksVindMs": null, "maksTemperaturC": -5 },
+      "forventet": ["dyp", "storm", "uten-vind"]
+    },
+    {
+      "navn": "Manglende vind skjuler stedet selv med en vid grense",
+      "filter": { "minNysnoCm": null, "maksVindMs": 24, "maksTemperaturC": null },
+      "forventet": ["dyp", "grense-eksakt", "grense-avrundet", "rett-over", "varmt", "ufullstendig"]
+    },
+    {
+      "navn": "Alle tre kombinert med OG",
+      "filter": { "minNysnoCm": 2, "maksVindMs": 10, "maksTemperaturC": 0 },
+      "forventet": ["dyp", "grense-eksakt", "grense-avrundet"]
+    },
+    {
+      "navn": "Null treff",
+      "filter": { "minNysnoCm": 30, "maksVindMs": null, "maksTemperaturC": null },
+      "forventet": []
+    }
+  ]
+}
