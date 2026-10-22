@@ -50,7 +50,7 @@ export default function Datakvalitet({ result }: { result: StederResult | null }
     <section aria-labelledby="datakvalitet">
       <h2 id="datakvalitet">Datakvalitet</h2>
       {/* A status region, so the text is read out when the report arrives after the page has opened. */}
-      <div className="datakvalitet" role="status">
+      <div className="datakvalitet kort" role="status">
         {kvalitetLinjer(result).map((linje) => (
           <p key={linje}>{linje}</p>
         ))}

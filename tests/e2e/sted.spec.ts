@@ -13,7 +13,7 @@ test.beforeEach(async ({ context }) => {
 })
 
 /** The value next to a label in the page's definition lists. */
-const verdi = (page: Page, navn: string) => page.locator('.sted-tall div').filter({ has: page.getByText(navn, { exact: true }) }).locator('dd')
+const verdi = (page: Page, navn: string) => page.locator('.tall-liste div').filter({ has: page.getByText(navn, { exact: true }) }).locator('dd')
 
 test('Gaustatoppen from the list shows the sub-scores, the data and the source time', async ({ page }) => {
   await page.goto('/?visning=liste')

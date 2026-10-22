@@ -269,13 +269,16 @@ select:focus-visible {
   }
 }
 
-.sted-kort {
+/* The shared card: the place page's cards, the quality panel, the calculator result and the explanation
+   figures. It comes before those classes, so each of them can still override it. */
+.kort {
   padding: var(--spacing-4);
   border: 1px solid var(--color-border-hairline);
   border-radius: var(--rounded-md);
   background: var(--color-surface-raised);
 }
 
+/* .sted-kort has no style of its own; it is the hook for these rules and the E2E locators. */
 .sted-kort h2 {
   margin: 0 0 var(--spacing-3);
   font-family: var(--typography-heading-font-family);
@@ -296,13 +299,13 @@ select:focus-visible {
   line-height: var(--typography-display-line-height);
 }
 
-.sted-tall {
+.tall-liste {
   display: grid;
   gap: var(--spacing-2);
   margin: 0;
 }
 
-.sted-tall div {
+.tall-liste div {
   display: flex;
   justify-content: space-between;
   gap: var(--spacing-3);
@@ -310,7 +313,7 @@ select:focus-visible {
   border-bottom: 1px solid var(--color-border-hairline);
 }
 
-.sted-tall dd {
+.tall-liste dd {
   margin: 0;
   font-family: var(--typography-numeric-font-family);
   font-size: var(--typography-numeric-font-size);
@@ -507,9 +510,6 @@ select:focus-visible {
   max-width: 24rem;
   margin: var(--spacing-3) 0 var(--spacing-4);
   padding: var(--spacing-3);
-  border: 1px solid var(--color-border-hairline);
-  border-radius: var(--rounded-md);
-  background: var(--color-surface-raised);
 }
 
 .forklaring-figur figcaption {
@@ -614,7 +614,7 @@ select:focus-visible {
   letter-spacing: var(--typography-meta-letter-spacing);
 }
 
-/* Story 2.3: the sources list, and the quality report as a raised card. DESIGN.md: no SnowScore colours
+/* Story 2.3: the sources list, and the quality report, which uses the shared .kort. DESIGN.md: no SnowScore colours
    and no danger red here; rejected answers are plain numbers. */
 .forklaring-kilder {
   display: grid;
@@ -623,10 +623,6 @@ select:focus-visible {
 }
 
 .datakvalitet {
-  padding: var(--spacing-4);
-  border: 1px solid var(--color-border-hairline);
-  border-radius: var(--rounded-md);
-  background: var(--color-surface-raised);
   font-feature-settings: var(--typography-numeric-font-feature-settings);
 }
 
@@ -684,14 +680,6 @@ select:focus-visible {
 .kalkulator-feil {
   margin: var(--spacing-1) 0 0;
   color: var(--color-danger);
-}
-
-.kalkulator-resultat {
-  display: block;
-  padding: var(--spacing-4);
-  border: 1px solid var(--color-border-hairline);
-  border-radius: var(--rounded-md);
-  background: var(--color-surface-raised);
 }
 
 .kalkulator-resultat p {

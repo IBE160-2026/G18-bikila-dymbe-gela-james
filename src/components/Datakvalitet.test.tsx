@@ -71,7 +71,7 @@ describe('Datakvalitet', () => {
     ['a failed load', { status: 'error', message: 'x' } as const],
   ])('shows %s as plain text in a status region, without score colours or danger red', (_, result) => {
     const html = renderToStaticMarkup(<Datakvalitet result={result} />)
-    expect(html).toMatch(/^<section aria-labelledby="datakvalitet"><h2 id="datakvalitet">Datakvalitet<\/h2><div class="datakvalitet" role="status">(<p>[^<]+<\/p>)+<\/div><\/section>$/)
+    expect(html).toMatch(/^<section aria-labelledby="datakvalitet"><h2 id="datakvalitet">Datakvalitet<\/h2><div class="datakvalitet kort" role="status">(<p>[^<]+<\/p>)+<\/div><\/section>$/)
   })
 })
 

@@ -124,7 +124,7 @@ action_items:
     action: "A7 Samle Formel, delte klasser for kort og talliste, vurder å dele App.css
       før Epic 3"
     owner: "Gruppa"
-    status: open
+    status: done
     ref: "project-workspace/implementation-artifacts/epic-2-retro-2026-10-09.md"
   - id: "epic-2-retro-item-8-a8-rett-aria-current-for-snowfinder-på-l"
     epic: 2

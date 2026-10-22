@@ -150,9 +150,9 @@ export default function Kalkulator() {
           onChange={setTemperatur}
         />
       </div>
-      <div className="kalkulator-resultat">
+      <div className="kalkulator-resultat kort">
         {utregning.kind === 'score' && (
-          <dl className="sted-tall">
+          <dl className="tall-liste">
             <div>
               <dt>A Nysnøpotensial</dt>
               <dd>{delpoeng(utregning.resultat.a, maxA)}</dd>
