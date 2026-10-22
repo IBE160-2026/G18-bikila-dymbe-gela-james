@@ -179,6 +179,10 @@ jobben er en GitHub Actions-jobb.
   tilstand mellom timene, så `If-Modified-Since`/`Expires` brukes ikke.
 - Én kjøring henter alle ~300 steder, med begrenset samtidighet. En avbrutt kjøring publiserer
   ingenting (FR-5) og kjøres på nytt ved neste time.
+- *(v4, 2026-10-22)* Hver kilde får høyst 10 kall i sekundet: to kall til samme kilde starter
+  minst 100 ms fra hverandre. MET krever en egen avtale over 20 kall i sekundet, og et blokkert
+  dataprogram ville gitt en tjeneste uten data. Hentingen tar da minst 30 sekunder per kilde
+  (funnet i revisjonen 2026-10-09).
 
 #### FR-3: Skjemavalidering av rådata *(Må ha)*
 

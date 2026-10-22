@@ -79,6 +79,7 @@ export interface LiveOptions {
   /** The wall clock; injected so tests control the start, reference and end time. */
   clock?: () => string
   concurrency?: number
+  minIntervalMs?: number
   timeoutMs?: number
   log?: (line: string) => void
 }
@@ -102,6 +103,7 @@ export async function runLive({
   fetchFn = (url, init) => fetch(url, init),
   clock = () => new Date().toISOString(),
   concurrency,
+  minIntervalMs,
   timeoutMs,
   log = console.log,
 }: LiveOptions = {}): Promise<RunReport> {
@@ -112,7 +114,7 @@ export async function runLive({
   try {
     ctx = { ...ctx, catalog: await loadCatalog(catalogPath) }
     log(`Henter MET og NVE for ${ctx.catalog.length} steder (runId ${ctx.runId}) ...`)
-    ctx = await fetchAll(ctx, { fetchFn, concurrency, timeoutMs })
+    ctx = await fetchAll(ctx, { fetchFn, concurrency, minIntervalMs, timeoutMs })
     ctx = validate(ctx)
     ctx = score(ctx)
     ctx = await publish(ctx, { outPath, now: clock() })

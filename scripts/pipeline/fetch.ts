@@ -11,6 +11,11 @@ import { wgs84ToUtm33 } from '../../shared/geo'
 export const USER_AGENT = 'SnowFinder-data/1.0 (IBE160 G18, Hogskolen i Molde; https://github.com/IBE160-2026)'
 /** At most this many calls in flight per source. */
 export const DEFAULT_CONCURRENCY = 5
+/**
+ * At most one call started per this many ms per source, so 10 calls/s. MET's terms require a
+ * special agreement above 20 requests/s per application; NVE gets the same limit out of courtesy.
+ */
+export const DEFAULT_MIN_INTERVAL_MS = 100
 export const DEFAULT_TIMEOUT_MS = 20_000
 /** Days of NVE history before the reference date, so the last daily value is always in the period. */
 export const NVE_DAYS_BACK = 6
@@ -45,6 +50,32 @@ export async function mapLimit<T, R>(items: readonly T[], limit: number, task: (
   }
   await Promise.all(Array.from({ length: Math.min(limit, items.length) }, worker))
   return results
+}
+
+export type Sleep = (ms: number) => Promise<void>
+
+const sleepFor: Sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
+
+/**
+ * A gate each call awaits before it starts: starts are at least `intervalMs` apart. Callers pass
+ * one at a time, and each waits from the previous caller's actual start, so timers that fire late
+ * together after a busy event loop cannot release a burst. The clock is monotonic, and a timer
+ * that fires early is waited out again.
+ */
+export function startGate(intervalMs: number, sleep: Sleep = sleepFor, now: () => number = () => performance.now()) {
+  let lastStart = Number.NEGATIVE_INFINITY
+  let queue: Promise<void> = Promise.resolve()
+  return (): Promise<void> => {
+    const turn = queue.then(async () => {
+      for (let wait = lastStart + intervalMs - now(); wait > 0; wait = lastStart + intervalMs - now()) {
+        await sleep(wait)
+      }
+      lastStart = now()
+    })
+    // A failed turn fails only its own caller, not every caller queued after it.
+    queue = turn.catch(() => {})
+    return turn
+  }
 }
 
 type Outcome = { body: unknown } | { error: string }
@@ -91,19 +122,34 @@ async function getOnce(url: string, fetchFn: FetchFn, timeoutMs: number): Promis
 export interface FetchOptions {
   fetchFn: FetchFn
   concurrency?: number
+  /** Minimum time between two call starts per source; 0 turns the limit off (tests only). */
+  minIntervalMs?: number
   timeoutMs?: number
 }
 
 /** The source stage in live mode: fills `raw` with one MET and one NVE response per place. */
 export async function fetchAll(
   ctx: RunContext,
-  { fetchFn, concurrency = DEFAULT_CONCURRENCY, timeoutMs = DEFAULT_TIMEOUT_MS }: FetchOptions,
+  {
+    fetchFn,
+    concurrency = DEFAULT_CONCURRENCY,
+    minIntervalMs = DEFAULT_MIN_INTERVAL_MS,
+    timeoutMs = DEFAULT_TIMEOUT_MS,
+  }: FetchOptions,
 ): Promise<RunContext> {
   const referenceMs = Date.parse(ctx.referenceTime)
-  // Each source has its own limit, so a slow source does not hold back the other.
+  // Each source has its own limits, so a slow source does not hold back the other.
+  const metGate = startGate(minIntervalMs)
+  const nveGate = startGate(minIntervalMs)
   const [met, nve] = await Promise.all([
-    mapLimit(ctx.catalog, concurrency, (sted) => getOnce(metUrl(sted), fetchFn, timeoutMs)),
-    mapLimit(ctx.catalog, concurrency, (sted) => getOnce(nveUrl(sted, referenceMs), fetchFn, timeoutMs)),
+    mapLimit(ctx.catalog, concurrency, async (sted) => {
+      await metGate()
+      return getOnce(metUrl(sted), fetchFn, timeoutMs)
+    }),
+    mapLimit(ctx.catalog, concurrency, async (sted) => {
+      await nveGate()
+      return getOnce(nveUrl(sted, referenceMs), fetchFn, timeoutMs)
+    }),
   ])
   const raw: RawResponses[] = ctx.catalog.map((sted, i) => {
     const feil: Partial<Record<Avvisning['kilde'], string>> = {}
