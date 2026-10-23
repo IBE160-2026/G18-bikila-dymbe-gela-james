@@ -161,6 +161,20 @@ test.describe('at 375px', () => {
     await expect(knapp).toHaveAttribute('aria-expanded', 'false')
     await expect(nav(page).getByRole('link', { name: NAVN })).toBeHidden()
   })
+
+  test('«SnowFinder» from a filtered map closes an open ☰ menu', async ({ page }) => {
+    // Story 3.2: the filtered map and the plain map are one route type with two addresses.
+    await page.goto('/?nysno=2')
+    await expect(page.locator('.kart')).toBeVisible()
+    const knapp = nav(page).getByRole('button', { name: 'Meny' })
+    await knapp.click()
+    await expect(knapp).toHaveAttribute('aria-expanded', 'true')
+
+    await nav(page).getByRole('link', { name: 'SnowFinder' }).click()
+    await expect(page).toHaveURL(/\/$/)
+    await expect(knapp).toHaveAttribute('aria-expanded', 'false')
+    await expect(nav(page).getByRole('link', { name: NAVN })).toBeHidden()
+  })
 })
 
 // CI runs on Linux, whose fonts are wider than Windows'; a page that fits locally overflowed there (PR #33–#38).

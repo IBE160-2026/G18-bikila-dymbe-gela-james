@@ -3,6 +3,7 @@ import { SNOWSCORE } from '../../shared/snowscore'
 import Lenke from '../components/Lenke'
 import ScoreBadge from '../components/ScoreBadge'
 import { delpoeng, medEnhet, norskTid, utdatertTekst } from '../lib/format'
+import { utforsk } from '../lib/router'
 
 type Props = { sted: StedData; utdatert: boolean }
 
@@ -68,7 +69,7 @@ export default function Sted({ sted, utdatert }: Props) {
           </p>
         </section>
       </div>
-      <Lenke to={{ name: 'utforsk', visning: 'kart' }} className="sted-tilbake" tilbake>
+      <Lenke to={utforsk()} className="sted-tilbake" tilbake>
         Tilbake
       </Lenke>
     </article>

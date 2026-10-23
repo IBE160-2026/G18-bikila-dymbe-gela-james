@@ -1,41 +1,63 @@
-import { useState, type ChangeEvent } from 'react'
+import { useEffect, useState, type ChangeEvent } from 'react'
 import type { Sted } from '../../shared/contracts/published'
 import { medEnhet, utdatertTekst } from '../lib/format'
+import type { UrlSortering } from '../lib/router'
 import { SORTERINGER, avstandKm, sorterSteder, type Posisjon, type Sortering } from '../lib/sortering'
 import Lenke from './Lenke'
 import ScoreBadge from './ScoreBadge'
 
-export const POSISJON_AVSLATT = 'Fikk ikke tilgang til posisjonen din. Listen er sortert etter score.'
 export const POSISJON_HENTES = 'Henter posisjonen din …'
 const POSISJON_TIMEOUT_MS = 10_000
 
 const SORTERINGSTEKST: Record<Sortering, string> = { score: 'Score', avstand: 'Avstand', navn: 'Navn' }
+
+/** Without a position the list keeps the order in the address, and says which one. */
+export function posisjonAvslatt(sortering: UrlSortering): string {
+  return `Fikk ikke tilgang til posisjonen din. Listen er sortert etter ${SORTERINGSTEKST[sortering].toLowerCase()}.`
+}
 
 const kmFormat = new Intl.NumberFormat('nb-NO', { maximumFractionDigits: 0 })
 
 // Read by screen readers only, so a row's link is announced as "Gaustatoppen, 58 · Godt, Nysnø 10 cm, …".
 const Skille = () => <span className="visually-hidden">, </span>
 
-type Props = { steder: Sted[]; utdatert: ReadonlySet<string> }
+type Props = {
+  steder: Sted[]
+  utdatert: ReadonlySet<string>
+  /** The order kept in the address (Story 3.2). */
+  sortering: UrlSortering
+  onSortering: (sortering: UrlSortering) => void
+}
 
 /**
  * Story 1.8: the accessible alternative to the map (FR-13, NFR-7). Each row is one link to the place
  * page. The position is asked for only when the user picks distance, kept in memory and never sent.
+ * Story 3.2: «Score» and «Navn» live in the address; «Avstand» stays here with the position. Once the
+ * list is actually sorted by distance, the address drops its order; if the position is refused, the
+ * address and its order are left as they were, and the list falls back to that order.
  */
-export default function ListeVisning({ steder, utdatert }: Props) {
-  const [sortering, setSortering] = useState<Sortering>('score')
+export default function ListeVisning({ steder, utdatert, sortering: urlSortering, onSortering }: Props) {
+  const [avstandValgt, setAvstandValgt] = useState(false)
   const [posisjon, setPosisjon] = useState<Posisjon | null>(null)
   const [status, setStatus] = useState('')
+  const sortering: Sortering = avstandValgt ? 'avstand' : urlSortering
+
+  // «Avstand» is never written to the address, so while it is in use the address holds the default order.
+  useEffect(() => {
+    if (avstandValgt && posisjon && urlSortering !== 'score') onSortering('score')
+  }, [avstandValgt, posisjon, urlSortering, onSortering])
 
   function onChange(event: ChangeEvent<HTMLSelectElement>) {
     const valg = SORTERINGER.find((verdi) => verdi === event.target.value)
     if (!valg) return
-    setSortering(valg)
     setStatus('')
+    setAvstandValgt(valg === 'avstand')
+    if (valg !== 'avstand') onSortering(valg)
     if (valg !== 'avstand' || posisjon) return
+    const avslatt = posisjonAvslatt(urlSortering)
     if (!('geolocation' in navigator)) {
-      setSortering('score')
-      setStatus(POSISJON_AVSLATT)
+      setAvstandValgt(false)
+      setStatus(avslatt)
       return
     }
     setStatus(POSISJON_HENTES)
@@ -46,8 +68,9 @@ export default function ListeVisning({ steder, utdatert }: Props) {
         setStatus((current) => (current === POSISJON_HENTES ? '' : current))
       },
       () => {
-        setSortering((current) => (current === 'avstand' ? 'score' : current))
-        setStatus((current) => (current === POSISJON_HENTES ? POSISJON_AVSLATT : current))
+        // Back to the order in the address, which a refusal leaves unchanged.
+        setAvstandValgt(false)
+        setStatus((current) => (current === POSISJON_HENTES ? avslatt : current))
       },
       { timeout: POSISJON_TIMEOUT_MS },
     )

@@ -82,7 +82,7 @@ test.describe('at 1280px', () => {
 
     // The filter survives the switch to the list, which shows the same six places.
     await page.getByRole('link', { name: 'Liste', exact: true }).click()
-    await expect(page).toHaveURL(/\/\?visning=liste$/)
+    await expect(page).toHaveURL(/\/\?visning=liste&nysno=2&temp=0$/)
     await expect(rows(page)).toHaveCount(6)
     const names = await page.locator('.liste-navn').allTextContents()
     expect([...names].sort(new Intl.Collator('nb').compare)).toEqual(NAVN_SEKS)
@@ -223,5 +223,152 @@ test.describe('at 375px', () => {
     await expectNoBlockingViolations(page)
     await filterKnapp(page).click()
     await expectNoBlockingViolations(page)
+  })
+})
+
+// Story 3.2 (FR-21): the filter, the view and the list order live in the address, so a link can be
+// shared and Back from a place page shows the same search.
+test.describe('the address at 1280px', () => {
+  test.use({ viewport: DESKTOP })
+
+  const navn = (page: Page) => page.locator('.liste-navn').allTextContents()
+  // A string, since the E2E tsconfig has no DOM types.
+  const historikk = (page: Page) => page.evaluate<number>('window.history.length')
+
+  test('a shared list link opens the list with the same filter and the same six places', async ({ page }) => {
+    await page.goto('/?visning=liste&nysno=2&temp=0')
+    await expect(rows(page)).toHaveCount(6)
+    await expect(page.getByRole('link', { name: 'Liste', exact: true })).toHaveAttribute('aria-current', 'page')
+    await expect(nysno(page)).toHaveAttribute('aria-valuetext', 'minst 2 cm')
+    await expect(vind(page)).toHaveAttribute('aria-valuetext', 'Alle')
+    await expect(temperatur(page)).toHaveAttribute('aria-valuetext', 'høyst 0 °C')
+    expect([...(await navn(page))].sort(new Intl.Collator('nb').compare)).toEqual(NAVN_SEKS)
+  })
+
+  test('a link without visning opens the map with the same filter', async ({ page }) => {
+    await page.goto('/?nysno=2&temp=0')
+    await expect(markers(page)).toHaveCount(6)
+    for (const id of SEKS) await expect(page.locator(`path[data-sted-id="${id}"]`)).toHaveCount(1)
+    await expect(page.getByRole('link', { name: 'Kart', exact: true })).toHaveAttribute('aria-current', 'page')
+  })
+
+  test('invalid values turn their requirement off and keep the valid ones', async ({ page }) => {
+    await page.goto('/?nysno=abc&vind=99&temp=0')
+    // The address is rewritten to the search it shows, so copying it does not share the junk again.
+    await expect(page).toHaveURL(/\/\?temp=0$/)
+    await expect(nysno(page)).toHaveAttribute('aria-valuetext', 'Alle')
+    await expect(vind(page)).toHaveAttribute('aria-valuetext', 'Alle')
+    await expect(temperatur(page)).toHaveAttribute('aria-valuetext', 'høyst 0 °C')
+    await expect(page.getByRole('alert')).toHaveCount(0)
+    expect(await markers(page).count()).toBeGreaterThan(0)
+  })
+
+  test('a slider change rewrites the address without a new history step, and the default leaves it', async ({ page }) => {
+    await page.goto('/')
+    await expect(markers(page)).toHaveCount(24)
+    const steg = await historikk(page)
+
+    await vind(page).fill('10')
+    await expect(page).toHaveURL(/\/\?vind=10$/)
+    await nysno(page).fill('2')
+    await expect(page).toHaveURL(/\/\?nysno=2&vind=10$/)
+    expect(await historikk(page)).toBe(steg)
+
+    // Back to 0 cm is «Alle», which the address does not write.
+    await nysno(page).fill('0')
+    await expect(page).toHaveURL(/\/\?vind=10$/)
+    await page.getByRole('button', { name: 'Nullstill' }).click()
+    await expect(page).toHaveURL(/\/$/)
+    expect(await historikk(page)).toBe(steg)
+  })
+
+  test('the switch keeps the filter, and «SnowFinder» opens the map without one', async ({ page }) => {
+    await page.goto('/?nysno=2&temp=0')
+    await expect(markers(page)).toHaveCount(6)
+    await page.getByRole('link', { name: 'Liste', exact: true }).click()
+    await expect(page).toHaveURL(/\/\?visning=liste&nysno=2&temp=0$/)
+    await expect(rows(page)).toHaveCount(6)
+    await page.getByRole('link', { name: 'Kart', exact: true }).click()
+    await expect(page).toHaveURL(/\/\?nysno=2&temp=0$/)
+    await expect(markers(page)).toHaveCount(6)
+
+    await page.getByRole('link', { name: 'SnowFinder', exact: true }).click()
+    await expect(page).toHaveURL(/\/$/)
+    await expect(markers(page)).toHaveCount(24)
+  })
+
+  test('map → place → Back keeps the filter, by the browser button and by «Tilbake»', async ({ page }) => {
+    await page.goto('/')
+    await expect(markers(page)).toHaveCount(24)
+    await nysno(page).fill('2')
+    await temperatur(page).fill('0')
+    await expect(markers(page)).toHaveCount(6)
+
+    const gaustatoppen = page.locator('path[data-sted-id="gaustatoppen"]')
+    await gaustatoppen.click()
+    await expect(page).toHaveURL(/\/sted\/gaustatoppen$/)
+    await page.goBack()
+    await expect(page).toHaveURL(/\/\?nysno=2&temp=0$/)
+    await expect(markers(page)).toHaveCount(6)
+    await expect(nysno(page)).toHaveAttribute('aria-valuetext', 'minst 2 cm')
+    await expect(temperatur(page)).toHaveAttribute('aria-valuetext', 'høyst 0 °C')
+
+    await gaustatoppen.click()
+    await expect(page).toHaveURL(/\/sted\/gaustatoppen$/)
+    await page.getByRole('link', { name: 'Tilbake', exact: true }).click()
+    await expect(page).toHaveURL(/\/\?nysno=2&temp=0$/)
+    await expect(markers(page)).toHaveCount(6)
+  })
+
+  test('list → place → Back keeps the filter, the view and the order', async ({ page }) => {
+    await page.goto('/?visning=liste&nysno=2&temp=0&sortering=navn')
+    await expect(rows(page)).toHaveCount(6)
+    await expect(page.getByLabel('Sorter etter')).toHaveValue('navn')
+    expect(await navn(page)).toEqual(NAVN_SEKS)
+
+    await rows(page).first().click()
+    await expect(page).toHaveURL(/\/sted\/galdhopiggen$/)
+    await page.goBack()
+    await expect(page).toHaveURL(/\/\?visning=liste&nysno=2&temp=0&sortering=navn$/)
+    expect(await navn(page)).toEqual(NAVN_SEKS)
+    await expect(nysno(page)).toHaveAttribute('aria-valuetext', 'minst 2 cm')
+  })
+
+  test('sorting by name goes in the address, and the link opens the list sorted by name', async ({ page, context }) => {
+    await page.goto('/?visning=liste&nysno=2&temp=0')
+    await expect(rows(page)).toHaveCount(6)
+    await page.getByLabel('Sorter etter').selectOption('navn')
+    await expect(page).toHaveURL(/\/\?visning=liste&nysno=2&temp=0&sortering=navn$/)
+
+    const delt = await context.newPage()
+    await delt.goto(page.url())
+    await expect(rows(delt)).toHaveCount(6)
+    await expect(delt.getByLabel('Sorter etter')).toHaveValue('navn')
+    expect(await navn(delt)).toEqual(NAVN_SEKS)
+  })
+
+  test('sorting by distance never goes in the address', async ({ page, context }) => {
+    await context.grantPermissions(['geolocation'])
+    await context.setGeolocation({ latitude: 59.9139, longitude: 10.7522 })
+    await page.goto('/?visning=liste&sortering=navn')
+    await expect(rows(page)).toHaveCount(24)
+    await page.getByLabel('Sorter etter').selectOption('avstand')
+    await expect(rows(page).first()).toContainText('km unna')
+    await expect(page).toHaveURL(/\/\?visning=liste$/)
+
+    await page.getByLabel('Sorter etter').selectOption('navn')
+    await expect(page).toHaveURL(/\/\?visning=liste&sortering=navn$/)
+  })
+
+  test('a refused position leaves the order in the address unchanged', async ({ page }) => {
+    await page.goto('/?visning=liste&sortering=navn')
+    await expect(rows(page)).toHaveCount(24)
+    await page.getByLabel('Sorter etter').selectOption('avstand')
+    await expect(page.getByRole('status').filter({ hasText: 'posisjonen' })).toHaveText(
+      'Fikk ikke tilgang til posisjonen din. Listen er sortert etter navn.',
+    )
+    await expect(page.getByLabel('Sorter etter')).toHaveValue('navn')
+    await expect(page).toHaveURL(/\/\?visning=liste&sortering=navn$/)
+    expect(await navn(page)).toEqual([...(await navn(page))].sort(new Intl.Collator('nb').compare))
   })
 })

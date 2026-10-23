@@ -41,6 +41,7 @@
 - source_spec: `spec-1-8-listevisning.md`
   summary: Legg sorteringsvalget i listen inn i URL-en (f.eks. `?visning=liste&sortering=navn`) sammen med filterparametrene i Epic 3 (FR-21), så valget overlever Tilbake og delte lenker.
   evidence: Story 1.8-gjennomgang (alle tre lag). Sorteringen ligger i `useState` i ListeVisning og går tilbake til score når komponenten lastes på nytt.
+  resolved: Story 3.2 (2026-10-23). `sortering=navn` ligger i adressen og overlever Tilbake og delte lenker. «Avstand» lagres bevisst ikke, så en delt lenke aldri ber mottakeren om posisjon.
 - source_spec: `spec-1-7b-markorer-etter-zoom.md`
   summary: Oppdater DESIGN.md (begge kopier) via `bmad-ux`: kartmarkøren er 28 px fra zoom 8 og krymper til 10 px på landsnivå. Vurder også en usynlig, større trykkflate rundt små markører (kravet om 44 px på mobil).
   evidence: Manuell sjekk 2026-10-08 med 300 steder: 28 px-markørene overlappet på landsnivå. Aksel valgte mindre markører ut zoomet. Blind Hunter påpekte at 10 px er under kravet om trykkflate.
@@ -73,3 +74,7 @@
 - source_spec: `spec-3-1-filtrer-nysno-vind-temperatur.md`
   summary: Filteret nullstilles når brukeren åpner en stedsside og går tilbake, fordi tilstanden ligger i `Utforsk`, som avmonteres. Story 3.2 flytter filteret inn i URL-en og skal ha en E2E-test for kart → sted → Tilbake med filteret i behold.
   evidence: Gjennomgangen av 3.1 (Blind Hunter, Edge Case Hunter). `useState` i `src/pages/Utforsk.tsx`; `App.tsx` rendrer `Sted` i stedet for `Utforsk` på `/sted/:id`.
+  resolved: Story 3.2 (`spec-3-2-del-og-gjenapne-filtrert-sok.md`, 2026-10-23). Filteret ligger i adressen, og E2E dekker kart → sted → Tilbake med nettleserknappen og med «Tilbake».
+- source_spec: `spec-3-2-del-og-gjenapne-filtrert-sok.md`
+  summary: UJ-1 steg 6 sier «URL har filter + sted». Stedssidens adresse (`/sted/<id>`) har ikke filteret, så en delt stedslenke, eller «Tilbake» på en stedsside som er åpnet direkte, gir kartet uten filter. Vurder om stedssiden skal bære filteret videre, eller om UJ-1 skal presiseres (`bmad-correct-course`).
+  evidence: Gjennomgangen av 3.2 (Blind Hunter). I appen virker Tilbake fra et sted som er åpnet fra kart eller liste, fordi historikken har den filtrerte adressen. Bare direkte åpnede stedslenker mister filteret.
