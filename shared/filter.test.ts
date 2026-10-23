@@ -6,20 +6,24 @@ import {
   FILTER_GRENSER,
   FILTER_KRAV,
   filtrerSteder,
+  forslagVedNullTreff,
   parseFilter,
   serializeFilter,
   STANDARD_FILTER,
   type FilterParams,
   type Filtrerbar,
+  type Forslag,
 } from './filter'
 
-// Story 3.1: the golden table locks the filter rules (FR-20, AD-6).
+// Story 3.1: the golden table locks the filter rules (FR-20, AD-6). Story 3.3 adds the suggestion at zero hits (FR-14).
 
 type GoldenSted = Filtrerbar & { id: string }
 interface GoldenCase {
   navn: string
   filter: FilterParams
   forventet: string[]
+  /** Only on cases with zero hits; `null` means no single change helps, so the app offers «Nullstill». */
+  forventetForslag?: Forslag | null
 }
 
 const golden = JSON.parse(readFileSync(new URL('../tests/golden/filter.json', import.meta.url), 'utf8')) as {
@@ -33,6 +37,61 @@ const ids = (steder: { id: string }[]) => steder.map(({ id }) => id)
 describe('filtrerSteder golden table', () => {
   it.each(golden.tilfeller.map((c) => [c.navn, c] as const))('%s', (_navn, testCase) => {
     expect(ids(filtrerSteder(golden.steder, testCase.filter))).toEqual(testCase.forventet)
+  })
+})
+
+describe('forslagVedNullTreff golden table', () => {
+  it('has an expected suggestion on every case with zero hits, and none on the others', () => {
+    for (const testCase of golden.tilfeller) {
+      expect('forventetForslag' in testCase, testCase.navn).toBe(testCase.forventet.length === 0)
+    }
+  })
+
+  it.each(golden.tilfeller.map((c) => [c.navn, c] as const))('%s', (_navn, testCase) => {
+    expect(forslagVedNullTreff(golden.steder, testCase.filter)).toEqual(testCase.forventetForslag ?? null)
+  })
+
+  it('gives a suggestion that, applied, shows exactly its number of places', () => {
+    for (const { filter, forventetForslag } of golden.tilfeller) {
+      if (!forventetForslag) continue
+      const { krav, verdi, antall } = forventetForslag
+      expect(filtrerSteder(golden.steder, { ...filter, [krav]: verdi })).toHaveLength(antall)
+    }
+  })
+})
+
+describe('forslagVedNullTreff', () => {
+  const sted = (nysnoCm: number, vindMaks: number): Filtrerbar => ({ nysnoCm, vindMaks, temperatur: 0 })
+
+  it('prefers the requirement that gives the most places over the one that needs fewer steps', () => {
+    // Easing new snow 3 steps to 2 cm gives one place; easing wind 15 steps to 20 m/s gives two.
+    const steder = [sted(10, 20), sted(10, 20), sted(2, 5)]
+    expect(forslagVedNullTreff(steder, { minNysnoCm: 5, maksVindMs: 5, maksTemperaturC: null })).toEqual({
+      krav: 'maksVindMs',
+      verdi: 20,
+      antall: 2,
+    })
+  })
+
+  it('skips a place without the value while easing, and counts it only once the requirement is removed', () => {
+    // The golden places cannot show this: «dyp» meets every limit the others meet, so a walk stops before «Alle».
+    const steder: Filtrerbar[] = [{ nysnoCm: null, vindMaks: 5, temperatur: 0 }, sted(2, 20)]
+    expect(forslagVedNullTreff(steder, { minNysnoCm: 5, maksVindMs: 5, maksTemperaturC: null })).toEqual({
+      krav: 'minNysnoCm',
+      verdi: null,
+      antall: 1,
+    })
+  })
+
+  it('returns, without hanging, for a limit the slider cannot set', () => {
+    expect(forslagVedNullTreff([sted(10, 5)], { minNysnoCm: Number.NaN, maksVindMs: null, maksTemperaturC: null })).toBeNull()
+    expect(forslagVedNullTreff([sted(10, 5)], { minNysnoCm: Number.NaN, maksVindMs: 4, maksTemperaturC: null })).toBeNull()
+    expect(forslagVedNullTreff([sted(10, 5)], { minNysnoCm: Infinity, maksVindMs: null, maksTemperaturC: null })).toBeNull()
+  })
+
+  it('gives no suggestion when there are places, or no places at all', () => {
+    expect(forslagVedNullTreff([sted(10, 5)], { minNysnoCm: 5, maksVindMs: null, maksTemperaturC: null })).toBeNull()
+    expect(forslagVedNullTreff([], { minNysnoCm: 5, maksVindMs: null, maksTemperaturC: null })).toBeNull()
   })
 })
 
@@ -60,6 +119,12 @@ describe('filtrerSteder on the demo data', () => {
   it('keeps the six places with at least 2 cm new snow and at most 0 °C', () => {
     const treff = filtrerSteder(demo.steder, { minNysnoCm: 2, maksVindMs: null, maksTemperaturC: 0 })
     expect(ids(treff).sort()).toEqual(['galdhopiggen', 'gaustatoppen', 'jiehkkevarri', 'oksskolten', 'oppdal-skisenter', 'rondeslottet'])
+  })
+
+  it('suggests 12 cm for at least 13 cm new snow, which gives Trysil', () => {
+    const filter: FilterParams = { minNysnoCm: 13, maksVindMs: null, maksTemperaturC: null }
+    expect(forslagVedNullTreff(demo.steder, filter)).toEqual({ krav: 'minNysnoCm', verdi: 12, antall: 1 })
+    expect(ids(filtrerSteder(demo.steder, { ...filter, minNysnoCm: 12 }))).toEqual(['trysil'])
   })
 
   it('filters 300 places far below the 2 s of NFR-1', () => {

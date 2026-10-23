@@ -345,6 +345,12 @@ kriterium som bør lempes ved null treff.
 **Konsekvenser (testbare):**
 - Ved null treff identifiserer systemet hvilket enkeltkriterium som, hvis fjernet, ville gitt
   flest nye treff, og foreslår nettopp det (jf. UJ-1 edge case).
+  - *(presisert v4, 2026-10-23, Aksels valg i Story 3.3)* «Fjernet» er presisert til «lempet så
+    lite som mulig», slik storyen og eksempelet «Prøv vind under 8 m/s» sier. For hvert aktivt
+    krav finner systemet den nærmeste verdien på sliderens steg, i retning «Alle», som gir minst
+    ett treff når de andre kravene står. Det foreslår kravet som da gir flest treff. Ved likhet
+    vinner færrest steg, så panelets rekkefølge. Hjelper ingen enkeltendring, foreslås
+    «Nullstill». Forslaget er en knapp som setter verdien med ett trykk.
 - *(v2)* Fasittabellen for filter (definert i FR-20) inneholder også forventet forslag ved
   null treff.
 

@@ -67,6 +67,46 @@ export function filtrerSteder<T extends Filtrerbar>(steder: readonly T[], params
   return steder.filter((sted) => aktive.every(([krav, grense]) => oppfyller(sted, krav, grense)))
 }
 
+/** One requirement eased to `verdi` (`null` means without it), which gives `antall` places. */
+export interface Forslag {
+  krav: FilterKrav
+  verdi: number | null
+  antall: number
+}
+
+/**
+ * Story 3.3 (FR-14): which single requirement to ease when the filter gives no places. For each active
+ * requirement it finds the nearest slider step towards «Alle» that gives at least one place while the
+ * others stay, and picks the one that gives the most places; on a tie the fewest steps, then panel order.
+ * `null` when there are places already, or when no single change gives any (the app then offers «Nullstill»).
+ */
+export function forslagVedNullTreff(steder: readonly Filtrerbar[], params: FilterParams): Forslag | null {
+  if (filtrerSteder(steder, params).length > 0) return null
+  let best: (Forslag & { steg: number }) | null = null
+  for (const [krav, grense] of aktiveGrenser(params)) {
+    const { min, max, steg, standard } = FILTER_GRENSER[krav]
+    // A limit the slider cannot set gets no suggestion; the bound below keeps the walk finite for any range.
+    if (!Number.isFinite(grense) || !(steg > 0)) continue
+    const retning = standard > grense ? steg : -steg
+    const flestSteg = Math.ceil((max - min) / steg) + 1
+    for (let antallSteg = 1; antallSteg <= flestSteg; antallSteg++) {
+      const verdi = grense + retning * antallSteg
+      // Reaching (or passing) the «Alle» end means trying without the requirement, which always ends the walk.
+      const forsok = (retning > 0 ? verdi >= standard : verdi <= standard) ? null : verdi
+      const antall = filtrerSteder(steder, { ...params, [krav]: forsok }).length
+      if (antall > 0) {
+        // Strictly better only, so an equal candidate earlier in panel order stays.
+        if (!best || antall > best.antall || (antall === best.antall && antallSteg < best.steg)) {
+          best = { krav, verdi: forsok, antall, steg: antallSteg }
+        }
+        break
+      }
+      if (forsok === null) break
+    }
+  }
+  return best && { krav: best.krav, verdi: best.verdi, antall: best.antall }
+}
+
 // AD-12 (Story 3.2, FR-21): the only translation between the address and the filter. The router carries
 // the query to these two functions and never reads the requirements itself.
 

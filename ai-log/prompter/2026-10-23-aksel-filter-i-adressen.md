@@ -48,3 +48,17 @@ Aksel ga lov til å merge i økten. Spec-en ble større enn anbefalt, og Aksel v
 - **Inkonsistensene fra 3.2:** Et gjentatt `visning` gir standard. At «Avstand» kan bli stående ved Tilbake/Fram, godtas og er forklart i koden.
 
 **Hva vi gjorde med det:** Spec: [`spec-rydd-apne-punkter.md`](../../project-workspace/implementation-artifacts/spec-rydd-apne-punkter.md).
+
+### 4
+> gå videre
+
+**Svar (kort):** Claude bygde Story 3.3 og spurte om to valg. Aksel valgte begge anbefalingene:
+- **Forslaget ved null treff** er den nærmeste slider-verdien som gir treff, for kravet som da gir flest treff.
+- **Forslaget er en knapp**, «Bruk forslaget».
+
+**Hva vi gjorde med det:**
+- Panelet viser antall treff hele tiden, og én levende region leser det opp.
+- Ved null treff viser et banner forslaget, «Bruk forslaget» og «Nullstill».
+- Regelen er låst i fasittabellen.
+- FR-14 i PRD-en er presisert i begge kopiene. Der stod «hvis fjernet», mens storyen og eksempelet sier «lempet».
+- Spec: [`spec-3-3-treff-og-null-treff.md`](../../project-workspace/implementation-artifacts/spec-3-3-treff-og-null-treff.md).

@@ -42,7 +42,10 @@ liste som virker med tastatur og skjermleser, sortert etter score, avstand eller
 Filteret (til venstre på store skjermer, bak knappen «Filter» nederst på mobil) har tre krav:
 minst så mye nysnø, høyst så mye vind og høyst så høy temperatur. Kart og liste viser bare stedene
 som oppfyller alle kravene. Et sted som mangler verdien for et aktivt krav, vises ikke. «Nullstill»
-setter alle kravene tilbake til «Alle».
+setter alle kravene tilbake til «Alle». Filteret viser hele tiden antall treff, og ved null treff
+foreslår appen det ene kravet som bør lempes (for eksempel «Prøv nysnø minst 12 cm»), som du kan bruke
+med knappen «Bruk forslaget». Forslagene bruker sliderens hele steg, så et sted med 12,6 cm nysnø gir
+forslaget «minst 12 cm».
 
 Filteret, visningen og sorteringen ligger i nettadressen, for eksempel
 `/?visning=liste&nysno=5&vind=10&temp=-2&sortering=navn`. Kopier adressen for å dele søket: lenken
