@@ -181,7 +181,7 @@ flowchart LR
   data paths that quietly diverge in which filter parameters they read.
 - **Rule:**
   - `Utforsk` is the only route for exploring the catalog.
-  - It reads `visning=kart|liste` from the URL (default `kart`) purely to choose
+  - It reads `visning=kart|liste` from the URL (default `kart`) to choose
     `KartVisning` or `ListeVisning`.
   - Both views read the same filter parameters (parsed by `shared/filter.ts`, AD-12) and call
     the same `useSteder()` hook.
@@ -257,6 +257,13 @@ flowchart LR
     before writing it, and `src/lib/data/` parses it with the same schema when loading.
   - **Filter parameters.** `shared/filter.ts` owns `FilterParams` and the only URL ↔ filter
     `parse` and `serialize` functions.
+  - **The Utforsk address** *(Story 3.2, 2026-10-23)*. The query is `visning`, `nysno`, `vind`,
+    `temp` and `sortering`, always in that order, so the same search gives the same address. A
+    value at its default (`kart`, «Alle», `score`) is not written. An invalid or repeated value
+    counts as the default, and the address is rewritten to the clean form on load. Filter and
+    sort changes replace the history entry (`replaceState`); switching view or opening a place
+    adds one. The distance sort is never written, so a shared link never asks the receiver
+    for their position. The place page address carries no filter.
   - **Golden tables.** They use these shapes (`tests/golden/snowscore.json`, `filter.json`,
     later `skivindu.json`) and state their boundary rules: inclusive or exclusive limits, nulls
     and tie-break order.

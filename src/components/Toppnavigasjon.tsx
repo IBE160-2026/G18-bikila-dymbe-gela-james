@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { href, type Route } from '../lib/router'
+import { href, utforsk, type Route } from '../lib/router'
 import Lenke from './Lenke'
 
 /**
@@ -12,6 +12,8 @@ import Lenke from './Lenke'
 export default function Toppnavigasjon({ route }: { route: Route }) {
   // The route name is part of the key: «Fant ikke siden» links to the root like the map does, so the
   // address alone would not change when the user goes from there to the map, and the menu would stay open.
+  // On Utforsk the address holds the filter (Story 3.2), so a slider step also closes the menu. That is
+  // acceptable: the user is then working elsewhere on the page.
   const nokkel = `${route.name} ${href(route, import.meta.env.BASE_URL)}`
   const [meny, setMeny] = useState({ apen: false, nokkel })
   // Adjusting state while rendering (React's pattern for resetting on a prop change): the stored key
@@ -24,7 +26,7 @@ export default function Toppnavigasjon({ route }: { route: Route }) {
       {/* «SnowFinder» opens the map, so only the map is its page. The list has no nav link of its own,
           so nothing in the nav is current there. */}
       <Lenke
-        to={{ name: 'utforsk', visning: 'kart' }}
+        to={utforsk()}
         className="app-title"
         current={route.name === 'utforsk' && route.visning === 'kart'}
       >

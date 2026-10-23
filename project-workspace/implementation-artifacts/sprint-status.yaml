@@ -29,7 +29,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 # - Retrospective appends its action items to action_items; the status view surfaces open ones
 generated: 09-27-2026 12:00
-last_updated: 10-22-2026 21:00
+last_updated: 10-23-2026 10:00
 project: G18-bikila-dymbe-gela-james
 project_key: NOKEY
 tracking_system: file-system
@@ -58,7 +58,7 @@ development_status:
 
   epic-3: in-progress
   3-1-filtrer-på-nysnø-vind-og-temperatur: done
-  3-2-del-og-gjenåpne-et-filtrert-søk: backlog
+  3-2-del-og-gjenåpne-et-filtrert-søk: done
   3-3-få-hjelp-ved-null-treff-og-se-antall-treff-live: backlog
   3-4-bruk-hurtigvalg-for-vanlige-kombinasjoner: backlog
   3-5-filtrer-på-sol: backlog

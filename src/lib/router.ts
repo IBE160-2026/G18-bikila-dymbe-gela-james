@@ -1,4 +1,5 @@
-import { useSyncExternalStore } from 'react'
+import { useMemo, useSyncExternalStore } from 'react'
+import { parseFilter, serializeFilter, STANDARD_FILTER, type FilterParams } from '../../shared/filter'
 
 // A minimal History API router (no react-router, by the story's constraint). Paths are relative to
 // import.meta.env.BASE_URL so the app also works from a GitHub Pages subfolder.
@@ -6,12 +7,22 @@ import { useSyncExternalStore } from 'react'
 export const VISNINGER = ['kart', 'liste'] as const
 export type Visning = (typeof VISNINGER)[number]
 
+/**
+ * The list orders kept in the address. «Avstand» is left out on purpose: a shared link would then ask
+ * the receiver for their position without them having picked it.
+ */
+export type UrlSortering = 'score' | 'navn'
+
 // AD-8: map and list are one route; `?visning=liste` picks the list, anything else is the map.
-export type Route =
-  | { name: 'utforsk'; visning: Visning }
-  | { name: 'sted'; id: string }
-  | { name: 'forklaring' }
-  | { name: 'ikke-funnet' }
+// AD-12 (Story 3.2): the filter and the list order ride along in the same query, so a link can be shared.
+export type UtforskRoute = { name: 'utforsk'; visning: Visning; filter: FilterParams; sortering: UrlSortering }
+
+export type Route = UtforskRoute | { name: 'sted'; id: string } | { name: 'forklaring' } | { name: 'ikke-funnet' }
+
+/** Utforsk with no filter and the default order, as links from other pages open it. */
+export function utforsk(visning: Visning = 'kart'): UtforskRoute {
+  return { name: 'utforsk', visning, filter: STANDARD_FILTER, sortering: 'score' }
+}
 
 /** Story 2.1: the path of «Slik beregner vi SnowScore», relative to the base. */
 const FORKLARING_PATH = 'slik-beregner-vi-snowscore'
@@ -20,9 +31,14 @@ function withTrailingSlash(base: string): string {
   return base.endsWith('/') ? base : `${base}/`
 }
 
-function parseVisning(search: string): Visning {
-  const verdi = new URLSearchParams(search).get('visning')
-  return VISNINGER.find((visning) => visning === verdi) ?? 'kart'
+function parseUtforsk(search: string): UtforskRoute {
+  const params = new URLSearchParams(search)
+  const visning = VISNINGER.find((verdi) => verdi === params.get('visning')) ?? 'kart'
+  // As for the filter, a repeated parameter is ambiguous and gives the default.
+  const sorteringer = params.getAll('sortering')
+  const sortering = sorteringer.length === 1 && sorteringer[0] === 'navn' ? 'navn' : 'score'
+  // The router carries the filter but leaves reading it to shared/filter.ts.
+  return { name: 'utforsk', visning, filter: parseFilter(params), sortering }
 }
 
 export function parseRoute(pathname: string, base: string, search = ''): Route {
@@ -31,7 +47,7 @@ export function parseRoute(pathname: string, base: string, search = ''): Route {
   const path = withTrailingSlash(pathname)
   if (!path.startsWith(root)) return { name: 'ikke-funnet' }
   const rest = path.slice(root.length).replace(/\/$/, '')
-  if (rest === '') return { name: 'utforsk', visning: parseVisning(search) }
+  if (rest === '') return parseUtforsk(search)
   if (rest === FORKLARING_PATH) return { name: 'forklaring' }
   const match = /^sted\/([^/]+)$/.exec(rest)
   if (!match) return { name: 'ikke-funnet' }
@@ -43,12 +59,22 @@ export function parseRoute(pathname: string, base: string, search = ''): Route {
   }
 }
 
+/** The query of Utforsk in a fixed order (visning, filter, sortering), leaving out every default. */
+function utforskQuery({ visning, filter, sortering }: UtforskRoute): string {
+  const params = new URLSearchParams()
+  if (visning === 'liste') params.append('visning', 'liste')
+  for (const [navn, verdi] of serializeFilter(filter)) params.append(navn, verdi)
+  if (sortering === 'navn') params.append('sortering', 'navn')
+  const query = params.toString()
+  return query === '' ? '' : `?${query}`
+}
+
 export function href(route: Route, base: string): string {
   const root = withTrailingSlash(base)
   switch (route.name) {
     case 'utforsk':
-      // The map is the default, so its link carries no query.
-      return route.visning === 'liste' ? `${root}?visning=liste` : root
+      // The map without a filter is the default, so its link carries no query.
+      return `${root}${utforskQuery(route)}`
     case 'ikke-funnet':
       return root
     case 'forklaring':
@@ -80,6 +106,18 @@ export function navigate(route: Route, base: string = import.meta.env.BASE_URL):
   window.dispatchEvent(new Event(NAVIGATE_EVENT))
 }
 
+/**
+ * Changes the address without a new history step (Story 3.2: a filter change), so Back leaves the page
+ * instead of stepping through slider values. The entry keeps its state, so reachedInApp() is unchanged.
+ */
+export function replace(route: Route, base: string = import.meta.env.BASE_URL): void {
+  const target = href(route, base)
+  if (target !== window.location.pathname + window.location.search) {
+    window.history.replaceState(window.history.state, '', target)
+  }
+  window.dispatchEvent(new Event(NAVIGATE_EVENT))
+}
+
 function subscribe(onChange: () => void): () => void {
   window.addEventListener('popstate', onChange)
   window.addEventListener(NAVIGATE_EVENT, onChange)
@@ -94,8 +132,13 @@ function location(): string {
   return window.location.pathname + window.location.search
 }
 
-/** The current route; re-renders on navigate() and on the browser's back and forward buttons. */
+/** The current route; re-renders on navigate(), replace() and on the browser's back and forward buttons. */
 export function useRoute(base: string = import.meta.env.BASE_URL): Route {
-  const url = new URL(useSyncExternalStore(subscribe, location), 'http://x')
-  return parseRoute(url.pathname, base, url.search)
+  const adresse = useSyncExternalStore(subscribe, location)
+  // Memoised on the address, so the filter object stays the same between renders and the map does not
+  // rebuild its markers unless the filter changed.
+  return useMemo(() => {
+    const url = new URL(adresse, 'http://x')
+    return parseRoute(url.pathname, base, url.search)
+  }, [adresse, base])
 }

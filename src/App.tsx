@@ -28,7 +28,7 @@ function Innhold({ result, route }: { result: StederResult | null; route: Route 
     )
   }
   if (route.name === 'utforsk') {
-    return <Utforsk steder={result.data.steder} utdatert={result.utdatert} visning={route.visning} />
+    return <Utforsk steder={result.data.steder} utdatert={result.utdatert} route={route} />
   }
   // NFR-3: a place removed for being older than 12 h says so, instead of "not found".
   if (result.fjernet.has(route.id)) return <IkkeFunnet melding="Dataene for dette stedet er for gamle til å vises" />

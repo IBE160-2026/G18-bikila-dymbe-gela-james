@@ -58,9 +58,14 @@ test('the list works with the keyboard alone: switch, sort, open a place and com
   await expect(page).toHaveURL(/\/sted\/bergen$/)
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Bergen')
 
+  // Story 3.2: the order is in the address, so Back keeps it.
   await page.goBack()
-  await expect(page).toHaveURL(/\/\?visning=liste$/)
+  await expect(page).toHaveURL(/\/\?visning=liste&sortering=navn$/)
   await expect(rows(page)).toHaveCount(24)
+  await expect(rows(page).first()).toContainText('Bergen')
+  await expect(sortering).toHaveValue('navn')
+  await sortering.selectOption('score')
+  await expect(page).toHaveURL(/\/\?visning=liste$/)
 
   // The place page's own «Tilbake» link also returns to the list, not the map.
   await tabTo(page, rows(page).first())

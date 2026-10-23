@@ -42,7 +42,13 @@ liste som virker med tastatur og skjermleser, sortert etter score, avstand eller
 Filteret (til venstre på store skjermer, bak knappen «Filter» nederst på mobil) har tre krav:
 minst så mye nysnø, høyst så mye vind og høyst så høy temperatur. Kart og liste viser bare stedene
 som oppfyller alle kravene. Et sted som mangler verdien for et aktivt krav, vises ikke. «Nullstill»
-setter alle kravene tilbake til «Alle». Filteret lagres ennå ikke i nettadressen.
+setter alle kravene tilbake til «Alle».
+
+Filteret, visningen og sorteringen ligger i nettadressen, for eksempel
+`/?visning=liste&nysno=5&vind=10&temp=-2&sortering=navn`. Kopier adressen for å dele søket: lenken
+åpner samme filter, samme visning og samme treff. Krav som står på «Alle», og ugyldige verdier tas ikke
+med. Sortering etter avstand lagres ikke, så en delt lenke ber aldri om posisjonen din. Tilbake fra en
+stedsside viser søket slik du forlot det, og en endring i filteret lager ikke et nytt steg i historikken.
 
 Stedssiden (`/sted/<id>`) viser SnowScore med delpoengene A, B og C, værdataene bak dem og når MET
 sist oppdaterte prognosen. Data eldre enn 3 timer merkes «Utdatert», og steder med data eldre enn

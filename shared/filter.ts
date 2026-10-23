@@ -66,3 +66,41 @@ export function filtrerSteder<T extends Filtrerbar>(steder: readonly T[], params
   const aktive = aktiveGrenser(params)
   return steder.filter((sted) => aktive.every(([krav, grense]) => oppfyller(sted, krav, grense)))
 }
+
+// AD-12 (Story 3.2, FR-21): the only translation between the address and the filter. The router carries
+// the query to these two functions and never reads the requirements itself.
+
+/** The query parameter of each requirement, in the fixed order serializeFilter writes them. */
+const FILTER_PARAMETRE: Readonly<Record<FilterKrav, string>> = {
+  minNysnoCm: 'nysno',
+  maksVindMs: 'vind',
+  maksTemperaturC: 'temp',
+}
+
+const HELTALL = /^-?\d+$/
+
+/** One requirement from the address. Anything the panel could not have set means «Alle» (`null`). */
+function parseKrav(krav: FilterKrav, search: URLSearchParams): number | null {
+  const verdier = search.getAll(FILTER_PARAMETRE[krav])
+  // The app never writes a parameter twice, so two values are ambiguous and turn the requirement off.
+  if (verdier.length !== 1 || !HELTALL.test(verdier[0])) return null
+  // `|| 0` turns "-0" into 0, so the value equals what the slider would have set.
+  const verdi = Number(verdier[0]) || 0
+  const { min, max, steg, standard } = FILTER_GRENSER[krav]
+  if (verdi < min || verdi > max || (verdi - min) % steg !== 0 || verdi === standard) return null
+  return verdi
+}
+
+/** The filter in a query. Invalid or missing values give «Alle»; the page never fails on a bad link. */
+export function parseFilter(search: URLSearchParams): FilterParams {
+  return {
+    minNysnoCm: parseKrav('minNysnoCm', search),
+    maksVindMs: parseKrav('maksVindMs', search),
+    maksTemperaturC: parseKrav('maksTemperaturC', search),
+  }
+}
+
+/** The active requirements as query pairs, in panel order, so the same filter always gives the same address. */
+export function serializeFilter(params: FilterParams): [string, string][] {
+  return aktiveGrenser(params).map(([krav, verdi]): [string, string] => [FILTER_PARAMETRE[krav], String(verdi)])
+}

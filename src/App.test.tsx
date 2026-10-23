@@ -7,7 +7,7 @@ import { AppView } from './App'
 import { kvalitetLinjer } from './components/Datakvalitet'
 import { medFerskhet, type StederResult } from './hooks/useSteder'
 import { LOAD_ERROR_MESSAGE } from './lib/data/loadPublishedData'
-import type { Route } from './lib/router'
+import { utforsk, type Route } from './lib/router'
 import { INGEN_STEDER } from './pages/Utforsk'
 
 const demo = PublishedData.parse(
@@ -15,8 +15,8 @@ const demo = PublishedData.parse(
 )
 
 const demoResult = medFerskhet({ status: 'ok', data: demo, source: 'demo' })
-const UTFORSK: Route = { name: 'utforsk', visning: 'kart' }
-const LISTE: Route = { name: 'utforsk', visning: 'liste' }
+const UTFORSK: Route = utforsk('kart')
+const LISTE: Route = utforsk('liste')
 
 function render(result: StederResult | null, route: Route = UTFORSK): string {
   return renderToStaticMarkup(<AppView result={result} route={route} />)
@@ -54,7 +54,7 @@ describe('AppView', () => {
     vi.useFakeTimers({ now: Date.parse(demo.referenceTime) + 2 * FJERNES_ETTER_MS })
     try {
       const live = { ...demo, mode: 'live' as const }
-      const html = render(medFerskhet({ status: 'ok', data: live, source: 'latest' }), { name: 'utforsk', visning })
+      const html = render(medFerskhet({ status: 'ok', data: live, source: 'latest' }), utforsk(visning))
       expect(html).toContain('<p class="visually-hidden" role="status">Ingen ferske data</p>')
       expect(html).toContain('<h2 id="tom-overskrift">Ingen ferske data</h2>')
       expect(html).toContain(`<p>${INGEN_STEDER}</p>`)
