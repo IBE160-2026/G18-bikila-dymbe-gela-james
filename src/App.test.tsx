@@ -18,7 +18,7 @@ const demoResult = medFerskhet({ status: 'ok', data: demo, source: 'demo' })
 const UTFORSK: Route = utforsk('kart')
 const LISTE = utforsk('liste')
 // Story 3.2b: the demo search with six hits, at least 2 cm new snow and at most 0 °C, in the list.
-const SEKS_I_LISTEN = { ...LISTE, filter: { minNysnoCm: 2, maksVindMs: null, maksTemperaturC: 0 } }
+const SEKS_I_LISTEN = { ...LISTE, filter: { minNysnoCm: 2, maksVindMs: null, maksTemperaturC: 0, maksSkydekkeDagslys: null } }
 
 /** The text of every element with role="status" that contains `tekst`. */
 const statusMed = (html: string, tekst: string) =>
@@ -48,7 +48,7 @@ describe('AppView', () => {
 
   // Story 3.3 (FR-14): zero hits suggest the single requirement to ease, in the panel's words.
   it('suggests the nearest new snow that gives a place, with «Bruk forslaget» and «Nullstill»', () => {
-    const html = render(demoResult, { ...UTFORSK, filter: { minNysnoCm: 13, maksVindMs: null, maksTemperaturC: null } })
+    const html = render(demoResult, { ...UTFORSK, filter: { minNysnoCm: 13, maksVindMs: null, maksTemperaturC: null, maksSkydekkeDagslys: null } })
     const tekst = 'Ingen treff. Prøv nysnø minst 12 cm.'
     expect(html).toContain(`<p class="visually-hidden" role="status">${tekst}</p>`)
     expect(html).toContain(
@@ -61,12 +61,12 @@ describe('AppView', () => {
   })
 
   it('says «Prøv uten nysnøkravet» when only «Alle» gives a place', () => {
-    const html = render(demoResult, { ...UTFORSK, filter: { minNysnoCm: 1, maksVindMs: 3, maksTemperaturC: null } })
+    const html = render(demoResult, { ...UTFORSK, filter: { minNysnoCm: 1, maksVindMs: 3, maksTemperaturC: null, maksSkydekkeDagslys: null } })
     expect(html).toContain('<p>Ingen treff. Prøv uten nysnøkravet.</p>')
   })
 
   it('offers only «Nullstill» when no single change gives a place', () => {
-    const html = render(demoResult, { ...UTFORSK, filter: { minNysnoCm: 13, maksVindMs: null, maksTemperaturC: -11 } })
+    const html = render(demoResult, { ...UTFORSK, filter: { minNysnoCm: 13, maksVindMs: null, maksTemperaturC: -11, maksSkydekkeDagslys: null } })
     expect(html).toContain('<p>Ingen treff. Det hjelper ikke å endre bare ett krav. Prøv «Nullstill».</p>')
     expect(html).not.toContain('Bruk forslaget')
   })
@@ -137,6 +137,7 @@ describe('AppView', () => {
       'Temperatur, snitt||−6,4 °C',
       'Vind, maks||12 m/s',
       'Skydekke, snitt||85 %',
+      'Skydekke i dagslys||87,9 %',
       'Høyde||1\u00a0882 moh.',
       'NVE-nysnø siste døgn||0 mm',
     ]) {
@@ -147,6 +148,14 @@ describe('AppView', () => {
     expect(html).not.toContain('Utdatert')
     expect(html).toContain('<a href="/" class="sted-tilbake">Tilbake</a>')
     expect(html).not.toContain('class="kart"')
+  })
+
+  it('shows «–» for the cloud cover in daylight when the place has none (polar night)', () => {
+    const morketid = { ...demo, steder: demo.steder.map((s) => (s.id === 'tromso' ? { ...s, skydekkeDagslys: null } : s)) }
+    const html = render(medFerskhet({ status: 'ok', data: morketid, source: 'demo' }), sted('tromso'))
+    const text = html.replace(/<[^>]+>/g, '|')
+    expect(text).toContain('Skydekke i dagslys||–')
+    expect(text).toContain('Skydekke, snitt||91,7 %')
   })
 
   // Story 3.2b: the place page shows the same as without a search, and «Tilbake» goes to that search.

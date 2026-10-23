@@ -12,6 +12,8 @@ export interface FilterParams {
   maksVindMs: number | null
   /** Mean temperature in the window at most this many °C (inclusive). */
   maksTemperaturC: number | null
+  /** Story 3.5 (FR-22): mean cloud cover in the daylight hours at most this many % (inclusive). */
+  maksSkydekkeDagslys: number | null
 }
 
 export type FilterKrav = keyof FilterParams
@@ -29,15 +31,29 @@ export const FILTER_GRENSER: Readonly<Record<FilterKrav, KravGrense>> = {
   minNysnoCm: { min: 0, max: 30, steg: 1, standard: 0 },
   maksVindMs: { min: 0, max: 25, steg: 1, standard: 25 },
   maksTemperaturC: { min: -20, max: 10, steg: 1, standard: 10 },
+  // Story 3.5 (decided 2026-10-23): 0–100 % in steps of 10, where 100 means «Alle».
+  maksSkydekkeDagslys: { min: 0, max: 100, steg: 10, standard: 100 },
 }
 
-export const FILTER_KRAV: readonly FilterKrav[] = ['minNysnoCm', 'maksVindMs', 'maksTemperaturC']
+export const FILTER_KRAV: readonly FilterKrav[] = ['minNysnoCm', 'maksVindMs', 'maksTemperaturC', 'maksSkydekkeDagslys']
 
-export const STANDARD_FILTER: FilterParams = { minNysnoCm: null, maksVindMs: null, maksTemperaturC: null }
+export const STANDARD_FILTER: FilterParams = {
+  minNysnoCm: null,
+  maksVindMs: null,
+  maksTemperaturC: null,
+  maksSkydekkeDagslys: null,
+}
 
 /** The fields filtrerSteder reads, so the golden table can use small hand-written places. */
-export type Filtrerbar = Pick<Sted, 'nysnoCm' | 'vindMaks' | 'temperatur'>
+export type Filtrerbar = Pick<Sted, 'nysnoCm' | 'vindMaks' | 'temperatur' | 'skydekkeDagslys'>
 
+/** The place's value each requirement is compared with. */
+const FELT: Readonly<Record<FilterKrav, keyof Filtrerbar>> = {
+  minNysnoCm: 'nysnoCm',
+  maksVindMs: 'vindMaks',
+  maksTemperaturC: 'temperatur',
+  maksSkydekkeDagslys: 'skydekkeDagslys',
+}
 
 /** Each active requirement with its limit: set, and not at the "no limit" end of its range. */
 function aktiveGrenser(params: FilterParams): [FilterKrav, number][] {
@@ -53,7 +69,7 @@ export function aktiveKrav(params: FilterParams): FilterKrav[] {
 }
 
 function oppfyller(sted: Filtrerbar, krav: FilterKrav, grense: number): boolean {
-  const verdi = krav === 'minNysnoCm' ? sted.nysnoCm : krav === 'maksVindMs' ? sted.vindMaks : sted.temperatur
+  const verdi = sted[FELT[krav]]
   // A missing value cannot be shown to meet the requirement, so the place is left out.
   if (verdi === null) return false
   // Compared as the app shows it (src/lib/format.ts `tall` rounds the same way).
@@ -115,6 +131,7 @@ const FILTER_PARAMETRE: Readonly<Record<FilterKrav, string>> = {
   minNysnoCm: 'nysno',
   maksVindMs: 'vind',
   maksTemperaturC: 'temp',
+  maksSkydekkeDagslys: 'sky',
 }
 
 const HELTALL = /^-?\d+$/
@@ -137,6 +154,7 @@ export function parseFilter(search: URLSearchParams): FilterParams {
     minNysnoCm: parseKrav('minNysnoCm', search),
     maksVindMs: parseKrav('maksVindMs', search),
     maksTemperaturC: parseKrav('maksTemperaturC', search),
+    maksSkydekkeDagslys: parseKrav('maksSkydekkeDagslys', search),
   }
 }
 

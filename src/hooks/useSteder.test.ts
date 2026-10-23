@@ -136,6 +136,7 @@ describe('medFerskhet', () => {
       temperatur: null,
       vindMaks: null,
       skydekke: null,
+      skydekkeDagslys: null,
       nveNysnoSisteDognMm: null,
     }
   }

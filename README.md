@@ -39,16 +39,19 @@ krever nøkkel, men som trenger nett for å vise kartbildene.
 Velg «Liste» under navigasjonen (eller åpne `/?visning=liste`) for å se de samme stedene som en
 liste som virker med tastatur og skjermleser, sortert etter score, avstand eller navn.
 
-Filteret (til venstre på store skjermer, bak knappen «Filter» nederst på mobil) har tre krav:
-minst så mye nysnø, høyst så mye vind og høyst så høy temperatur. Kart og liste viser bare stedene
-som oppfyller alle kravene. Et sted som mangler verdien for et aktivt krav, vises ikke. «Nullstill»
+Filteret (til venstre på store skjermer, bak knappen «Filter» nederst på mobil) har fire krav:
+minst så mye nysnø, høyst så mye vind, høyst så høy temperatur og høyst så mye skydekke i dagslys
+(0–100 % i steg på 10, «Alle» ved 100). Skydekket i dagslys er snittet av timene de neste 24 timene der
+solen står over horisonten på stedet, og stedssiden viser det i raden «Skydekke i dagslys». I mørketiden
+finnes ingen slike timer, så nordlige steder har ingen verdi og skjules når skydekkekravet er på. Kart og liste
+viser bare stedene som oppfyller alle kravene. Et sted som mangler verdien for et aktivt krav, vises ikke. «Nullstill»
 setter alle kravene tilbake til «Alle». Filteret viser hele tiden antall treff, og ved null treff
 foreslår appen det ene kravet som bør lempes (for eksempel «Prøv nysnø minst 12 cm»), som du kan bruke
 med knappen «Bruk forslaget». Forslagene bruker sliderens hele steg, så et sted med 12,6 cm nysnø gir
 forslaget «minst 12 cm».
 
 Filteret, visningen og sorteringen ligger i nettadressen, for eksempel
-`/?visning=liste&nysno=5&vind=10&temp=-2&sortering=navn`. Kopier adressen for å dele søket: lenken
+`/?visning=liste&nysno=5&vind=10&temp=-2&sky=60&sortering=navn`. Kopier adressen for å dele søket: lenken
 åpner samme filter, samme visning og samme treff. Krav som står på «Alle», og ugyldige verdier tas ikke
 med. Sortering etter avstand lagres ikke, så en delt lenke ber aldri om posisjonen din. Tilbake fra en
 stedsside viser søket slik du forlot det, og en endring i filteret lager ikke et nytt steg i historikken.

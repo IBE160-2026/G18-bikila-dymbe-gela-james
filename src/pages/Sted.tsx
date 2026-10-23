@@ -40,6 +40,8 @@ export default function Sted({ sted, utdatert, sok }: Props) {
     ['Temperatur, snitt', medEnhet(sted.temperatur, '°C')],
     ['Vind, maks', medEnhet(sted.vindMaks, 'm/s')],
     ['Skydekke, snitt', medEnhet(sted.skydekke, '%')],
+    // Story 3.5: what the sun filter compares with; «–» in the polar night or for a file older than the field.
+    ['Skydekke i dagslys', medEnhet(sted.skydekkeDagslys, '%')],
     ['Høyde', medEnhet(sted.hoyde, 'moh.')],
     ['NVE-nysnø siste døgn', medEnhet(sted.nveNysnoSisteDognMm, 'mm')],
   ]

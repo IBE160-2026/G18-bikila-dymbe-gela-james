@@ -153,6 +153,17 @@
   font-feature-settings: var(--typography-numeric-font-feature-settings);
 }
 
+/* Story 3.5: a short note under a slider, linked to it with aria-describedby. */
+.filter-hint {
+  margin: var(--spacing-1) 0 0;
+  color: var(--color-ink-secondary);
+  font-family: var(--typography-meta-font-family);
+  font-size: var(--typography-meta-font-size);
+  font-weight: var(--typography-meta-font-weight);
+  line-height: var(--typography-meta-line-height);
+  letter-spacing: var(--typography-meta-letter-spacing);
+}
+
 /* DESIGN.md filter-slider: a 4px track, a 24px thumb and an accent fill. The input is 48px tall, so the
    touch target stays above 44px. --fra and --til are set per slider and mark the accent part. */
 .filter-felt input[type='range'] {

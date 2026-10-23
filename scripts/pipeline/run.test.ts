@@ -169,6 +169,7 @@ describe('runLive', () => {
       temperatur: null,
       vindMaks: null,
       skydekke: null,
+      skydekkeDagslys: null,
     })
   })
 

@@ -258,11 +258,12 @@ flowchart LR
   - **Filter parameters.** `shared/filter.ts` owns `FilterParams` and the only URL ↔ filter
     `parse` and `serialize` functions.
   - **The Utforsk address** *(Story 3.2, 2026-10-23)*. The query is `visning`, `nysno`, `vind`,
-    `temp` and `sortering`, always in that order, so the same search gives the same address. A
-    value at its default (`kart`, «Alle», `score`) is not written. An invalid or repeated value
-    counts as the default, and the address is rewritten to the clean form on load. Filter and
-    sort changes replace the history entry (`replaceState`); switching view or opening a place
-    adds one. The distance sort is never written, so a shared link never asks the receiver
+    `temp`, `sky` and `sortering`, always in that order, so the same search gives the same address
+    (`sky`, the cloud cover in daylight at most X % in steps of 10, was added by Story 3.5,
+    2026-10-23). A value at its default (`kart`, «Alle», `score`) is not written. An invalid or
+    repeated value counts as the default, and the address is rewritten to the clean form on load.
+    Filter and sort changes replace the history entry (`replaceState`); switching view or opening a
+    place adds one. The distance sort is never written, so a shared link never asks the receiver
     for their position. The place page address (`/sted/<id>`) carries the same query, built
     and read by the same functions *(Story 3.2b, 2026-10-23)*, so a shared place link keeps the
     search and its «Tilbake» returns to it.

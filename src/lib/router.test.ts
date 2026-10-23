@@ -8,7 +8,7 @@ const LISTE: UtforskRoute = utforsk('liste')
 const FILTRERT: UtforskRoute = {
   name: 'utforsk',
   visning: 'liste',
-  filter: { minNysnoCm: 5, maksVindMs: 10, maksTemperaturC: -2 },
+  filter: { minNysnoCm: 5, maksVindMs: 10, maksTemperaturC: -2, maksSkydekkeDagslys: null },
   sortering: 'navn',
 }
 const FORKLARING: Route = { name: 'forklaring' }
@@ -73,7 +73,7 @@ describe.each(BASES)('router with base %s', (base) => {
     expect(parseRoute(base, base, '?visning=liste&nysno=5&vind=10&temp=-2&sortering=navn')).toEqual(FILTRERT)
     expect(parseRoute(base, base, '?sortering=navn&temp=-2&vind=10&nysno=5&visning=liste')).toEqual(FILTRERT)
     // Without visning the filter opens on the map.
-    expect(parseRoute(base, base, '?nysno=2&temp=0')).toEqual({ ...KART, filter: { minNysnoCm: 2, maksVindMs: null, maksTemperaturC: 0 } })
+    expect(parseRoute(base, base, '?nysno=2&temp=0')).toEqual({ ...KART, filter: { minNysnoCm: 2, maksVindMs: null, maksTemperaturC: 0, maksSkydekkeDagslys: null } })
   })
 
   it('never keeps «avstand» or an unknown order', () => {
@@ -121,8 +121,15 @@ describe.each(BASES)('router with base %s', (base) => {
 
   it('writes the query in a fixed order and leaves out every default', () => {
     expect(href(FILTRERT, base)).toBe(`${base}?visning=liste&nysno=5&vind=10&temp=-2&sortering=navn`)
-    expect(href({ ...KART, filter: { minNysnoCm: 0, maksVindMs: 25, maksTemperaturC: 0 } }, base)).toBe(`${base}?temp=0`)
+    expect(href({ ...KART, filter: { minNysnoCm: 0, maksVindMs: 25, maksTemperaturC: 0, maksSkydekkeDagslys: null } }, base)).toBe(`${base}?temp=0`)
     expect(href({ ...KART, sortering: 'navn' }, base)).toBe(`${base}?sortering=navn`)
+  })
+
+  it('carries the cloud cover in daylight as `sky`, after `temp` and before the order (Story 3.5)', () => {
+    const sol: UtforskRoute = { ...FILTRERT, filter: { ...FILTRERT.filter, maksSkydekkeDagslys: 60 } }
+    expect(href(sol, base)).toBe(`${base}?visning=liste&nysno=5&vind=10&temp=-2&sky=60&sortering=navn`)
+    expect(parseRoute(base, base, '?visning=liste&nysno=5&vind=10&temp=-2&sky=60&sortering=navn')).toEqual(sol)
+    expect(parseRoute(base, base, '?sky=65')).toEqual(KART)
   })
 })
 

@@ -126,6 +126,20 @@ describe('publish', () => {
     await expect(publish(bad, { outPath, now: REFERENCE_TIME })).rejects.toThrow()
     await expect(readFile(outPath)).rejects.toThrow()
   })
+
+  it('refuses to write a place without the cloud cover in daylight (Story 3.5)', async () => {
+    const ctx = context(24, 0)
+    const uten = {
+      ...ctx,
+      steder: ctx.steder.map((s) => {
+        const kopi: Partial<typeof s> = { ...s }
+        delete kopi.skydekkeDagslys
+        return kopi as typeof s
+      }),
+    }
+    await expect(publish(uten, { outPath, now: REFERENCE_TIME })).rejects.toThrow()
+    await expect(readFile(outPath)).rejects.toThrow()
+  })
 })
 
 describe('writeRunReport', () => {
