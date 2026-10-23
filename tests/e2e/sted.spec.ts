@@ -29,6 +29,7 @@ test('Gaustatoppen from the list shows the sub-scores, the data and the source t
   await expect(verdi(page, 'Temperatur, snitt')).toHaveText('−6,4 °C')
   await expect(verdi(page, 'Vind, maks')).toHaveText('12 m/s')
   await expect(verdi(page, 'Skydekke, snitt')).toHaveText('85 %')
+  await expect(verdi(page, 'Skydekke i dagslys')).toHaveText('87,9 %')
   await expect(verdi(page, 'Høyde')).toHaveText('1\u00a0882 moh.')
   await expect(verdi(page, 'NVE-nysnø siste døgn')).toHaveText('0 mm')
   await expect(page.getByText('Prognose fra MET, oppdatert 7. oktober 2026 kl. 22:30')).toBeVisible()

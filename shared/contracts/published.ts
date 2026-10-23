@@ -69,6 +69,12 @@ export const Sted = z.strictObject({
   vindMaks: z.number().min(0).nullable(),
   /** Mean cloud cover in the window in %; null when no hour has data. */
   skydekke: z.number().min(0).max(100).nullable(),
+  /**
+   * Story 3.5: mean cloud cover in % over the window's daylight hours at the place (see score.ts);
+   * null in the polar night or when too many of those hours lack data. Required here, so publish.ts
+   * rejects a pipeline that stops writing it; only the app's loader fills it in for older files.
+   */
+  skydekkeDagslys: z.number().min(0).max(100).nullable(),
   /** NVE seNorge new snow over the last day at or before the reference time, in mm; null when missing. */
   nveNysnoSisteDognMm: z.number().min(0).nullable(),
 })

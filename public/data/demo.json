@@ -44,6 +44,7 @@
       "temperatur": 8.804166666666669,
       "vindMaks": 5.1,
       "skydekke": 41.545833333333334,
+      "skydekkeDagslys": 11.19090909090909,
       "nveNysnoSisteDognMm": 0
     },
     {
@@ -70,6 +71,7 @@
       "temperatur": -8.891666666666666,
       "vindMaks": 11.2,
       "skydekke": 90.35833333333333,
+      "skydekkeDagslys": 91.34545454545454,
       "nveNysnoSisteDognMm": 1
     },
     {
@@ -96,6 +98,7 @@
       "temperatur": -6.366666666666666,
       "vindMaks": 12,
       "skydekke": 85,
+      "skydekkeDagslys": 87.90909090909089,
       "nveNysnoSisteDognMm": 0
     },
     {
@@ -122,6 +125,7 @@
       "temperatur": 2.641666666666667,
       "vindMaks": 6.4,
       "skydekke": 98.13333333333334,
+      "skydekkeDagslys": 99.48181818181818,
       "nveNysnoSisteDognMm": 0
     },
     {
@@ -148,6 +152,7 @@
       "temperatur": 1.9375,
       "vindMaks": 4,
       "skydekke": 84.62083333333332,
+      "skydekkeDagslys": 89.62727272727273,
       "nveNysnoSisteDognMm": 0
     },
     {
@@ -174,6 +179,7 @@
       "temperatur": -10.154166666666667,
       "vindMaks": 17.5,
       "skydekke": 84.20833333333334,
+      "skydekkeDagslys": 75.86,
       "nveNysnoSisteDognMm": 53
     },
     {
@@ -200,6 +206,7 @@
       "temperatur": 5.466666666666668,
       "vindMaks": 13.7,
       "skydekke": 65.25416666666665,
+      "skydekkeDagslys": 62.620000000000005,
       "nveNysnoSisteDognMm": 0
     },
     {
@@ -226,6 +233,7 @@
       "temperatur": 0.24166666666666667,
       "vindMaks": 6.9,
       "skydekke": 65.03333333333332,
+      "skydekkeDagslys": 46.2,
       "nveNysnoSisteDognMm": 0
     },
     {
@@ -252,6 +260,7 @@
       "temperatur": 6.766666666666666,
       "vindMaks": 4.8,
       "skydekke": 97.60833333333333,
+      "skydekkeDagslys": 99.19090909090909,
       "nveNysnoSisteDognMm": 0
     },
     {
@@ -278,6 +287,7 @@
       "temperatur": 6.095833333333334,
       "vindMaks": 2.7,
       "skydekke": 88.3,
+      "skydekkeDagslys": 91.03,
       "nveNysnoSisteDognMm": 0
     },
     {
@@ -304,6 +314,7 @@
       "temperatur": 1.15,
       "vindMaks": 6.1,
       "skydekke": 82.825,
+      "skydekkeDagslys": 89.67999999999999,
       "nveNysnoSisteDognMm": 0
     },
     {
@@ -330,6 +341,7 @@
       "temperatur": -7.775000000000002,
       "vindMaks": 10.9,
       "skydekke": 88.5,
+      "skydekkeDagslys": 91.44999999999999,
       "nveNysnoSisteDognMm": 15
     },
     {
@@ -356,6 +368,7 @@
       "temperatur": -0.04166666666666666,
       "vindMaks": 6.1,
       "skydekke": 94.44583333333334,
+      "skydekkeDagslys": 99.4090909090909,
       "nveNysnoSisteDognMm": 0
     },
     {
@@ -382,6 +395,7 @@
       "temperatur": 7.895833333333335,
       "vindMaks": 7.7,
       "skydekke": 98.07916666666667,
+      "skydekkeDagslys": 99.93636363636364,
       "nveNysnoSisteDognMm": 0
     },
     {
@@ -408,6 +422,7 @@
       "temperatur": -6.791666666666665,
       "vindMaks": 13.7,
       "skydekke": 94.4541666666667,
+      "skydekkeDagslys": 97.89090909090909,
       "nveNysnoSisteDognMm": 0
     },
     {
@@ -434,6 +449,7 @@
       "temperatur": 4.958333333333333,
       "vindMaks": 7.5,
       "skydekke": 56.987500000000004,
+      "skydekkeDagslys": 31.463636363636365,
       "nveNysnoSisteDognMm": 0
     },
     {
@@ -460,6 +476,7 @@
       "temperatur": -8.141666666666666,
       "vindMaks": 12.3,
       "skydekke": 91.65416666666665,
+      "skydekkeDagslys": 94.23636363636363,
       "nveNysnoSisteDognMm": 0
     },
     {
@@ -486,6 +503,7 @@
       "temperatur": 9.575000000000001,
       "vindMaks": 8.1,
       "skydekke": 46.43750000000001,
+      "skydekkeDagslys": 25.518181818181816,
       "nveNysnoSisteDognMm": 0
     },
     {
@@ -512,6 +530,7 @@
       "temperatur": -8.137499999999998,
       "vindMaks": 9.5,
       "skydekke": 74.92916666666667,
+      "skydekkeDagslys": 70.73636363636363,
       "nveNysnoSisteDognMm": 4
     },
     {
@@ -538,6 +557,7 @@
       "temperatur": 4.3125,
       "vindMaks": 8.1,
       "skydekke": 91.65000000000002,
+      "skydekkeDagslys": 87.99,
       "nveNysnoSisteDognMm": 0
     },
     {
@@ -564,6 +584,7 @@
       "temperatur": 2.3708333333333336,
       "vindMaks": 8,
       "skydekke": 91.53750000000001,
+      "skydekkeDagslys": 88.28,
       "nveNysnoSisteDognMm": 0
     },
     {
@@ -584,6 +605,7 @@
       "temperatur": null,
       "vindMaks": 5.1,
       "skydekke": 87.395,
+      "skydekkeDagslys": 91.41818181818182,
       "nveNysnoSisteDognMm": 0
     },
     {
@@ -610,6 +632,7 @@
       "temperatur": 0.9958333333333331,
       "vindMaks": 9.5,
       "skydekke": 99.99583333333334,
+      "skydekkeDagslys": 100,
       "nveNysnoSisteDognMm": 0
     },
     {
@@ -636,6 +659,7 @@
       "temperatur": 3.3000000000000007,
       "vindMaks": 3.4,
       "skydekke": 57.299999999999976,
+      "skydekkeDagslys": 37.23636363636365,
       "nveNysnoSisteDognMm": 0
     }
   ]

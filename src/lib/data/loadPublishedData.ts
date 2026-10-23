@@ -36,6 +36,18 @@ async function tryFetch(fetchFn: FetchFn, url: string): Promise<Attempt> {
   }
 }
 
+/**
+ * Story 3.5: a latest.json written before `skydekkeDagslys` existed gets it as null, so the app keeps
+ * working until the next pipeline run. Read side only; publish.ts still requires the field.
+ */
+function medSkydekkeDagslys(body: unknown): unknown {
+  if (typeof body !== 'object' || body === null || !('steder' in body) || !Array.isArray(body.steder)) return body
+  const steder: unknown[] = body.steder.map((sted: unknown) =>
+    typeof sted === 'object' && sted !== null && !('skydekkeDagslys' in sted) ? { ...sted, skydekkeDagslys: null } : sted,
+  )
+  return { ...body, steder }
+}
+
 export const LOAD_ERROR_MESSAGE = 'Klarte ikke å lese stedsdataene. Prøv å laste siden på nytt senere.'
 
 export async function loadPublishedData(fetchFn: FetchFn = (url, init) => fetch(url, init), baseUrl = '/'): Promise<LoadResult> {
@@ -48,7 +60,7 @@ export async function loadPublishedData(fetchFn: FetchFn = (url, init) => fetch(
       console.error(attempt.reason)
       return { status: 'error', message: LOAD_ERROR_MESSAGE }
     }
-    const parsed = PublishedData.safeParse(attempt.body)
+    const parsed = PublishedData.safeParse(medSkydekkeDagslys(attempt.body))
     if (!parsed.success) {
       console.error(`${url} følger ikke PublishedData`, parsed.error.issues)
       return { status: 'error', message: LOAD_ERROR_MESSAGE }

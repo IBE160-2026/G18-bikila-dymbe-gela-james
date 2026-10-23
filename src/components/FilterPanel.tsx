@@ -10,20 +10,30 @@ import {
 } from '../../shared/filter'
 import { tall } from '../lib/format'
 
-// Story 3.1 (FR-20): new snow, wind and temperature, combined with AND. A fixed left side panel from
-// 768px, a bottom sheet below. The sheet opens with a button rather than a drag (decided 2026-10-22),
-// so it works with the keyboard and a screen reader. Story 3.3 (FR-14, UX-DR4) shows the hit count in the
-// panel and on the closed sheet.
+// Story 3.1 (FR-20): new snow, wind and temperature, and from Story 3.5 (FR-22) cloud cover in daylight,
+// combined with AND. A fixed left side panel from 768px, a bottom sheet below. The sheet opens with a
+// button rather than a drag (decided 2026-10-22), so it works with the keyboard and a screen reader.
+// Story 3.3 (FR-14, UX-DR4) shows the hit count in the panel and on the closed sheet.
 
 export const ALLE = 'Alle'
 export const KNAPP_ID = 'filter-knapp'
 const INNHOLD_ID = 'filter-innhold'
 const feltId = (krav: FilterKrav) => `filter-${krav}`
 
+/**
+ * Story 3.5: why places vanish when the sun requirement is on. A place without daylight hours in the
+ * next 24 hours (polar night), or from a data file older than the field, has no value and is hidden.
+ */
+const HINT: Partial<Record<FilterKrav, string>> = {
+  maksSkydekkeDagslys: 'Steder uten dagslys de neste 24 timene (mørketid) vises ikke når kravet er på.',
+}
+
 const KRAV_TEKST: Record<FilterKrav, { navn: string; retning: string; enhet: string; kravet: string }> = {
   minNysnoCm: { navn: 'Nysnø', retning: 'minst', enhet: 'cm', kravet: 'nysnøkravet' },
   maksVindMs: { navn: 'Vind', retning: 'høyst', enhet: 'm/s', kravet: 'vindkravet' },
   maksTemperaturC: { navn: 'Temperatur', retning: 'høyst', enhet: '°C', kravet: 'temperaturkravet' },
+  // Story 3.5 (FR-22): the mean over the hours with the sun above the horizon, not the whole day.
+  maksSkydekkeDagslys: { navn: 'Skydekke i dagslys', retning: 'høyst', enhet: '%', kravet: 'skydekkekravet' },
 }
 
 /** The value as words: «minst 10 cm», «høyst −5 °C», or «Alle» when the requirement is off. */
@@ -67,6 +77,8 @@ function Filterfelt({ krav, verdi, onEndre }: FeltProps) {
   const { min, max, steg, standard } = FILTER_GRENSER[krav]
   const id = feltId(krav)
   const tekst = verdiTekst(krav, verdi)
+  const hint = HINT[krav]
+  const hintId = `${id}-hint`
   const vist = verdi ?? standard
   // The accent part of the track is the range the requirement lets through: above the thumb for
   // «minst», below it for «høyst». «Alle» fills the whole track.
@@ -89,12 +101,18 @@ function Filterfelt({ krav, verdi, onEndre }: FeltProps) {
         step={steg}
         value={vist}
         aria-valuetext={tekst}
+        aria-describedby={hint ? hintId : undefined}
         style={fylt as CSSProperties}
         onChange={(event) => {
           const ny = Number(event.target.value)
           onEndre(ny === standard ? null : ny)
         }}
       />
+      {hint && (
+        <p id={hintId} className="filter-hint">
+          {hint}
+        </p>
+      )}
     </div>
   )
 }

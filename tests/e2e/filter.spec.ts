@@ -596,3 +596,110 @@ test.describe('the hit count and the suggestion at 375px', () => {
     await expectNoBlockingViolations(page)
   })
 })
+
+// Story 3.5 (FR-22): cloud cover in daylight at most X %, combined with AND, in the address as `sky`.
+// Demo places at most 60 % (as the app rounds them): Bergen 11,2, Stavanger 25,5, Sirdal 31,5, Voss 37,2
+// and Kjerag 46,2. Kirkenes (62,6) is just above.
+const SOL_FEM = ['bergen', 'kjerag', 'sirdal-skisenter', 'stavanger', 'voss-resort-fjellheisar']
+const skydekke = (page: Page) => page.getByRole('slider', { name: 'Skydekke i dagslys' })
+
+test.describe('the sun filter at 1280px', () => {
+  test.use({ viewport: DESKTOP })
+
+  test('at most 60 % keeps the five sunniest places, on the map, in the list and in the address', async ({ page }) => {
+    await page.goto('/')
+    await expect(markers(page)).toHaveCount(24)
+    await expect(skydekke(page)).toHaveAttribute('aria-valuetext', 'Alle')
+    await expect(skydekke(page)).toHaveAttribute('step', '10')
+
+    await skydekke(page).fill('60')
+    await expect(skydekke(page)).toHaveAttribute('aria-valuetext', 'høyst 60 %')
+    await expect(page).toHaveURL(/\/\?sky=60$/)
+    await expect(markers(page)).toHaveCount(5)
+    for (const id of SOL_FEM) await expect(page.locator(`path[data-sted-id="${id}"]`)).toHaveCount(1)
+    await expect(live(page)).toHaveText('5 treff')
+
+    await page.getByRole('link', { name: 'Liste', exact: true }).click()
+    await expect(page).toHaveURL(/\/\?visning=liste&sky=60$/)
+    await expect(rows(page)).toHaveCount(5)
+  })
+
+  test('the address writes `sky` after `temp`, and a shared link restores it', async ({ page }) => {
+    await page.goto('/')
+    await expect(markers(page)).toHaveCount(24)
+    await skydekke(page).fill('80')
+    await nysno(page).fill('2')
+    await temperatur(page).fill('0')
+    await expect(page).toHaveURL(/\/\?nysno=2&temp=0&sky=80$/)
+    // Of the six with at least 2 cm and at most 0 °C, only Jiehkkevárri (75,9 %) is at most 80 %.
+    await expect(markers(page)).toHaveCount(1)
+    await expect(page.locator('path[data-sted-id="jiehkkevarri"]')).toHaveCount(1)
+
+    await page.goto('/?visning=liste&sky=60')
+    await expect(rows(page)).toHaveCount(5)
+    await expect(skydekke(page)).toHaveAttribute('aria-valuetext', 'høyst 60 %')
+    await expect(skydekke(page)).toHaveValue('60')
+  })
+
+  test('a value off the steps of 10 turns the requirement off', async ({ page }) => {
+    for (const ugyldig of ['sky=65', 'sky=abc']) {
+      await page.goto(`/?${ugyldig}&temp=0`)
+      await expect(page).toHaveURL(/\/\?temp=0$/)
+      await expect(skydekke(page)).toHaveAttribute('aria-valuetext', 'Alle')
+      await expect(page.getByRole('alert')).toHaveCount(0)
+    }
+  })
+
+  test('at most 0 % suggests 20 %, and «Bruk forslaget» shows Bergen with focus on the slider', async ({ page }) => {
+    await page.goto('/?sky=0')
+    await expect(markers(page)).toHaveCount(0)
+    await expect(banner(page).getByRole('paragraph')).toHaveText('Ingen treff. Prøv skydekke i dagslys høyst 20 %.')
+    await brukForslaget(page).click()
+    await expect(page).toHaveURL(/\/\?sky=20$/)
+    await expect(markers(page)).toHaveCount(1)
+    await expect(page.locator('path[data-sted-id="bergen"]')).toHaveCount(1)
+    await expect(skydekke(page)).toHaveAttribute('aria-valuetext', 'høyst 20 %')
+    await expect(skydekke(page)).toBeFocused()
+  })
+
+  test('the place page shows the cloud cover in daylight', async ({ page }) => {
+    await page.goto('/sted/bergen?sky=60')
+    const rad = page.locator('.tall-liste div').filter({ has: page.getByText('Skydekke i dagslys', { exact: true }) })
+    await expect(rad.locator('dd')).toHaveText('11,2 %')
+  })
+})
+
+test.describe('the sun filter at 375px', () => {
+  test.use({ viewport: MOBIL })
+
+  test('the sheet with four sliders does not scroll sideways, even with a wide font', async ({ page }) => {
+    for (const width of [320, 375]) {
+      await page.setViewportSize({ width, height: MOBIL.height })
+      await page.goto('/')
+      await expect(markers(page)).toHaveCount(24)
+      await page.addStyleTag({ content: BRED_FONT })
+
+      await filterKnapp(page).click()
+      await expect(skydekke(page)).toBeAttached()
+      await skydekke(page).scrollIntoViewIfNeeded()
+      expect((await box(skydekke(page))).height).toBeGreaterThanOrEqual(44)
+      await nysno(page).fill('2')
+      await vind(page).fill('8')
+      await temperatur(page).fill('-15')
+      await skydekke(page).fill('60')
+      await expectNoSidewaysScroll(page)
+      await filterKnapp(page).click()
+      const chips = page.getByRole('list', { name: 'Aktive krav' }).getByRole('listitem')
+      await expect(chips).toHaveText(['Nysnø minst 2 cm', 'Vind høyst 8 m/s', 'Temperatur høyst −15 °C', 'Skydekke i dagslys høyst 60 %'])
+      await expectNoSidewaysScroll(page)
+    }
+  })
+
+  test('the open sheet with the sun filter has no serious or critical WCAG 2.1 AA violations', async ({ page }) => {
+    await page.goto('/?sky=60')
+    await expect(markers(page)).toHaveCount(5)
+    await filterKnapp(page).click()
+    await expect(skydekke(page)).toHaveAttribute('aria-valuetext', 'høyst 60 %')
+    await expectNoBlockingViolations(page)
+  })
+})

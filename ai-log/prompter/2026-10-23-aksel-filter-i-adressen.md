@@ -62,3 +62,16 @@ Aksel ga lov til å merge i økten. Spec-en ble større enn anbefalt, og Aksel v
 - Regelen er låst i fasittabellen.
 - FR-14 i PRD-en er presisert i begge kopiene. Der stod «hvis fjernet», mens storyen og eksempelet sier «lempet».
 - Spec: [`spec-3-3-treff-og-null-treff.md`](../../project-workspace/implementation-artifacts/spec-3-3-treff-og-null-treff.md).
+
+### 5
+> videre
+
+**Svar (kort):** Claude tok Story 3.5 (sol) før 3.4, fordi hurtigvalget «Sol etter snøfall» i 3.4 trenger solfilteret. FR-22 sier «maks skydekke i dagslystimer», men datafila hadde bare et døgnsnitt med natt. Claude spurte om løsning.
+
+**Valg:** «Dagslystimer, som FR-22».
+
+**Hva vi gjorde med det:**
+- Dataprogrammet regner `skydekkeDagslys`: skydekket i timene solen er oppe. Solhøyden regnes med en enkel formel uten ny avhengighet.
+- Filteret har fått et fjerde krav (høyst X %, steg 10), og adressen har fått parameteren `sky`.
+- Steder i mørketid skjules når kravet er på, og en hjelpetekst forklarer hvorfor.
+- Spec: [`spec-3-5-filtrer-pa-sol.md`](../../project-workspace/implementation-artifacts/spec-3-5-filtrer-pa-sol.md).

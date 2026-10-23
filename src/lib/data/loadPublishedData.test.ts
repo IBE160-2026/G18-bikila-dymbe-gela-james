@@ -45,6 +45,21 @@ describe('loadPublishedData', () => {
     if (result.status === 'ok') expect(result.data.steder).toHaveLength(24)
   })
 
+  it('loads a latest.json written before Story 3.5, with the cloud cover in daylight as null', async () => {
+    const gammel = {
+      ...live,
+      steder: live.steder.map((sted: Record<string, unknown>) => {
+        const kopi = { ...sted }
+        delete kopi.skydekkeDagslys
+        return kopi
+      }),
+    }
+    expect(gammel.steder[0]).not.toHaveProperty('skydekkeDagslys')
+    const result = await loadPublishedData(fakeFetch({ '/data/latest.json': () => json(gammel) }))
+    expect(result).toMatchObject({ status: 'ok', source: 'latest' })
+    if (result.status === 'ok') expect(result.data.steder.every((s) => s.skydekkeDagslys === null)).toBe(true)
+  })
+
   it('treats an HTML answer (dev server fallback) as missing', async () => {
     const result = await loadPublishedData(
       fakeFetch({ '/data/latest.json': indexHtml, '/data/demo.json': () => json(demo) }),

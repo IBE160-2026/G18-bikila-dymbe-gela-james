@@ -37,6 +37,73 @@ describe('score', () => {
     expect(sted.skydekke).toBe(50)
   })
 
+  it('takes the cloud cover in daylight over the hours with the sun above the horizon only', () => {
+    // The place is at 60.01° N 10.01° E. From 20:00 UTC on 7 October, hours 0–8 and 22–23 of the window
+    // are deep night (sun below −12°) and hours 12–19 broad day (above 9°). The hours near sunrise and
+    // sunset (9–11, 20–21) get the same 20 % as the day's mean, so the result does not hang on whether the
+    // formula counts them. Night is overcast.
+    const dag = [0, 40, 0, 40, 0, 40, 0, 40]
+    const cloud = (i: number) => (i >= 12 && i <= 19 ? dag[i - 12] : i >= 9 && i <= 21 ? 20 : 100)
+    const hours = snowyDay().map((h, i) => ({ ...h, cloud: cloud(i) }))
+    const [sted] = scored([{ id: 'a', met: metResponse(hours), nve: nveResponse() }]).steder
+    expect(sted.skydekkeDagslys).toBe(20)
+    // The whole-day mean is unchanged and still counts the night.
+    expect(sted.skydekke).toBe((13 * 20 + 11 * 100) / 24)
+  })
+
+  /** Scores one place at `lat`/`lon` over the 24 hours from `start`, with clouds per hour. */
+  function scoredAt(lat: number, lon: number, start: string, cloud: (i: number) => number) {
+    const hours = snowyDay().map((h, i) => ({ ...h, cloud: cloud(i) }))
+    const ctx = validate(rawContext([{ id: 'a', met: metResponse(hours, undefined, start), nve: nveResponse() }]))
+    const [sted] = score({
+      ...ctx,
+      referenceTime: start.replace(':00:00Z', ':30:00Z'),
+      catalog: ctx.catalog.map((entry) => ({ ...entry, lat, lon })),
+    }).steder
+    return sted
+  }
+
+  it('gives no cloud cover in daylight in the polar night', () => {
+    // Tromsø on the winter solstice: the sun stays below the horizon all 24 hours.
+    const sted = scoredAt(69.65, 18.96, '2026-12-21T00:00:00Z', () => 50)
+    expect(sted.skydekke).toBe(50)
+    expect(sted.skydekkeDagslys).toBeNull()
+  })
+
+  it('counts every hour in the midnight sun, so daylight and whole-day means are equal', () => {
+    const sted = scoredAt(69.65, 18.96, '2026-06-21T00:00:00Z', (i) => (i * 7) % 100)
+    expect(sted.skydekkeDagslys).not.toBeNull()
+    expect(sted.skydekkeDagslys).toBe(sted.skydekke)
+  })
+
+  it('counts an hour as daylight when the sun is up only half an hour after it starts', () => {
+    // On the polar circle (66.45° N 6.6° E) at the winter solstice the sun is up only around 11:30 UTC,
+    // below the horizon at both 11:00 and 12:00. Hour 11 is the one daylight hour.
+    const sted = scoredAt(66.45, 6.6, '2026-12-21T00:00:00Z', (i) => (i === 11 ? 30 : 90))
+    expect(sted.skydekkeDagslys).toBe(30)
+  })
+
+  it('gives no cloud cover in daylight when more than 10 % of the daylight hours are missing', () => {
+    // As in the first test, hours 10–20 are daylight (11 hours). Hours 14 and 15 are well inside the day.
+    const utenTimer = (fjern: number[]) => {
+      const met = metResponse(snowyDay())
+      met.properties.timeseries = met.properties.timeseries.filter((_, i) => !fjern.includes(i))
+      return scored([{ id: 'a', met, nve: nveResponse() }]).steder[0]
+    }
+    // 1 of 11 missing (9 %) still gives the mean; 2 of 11 (18 %) gives null, like SnowScore's rule.
+    expect(utenTimer([14]).skydekkeDagslys).toBe(50)
+    expect(utenTimer([14, 15]).skydekkeDagslys).toBeNull()
+    // The whole-day mean still has its value.
+    expect(utenTimer([14, 15]).skydekke).toBe(50)
+  })
+
+  it('gives no cloud cover in daylight when the daylight hours are missing', () => {
+    // The forecast ends at 03:00 UTC, before sunrise: the night hours alone still give the day mean.
+    const [sted] = scored([{ id: 'a', met: metResponse(snowyDay().slice(0, 8)), nve: nveResponse() }]).steder
+    expect(sted.skydekke).toBe(50)
+    expect(sted.skydekkeDagslys).toBeNull()
+  })
+
   it('gives «incomplete» and no numbers when more than 10 % of the hours are missing', () => {
     // 3 of 24 hours have no next_1_hours (12.5 %).
     const hours = snowyDay().map((h, i) => (i < 3 ? { temperature: -5 } : h))
@@ -66,6 +133,7 @@ describe('score', () => {
       temperatur: null,
       vindMaks: null,
       skydekke: null,
+      skydekkeDagslys: null,
       nveNysnoSisteDognMm: 5,
     })
   })
