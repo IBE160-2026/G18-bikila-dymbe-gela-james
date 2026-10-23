@@ -39,6 +39,9 @@ type Props = {
  * address and its order are left as they were, and the list falls back to that order.
  */
 export default function ListeVisning({ steder, utdatert, sortering: urlSortering, onSortering, sok }: Props) {
+  // The distance sort lives here, not in the address, so a shared link never asks for a position. Going
+  // Back or Forward to another list keeps it until the page reloads; accepted 2026-10-23, since the address
+  // never shows it and telling the browser's Back apart from our own address changes would cost more.
   const [avstandValgt, setAvstandValgt] = useState(false)
   const [posisjon, setPosisjon] = useState<Posisjon | null>(null)
   const [status, setStatus] = useState('')

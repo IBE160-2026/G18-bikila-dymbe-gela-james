@@ -42,8 +42,9 @@ function withTrailingSlash(base: string): string {
 
 function parseUtforsk(search: string): UtforskRoute {
   const params = new URLSearchParams(search)
-  const visning = VISNINGER.find((verdi) => verdi === params.get('visning')) ?? 'kart'
-  // As for the filter, a repeated parameter is ambiguous and gives the default.
+  // As for the filter, a repeated parameter (visning or sortering) is ambiguous and gives the default.
+  const visninger = params.getAll('visning')
+  const visning = (visninger.length === 1 && VISNINGER.find((verdi) => verdi === visninger[0])) || 'kart'
   const sorteringer = params.getAll('sortering')
   const sortering = sorteringer.length === 1 && sorteringer[0] === 'navn' ? 'navn' : 'score'
   // The router carries the filter but leaves reading it to shared/filter.ts.

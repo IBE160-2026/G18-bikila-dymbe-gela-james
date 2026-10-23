@@ -55,14 +55,15 @@ describe('NveGridTimeSeries', () => {
 })
 
 describe('latestNveValue', () => {
-  // Days start 05.10, 06.10 and 07.10 at 06:00 UTC, with 0, 2 and 5 mm.
+  // Days ending 05.10, 06.10 and 07.10 at 06:00 UTC (seNorge: 06 UTC the day before to 06 UTC), with 0, 2 and 5 mm.
   const parsed = NveGridTimeSeries.parse(series())
 
   it.each([
-    ['2026-10-07T06:00:00Z', 5, 'the newest day, the moment it starts'],
-    ['2026-10-07T20:30:00Z', 5, 'the newest day, later the same day'],
-    ['2026-10-08T05:59:59Z', 5, 'the newest day, a second before it is 24 h old'],
-    ['2026-10-07T05:59:59Z', 2, 'the day before, while the newest has not started'],
+    ['2026-10-07T06:00:00Z', 5, 'the newest finished day, the moment it ends'],
+    ['2026-10-07T20:30:00Z', 5, 'the newest finished day, later that day'],
+    ['2026-10-07T22:30:00Z', 5, 'just after Norwegian midnight (00:30 on 08.10), still the same finished day'],
+    ['2026-10-08T05:59:59Z', 5, 'the newest finished day, a second before the next one ends'],
+    ['2026-10-07T05:59:59Z', 2, 'the day before, while the newest has not ended'],
   ])('at %s gives %s mm (%s)', (reference, expected) => {
     expect(latestNveValue(parsed, reference)).toBe(expected)
   })

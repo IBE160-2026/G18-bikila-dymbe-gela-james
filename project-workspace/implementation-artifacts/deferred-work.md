@@ -35,6 +35,7 @@
 - source_spec: `spec-1-3-hent-og-valider-vaerdata-hver-time.md`
   summary: Sjekk om NVE-perioden bør regnes etter norsk dato i stedet for UTC (nveUrl i scripts/pipeline/fetch.ts).
   evidence: maybe-false, ville vært medium. Mellom 00 og 02 norsk tid slutter perioden på forrige norske dato. Avgjøres ved å hente NVE-svar like etter midnatt og se om `latestNveValue` da velger en eldre dag.
+  resolved: `spec-rydd-apne-punkter.md` (2026-10-23). Ikke et problem: seNorge-døgnet går fra kl. 06 UTC dagen før til kl. 06 UTC på stempeldatoen, koden sammenligner tidspunkter og ikke datoer, og forespørselen slutter på UTC-datoen for kjøringen, så den nyeste stemplingen er alltid med. Tolkningen står i `nve.ts` og `data-dictionary.md`.
 - source_spec: `spec-1-7-se-norgeskartet.md`
   summary: Lag en SPA-reserve for GitHub Pages (en `404.html` som er kopi av `index.html`, eller en omdirigering) slik at direkte lenker og oppfrisking på `/sted/:id` virker, i Story 1.11.
   evidence: Story 1.7-gjennomgang (Blind Hunter, Edge Case Hunter). `vite preview` og dev-serveren faller tilbake til index.html, men GitHub Pages gir sin egen 404 for ukjente stier.
@@ -67,7 +68,7 @@
 - source_spec: `spec-fix-met-hastighet.md`
   summary: Demotesten «rejects broken fixtures into the report and does not publish below 95 %» i `scripts/pipeline/run.test.ts` går av og til over Vitests grense på 5 s når hele suiten kjører lokalt på Windows. Gjør den rask (for eksempel uten `cp` av hele fixture-mappa) eller gi den en egen tidsgrense.
   evidence: 2026-10-22 feilet den to av seks ganger på `main` uten endringer (5,2 s og 5,9 s), og like ofte på grenen. Alene bruker den under 0,4 s. Den kopierer fixture-mappa til en midlertidig mappe, så filsystemet (for eksempel virusskanning) er en sannsynlig årsak. Ikke sett i CI.
-  resolved: Delvis i `spec-fix-gamle-nve-verdier.md` (2026-10-22). Demotestene har en tidsgrense på 15 s. Andre tunge tester kan fortsatt gå over 5 s på en travel maskin.
+  resolved: Delvis i `spec-fix-gamle-nve-verdier.md` (2026-10-22), med 15 s for demotestene. Fullført i `spec-rydd-apne-punkter.md` (2026-10-23): alle Vitest-tester har en felles tidsgrense på 15 s i `vite.config.ts`, så også egenskapstestene for SnowScore har plass, og unntaket for demotestene er fjernet.
 - source_spec: `spec-3-1-filtrer-nysno-vind-temperatur.md`
   summary: Oppdater EXPERIENCE.md (begge kopier) via `bmad-ux`: bunn-arket med filteret åpnes med knappen «Filter», ikke ved å dra det opp. Lukket viser det knappen, de aktive kravene som chips og «Nullstill». DESIGN.md sier også at filter og kart deler skjermen 50/50 på desktop; appen har et fast venstre sidepanel (18rem), som spec-en ber om.
   evidence: Aksels beslutning 2026-10-22 i Story 3.1: en knapp virker med tastatur og skjermleser og er stabil å teste. EXPERIENCE.md (Responsive & Platform og UJ-1 steg 2) beskriver fortsatt et ark som «kan dras opp».

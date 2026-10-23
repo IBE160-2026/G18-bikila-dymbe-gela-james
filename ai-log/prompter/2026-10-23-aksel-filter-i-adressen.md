@@ -38,3 +38,13 @@ Aksel ga lov til å merge i økten. Spec-en ble større enn anbefalt, og Aksel v
 **Hva vi gjorde med det:**
 - Stedssidens adresse bærer nå søket den ble åpnet fra, for eksempel `/sted/gaustatoppen?visning=liste&nysno=2&temp=0`. En delt stedslenke og «Tilbake» gir derfor samme søk. «Gå til kartet» på «Fant ikke stedet» beholder også søket.
 - Adressen ryddes når stedssiden lastes, som på Utforsk.
+
+### 3
+> på disse punktene ta en avgjørelse for det du synes er beste løsning hvilket døgn NVE-verdien gjelder; tunge tester som av og til går over tidsgrensen lokalt (i CI har de vært grønne); to små inkonsistenser fra 3.2.
+
+**Svar (kort):** Claude tok tre avgjørelser:
+- **NVE-døgnet:** Ifølge seNorge2 (MET) gjelder en verdi stemplet D kl. 06 UTC døgnet som endte da. Koden er riktig og ble ikke endret. Tolkningen er dokumentert, og spørsmålet om norsk dato er lukket.
+- **Tunge tester:** De har nå én felles tidsgrense på 15 s.
+- **Inkonsistensene fra 3.2:** Et gjentatt `visning` gir standard. At «Avstand» kan bli stående ved Tilbake/Fram, godtas og er forklart i koden.
+
+**Hva vi gjorde med det:** Spec: [`spec-rydd-apne-punkter.md`](../../project-workspace/implementation-artifacts/spec-rydd-apne-punkter.md).
