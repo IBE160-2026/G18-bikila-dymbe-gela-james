@@ -70,9 +70,9 @@ export default function Utforsk({ steder, utdatert, route }: Props) {
                 )}
               </div>
               {visning === 'liste' ? (
-                <ListeVisning steder={treff} utdatert={utdatert} sortering={route.sortering} onSortering={settSortering} />
+                <ListeVisning steder={treff} utdatert={utdatert} sortering={route.sortering} onSortering={settSortering} sok={route} />
               ) : (
-                <KartVisning steder={treff} />
+                <KartVisning steder={treff} sok={route} />
               )}
             </div>
           </div>

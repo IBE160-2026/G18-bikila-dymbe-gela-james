@@ -306,7 +306,8 @@ test.describe('the address at 1280px', () => {
 
     const gaustatoppen = page.locator('path[data-sted-id="gaustatoppen"]')
     await gaustatoppen.click()
-    await expect(page).toHaveURL(/\/sted\/gaustatoppen$/)
+    // Story 3.2b: the place's address carries the search.
+    await expect(page).toHaveURL(/\/sted\/gaustatoppen\?nysno=2&temp=0$/)
     await page.goBack()
     await expect(page).toHaveURL(/\/\?nysno=2&temp=0$/)
     await expect(markers(page)).toHaveCount(6)
@@ -314,7 +315,7 @@ test.describe('the address at 1280px', () => {
     await expect(temperatur(page)).toHaveAttribute('aria-valuetext', 'høyst 0 °C')
 
     await gaustatoppen.click()
-    await expect(page).toHaveURL(/\/sted\/gaustatoppen$/)
+    await expect(page).toHaveURL(/\/sted\/gaustatoppen\?nysno=2&temp=0$/)
     await page.getByRole('link', { name: 'Tilbake', exact: true }).click()
     await expect(page).toHaveURL(/\/\?nysno=2&temp=0$/)
     await expect(markers(page)).toHaveCount(6)
@@ -327,7 +328,7 @@ test.describe('the address at 1280px', () => {
     expect(await navn(page)).toEqual(NAVN_SEKS)
 
     await rows(page).first().click()
-    await expect(page).toHaveURL(/\/sted\/galdhopiggen$/)
+    await expect(page).toHaveURL(/\/sted\/galdhopiggen\?visning=liste&nysno=2&temp=0&sortering=navn$/)
     await page.goBack()
     await expect(page).toHaveURL(/\/\?visning=liste&nysno=2&temp=0&sortering=navn$/)
     expect(await navn(page)).toEqual(NAVN_SEKS)
@@ -370,5 +371,77 @@ test.describe('the address at 1280px', () => {
     await expect(page.getByLabel('Sorter etter')).toHaveValue('navn')
     await expect(page).toHaveURL(/\/\?visning=liste&sortering=navn$/)
     expect(await navn(page)).toEqual([...(await navn(page))].sort(new Intl.Collator('nb').compare))
+  })
+})
+
+// Story 3.2b (UJ-1 step 6): a place's address carries the search it was opened from, so a shared place
+// link and its «Tilbake» keep the filter, the view and the order.
+test.describe('the place address at 1280px', () => {
+  test.use({ viewport: DESKTOP })
+
+  const tilbake = (page: Page) => page.getByRole('link', { name: 'Tilbake', exact: true })
+
+  test('a place opened from the list carries the search in its address', async ({ page }) => {
+    await page.goto('/?visning=liste&nysno=2&temp=0')
+    await expect(rows(page)).toHaveCount(6)
+    await rows(page).filter({ hasText: 'Gaustatoppen' }).click()
+    await expect(page).toHaveURL(/\/sted\/gaustatoppen\?visning=liste&nysno=2&temp=0$/)
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Gaustatoppen')
+  })
+
+  test('a place opened from the map carries the search in its address', async ({ page }) => {
+    await page.goto('/?nysno=2')
+    await expect(markers(page)).toHaveCount(8)
+    await page.locator('path[data-sted-id="gaustatoppen"]').click()
+    await expect(page).toHaveURL(/\/sted\/gaustatoppen\?nysno=2$/)
+  })
+
+  test('«Tilbake» on a shared place link opens the list with the same filter and six places', async ({ page }) => {
+    await page.goto('/sted/gaustatoppen?visning=liste&nysno=2&temp=0')
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Gaustatoppen')
+    await expect(page.locator('.sted-score')).toHaveText('58 · Godt')
+    await expect(tilbake(page)).toHaveAttribute('href', '/?visning=liste&nysno=2&temp=0')
+    await tilbake(page).click()
+    await expect(page).toHaveURL(/\/\?visning=liste&nysno=2&temp=0$/)
+    await expect(rows(page)).toHaveCount(6)
+    await expect(nysno(page)).toHaveAttribute('aria-valuetext', 'minst 2 cm')
+    await expect(temperatur(page)).toHaveAttribute('aria-valuetext', 'høyst 0 °C')
+    expect([...(await page.locator('.liste-navn').allTextContents())].sort(new Intl.Collator('nb').compare)).toEqual(NAVN_SEKS)
+  })
+
+  test('«Tilbake» on a place link without a search opens the map without a filter', async ({ page }) => {
+    await page.goto('/sted/gaustatoppen')
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Gaustatoppen')
+    await tilbake(page).click()
+    await expect(page).toHaveURL(/\/$/)
+    await expect(markers(page)).toHaveCount(24)
+  })
+
+  test('an invalid value in a place link gives the default, and «Tilbake» keeps the valid ones', async ({ page }) => {
+    await page.goto('/sted/gaustatoppen?nysno=abc&temp=0')
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Gaustatoppen')
+    await expect(page.getByRole('alert')).toHaveCount(0)
+    // The place address is rewritten to the clean form, as on Utforsk.
+    await expect(page).toHaveURL(/\/sted\/gaustatoppen\?temp=0$/)
+    await tilbake(page).click()
+    await expect(page).toHaveURL(/\/\?temp=0$/)
+    await expect(nysno(page)).toHaveAttribute('aria-valuetext', 'Alle')
+    await expect(temperatur(page)).toHaveAttribute('aria-valuetext', 'høyst 0 °C')
+  })
+
+  test('an unknown place with a search still says so', async ({ page }) => {
+    await page.goto('/sted/finnes-ikke?nysno=2')
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Fant ikke stedet')
+    await expect(page.getByRole('link', { name: 'Gå til kartet' })).toHaveAttribute('href', '/?nysno=2')
+  })
+
+  test('a marker opens the place with the search set on the map', async ({ page }) => {
+    await page.goto('/')
+    await expect(markers(page)).toHaveCount(24)
+    await nysno(page).fill('2')
+    await temperatur(page).fill('0')
+    await expect(markers(page)).toHaveCount(6)
+    await page.locator('path[data-sted-id="gaustatoppen"]').click()
+    await expect(page).toHaveURL(/\/sted\/gaustatoppen\?nysno=2&temp=0$/)
   })
 })

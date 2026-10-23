@@ -2,7 +2,7 @@ import 'leaflet/dist/leaflet.css'
 import type { CircleMarker, LayerGroup, Map as LeafletMap } from 'leaflet'
 import { useEffect, useRef, useState } from 'react'
 import type { Sted } from '../../shared/contracts/published'
-import { navigate } from '../lib/router'
+import { navigate, sted as stedRoute, type UtforskRoute } from '../lib/router'
 import { NORWAY_BOUNDS, TILE_ATTRIBUTION, TILE_URL, markerSizeForZoom, markerSizeStyle, markerStyle, tooltipText } from './kartMarkor'
 
 export const MAP_LOAD_ERROR = 'Kartet kunne ikke lastes. Last siden på nytt.'
@@ -25,8 +25,9 @@ function tilpassStorrelse(marker: CircleMarker, sizePx: number): void {
  *
  * Story 3.1: the map, its tiles and the first fit to Norway are made once. When the filter changes
  * `steder`, only the marker layer is refilled, so zoom and position stay where the user left them.
+ * Story 3.2b: a marker opens the place with the current search `sok`, so a search change also refills them.
  */
-export default function KartVisning({ steder }: { steder: Sted[] }) {
+export default function KartVisning({ steder, sok }: { steder: Sted[]; sok: UtforskRoute }) {
   const container = useRef<HTMLDivElement>(null)
   const [kart, setKart] = useState<Kart | null>(null)
   const [failed, setFailed] = useState(false)
@@ -73,12 +74,12 @@ export default function KartVisning({ steder }: { steder: Sted[] }) {
     for (const sted of steder) {
       const marker = L.circleMarker([sted.lat, sted.lon], markerStyle(sted, size))
         .bindTooltip(tooltipText(sted), { direction: 'top', offset: [0, -size / 2] })
-        .on('click', () => navigate({ name: 'sted', id: sted.id }))
+        .on('click', () => navigate(stedRoute(sted.id, sok)))
         .addTo(markorer)
       // Lets the E2E tests find a specific place's marker.
       marker.getElement()?.setAttribute('data-sted-id', sted.id)
     }
-  }, [kart, steder])
+  }, [kart, steder, sok])
 
   if (failed) {
     return (

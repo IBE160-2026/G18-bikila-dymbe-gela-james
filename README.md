@@ -49,6 +49,8 @@ Filteret, visningen og sorteringen ligger i nettadressen, for eksempel
 åpner samme filter, samme visning og samme treff. Krav som står på «Alle», og ugyldige verdier tas ikke
 med. Sortering etter avstand lagres ikke, så en delt lenke ber aldri om posisjonen din. Tilbake fra en
 stedsside viser søket slik du forlot det, og en endring i filteret lager ikke et nytt steg i historikken.
+Stedssidens adresse bærer også søket (for eksempel `/sted/gaustatoppen?visning=liste&nysno=2&temp=0`),
+så en delt stedslenke går «Tilbake» til samme søk.
 
 Stedssiden (`/sted/<id>`) viser SnowScore med delpoengene A, B og C, værdataene bak dem og når MET
 sist oppdaterte prognosen. Data eldre enn 3 timer merkes «Utdatert», og steder med data eldre enn

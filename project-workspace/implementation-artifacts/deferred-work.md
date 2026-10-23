@@ -78,3 +78,4 @@
 - source_spec: `spec-3-2-del-og-gjenapne-filtrert-sok.md`
   summary: UJ-1 steg 6 sier «URL har filter + sted». Stedssidens adresse (`/sted/<id>`) har ikke filteret, så en delt stedslenke, eller «Tilbake» på en stedsside som er åpnet direkte, gir kartet uten filter. Vurder om stedssiden skal bære filteret videre, eller om UJ-1 skal presiseres (`bmad-correct-course`).
   evidence: Gjennomgangen av 3.2 (Blind Hunter). I appen virker Tilbake fra et sted som er åpnet fra kart eller liste, fordi historikken har den filtrerte adressen. Bare direkte åpnede stedslenker mister filteret.
+  resolved: Story 3.2b (`spec-3-2b-filter-i-stedsadressen.md`, 2026-10-23). Aksel valgte «Filter + sted i adressen». Stedssidens adresse bærer søket, for eksempel `/sted/gaustatoppen?visning=liste&nysno=2&temp=0`, og «Tilbake» på en direkte åpnet stedsside går til Utforsk med det søket. E2E dekker hver rad i spec-ens matrise.

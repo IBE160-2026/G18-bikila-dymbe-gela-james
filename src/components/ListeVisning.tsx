@@ -1,7 +1,7 @@
 import { useEffect, useState, type ChangeEvent } from 'react'
 import type { Sted } from '../../shared/contracts/published'
 import { medEnhet, utdatertTekst } from '../lib/format'
-import type { UrlSortering } from '../lib/router'
+import { sted as stedRoute, type UrlSortering, type UtforskRoute } from '../lib/router'
 import { SORTERINGER, avstandKm, sorterSteder, type Posisjon, type Sortering } from '../lib/sortering'
 import Lenke from './Lenke'
 import ScoreBadge from './ScoreBadge'
@@ -27,6 +27,8 @@ type Props = {
   /** The order kept in the address (Story 3.2). */
   sortering: UrlSortering
   onSortering: (sortering: UrlSortering) => void
+  /** The current search, carried into each place's address (Story 3.2b). */
+  sok: UtforskRoute
 }
 
 /**
@@ -36,7 +38,7 @@ type Props = {
  * list is actually sorted by distance, the address drops its order; if the position is refused, the
  * address and its order are left as they were, and the list falls back to that order.
  */
-export default function ListeVisning({ steder, utdatert, sortering: urlSortering, onSortering }: Props) {
+export default function ListeVisning({ steder, utdatert, sortering: urlSortering, onSortering, sok }: Props) {
   const [avstandValgt, setAvstandValgt] = useState(false)
   const [posisjon, setPosisjon] = useState<Posisjon | null>(null)
   const [status, setStatus] = useState('')
@@ -104,7 +106,7 @@ export default function ListeVisning({ steder, utdatert, sortering: urlSortering
           ]
           return (
             <li key={sted.id}>
-              <Lenke to={{ name: 'sted', id: sted.id }} className="liste-rad">
+              <Lenke to={stedRoute(sted.id, sok)} className="liste-rad">
                 <span className="liste-navn">{sted.navn}</span>
                 <Skille />
                 <ScoreBadge snowScore={sted.snowScore} />

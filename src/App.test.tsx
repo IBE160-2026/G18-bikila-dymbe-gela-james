@@ -7,7 +7,7 @@ import { AppView } from './App'
 import { kvalitetLinjer } from './components/Datakvalitet'
 import { medFerskhet, type StederResult } from './hooks/useSteder'
 import { LOAD_ERROR_MESSAGE } from './lib/data/loadPublishedData'
-import { utforsk, type Route } from './lib/router'
+import { sted, utforsk, type Route } from './lib/router'
 import { INGEN_STEDER } from './pages/Utforsk'
 
 const demo = PublishedData.parse(
@@ -16,7 +16,9 @@ const demo = PublishedData.parse(
 
 const demoResult = medFerskhet({ status: 'ok', data: demo, source: 'demo' })
 const UTFORSK: Route = utforsk('kart')
-const LISTE: Route = utforsk('liste')
+const LISTE = utforsk('liste')
+// Story 3.2b: the demo search with six hits, at least 2 cm new snow and at most 0 °C, in the list.
+const SEKS_I_LISTEN = { ...LISTE, filter: { minNysnoCm: 2, maksVindMs: null, maksTemperaturC: 0 } }
 
 function render(result: StederResult | null, route: Route = UTFORSK): string {
   return renderToStaticMarkup(<AppView result={result} route={route} />)
@@ -79,7 +81,7 @@ describe('AppView', () => {
     const cases = [
       [UTFORSK, '<div class="skeleton kart-skeleton" role="status">'],
       [LISTE, '<div class="skeleton liste-skeleton" role="status">'],
-      [{ name: 'sted', id: 'oslo' }, '<div class="skeleton" role="status">'],
+      [sted('oslo'), '<div class="skeleton" role="status">'],
     ] as const
     for (const [route, skeleton] of cases) {
       const html = render(null, route)
@@ -89,7 +91,7 @@ describe('AppView', () => {
   })
 
   it('shows a full place page: badge, sub-scores out of their maximum, data with units and Norwegian time', () => {
-    const html = render(demoResult, { name: 'sted', id: 'gaustatoppen' })
+    const html = render(demoResult, sted('gaustatoppen'))
     expect(html.match(/<h1/g)).toHaveLength(1)
     expect(html).toContain('<h1 class="sted-navn">Gaustatoppen</h1>')
     expect(html).toContain('<span class="score-badge score-badge--2">58 · Godt</span>')
@@ -114,8 +116,24 @@ describe('AppView', () => {
     expect(html).not.toContain('class="kart"')
   })
 
+  // Story 3.2b: the place page shows the same as without a search, and «Tilbake» goes to that search.
+  it('links «Tilbake» on a place page to the search in its address', () => {
+    const html = render(demoResult, sted('gaustatoppen', SEKS_I_LISTEN))
+    expect(html).toContain('<a href="/?visning=liste&amp;nysno=2&amp;temp=0" class="sted-tilbake">Tilbake</a>')
+    expect(html.replace(/<a href="[^"]*" class="sted-tilbake">/, '')).toBe(
+      render(demoResult, sted('gaustatoppen')).replace(/<a href="[^"]*" class="sted-tilbake">/, ''),
+    )
+  })
+
+  it('carries the search into every place link in the list', () => {
+    const html = render(demoResult, SEKS_I_LISTEN)
+    const lenker = [...html.matchAll(/<a href="([^"]+)" class="liste-rad">/g)].map((match) => match[1])
+    expect(lenker).toHaveLength(6)
+    for (const lenke of lenker) expect(lenke).toMatch(/^\/sted\/[^/?]+\?visning=liste&amp;nysno=2&amp;temp=0$/)
+  })
+
   it('shows "Ufullstendige data" as text, with no badge and no sub-scores, for an incomplete place', () => {
-    const html = render(demoResult, { name: 'sted', id: 'trondheim' })
+    const html = render(demoResult, sted('trondheim'))
     expect(html).toContain('<span class="score-incomplete">Ufullstendige data</span>')
     expect(html).not.toContain('score-badge')
     expect(html).not.toContain('Nysnøpotensial')
@@ -124,7 +142,7 @@ describe('AppView', () => {
   })
 
   it('marks a place older than 3 h as «Utdatert» with its time, on the page and in the list row', () => {
-    const page = render(demoResult, { name: 'sted', id: 'kirkenes' })
+    const page = render(demoResult, sted('kirkenes'))
     expect(page).toContain('<p class="utdatert">Utdatert · data fra 7. oktober 2026 kl. 18:30</p>')
 
     const s = '<span class="visually-hidden">, </span>'
@@ -139,7 +157,7 @@ describe('AppView', () => {
   it('says the MET forecast is missing when the source time is unknown, without a stale mark', () => {
     const steder = demo.steder.map((sted) => (sted.id === 'trondheim' ? { ...sted, kildeTidspunkt: null } : sted))
     const result = medFerskhet({ status: 'ok', data: { ...demo, steder }, source: 'demo' })
-    const page = render(result, { name: 'sted', id: 'trondheim' })
+    const page = render(result, sted('trondheim'))
     expect(page).toContain('Prognosen fra MET mangler for dette stedet.')
     expect(page).not.toContain('class="utdatert"')
     expect(page).not.toContain('oppdatert –')
@@ -154,14 +172,14 @@ describe('AppView', () => {
     expect(list).not.toContain('/sted/oslo')
     expect(list.match(/class="liste-rad"/g)).toHaveLength(demo.steder.length - 1)
 
-    const page = render(result, { name: 'sted', id: 'oslo' })
+    const page = render(result, sted('oslo'))
     expect(page).toContain('Dataene for dette stedet er for gamle til å vises')
     expect(page).toContain('<a href="/">Gå til kartet</a>')
     expect(page).not.toContain('Fant ikke stedet')
   })
 
   it('says "Fant ikke stedet" for an unknown place id', () => {
-    const html = render(demoResult, { name: 'sted', id: 'finnes-ikke' })
+    const html = render(demoResult, sted('finnes-ikke'))
     expect(html).toContain('Fant ikke stedet')
     expect(html).toContain('<a href="/">Gå til kartet</a>')
   })
@@ -205,7 +223,7 @@ describe('AppView', () => {
   })
 
   it.each(['gaustatoppen', 'trondheim'])('links the SnowScore card on the place page %s to the explanation', (id) => {
-    const html = render(demoResult, { name: 'sted', id })
+    const html = render(demoResult, sted(id))
     const kort = /<section class="sted-kort kort" aria-labelledby="sted-snowscore">(.*?)<\/section>/.exec(html)?.[1] ?? ''
     expect(kort).toContain('<a href="/slik-beregner-vi-snowscore" class="forklaring-lenke">Slik beregner vi SnowScore</a>')
     expect(html).not.toContain('aria-current="page"')
@@ -228,7 +246,8 @@ describe('AppView', () => {
     expect(toppnav).not.toContain('aria-current')
     expect(html).not.toContain('class="kart"')
     expect(html).toContain('<label for="sortering">Sorter etter</label>')
-    const rows = [...html.matchAll(/<a href="\/sted\/([^"]+)" class="liste-rad">/g)].map((match) => match[1])
+    // Story 3.2b: each row carries the search, here just the view.
+    const rows = [...html.matchAll(/<a href="\/sted\/([^"?]+)\?visning=liste" class="liste-rad">/g)].map((match) => match[1])
     expect(rows).toHaveLength(24)
     expect(rows[0]).toBe('gaustatoppen')
     expect(rows.at(-1)).toBe('trondheim')
@@ -239,7 +258,7 @@ describe('AppView', () => {
     // Visually hidden separators, so a screen reader does not run the row's parts together.
     const s = '<span class="visually-hidden">, </span>'
     expect(html).toContain(
-      `<a href="/sted/gaustatoppen" class="liste-rad"><span class="liste-navn">Gaustatoppen</span>${s}` +
+      `<a href="/sted/gaustatoppen?visning=liste" class="liste-rad"><span class="liste-navn">Gaustatoppen</span>${s}` +
         `<span class="score-badge score-badge--2">58 · Godt</span>${s}` +
         `<span class="liste-detaljer"><span>Nysnø 10 cm</span><span>${s}Vind 12 m/s</span><span>${s}Temp −6,4 °C</span></span></a>`,
     )
@@ -251,7 +270,7 @@ describe('AppView', () => {
 
   it('gives each list row link a name that reads as separate parts', () => {
     const html = render(demoResult, LISTE)
-    const row = /<a href="\/sted\/gaustatoppen" class="liste-rad">(.*?)<\/a>/.exec(html)?.[1] ?? ''
+    const row = /<a href="\/sted\/gaustatoppen\?visning=liste" class="liste-rad">(.*?)<\/a>/.exec(html)?.[1] ?? ''
     expect(row.replace(/<[^>]+>/g, '')).toBe('Gaustatoppen, 58 · Godt, Nysnø 10 cm, Vind 12 m/s, Temp −6,4 °C')
   })
 })

@@ -3,9 +3,11 @@ import { SNOWSCORE } from '../../shared/snowscore'
 import Lenke from '../components/Lenke'
 import ScoreBadge from '../components/ScoreBadge'
 import { delpoeng, medEnhet, norskTid, utdatertTekst } from '../lib/format'
-import { utforsk } from '../lib/router'
+import { useEffect } from 'react'
+import { href, replace, sted as stedRoute, type UtforskRoute } from '../lib/router'
 
-type Props = { sted: StedData; utdatert: boolean }
+/** `sok` is the search in the address (Story 3.2b), where «Tilbake» goes when the page was opened directly. */
+type Props = { sted: StedData; utdatert: boolean; sok: UtforskRoute }
 
 /** A definition list of label/value pairs; the div wrappers let CSS lay each pair out as one row. */
 function Tall({ rader }: { rader: [string, string][] }) {
@@ -25,8 +27,14 @@ function Tall({ rader }: { rader: [string, string][] }) {
  * Story 1.9: the full score and what it is built from (FR-16, UJ-1). Incomplete data is text only
  * (ScoreBadge shows «Ufullstendige data») and has no sub-scores, so nothing looks like a real 0.
  */
-export default function Sted({ sted, utdatert }: Props) {
+export default function Sted({ sted, utdatert, sok }: Props) {
   const { snowScore } = sted
+  // As on Utforsk (AD-12): a link with invalid or default values is rewritten to the clean address once,
+  // so copying it does not share the junk again.
+  useEffect(() => {
+    const route = stedRoute(sted.id, sok)
+    if (href(route, import.meta.env.BASE_URL) !== window.location.pathname + window.location.search) replace(route)
+  }, [sted.id, sok])
   const grunnlag: [string, string][] = [
     ['Nysnø neste døgn', medEnhet(sted.nysnoCm, 'cm')],
     ['Temperatur, snitt', medEnhet(sted.temperatur, '°C')],
@@ -69,7 +77,7 @@ export default function Sted({ sted, utdatert }: Props) {
           </p>
         </section>
       </div>
-      <Lenke to={utforsk()} className="sted-tilbake" tilbake>
+      <Lenke to={sok} className="sted-tilbake" tilbake>
         Tilbake
       </Lenke>
     </article>

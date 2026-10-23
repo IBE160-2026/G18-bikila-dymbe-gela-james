@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { STANDARD_FILTER } from '../../shared/filter'
-import { href, parseRoute, utforsk, type Route, type UtforskRoute } from './router'
+import { href, parseRoute, sted, utforsk, type Route, type UtforskRoute } from './router'
 
 const BASES = ['/', '/G18-bikila-dymbe-gela-james/']
 const KART: UtforskRoute = utforsk('kart')
@@ -28,8 +28,8 @@ describe.each(BASES)('router with base %s', (base) => {
   })
 
   it('parses a place page', () => {
-    expect(parseRoute(`${base}sted/hemsedal-skisenter`, base)).toEqual({ name: 'sted', id: 'hemsedal-skisenter' })
-    expect(parseRoute(`${base}sted/hemsedal-skisenter/`, base)).toEqual({ name: 'sted', id: 'hemsedal-skisenter' })
+    expect(parseRoute(`${base}sted/hemsedal-skisenter`, base)).toEqual(sted('hemsedal-skisenter'))
+    expect(parseRoute(`${base}sted/hemsedal-skisenter/`, base)).toEqual(sted('hemsedal-skisenter'))
   })
 
   it('parses the explanation page, with and without the trailing slash', () => {
@@ -51,8 +51,10 @@ describe.each(BASES)('router with base %s', (base) => {
       { ...KART, filter: { ...STANDARD_FILTER, maksTemperaturC: 0 } },
       { ...KART, sortering: 'navn' },
       FORKLARING,
-      { name: 'sted', id: 'hemsedal-skisenter' },
-      { name: 'sted', id: 'å b/c' },
+      sted('hemsedal-skisenter'),
+      sted('å b/c'),
+      sted('gaustatoppen', FILTRERT),
+      sted('å b/c', { ...KART, filter: { ...STANDARD_FILTER, minNysnoCm: 2 } }),
     ]
     for (const route of routes) {
       const url = new URL(href(route, base), 'http://x')
@@ -63,7 +65,7 @@ describe.each(BASES)('router with base %s', (base) => {
   it('builds links under the base', () => {
     expect(href(KART, base)).toBe(base)
     expect(href(LISTE, base)).toBe(`${base}?visning=liste`)
-    expect(href({ name: 'sted', id: 'oslo' }, base)).toBe(`${base}sted/oslo`)
+    expect(href(sted('oslo'), base)).toBe(`${base}sted/oslo`)
     expect(href(FORKLARING, base)).toBe(`${base}slik-beregner-vi-snowscore`)
   })
 
@@ -83,6 +85,32 @@ describe.each(BASES)('router with base %s', (base) => {
   it('reads a repeated sortering as the default, like a repeated filter parameter', () => {
     expect(parseRoute(base, base, '?visning=liste&sortering=navn&sortering=navn')).toEqual(LISTE)
     expect(parseRoute(base, base, '?visning=liste&sortering=navn&sortering=score')).toEqual(LISTE)
+  })
+
+  // Story 3.2b (UJ-1 step 6): a place page carries the search in the same query as Utforsk.
+  it('reads the search on a place page, by the same rules as Utforsk', () => {
+    expect(parseRoute(`${base}sted/gaustatoppen`, base, '?visning=liste&nysno=5&vind=10&temp=-2&sortering=navn')).toEqual(
+      sted('gaustatoppen', FILTRERT),
+    )
+    expect(parseRoute(`${base}sted/gaustatoppen/`, base, '?nysno=2')).toEqual(
+      sted('gaustatoppen', { ...KART, filter: { ...STANDARD_FILTER, minNysnoCm: 2 } }),
+    )
+    // An invalid value gives the default and keeps the valid ones; «avstand» is never kept.
+    expect(parseRoute(`${base}sted/gaustatoppen`, base, '?nysno=abc&temp=0&sortering=avstand')).toEqual(
+      sted('gaustatoppen', { ...KART, filter: { ...STANDARD_FILTER, maksTemperaturC: 0 } }),
+    )
+    expect(parseRoute(`${base}sted/gaustatoppen`, base, '')).toEqual(sted('gaustatoppen'))
+  })
+
+  it('writes the search after a place in the same fixed order, and nothing without one', () => {
+    expect(href(sted('gaustatoppen', FILTRERT), base)).toBe(`${base}sted/gaustatoppen?visning=liste&nysno=5&vind=10&temp=-2&sortering=navn`)
+    expect(href(sted('gaustatoppen', { ...LISTE, filter: { ...STANDARD_FILTER, minNysnoCm: 2, maksTemperaturC: 0 } }), base)).toBe(
+      `${base}sted/gaustatoppen?visning=liste&nysno=2&temp=0`,
+    )
+    expect(href(sted('gaustatoppen', KART), base)).toBe(`${base}sted/gaustatoppen`)
+    // The place's link and its search's link share one query.
+    const sok = { ...KART, filter: { ...STANDARD_FILTER, minNysnoCm: 2 } }
+    expect(href(sted('oslo', sok), base)).toBe(`${base}sted/oslo${href(sok, base).slice(base.length)}`)
   })
 
   it('writes the query in a fixed order and leaves out every default', () => {

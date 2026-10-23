@@ -263,7 +263,9 @@ flowchart LR
     counts as the default, and the address is rewritten to the clean form on load. Filter and
     sort changes replace the history entry (`replaceState`); switching view or opening a place
     adds one. The distance sort is never written, so a shared link never asks the receiver
-    for their position. The place page address carries no filter.
+    for their position. The place page address (`/sted/<id>`) carries the same query, built
+    and read by the same functions *(Story 3.2b, 2026-10-23)*, so a shared place link keeps the
+    search and its «Tilbake» returns to it.
   - **Golden tables.** They use these shapes (`tests/golden/snowscore.json`, `filter.json`,
     later `skivindu.json`) and state their boundary rules: inclusive or exclusive limits, nulls
     and tie-break order.
