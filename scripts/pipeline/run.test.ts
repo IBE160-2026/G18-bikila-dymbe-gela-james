@@ -23,9 +23,7 @@ afterEach(async () => {
   await rm(dir, { recursive: true, force: true })
 })
 
-// The demo runs parse every fixture and copy the fixture folder; on a busy Windows machine with the
-// whole suite running in parallel they have taken over Vitest's default 5 s (deferred-work.md).
-describe('runDemo', { timeout: 15_000 }, () => {
+describe('runDemo', () => {
   it('is deterministic: two runs give byte-identical files, equal to the committed demo.json', async () => {
     const first = join(dir, 'first.json')
     const second = join(dir, 'second.json')

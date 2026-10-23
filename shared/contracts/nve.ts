@@ -7,7 +7,8 @@ import { z } from 'zod'
 const NVE_DATE = /^(\d{2})\.(\d{2})\.(\d{4}) (\d{2}):(\d{2}):(\d{2})$/
 
 /**
- * Parses NVE's `dd.MM.yyyy HH:mm:ss`. seNorge's day runs 06–06 UTC, so the time is read as UTC.
+ * Parses NVE's `dd.MM.yyyy HH:mm:ss`. seNorge's day ends at 06 UTC on the stamped date, so the time is
+ * read as UTC.
  * Returns NaN when the text does not match.
  */
 export function parseNveDate(text: string): number {
@@ -79,6 +80,10 @@ export type NveGridTimeSeries = z.infer<typeof NveGridTimeSeries>
  * an up-to-date series always has a newer day (NVE returns the whole period asked for); an older
  * one, from a lagging or shortened response, would show days-old snow as
  * «nysnø siste døgn».
+ *
+ * seNorge's day runs from 06 UTC the day before to 06 UTC on the stamped date (MET,
+ * https://github.com/metno/seNorge2), so a value stamped D 06:00 is the 24 h that ended then. The latest stamp at or before `referenceTime` is
+ * therefore the last finished day. Times are compared as instants, so the Norwegian date never matters.
  */
 export function latestNveValue(series: NveGridTimeSeries, referenceTime: string): number | null {
   const start = parseNveDate(series.StartDate)

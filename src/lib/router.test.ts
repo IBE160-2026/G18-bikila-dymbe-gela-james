@@ -87,6 +87,12 @@ describe.each(BASES)('router with base %s', (base) => {
     expect(parseRoute(base, base, '?visning=liste&sortering=navn&sortering=score')).toEqual(LISTE)
   })
 
+  it('reads a repeated visning as the map, like the other repeated parameters', () => {
+    expect(parseRoute(base, base, '?visning=liste&visning=liste')).toEqual(utforsk())
+    expect(parseRoute(base, base, '?visning=liste&visning=kart')).toEqual(utforsk())
+    expect(parseRoute(`${base}sted/gaustatoppen`, base, '?visning=liste&visning=liste')).toEqual(sted('gaustatoppen'))
+  })
+
   // Story 3.2b (UJ-1 step 6): a place page carries the search in the same query as Utforsk.
   it('reads the search on a place page, by the same rules as Utforsk', () => {
     expect(parseRoute(`${base}sted/gaustatoppen`, base, '?visning=liste&nysno=5&vind=10&temp=-2&sortering=navn')).toEqual(

@@ -46,6 +46,14 @@ describe('URL builders', () => {
       `https://gts.nve.no/api/GridTimeSeries/${Math.round(x)}/${Math.round(y)}/2026-10-01/2026-10-07/fsw.json`,
     )
   })
+
+  it('ends the NVE period on the UTC date, which still holds the newest finished day just after Norwegian midnight', () => {
+    // 22:30 UTC is 00:30 on 08.10 in Norway; the newest finished day is stamped 07.10 06:00 UTC.
+    const { x, y } = wgs84ToUtm33(sted.lat, sted.lon)
+    expect(nveUrl(sted, Date.parse('2026-10-07T22:30:00Z'))).toBe(
+      `https://gts.nve.no/api/GridTimeSeries/${Math.round(x)}/${Math.round(y)}/2026-10-01/2026-10-07/fsw.json`,
+    )
+  })
 })
 
 describe('fetchAll', () => {
