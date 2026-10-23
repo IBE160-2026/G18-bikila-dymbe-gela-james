@@ -1,5 +1,6 @@
 {
   "grenser": "Kravene kombineres med OG: et sted vises bare når det oppfyller alle aktive krav. Alle grenser er inkluderende: nysnø ≥ X cm, vind ≤ Y m/s og temperatur ≤ Z °C. Verdien avrundes som Math.round(verdi × 10) / 10, samme som visningen, før sammenligningen. Derfor teller 2,96 cm og 3,000000000000001 cm begge som 3,0, −0,04 °C som 0, og både −5,04 °C og −4,96 °C som −5,0. Et krav er av når grensen er null eller står i ytterpunktet som betyr «ingen grense» (nysnø 0, vind 25, temperatur +10); da vises også steder over ytterpunktet, som vind 30 m/s eller +12 °C. Mangler stedet verdien for et aktivt krav (null), vises det ikke. En verdi på 0 er en ekte verdi, ikke en manglende. Uten aktive krav vises alle steder, også de med ufullstendige data. Rekkefølgen er stedenes egen rekkefølge.",
+  "forslag": "Ved null treff (Story 3.3): for hvert aktivt krav finnes den nærmeste verdien på sliderens steg, i retning «Alle», som gir minst ett treff når de andre kravene står. Ytterpunktet betyr uten kravet (verdi null). Forslaget er kravet som da gir flest treff; ved likhet vinner færrest steg, deretter panelets rekkefølge (nysnø, vind, temperatur). Gir ingen enkeltendring treff, er forventetForslag null, og appen foreslår «Nullstill». Tilfeller med treff har aldri forslag.",
   "steder": [
     { "id": "dyp", "nysnoCm": 12, "vindMaks": 4, "temperatur": -5.04 },
     { "id": "grense-eksakt", "nysnoCm": 3.000000000000001, "vindMaks": 10, "temperatur": 0 },
@@ -59,7 +60,44 @@
     {
       "navn": "Null treff",
       "filter": { "minNysnoCm": 30, "maksVindMs": null, "maksTemperaturC": null },
-      "forventet": []
+      "forventet": [],
+      "forventetForslag": { "krav": "minNysnoCm", "verdi": 12, "antall": 1 }
+    },
+    {
+      "navn": "Null treff, to krav med like mange treff og like mange steg: panelets rekkefølge avgjør",
+      "filter": { "minNysnoCm": 9, "maksVindMs": null, "maksTemperaturC": -6 },
+      "forventet": [],
+      "forventetForslag": { "krav": "minNysnoCm", "verdi": 8, "antall": 1 }
+    },
+    {
+      "navn": "Null treff, like mange treff: færrest steg vinner (vind 4 framfor nysnø uten krav)",
+      "filter": { "minNysnoCm": 5, "maksVindMs": 3, "maksTemperaturC": null },
+      "forventet": [],
+      "forventetForslag": { "krav": "maksVindMs", "verdi": 4, "antall": 1 }
+    },
+    {
+      "navn": "Null treff, bare ytterpunktet hjelper: uten nysnøkravet",
+      "filter": { "minNysnoCm": 13, "maksVindMs": 3, "maksTemperaturC": null },
+      "forventet": [],
+      "forventetForslag": { "krav": "minNysnoCm", "verdi": null, "antall": 1 }
+    },
+    {
+      "navn": "Null treff, uten temperaturkravet tar færre steg enn uten vindkravet",
+      "filter": { "minNysnoCm": null, "maksVindMs": 3, "maksTemperaturC": -6 },
+      "forventet": [],
+      "forventetForslag": { "krav": "maksTemperaturC", "verdi": null, "antall": 1 }
+    },
+    {
+      "navn": "Null treff, et sted uten verdi teller ikke mens kravet lempes: vind 3 gir bare varmt, ikke uten-vind (som bare ville telt uten vindkravet)",
+      "filter": { "minNysnoCm": null, "maksVindMs": 2, "maksTemperaturC": null },
+      "forventet": [],
+      "forventetForslag": { "krav": "maksVindMs", "verdi": 3, "antall": 1 }
+    },
+    {
+      "navn": "Null treff, ingen enkeltendring hjelper: forslaget er «Nullstill»",
+      "filter": { "minNysnoCm": 9, "maksVindMs": 3, "maksTemperaturC": -6 },
+      "forventet": [],
+      "forventetForslag": null
     }
   ]
 }

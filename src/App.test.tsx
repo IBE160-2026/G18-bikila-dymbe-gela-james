@@ -20,6 +20,10 @@ const LISTE = utforsk('liste')
 // Story 3.2b: the demo search with six hits, at least 2 cm new snow and at most 0 °C, in the list.
 const SEKS_I_LISTEN = { ...LISTE, filter: { minNysnoCm: 2, maksVindMs: null, maksTemperaturC: 0 } }
 
+/** The text of every element with role="status" that contains `tekst`. */
+const statusMed = (html: string, tekst: string) =>
+  [...html.matchAll(/<(\w+)[^>]*role="status"[^>]*>(.*?)<\/\1>/g)].map((match) => match[2]).filter((innhold) => innhold.includes(tekst))
+
 function render(result: StederResult | null, route: Route = UTFORSK): string {
   return renderToStaticMarkup(<AppView result={result} route={route} />)
 }
@@ -35,7 +39,36 @@ describe('AppView', () => {
     expect(html).toContain('class="kart"')
     // Story 3.1: the filter panel, with nothing hidden until the user sets a requirement.
     expect(html).toContain('<aside class="filter kort" aria-label="Filter">')
-    expect(html).not.toContain('Ingen steder oppfyller alle kravene.')
+    // Story 3.3: the one live region says the count, the panel shows it, and there is no zero-hit banner.
+    expect(html).toContain('<p class="visually-hidden" role="status">24 treff</p>')
+    expect(statusMed(html, 'treff')).toEqual(['24 treff'])
+    expect(html.split('<span class="filter-antall">24 treff</span>')).toHaveLength(3)
+    expect(html).not.toContain('ingen-treff')
+  })
+
+  // Story 3.3 (FR-14): zero hits suggest the single requirement to ease, in the panel's words.
+  it('suggests the nearest new snow that gives a place, with «Bruk forslaget» and «Nullstill»', () => {
+    const html = render(demoResult, { ...UTFORSK, filter: { minNysnoCm: 13, maksVindMs: null, maksTemperaturC: null } })
+    const tekst = 'Ingen treff. Prøv nysnø minst 12 cm.'
+    expect(html).toContain(`<p class="visually-hidden" role="status">${tekst}</p>`)
+    expect(html).toContain(
+      `<div class="ingen-treff kort"><p>${tekst}</p><div class="ingen-treff-knapper"><button type="button" class="filter-forslag">Bruk forslaget</button><button type="button" class="filter-nullstill">Nullstill</button></div></div>`,
+    )
+    // Exactly one status region says it; the banner (asserted whole above) has no role, so it is heard once.
+    expect(statusMed(html, tekst)).toEqual([tekst])
+    expect(html.split(tekst)).toHaveLength(3)
+    expect(html).toContain('<span class="filter-antall">Ingen treff</span>')
+  })
+
+  it('says «Prøv uten nysnøkravet» when only «Alle» gives a place', () => {
+    const html = render(demoResult, { ...UTFORSK, filter: { minNysnoCm: 1, maksVindMs: 3, maksTemperaturC: null } })
+    expect(html).toContain('<p>Ingen treff. Prøv uten nysnøkravet.</p>')
+  })
+
+  it('offers only «Nullstill» when no single change gives a place', () => {
+    const html = render(demoResult, { ...UTFORSK, filter: { minNysnoCm: 13, maksVindMs: null, maksTemperaturC: -11 } })
+    expect(html).toContain('<p>Ingen treff. Det hjelper ikke å endre bare ett krav. Prøv «Nullstill».</p>')
+    expect(html).not.toContain('Bruk forslaget')
   })
 
   it('shows no demo banner for live data', () => {

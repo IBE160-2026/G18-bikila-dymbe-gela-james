@@ -28,6 +28,10 @@ const nysno = (page: Page) => page.getByRole('slider', { name: 'Nysnø' })
 const vind = (page: Page) => page.getByRole('slider', { name: 'Vind' })
 const temperatur = (page: Page) => page.getByRole('slider', { name: 'Temperatur' })
 const filterKnapp = (page: Page) => page.getByRole('button', { name: 'Filter', exact: true })
+// Story 3.3: the banner at zero hits, and the one live region for the count and the suggestion.
+const banner = (page: Page) => page.locator('.ingen-treff')
+const live = (page: Page) => page.getByRole('status').filter({ hasText: 'treff' })
+const brukForslaget = (page: Page) => page.getByRole('button', { name: 'Bruk forslaget' })
 
 const BRED_FONT = `* { font-family: Verdana, 'DejaVu Sans', sans-serif !important; }`
 
@@ -114,12 +118,12 @@ test.describe('at 1280px', () => {
     await page.goto('/')
     await expect(markers(page)).toHaveCount(24)
     await nysno(page).fill('30')
-    await expect(page.getByText('Ingen steder oppfyller alle kravene.')).toBeVisible()
+    await expect(banner(page)).toContainText('Ingen treff. Prøv nysnø minst 12 cm.')
     await expect(markers(page)).toHaveCount(0)
 
-    await page.locator('.ingen-treff').getByRole('button', { name: 'Nullstill' }).click()
+    await banner(page).getByRole('button', { name: 'Nullstill' }).click()
     await expect(markers(page)).toHaveCount(24)
-    await expect(page.getByText('Ingen steder oppfyller alle kravene.')).toHaveCount(0)
+    await expect(banner(page)).toHaveCount(0)
     for (const slider of [nysno(page), vind(page), temperatur(page)]) {
       await expect(slider).toHaveAttribute('aria-valuetext', 'Alle')
     }
@@ -132,13 +136,14 @@ test.describe('at 1280px', () => {
     await page.goto('/?visning=liste')
     await expect(rows(page)).toHaveCount(24)
     await nysno(page).fill('30')
-    const melding = page.getByRole('status').filter({ hasText: 'Ingen steder oppfyller alle kravene.' })
-    await expect(melding).toBeVisible()
+    await expect(banner(page)).toBeVisible()
+    await expect(live(page)).toHaveText('Ingen treff. Prøv nysnø minst 12 cm.')
     await expect(rows(page)).toHaveCount(0)
 
-    await page.locator('.ingen-treff').getByRole('button', { name: 'Nullstill' }).click()
+    await banner(page).getByRole('button', { name: 'Nullstill' }).click()
     await expect(rows(page)).toHaveCount(24)
-    await expect(melding).toHaveCount(0)
+    await expect(banner(page)).toHaveCount(0)
+    await expect(live(page)).toHaveText('24 treff')
   })
 
   test('the page with an active filter has no serious or critical WCAG 2.1 AA violations', async ({ page }) => {
@@ -443,5 +448,151 @@ test.describe('the place address at 1280px', () => {
     await expect(markers(page)).toHaveCount(6)
     await page.locator('path[data-sted-id="gaustatoppen"]').click()
     await expect(page).toHaveURL(/\/sted\/gaustatoppen\?nysno=2&temp=0$/)
+  })
+})
+
+// Story 3.3 (FR-14, UX-DR4): the hit count is always shown and announced once, and zero hits
+// suggest the single requirement to ease, with «Bruk forslaget».
+test.describe('the hit count and the suggestion at 1280px', () => {
+  test.use({ viewport: DESKTOP })
+
+  const antall = (page: Page) => panel(page).locator('.filter-tittel-linje .filter-antall')
+  const historikk = (page: Page) => page.evaluate<number>('window.history.length')
+
+  test('the panel shows the count, and one live region says each new count', async ({ page }) => {
+    await page.goto('/')
+    await expect(markers(page)).toHaveCount(24)
+    await expect(antall(page)).toHaveText('24 treff')
+    await expect(live(page)).toHaveText('24 treff')
+    // Only one status region speaks the count; the panel shows it without being live.
+    await expect(page.getByRole('status').filter({ hasText: 'treff' })).toHaveCount(1)
+    await expect(panel(page).getByRole('status')).toHaveCount(0)
+
+    await nysno(page).fill('12')
+    await expect(markers(page)).toHaveCount(1)
+    await expect(page.locator('path[data-sted-id="trysil"]')).toHaveCount(1)
+    await expect(antall(page)).toHaveText('1 treff')
+    await expect(live(page)).toHaveText('1 treff')
+    await expect(banner(page)).toHaveCount(0)
+  })
+
+  test('at least 13 cm suggests 12 cm, and «Bruk forslaget» shows Trysil with focus on the slider', async ({ page }) => {
+    await page.goto('/?visning=liste')
+    await expect(rows(page)).toHaveCount(24)
+    const steg = await historikk(page)
+    await nysno(page).fill('13')
+    await expect(rows(page)).toHaveCount(0)
+    await expect(antall(page)).toHaveText('Ingen treff')
+    await expect(banner(page).getByRole('paragraph')).toHaveText('Ingen treff. Prøv nysnø minst 12 cm.')
+    // The suggestion is spoken by exactly one status region, never by the banner.
+    await expect(live(page)).toHaveCount(1)
+    await expect(live(page)).toHaveText('Ingen treff. Prøv nysnø minst 12 cm.')
+    await expect(banner(page).getByRole('status')).toHaveCount(0)
+    await expect(banner(page)).not.toHaveAttribute('role', 'status')
+    for (const knapp of [brukForslaget(page), banner(page).getByRole('button', { name: 'Nullstill' })]) {
+      expect((await box(knapp)).height).toBeGreaterThanOrEqual(44)
+    }
+
+    // With the keyboard: the suggestion goes the same way as a slider step and replaces the address.
+    await brukForslaget(page).focus()
+    await page.keyboard.press('Enter')
+    await expect(rows(page)).toHaveCount(1)
+    await expect(rows(page).first()).toContainText('Trysil')
+    await expect(page).toHaveURL(/\/\?visning=liste&nysno=12$/)
+    expect(await historikk(page)).toBe(steg)
+    await expect(nysno(page)).toHaveAttribute('aria-valuetext', 'minst 12 cm')
+    await expect(nysno(page)).toBeFocused()
+    await expect(live(page)).toHaveText('1 treff')
+    await expect(banner(page)).toHaveCount(0)
+  })
+
+  test('a suggestion for wind moves focus to the wind slider', async ({ page }) => {
+    await page.goto('/?nysno=10&vind=9&temp=0')
+    await expect(banner(page).getByRole('paragraph')).toHaveText('Ingen treff. Prøv vind høyst 12 m/s.')
+    await brukForslaget(page).click()
+    await expect(page).toHaveURL(/\/\?nysno=10&vind=12&temp=0$/)
+    await expect(markers(page)).toHaveCount(1)
+    await expect(page.locator('path[data-sted-id="gaustatoppen"]')).toHaveCount(1)
+    await expect(vind(page)).toHaveAttribute('aria-valuetext', 'høyst 12 m/s')
+    await expect(vind(page)).toBeFocused()
+  })
+
+  test('says «Prøv uten nysnøkravet» when only «Alle» gives a place', async ({ page }) => {
+    await page.goto('/?nysno=1&vind=3')
+    await expect(banner(page).getByRole('paragraph')).toHaveText('Ingen treff. Prøv uten nysnøkravet.')
+    await brukForslaget(page).click()
+    await expect(page).toHaveURL(/\/\?vind=3$/)
+    await expect(markers(page)).toHaveCount(1)
+    await expect(page.locator('path[data-sted-id="mo-i-rana"]')).toHaveCount(1)
+    await expect(nysno(page)).toHaveAttribute('aria-valuetext', 'Alle')
+    await expect(nysno(page)).toBeFocused()
+  })
+
+  test('offers only «Nullstill» when no single change gives a place', async ({ page }) => {
+    await page.goto('/?nysno=13&temp=-11')
+    await expect(banner(page).getByRole('paragraph')).toHaveText(
+      'Ingen treff. Det hjelper ikke å endre bare ett krav. Prøv «Nullstill».',
+    )
+    await expect(brukForslaget(page)).toHaveCount(0)
+    await banner(page).getByRole('button', { name: 'Nullstill' }).click()
+    await expect(markers(page)).toHaveCount(24)
+  })
+
+  test('the zero-hit banner has no serious or critical WCAG 2.1 AA violations', async ({ page }) => {
+    await page.goto('/?visning=liste&nysno=13')
+    await expect(brukForslaget(page)).toBeVisible()
+    await expectNoBlockingViolations(page)
+  })
+})
+
+test.describe('the hit count and the suggestion at 375px', () => {
+  test.use({ viewport: MOBIL })
+
+  const linjeAntall = (page: Page) => panel(page).locator('.filter-linje .filter-antall')
+
+  test('the closed sheet shows the count, and «Bruk forslaget» leaves focus on «Filter»', async ({ page }) => {
+    await page.goto('/')
+    await expect(markers(page)).toHaveCount(24)
+    await expect(linjeAntall(page)).toHaveText('24 treff')
+    await expect(linjeAntall(page)).toBeVisible()
+
+    await filterKnapp(page).click()
+    await nysno(page).fill('13')
+    await expect(linjeAntall(page)).toHaveText('Ingen treff')
+    await filterKnapp(page).click()
+    await expect(nysno(page)).toBeHidden()
+    await expect(banner(page).getByRole('paragraph')).toHaveText('Ingen treff. Prøv nysnø minst 12 cm.')
+    for (const knapp of [brukForslaget(page), banner(page).getByRole('button', { name: 'Nullstill' })]) {
+      expect((await box(knapp)).height).toBeGreaterThanOrEqual(44)
+    }
+
+    await brukForslaget(page).click()
+    await expect(markers(page)).toHaveCount(1)
+    await expect(linjeAntall(page)).toHaveText('1 treff')
+    await expect(live(page)).toHaveText('1 treff')
+    await expect(page.getByRole('list', { name: 'Aktive krav' }).getByRole('listitem')).toHaveText(['Nysnø minst 12 cm'])
+    // The slider is hidden in the closed sheet, so focus goes to «Filter».
+    await expect(filterKnapp(page)).toBeFocused()
+  })
+
+  test('the banner does not scroll the page sideways, even with a wide font', async ({ page }) => {
+    for (const width of [320, 375]) {
+      await page.setViewportSize({ width, height: MOBIL.height })
+      // Three chips and the longest banner text.
+      await page.goto('/?nysno=13&vind=8&temp=-11')
+      await expect(banner(page)).toBeVisible()
+      await page.addStyleTag({ content: BRED_FONT })
+      await expectNoSidewaysScroll(page)
+      await page.goto('/?nysno=13&vind=8')
+      await expect(brukForslaget(page)).toBeVisible()
+      await page.addStyleTag({ content: BRED_FONT })
+      await expectNoSidewaysScroll(page)
+    }
+  })
+
+  test('the zero-hit banner has no serious or critical WCAG 2.1 AA violations', async ({ page }) => {
+    await page.goto('/?nysno=13')
+    await expect(brukForslaget(page)).toBeVisible()
+    await expectNoBlockingViolations(page)
   })
 })

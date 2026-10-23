@@ -1,20 +1,29 @@
 import { useState, type CSSProperties } from 'react'
-import { aktiveKrav, FILTER_GRENSER, FILTER_KRAV, STANDARD_FILTER, type FilterKrav, type FilterParams } from '../../shared/filter'
+import {
+  aktiveKrav,
+  FILTER_GRENSER,
+  FILTER_KRAV,
+  STANDARD_FILTER,
+  type FilterKrav,
+  type FilterParams,
+  type Forslag,
+} from '../../shared/filter'
 import { tall } from '../lib/format'
 
 // Story 3.1 (FR-20): new snow, wind and temperature, combined with AND. A fixed left side panel from
 // 768px, a bottom sheet below. The sheet opens with a button rather than a drag (decided 2026-10-22),
-// so it works with the keyboard and a screen reader.
+// so it works with the keyboard and a screen reader. Story 3.3 (FR-14, UX-DR4) shows the hit count in the
+// panel and on the closed sheet.
 
 export const ALLE = 'Alle'
 export const KNAPP_ID = 'filter-knapp'
 const INNHOLD_ID = 'filter-innhold'
 const feltId = (krav: FilterKrav) => `filter-${krav}`
 
-const KRAV_TEKST: Record<FilterKrav, { navn: string; retning: string; enhet: string }> = {
-  minNysnoCm: { navn: 'Nysnø', retning: 'minst', enhet: 'cm' },
-  maksVindMs: { navn: 'Vind', retning: 'høyst', enhet: 'm/s' },
-  maksTemperaturC: { navn: 'Temperatur', retning: 'høyst', enhet: '°C' },
+const KRAV_TEKST: Record<FilterKrav, { navn: string; retning: string; enhet: string; kravet: string }> = {
+  minNysnoCm: { navn: 'Nysnø', retning: 'minst', enhet: 'cm', kravet: 'nysnøkravet' },
+  maksVindMs: { navn: 'Vind', retning: 'høyst', enhet: 'm/s', kravet: 'vindkravet' },
+  maksTemperaturC: { navn: 'Temperatur', retning: 'høyst', enhet: '°C', kravet: 'temperaturkravet' },
 }
 
 /** The value as words: «minst 10 cm», «høyst −5 °C», or «Alle» when the requirement is off. */
@@ -29,9 +38,25 @@ export function kravTekst(krav: FilterKrav, verdi: number | null): string {
   return `${KRAV_TEKST[krav].navn} ${verdiTekst(krav, verdi)}`
 }
 
-/** After «Nullstill» the button is gone, so focus moves to the first slider, or to «Filter» when the sheet is closed. */
-export function fokuserFilteret(): void {
-  const felt = document.getElementById(feltId(FILTER_KRAV[0]))
+/** Story 3.3 (FR-14, UX-DR4): «24 treff», «1 treff», or «Ingen treff». */
+export function antallTekst(antall: number): string {
+  return antall === 0 ? 'Ingen treff' : `${antall} treff`
+}
+
+/** What to try at zero hits, in the panel's words: «Prøv vind høyst 8 m/s.», «Prøv uten vindkravet.» */
+export function forslagTekst(forslag: Forslag | null): string {
+  if (!forslag) return 'Det hjelper ikke å endre bare ett krav. Prøv «Nullstill».'
+  const { krav, verdi } = forslag
+  if (verdi === null) return `Prøv uten ${KRAV_TEKST[krav].kravet}.`
+  return `Prøv ${KRAV_TEKST[krav].navn.toLowerCase()} ${verdiTekst(krav, verdi)}.`
+}
+
+/**
+ * After «Nullstill» or «Bruk forslaget» the button is gone, so focus moves to the slider of the requirement
+ * (the first one by default), or to «Filter» when the sheet is closed.
+ */
+export function fokuserFilteret(krav: FilterKrav = FILTER_KRAV[0]): void {
+  const felt = document.getElementById(feltId(krav))
   const mal = felt && felt.offsetParent !== null ? felt : document.getElementById(KNAPP_ID)
   mal?.focus()
 }
@@ -74,7 +99,12 @@ function Filterfelt({ krav, verdi, onEndre }: FeltProps) {
   )
 }
 
-type Props = { params: FilterParams; onEndre: (params: FilterParams) => void }
+type Props = { params: FilterParams; onEndre: (params: FilterParams) => void; antall: number }
+
+/** The number of places the filter gives. Shown, not announced: Utforsk has the one live region. */
+function Antall({ antall }: Pick<Props, 'antall'>) {
+  return <span className="filter-antall">{antallTekst(antall)}</span>
+}
 
 /** Sets every requirement back to «Alle». Shown whenever at least one is active, also on the closed sheet. */
 export function Nullstill({ onEndre }: Pick<Props, 'onEndre'>) {
@@ -92,7 +122,7 @@ export function Nullstill({ onEndre }: Pick<Props, 'onEndre'>) {
   )
 }
 
-export default function FilterPanel({ params, onEndre }: Props) {
+export default function FilterPanel({ params, onEndre, antall }: Props) {
   const [apen, setApen] = useState(false)
   const aktive = aktiveKrav(params)
 
@@ -110,6 +140,7 @@ export default function FilterPanel({ params, onEndre }: Props) {
         >
           Filter
         </button>
+        <Antall antall={antall} />
         {!apen && aktive.length > 0 && (
           <>
             <ul className="filter-chips" aria-label="Aktive krav">
@@ -124,7 +155,10 @@ export default function FilterPanel({ params, onEndre }: Props) {
         )}
       </div>
       <div id={INNHOLD_ID} className="filter-innhold">
-        <h2 className="filter-tittel">Filter</h2>
+        <div className="filter-tittel-linje">
+          <h2 className="filter-tittel">Filter</h2>
+          <Antall antall={antall} />
+        </div>
         {FILTER_KRAV.map((krav) => (
           <Filterfelt key={krav} krav={krav} verdi={params[krav]} onEndre={(verdi) => onEndre({ ...params, [krav]: verdi })} />
         ))}
