@@ -3,7 +3,7 @@
 **Hvem:** Aksel
 **Verktøy / agent:** Claude Code (Opus 5.5). `bmad-build` i dispatch-ruten, med gjennomgang i tre lag (Blind Hunter, Edge Case Hunter og Verification Gap) i underagenter.
 **Fase:** Gjennomføring
-**Resultat:** [`spec-3-2-del-og-gjenapne-filtrert-sok.md`](../../project-workspace/implementation-artifacts/spec-3-2-del-og-gjenapne-filtrert-sok.md).
+**Resultat:** [`spec-3-2-del-og-gjenapne-filtrert-sok.md`](../../project-workspace/implementation-artifacts/spec-3-2-del-og-gjenapne-filtrert-sok.md) (PR #49) og [`spec-3-2b-filter-i-stedsadressen.md`](../../project-workspace/implementation-artifacts/spec-3-2b-filter-i-stedsadressen.md).
 
 ## Prompter
 
@@ -23,3 +23,18 @@ Aksel ga lov til å merge i økten. Spec-en ble større enn anbefalt, og Aksel v
 - Filter, visning og sortering ligger i adressen, så et søk kan deles, og Tilbake fra stedssiden beholder filteret. Det retter det utsatte punktet fra 3.1.
 - Gjennomgangen fant at en ny meny-nøkkel lot ☰-menyen stå åpen etter «SnowFinder» fra et filtrert kart. Nøkkelen ble satt tilbake, så menyen lukkes også når man flytter en slider.
 - Adressekontrakten står nå i arkitekturen (AD-12), i begge kopiene.
+
+### 2
+> rett feilene eller usikkerheten før du går videre til story 3.3
+
+**Svar (kort):** Claude listet fire åpne punkter og spurte hvilke som skulle med:
+- filter og sted i adressen (UJ-1);
+- usikkerheten om hvilket døgn NVE-verdien gjelder;
+- ustabile tester lokalt;
+- små inkonsistenser i 3.2.
+
+**Valg:** Bare «Filter + sted i adressen».
+
+**Hva vi gjorde med det:**
+- Stedssidens adresse bærer nå søket den ble åpnet fra, for eksempel `/sted/gaustatoppen?visning=liste&nysno=2&temp=0`. En delt stedslenke og «Tilbake» gir derfor samme søk. «Gå til kartet» på «Fant ikke stedet» beholder også søket.
+- Adressen ryddes når stedssiden lastes, som på Utforsk.

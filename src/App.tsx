@@ -31,10 +31,10 @@ function Innhold({ result, route }: { result: StederResult | null; route: Route 
     return <Utforsk steder={result.data.steder} utdatert={result.utdatert} route={route} />
   }
   // NFR-3: a place removed for being older than 12 h says so, instead of "not found".
-  if (result.fjernet.has(route.id)) return <IkkeFunnet melding="Dataene for dette stedet er for gamle til å vises" />
+  if (result.fjernet.has(route.id)) return <IkkeFunnet melding="Dataene for dette stedet er for gamle til å vises" sok={route.sok} />
   const sted = result.data.steder.find(({ id }) => id === route.id)
-  if (!sted) return <IkkeFunnet melding="Fant ikke stedet" />
-  return <Sted sted={sted} utdatert={result.utdatert.has(sted.id)} />
+  if (!sted) return <IkkeFunnet melding="Fant ikke stedet" sok={route.sok} />
+  return <Sted sted={sted} utdatert={result.utdatert.has(sted.id)} sok={route.sok} />
 }
 
 /** What the page-wide status region says; empty unless Utforsk has no places left to show. */

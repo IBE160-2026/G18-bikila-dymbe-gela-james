@@ -17,11 +17,20 @@ export type UrlSortering = 'score' | 'navn'
 // AD-12 (Story 3.2): the filter and the list order ride along in the same query, so a link can be shared.
 export type UtforskRoute = { name: 'utforsk'; visning: Visning; filter: FilterParams; sortering: UrlSortering }
 
-export type Route = UtforskRoute | { name: 'sted'; id: string } | { name: 'forklaring' } | { name: 'ikke-funnet' }
+// Story 3.2b (UJ-1 step 6): a place page carries the search it was opened from, in the same query as
+// Utforsk, so a shared place link and its «Tilbake» keep the filter, the view and the order.
+export type StedRoute = { name: 'sted'; id: string; sok: UtforskRoute }
+
+export type Route = UtforskRoute | StedRoute | { name: 'forklaring' } | { name: 'ikke-funnet' }
 
 /** Utforsk with no filter and the default order, as links from other pages open it. */
 export function utforsk(visning: Visning = 'kart'): UtforskRoute {
   return { name: 'utforsk', visning, filter: STANDARD_FILTER, sortering: 'score' }
+}
+
+/** A place page opened from `sok`; without a search its address is the plain `/sted/<id>`. */
+export function sted(id: string, sok: UtforskRoute = utforsk()): StedRoute {
+  return { name: 'sted', id, sok }
 }
 
 /** Story 2.1: the path of «Slik beregner vi SnowScore», relative to the base. */
@@ -52,7 +61,7 @@ export function parseRoute(pathname: string, base: string, search = ''): Route {
   const match = /^sted\/([^/]+)$/.exec(rest)
   if (!match) return { name: 'ikke-funnet' }
   try {
-    return { name: 'sted', id: decodeURIComponent(match[1]) }
+    return sted(decodeURIComponent(match[1]), parseUtforsk(search))
   } catch {
     // A malformed escape such as "%E0" cannot name any place.
     return { name: 'ikke-funnet' }
@@ -80,7 +89,8 @@ export function href(route: Route, base: string): string {
     case 'forklaring':
       return `${root}${FORKLARING_PATH}`
     case 'sted':
-      return `${root}sted/${encodeURIComponent(route.id)}`
+      // The same query as Utforsk, so the search survives a shared place link.
+      return `${root}sted/${encodeURIComponent(route.id)}${utforskQuery(route.sok)}`
   }
 }
 

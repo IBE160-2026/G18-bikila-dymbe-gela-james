@@ -18,7 +18,7 @@ const verdi = (page: Page, navn: string) => page.locator('.tall-liste div').filt
 test('Gaustatoppen from the list shows the sub-scores, the data and the source time', async ({ page }) => {
   await page.goto('/?visning=liste')
   await page.locator('a.liste-rad').filter({ hasText: 'Gaustatoppen' }).click()
-  await expect(page).toHaveURL(/\/sted\/gaustatoppen$/)
+  await expect(page).toHaveURL(/\/sted\/gaustatoppen\?visning=liste$/)
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Gaustatoppen')
   await expect(page.locator('.sted-score')).toHaveText('58 · Godt')
 
