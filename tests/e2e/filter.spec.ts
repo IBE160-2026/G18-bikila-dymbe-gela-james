@@ -36,6 +36,10 @@ const brukForslaget = (page: Page) => page.getByRole('button', { name: 'Bruk for
 const BRED_FONT = `* { font-family: Verdana, 'DejaVu Sans', sans-serif !important; }`
 
 async function expectNoBlockingViolations(page: Page): Promise<void> {
+  // Axe must measure the settled page: mid-animation it sees colours at partial opacity and reports false
+  // contrast failures. The app's CSS turns its animations off under reduced motion, which also stops a
+  // running one at once.
+  await page.emulateMedia({ reducedMotion: 'reduce' })
   const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa']).analyze()
   const blocking = results.violations.filter(({ impact }) => impact === 'serious' || impact === 'critical')
   expect(blocking, JSON.stringify(blocking, null, 2)).toEqual([])
