@@ -6,11 +6,11 @@ avslutning.
 
 | Mappe | Fase | Innhold |
 |---|---|---|
-| [`1-Oppstartsfasen/`](1-Oppstartsfasen/) | Oppstart | Produktbrief, mandat, roller, tidlige risikoer |
-| [`2-Planleggingsfasen/`](2-Planleggingsfasen/) | Planlegging | Krav (PRD), arkitektur, epics/stories, sprint-plan, milepæler, testplan |
-| [`3-Gjennomføringsfasen/`](3-Gjennomføringsfasen/) | Gjennomføring | Sprint-status, møtereferater, kodegjennomganger, endringer |
+| [`1-Oppstartsfasen/`](1-Oppstartsfasen/) | Oppstart | Produktbrief og faglærers tilbakemelding (gruppekontrakt og mandat kommer) |
+| [`2-Planleggingsfasen/`](2-Planleggingsfasen/) | Planlegging | Krav (PRD), arkitektur, DESIGN/EXPERIENCE, epics/stories, sprintplan og milepæler (testplan kommer) |
+| [`3-Gjennomføringsfasen/`](3-Gjennomføringsfasen/) | Gjennomføring | Fremdriftsplan, møtereferater og lenker til kodegjennomganger, endringsforslag og retrospektiv |
 | [`4-Avslutningsfasen/`](4-Avslutningsfasen/) | Avslutning | Sluttrapport, retrospektiv, leveranse og presentasjon |
-| [`assets/`](assets/) | — | Diagrammer, skjermbilder og bilder brukt i dokumentasjonen |
+| [`assets/`](assets/) | — | Diagrammer og skjermbilder til dokumentasjonen (tom ennå) |
 
 Produktet heter **SnowFinder** — en webapp som finner steder og tidspunkt med best
 prognostiserte snøforhold, med **SnowScore** (0–100) som kjernemetrikk. Se
@@ -23,9 +23,8 @@ for full produktbrief.
   - **Der nå:** produktbrief (`1-Oppstartsfasen/`), PRD, arkitektur, DESIGN/EXPERIENCE,
     epics/stories, sprintplan og milepæler (`2-Planleggingsfasen/`), fremdriftsplan og
     møtereferater (`3-Gjennomføringsfasen/`)
-  - **Kommer etter hvert:** testplan (`2-Planleggingsfasen/`), kodegjennomganger og
-    endringslogg (`3-Gjennomføringsfasen/`), sluttrapport, retrospektiv og leveranse
-    (`4-Avslutningsfasen/`)
+  - **Kommer etter hvert:** testplan (`2-Planleggingsfasen/`), brukertest (`3-Gjennomføringsfasen/`),
+    sluttrapport, retrospektiv og leveranse (`4-Avslutningsfasen/`)
 - **`project-workspace/`** — BMAD-verktøyets arbeidsmappe:
   - **Der nå:** utkastene bak produktbrief, PRD, UX og arkitektur i `planning-artifacts/`
     (identiske med kopiene i denne mappen), og `implementation-artifacts/` med

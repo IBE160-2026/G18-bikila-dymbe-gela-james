@@ -20,7 +20,7 @@ Formål: oversette produktbrief til konkrete krav, arkitektur og en gjennomførb
   som brukes i hvert steg, og hvor vi er nå
 - **[`sprintplan.md`](sprintplan.md)** — readiness-sjekk, fire sprinter og hva gruppa må sette
   opp før sprint 2
-- **[`milepæler.md`](milepæler.md)** — prosjektets milepæler med status
+- **[`milepæler.md`](milepæler.md)** — prosjektets milepæler med epic, sprint og frist (status står i fremdriftsplanen)
 - **Testplan** (kommer) — enhets-, egenskaps-, kontrakts-, sikkerhets- og E2E-tester
 
 ## Forrige / neste steg

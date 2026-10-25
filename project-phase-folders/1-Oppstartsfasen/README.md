@@ -6,7 +6,7 @@ for hvem, og innenfor hvilke rammer.
 ## Innhold
 
 - **`SnowFinder-Produktbrief.md`** — Produktbrief for SnowFinder: problem, målgrupper, løsning
-  (kart, stedssider, filter, snøvarsel, SnowScore-forklaring), scope for v1, datakilder,
+  (kart, stedssider, filter og SnowScore-forklaring; snøvarsel er «Ikke i v1»), scope for v1, datakilder,
   arkitektur, risiko og suksesskriterier.
 - Gruppekontrakt / roller og ansvar (legges til)
 - Prosjektmandat / avtale med emneansvarlig, ev. karaktersette kriterier (legges til)

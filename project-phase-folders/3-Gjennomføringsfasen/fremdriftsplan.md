@@ -3,7 +3,7 @@
 Oversikt over hvordan vi går fram, steg for steg, så alle kan følge med selv om de ikke var
 på møtet. Oppdater statusen når et steg er ferdig.
 
-**Sist oppdatert:** 2026-10-23
+**Sist oppdatert:** 2026-10-25
 
 ## Slik holder du deg oppdatert
 
@@ -12,6 +12,16 @@ på møtet. Oppdater statusen når et steg er ferdig.
 3. Se promptene fra siste økt i [`ai-log/prompter/`](../../ai-log/prompter/).
 
 ## Hvor er vi nå?
+
+**25. oktober: Round table med agentene, og opprydding i regler og mappestruktur.**
+
+- Agentene gikk gjennom prosjektet og fant feil og svakheter: skjev fordeling av arbeidet, ingen
+  møtereferater, steg 8c (wireframes og brukertestplan) ikke startet, og UX-dokumenter som har
+  glidd fra koden. Se [KI-loggen](../../ai-log/prompter/2026-10-25-joseph-round-table-og-agentregler.md).
+- Nye regler i `AGENTS.md` (PR #54): et annet gruppemedlem tar review før en story merges,
+  referat etter hvert møte, og ferdige stories oppdateres i samme PR. Denne planen er flyttet hit
+  fra `2-Planleggingsfasen/`, og status står nå bare her og i `sprint-status.yaml`.
+- Story 3.4 (hurtigvalg) har en godkjent spec og er klar til å bygges.
 
 **23. oktober: Epic 1 (kjernen) og Epic 2 (forklaringssiden) er bygget, og Må ha i Epic 3 (filter) er ferdig.**
 

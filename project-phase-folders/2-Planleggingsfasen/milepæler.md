@@ -3,16 +3,15 @@
 Rekkefølgen følger utviklingsprosessen i produktbriefen: stedskatalog og pipeline → SnowScore
 → kart og stedssider → filter → «bør ha»-funksjoner.
 
-| # | Milepæl | Frist | Status |
+| # | Milepæl | Epic og sprint | Frist |
 |---|---|---|---|
-| 1 | Stedskatalog og datapipeline (MET, NVE, Kartverket, OSM) | | Ferdig unntatt timesjobben (Story 1.11) |
-| 2 | SnowScore-beregning og forklaringsside | | Ferdig (Epic 2) |
-| 3 | Norgeskart og stedssider | | Ferdig (Story 1.7–1.9) |
-| 4 | Filter (nysnø, vind, sol, temperatur, avstand, stedstype) | | Ikke startet |
-| 5 | «Bør ha»: beste skivindu og kalkulator (snøvarsel og tilbakemelding er «Ikke i v1») | | Kalkulatoren er ferdig (Story 2.4) |
-| 6 | Levering og demo | | Ikke startet |
+| 1 | Stedskatalog og datapipeline (MET, NVE, Kartverket, OSM) | Epic 1, sprint 1–2 | |
+| 2 | SnowScore-beregning og forklaringsside | Epic 1 (1.4) og Epic 2, sprint 1 | |
+| 3 | Norgeskart og stedssider | Epic 1 (1.7–1.9), sprint 2 | |
+| 4 | Filter (nysnø, vind, sol, temperatur, avstand, stedstype) | Epic 3, sprint 3 | |
+| 5 | «Bør ha»: beste skivindu og kalkulator (snøvarsel og tilbakemelding er «Ikke i v1») | 1.6 og 4.2 i sprint 4, 2.4 i sprint 1 | |
+| 6 | Levering og demo | Avslutningsfasen | |
 
-[Sprintplanen](sprintplan.md) viser hvilken sprint som dekker hver milepæl: sprint 1 dekker
-milepæl 2, sprint 2 dekker 1 og 3, sprint 3 dekker 4, og sprint 4 dekker 5. Fyll inn frister når
-gruppa har satt datoer, og oppdater status fortløpende i
-[`3-Gjennomføringsfasen/`](../3-Gjennomføringsfasen/).
+Hvor langt vi har kommet på hver milepæl, står i
+[fremdriftsplanen](../3-Gjennomføringsfasen/fremdriftsplan.md). Denne fila har ingen status, så den
+ikke kan bli utdatert. Fristene settes av gruppa og føres inn her.
