@@ -37,6 +37,29 @@ export const FILTER_GRENSER: Readonly<Record<FilterKrav, KravGrense>> = {
 
 export const FILTER_KRAV: readonly FilterKrav[] = ['minNysnoCm', 'maksVindMs', 'maksTemperaturC', 'maksSkydekkeDagslys']
 
+/** A named, fixed combination of requirements (FR-15). A requirement it does not mention is «Alle». */
+export interface Hurtigvalg {
+  navn: string
+  verdier: FilterParams
+}
+
+/**
+ * Story 3.4 (FR-15, decided 2026-10-25, Joseph: «A: Ekte pudder»): the two fixed, documented combinations.
+ * One choice sets the whole filter in one action; a requirement it does not mention goes to «Alle», so the
+ * same choice always gives the same result. The only source of these values; the panel, the README and the
+ * tests read this constant rather than writing the numbers themselves.
+ */
+export const HURTIGVALG: readonly Hurtigvalg[] = [
+  {
+    navn: 'Pudderdag',
+    verdier: { minNysnoCm: 10, maksVindMs: 8, maksTemperaturC: -2, maksSkydekkeDagslys: null },
+  },
+  {
+    navn: 'Sol etter snøfall',
+    verdier: { minNysnoCm: 5, maksVindMs: null, maksTemperaturC: null, maksSkydekkeDagslys: 30 },
+  },
+]
+
 export const STANDARD_FILTER: FilterParams = {
   minNysnoCm: null,
   maksVindMs: null,

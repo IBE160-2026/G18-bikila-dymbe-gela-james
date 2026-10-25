@@ -707,3 +707,103 @@ test.describe('the sun filter at 375px', () => {
     await expectNoBlockingViolations(page)
   })
 })
+
+// Story 3.4 (FR-15): «Pudderdag» and «Sol etter snøfall» fill the whole filter in one action (shared/filter.ts
+// HURTIGVALG). Both give zero hits on the demo data, so pressing one shows the Story 3.3 suggestion banner.
+const pudderdag = (page: Page) => page.getByRole('button', { name: 'Pudderdag' })
+const solEtterSnofall = (page: Page) => page.getByRole('button', { name: 'Sol etter snøfall' })
+
+test.describe('the quick picks at 1280px', () => {
+  test.use({ viewport: DESKTOP })
+
+  test('«Pudderdag» fills the filter in one action, updates the address and shows as pressed', async ({ page }) => {
+    await page.goto('/')
+    await expect(markers(page)).toHaveCount(24)
+    await expect(pudderdag(page)).toHaveAttribute('aria-pressed', 'false')
+
+    await pudderdag(page).click()
+    await expect(page).toHaveURL(/\/\?nysno=10&vind=8&temp=-2$/)
+    await expect(pudderdag(page)).toHaveAttribute('aria-pressed', 'true')
+    await expect(nysno(page)).toHaveAttribute('aria-valuetext', 'minst 10 cm')
+    await expect(vind(page)).toHaveAttribute('aria-valuetext', 'høyst 8 m/s')
+    await expect(temperatur(page)).toHaveAttribute('aria-valuetext', 'høyst −2 °C')
+    await expect(skydekke(page)).toHaveAttribute('aria-valuetext', 'Alle')
+    // Zero hits on the demo data: the Story 3.3 banner, never an empty surface, and focus stays on the chip.
+    await expect(markers(page)).toHaveCount(0)
+    await expect(banner(page)).toBeVisible()
+    await expect(pudderdag(page)).toBeFocused()
+  })
+
+  test('«Sol etter snøfall» replaces the whole filter, so a requirement it does not mention goes to «Alle»', async ({ page }) => {
+    await page.goto('/?temp=0')
+    await expect(temperatur(page)).toHaveAttribute('aria-valuetext', 'høyst 0 °C')
+
+    await solEtterSnofall(page).click()
+    await expect(page).toHaveURL(/\/\?nysno=5&sky=30$/)
+    await expect(temperatur(page)).toHaveAttribute('aria-valuetext', 'Alle')
+    await expect(nysno(page)).toHaveAttribute('aria-valuetext', 'minst 5 cm')
+    await expect(skydekke(page)).toHaveAttribute('aria-valuetext', 'høyst 30 %')
+    await expect(solEtterSnofall(page)).toHaveAttribute('aria-pressed', 'true')
+    await expect(markers(page)).toHaveCount(0)
+    await expect(banner(page)).toBeVisible()
+  })
+
+  test('moving a slider afterwards un-presses the chip but keeps the rest of the filter', async ({ page }) => {
+    await page.goto('/')
+    await pudderdag(page).click()
+    await expect(pudderdag(page)).toHaveAttribute('aria-pressed', 'true')
+
+    await vind(page).fill('10')
+    await expect(pudderdag(page)).toHaveAttribute('aria-pressed', 'false')
+    await expect(nysno(page)).toHaveAttribute('aria-valuetext', 'minst 10 cm')
+    await expect(temperatur(page)).toHaveAttribute('aria-valuetext', 'høyst −2 °C')
+    await expect(page).toHaveURL(/\/\?nysno=10&vind=10&temp=-2$/)
+  })
+
+  test('a link with exactly a quick pick’s values shows its chip as pressed', async ({ page }) => {
+    await page.goto('/?nysno=5&sky=30')
+    await expect(solEtterSnofall(page)).toHaveAttribute('aria-pressed', 'true')
+    await expect(pudderdag(page)).toHaveAttribute('aria-pressed', 'false')
+  })
+
+  test('the quick picks have no serious or critical WCAG 2.1 AA violations, closed or active', async ({ page }) => {
+    await page.goto('/')
+    await expectNoBlockingViolations(page)
+    await pudderdag(page).click()
+    await expectNoBlockingViolations(page)
+  })
+})
+
+test.describe('the quick picks at 375px', () => {
+  test.use({ viewport: MOBIL })
+
+  test('each chip is at least 44px tall, and pressing one does not scroll the sheet sideways, even with a wide font', async ({ page }) => {
+    for (const width of [320, 375]) {
+      await page.setViewportSize({ width, height: MOBIL.height })
+      await page.goto('/')
+      await expect(markers(page)).toHaveCount(24)
+      await page.addStyleTag({ content: BRED_FONT })
+
+      await filterKnapp(page).click()
+      await expect(pudderdag(page)).toBeVisible()
+      expect((await box(pudderdag(page))).height).toBeGreaterThanOrEqual(44)
+      expect((await box(solEtterSnofall(page))).height).toBeGreaterThanOrEqual(44)
+      await expectNoSidewaysScroll(page)
+
+      await pudderdag(page).click()
+      await expect(page).toHaveURL(/\/\?nysno=10&vind=8&temp=-2$/)
+      await expect(pudderdag(page)).toHaveAttribute('aria-pressed', 'true')
+      await expect(pudderdag(page)).toBeFocused()
+      await expectNoSidewaysScroll(page)
+    }
+  })
+
+  test('the open sheet with the quick picks has no serious or critical WCAG 2.1 AA violations', async ({ page }) => {
+    await page.goto('/')
+    await filterKnapp(page).click()
+    await expect(pudderdag(page)).toBeVisible()
+    await expectNoBlockingViolations(page)
+    await pudderdag(page).click()
+    await expectNoBlockingViolations(page)
+  })
+})

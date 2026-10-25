@@ -7,6 +7,7 @@ import {
   FILTER_KRAV,
   filtrerSteder,
   forslagVedNullTreff,
+  HURTIGVALG,
   parseFilter,
   serializeFilter,
   STANDARD_FILTER,
@@ -92,6 +93,29 @@ describe('forslagVedNullTreff', () => {
   it('gives no suggestion when there are places, or no places at all', () => {
     expect(forslagVedNullTreff([sted(10, 5)], { minNysnoCm: 5, maksVindMs: null, maksTemperaturC: null, maksSkydekkeDagslys: null })).toBeNull()
     expect(forslagVedNullTreff([], { minNysnoCm: 5, maksVindMs: null, maksTemperaturC: null, maksSkydekkeDagslys: null })).toBeNull()
+  })
+})
+
+// Story 3.4 (FR-15): the quick picks fill the whole filter in one action with a fixed, documented combination.
+describe('HURTIGVALG', () => {
+  it('has only valid slider values: each set requirement is within its range and on one of its steps', () => {
+    for (const { navn, verdier } of HURTIGVALG) {
+      for (const krav of FILTER_KRAV) {
+        const verdi = verdier[krav]
+        if (verdi === null) continue
+        const { min, max, steg } = FILTER_GRENSER[krav]
+        expect(verdi, `${navn} ${krav}`).toBeGreaterThanOrEqual(min)
+        expect(verdi, `${navn} ${krav}`).toBeLessThanOrEqual(max)
+        expect((verdi - min) % steg, `${navn} ${krav}`).toBe(0)
+      }
+    }
+  })
+
+  it('round-trips through the address unchanged, so a shared quick-pick link restores it exactly', () => {
+    for (const { navn, verdier } of HURTIGVALG) {
+      const query = new URLSearchParams(serializeFilter(verdier)).toString()
+      expect(parseFilter(new URLSearchParams(query)), navn).toEqual(verdier)
+    }
   })
 })
 

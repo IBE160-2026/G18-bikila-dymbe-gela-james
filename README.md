@@ -50,6 +50,13 @@ foreslår appen det ene kravet som bør lempes (for eksempel «Prøv nysnø mins
 med knappen «Bruk forslaget». Forslagene bruker sliderens hele steg, så et sted med 12,6 cm nysnø gir
 forslaget «minst 12 cm».
 
+Øverst i det åpne panelet står to hurtigvalg-chips som fyller hele filteret i ett trykk, uten dialog:
+«Pudderdag» setter nysnø minst 10 cm, vind høyst 8 m/s og temperatur høyst −2 °C (skydekke settes til
+«Alle»), og «Sol etter snøfall» setter nysnø minst 5 cm og skydekke i dagslys høyst 30 % (vind og
+temperatur settes til «Alle»). Et krav en chip ikke nevner, settes alltid til «Alle», uansett hva det
+stod på før, så samme chip gir samme resultat hver gang. Chipen vises som valgt når filteret er nøyaktig lik kombinasjonen, og blir det ikke lenger når
+du justerer en slider etterpå.
+
 Filteret, visningen og sorteringen ligger i nettadressen, for eksempel
 `/?visning=liste&nysno=5&vind=10&temp=-2&sky=60&sortering=navn`. Kopier adressen for å dele søket: lenken
 åpner samme filter, samme visning og samme treff. Krav som står på «Alle», og ugyldige verdier tas ikke

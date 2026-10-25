@@ -86,8 +86,8 @@ describe('FilterPanel', () => {
     expect(html).toContain(
       '<p id="filter-maksSkydekkeDagslys-hint" class="filter-hint">Steder uten dagslys de neste 24 timene (mørketid) vises ikke når kravet er på.</p>',
     )
-    // The other sliders have no note.
-    expect(html.match(/aria-describedby=/g)).toHaveLength(1)
+    // The other sliders have no note (the quick-pick chips also use aria-describedby, for their own text).
+    expect(html.match(/<input[^>]*aria-describedby=/g)).toHaveLength(1)
   })
 
   it('has a closed «Filter» button for the bottom sheet that controls the panel', () => {
@@ -108,5 +108,38 @@ describe('FilterPanel', () => {
     expect(html).toMatch(/id="filter-maksVindMs"[^>]*aria-valuetext="Alle"/)
     // One «Nullstill» on the closed sheet and one in the panel; CSS shows only one at a time.
     expect(html.match(/>Nullstill<\/button>/g)).toHaveLength(2)
+  })
+})
+
+// Story 3.4 (FR-15): the two quick picks, each a chip that fills the whole filter in one action.
+describe('Hurtigvalgene', () => {
+  const PUDDERDAG: FilterParams = { minNysnoCm: 10, maksVindMs: 8, maksTemperaturC: -2, maksSkydekkeDagslys: null }
+  const SOL_ETTER_SNOFALL: FilterParams = { minNysnoCm: 5, maksVindMs: null, maksTemperaturC: null, maksSkydekkeDagslys: 30 }
+
+  it('shows both as unpressed buttons, each with its fixed combination described underneath', () => {
+    const html = render(STANDARD_FILTER)
+    expect(html).toContain('<ul class="filter-hurtigvalg" aria-label="Hurtigvalg">')
+    expect(html).toContain(
+      '<button type="button" id="hurtigvalg-0" class="filter-hurtigvalg-chip" aria-pressed="false" aria-describedby="hurtigvalg-0-beskrivelse">Pudderdag</button>',
+    )
+    expect(html).toContain(
+      '<span id="hurtigvalg-0-beskrivelse" class="filter-hurtigvalg-beskrivelse">Nysnø minst 10 cm, Vind høyst 8 m/s, Temperatur høyst −2 °C</span>',
+    )
+    expect(html).toContain(
+      '<button type="button" id="hurtigvalg-1" class="filter-hurtigvalg-chip" aria-pressed="false" aria-describedby="hurtigvalg-1-beskrivelse">Sol etter snøfall</button>',
+    )
+    expect(html).toContain(
+      '<span id="hurtigvalg-1-beskrivelse" class="filter-hurtigvalg-beskrivelse">Nysnø minst 5 cm, Skydekke i dagslys høyst 30 %</span>',
+    )
+  })
+
+  it('marks a chip pressed only when the filter is exactly its combination, not on a near match', () => {
+    expect(render(PUDDERDAG)).toMatch(/id="hurtigvalg-0" class="filter-hurtigvalg-chip" aria-pressed="true"/)
+    expect(render(PUDDERDAG)).toMatch(/id="hurtigvalg-1" class="filter-hurtigvalg-chip" aria-pressed="false"/)
+    expect(render(SOL_ETTER_SNOFALL)).toMatch(/id="hurtigvalg-1" class="filter-hurtigvalg-chip" aria-pressed="true"/)
+
+    // Moving one slider away from «Pudderdag» un-presses its chip.
+    const justert: FilterParams = { ...PUDDERDAG, maksVindMs: 7 }
+    expect(render(justert)).toMatch(/id="hurtigvalg-0" class="filter-hurtigvalg-chip" aria-pressed="false"/)
   })
 })
