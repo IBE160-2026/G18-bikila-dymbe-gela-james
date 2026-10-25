@@ -1,4 +1,4 @@
-import { useState, type CSSProperties } from 'react'
+import { useState, type CSSProperties, type ReactNode } from 'react'
 import {
   aktiveKrav,
   FILTER_GRENSER,
@@ -128,9 +128,11 @@ type FeltProps = {
   /** Story 3.6: the distance slider's hint is a dynamic status (fetching/refused), unlike the cloud cover
    * slider's fixed explanatory text, so only this one gets `role="status"` to announce it changing. */
   hintErStatus?: boolean
+  /** Story 3.6 («Hele Norge»): an extra action shown next to this slider's label and value. */
+  ekstraKnapp?: ReactNode
 }
 
-function Filterfelt({ krav, verdi, onEndre, hint, hintErStatus }: FeltProps) {
+function Filterfelt({ krav, verdi, onEndre, hint, hintErStatus, ekstraKnapp }: FeltProps) {
   const { min, max, steg, standard } = FILTER_GRENSER[krav]
   const id = feltId(krav)
   const tekst = verdiTekst(krav, verdi)
@@ -148,6 +150,7 @@ function Filterfelt({ krav, verdi, onEndre, hint, hintErStatus }: FeltProps) {
         <span className="filter-verdi" aria-hidden="true">
           {tekst}
         </span>
+        {ekstraKnapp}
       </div>
       <input
         id={id}
@@ -253,6 +256,22 @@ export default function FilterPanel({ params, onEndre, antall, posisjonKjent, po
             // move away from «Alle», never automatically from a link or on load.
             hint={krav === 'maksAvstandKm' ? posisjonStatus || undefined : HINT[krav]}
             hintErStatus={krav === 'maksAvstandKm'}
+            // «Hele Norge» (Kelly, 2026-10-25): only when the distance requirement is active, so the
+            // user can get back to a national search without touching the other four requirements.
+            ekstraKnapp={
+              krav === 'maksAvstandKm' && params.maksAvstandKm !== null ? (
+                <button
+                  type="button"
+                  className="filter-hele-norge"
+                  onClick={() => {
+                    onEndre({ ...params, maksAvstandKm: null })
+                    fokuserFilteret('maksAvstandKm')
+                  }}
+                >
+                  Hele Norge
+                </button>
+              ) : undefined
+            }
             onEndre={(verdi) => {
               onEndre({ ...params, [krav]: verdi })
               if (krav === 'maksAvstandKm' && verdi !== null && !posisjonKjent) beOmPosisjon()

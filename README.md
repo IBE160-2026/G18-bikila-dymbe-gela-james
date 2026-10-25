@@ -59,6 +59,10 @@ Avstandsgrensen selv (ikke posisjonen) er derimot et vanlig filterparameter som 
 lenke bærer grensen videre uten å be mottakeren om posisjonen før de selv rører slideren. Avstand vises ikke
 på kartet eller i listen; den brukes bare til å avgrense treffene.
 
+Når avstandskravet er aktivt, vises knappen «Hele Norge» ved siden av slideren. Den setter bare avstanden
+tilbake til «Alle», slik at du kan oppdage de beste snøforholdene i hele landet igjen, uten å trykke
+«Nullstill» og dermed også miste nysnø-, vind-, temperatur- og skydekkekravet.
+
 Øverst i det åpne panelet står to hurtigvalg-chips som fyller hele filteret i ett trykk, uten dialog:
 «Pudderdag» setter nysnø minst 10 cm, vind høyst 8 m/s og temperatur høyst −2 °C (skydekke settes til
 «Alle»), og «Sol etter snøfall» setter nysnø minst 5 cm og skydekke i dagslys høyst 30 % (vind og

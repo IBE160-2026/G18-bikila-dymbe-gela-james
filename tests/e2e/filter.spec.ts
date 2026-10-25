@@ -614,6 +614,7 @@ const skydekke = (page: Page) => page.getByRole('slider', { name: 'Skydekke i da
 const AVSTAND_FIRE = ['gaustatoppen', 'hafjell', 'lillehammer', 'oslo']
 const avstand = (page: Page) => page.getByRole('slider', { name: 'Avstand' })
 const avstandHint = (page: Page) => page.locator('#filter-maksAvstandKm-hint')
+const heleNorge = (page: Page) => page.getByRole('button', { name: 'Hele Norge' })
 const OSLO = { latitude: 59.9139, longitude: 10.7522 }
 // Far out in the Norwegian Sea: no demo place is within even the widest active span (190 km, since 200 is «Alle»).
 const HAVET = { latitude: 62, longitude: 0 }
@@ -847,6 +848,32 @@ test.describe('the distance filter at 1280px', () => {
     await expect(rows(page)).toHaveCount(4)
   })
 
+  // «Hele Norge» (Kelly, 2026-10-25): lets the user drop just the distance requirement, to discover the
+  // best snow conditions nationally again, without «Nullstill» also clearing the other four requirements.
+  test('«Hele Norge» resets only the distance requirement, leaving another active requirement untouched', async ({
+    page,
+    context,
+  }) => {
+    await context.grantPermissions(['geolocation'])
+    await context.setGeolocation(OSLO)
+    await page.goto('/')
+    await expect(markers(page)).toHaveCount(24)
+    await expect(heleNorge(page)).toHaveCount(0)
+
+    await vind(page).fill('10')
+    await avstand(page).fill('150')
+    await expect(page).toHaveURL(/\/\?vind=10&avstand=150$/)
+    await expect(heleNorge(page)).toBeVisible()
+    expect((await box(heleNorge(page))).height).toBeGreaterThanOrEqual(44)
+
+    await heleNorge(page).click()
+    await expect(page).toHaveURL(/\/\?vind=10$/)
+    await expect(avstand(page)).toHaveAttribute('aria-valuetext', 'Alle')
+    await expect(vind(page)).toHaveAttribute('aria-valuetext', 'høyst 10 m/s')
+    await expect(heleNorge(page)).toHaveCount(0)
+    await expect(avstand(page)).toBeFocused()
+  })
+
   test('a refused position leaves every place shown, and explains why under the slider', async ({ page }) => {
     // No grantPermissions: the browser denies the request, as a real refusal would.
     await page.goto('/')
@@ -956,5 +983,30 @@ test.describe('the distance filter at 375px', () => {
     await avstand(page).fill('150')
     await expect(avstand(page)).toHaveAttribute('aria-valuetext', 'høyst 150 km')
     await expectNoBlockingViolations(page)
+  })
+
+  // «Hele Norge» (Kelly, 2026-10-25): the same click-through as at 1280px, through the open sheet.
+  test('«Hele Norge» resets only the distance requirement, leaving another active requirement untouched', async ({
+    page,
+    context,
+  }) => {
+    await context.grantPermissions(['geolocation'])
+    await context.setGeolocation(OSLO)
+    await page.goto('/')
+    await expect(markers(page)).toHaveCount(24)
+
+    await filterKnapp(page).click()
+    await vind(page).fill('10')
+    await avstand(page).fill('150')
+    await expect(page).toHaveURL(/\/\?vind=10&avstand=150$/)
+    await expect(heleNorge(page)).toBeVisible()
+    expect((await box(heleNorge(page))).height).toBeGreaterThanOrEqual(44)
+
+    await heleNorge(page).click()
+    await expect(page).toHaveURL(/\/\?vind=10$/)
+    await expect(avstand(page)).toHaveAttribute('aria-valuetext', 'Alle')
+    await expect(vind(page)).toHaveAttribute('aria-valuetext', 'høyst 10 m/s')
+    await expect(heleNorge(page)).toHaveCount(0)
+    await expect(avstand(page)).toBeFocused()
   })
 })

@@ -153,6 +153,24 @@ describe('the distance slider (Story 3.6)', () => {
     expect(html.match(/role="status"/g)).toHaveLength(1)
     expect(html).not.toMatch(/id="filter-maksSkydekkeDagslys-hint"[^>]*role=/)
   })
+
+  // «Hele Norge» (Kelly, 2026-10-25): resets only the distance requirement, next to its slider.
+  describe('«Hele Norge»', () => {
+    it('is absent while the distance requirement is off', () => {
+      const html = render(STANDARD_FILTER)
+      expect(html).not.toContain('Hele Norge')
+    })
+
+    it('appears next to the distance slider only once the requirement is active', () => {
+      const html = render({ ...STANDARD_FILTER, maksAvstandKm: 100 })
+      expect(html).toMatch(
+        /<button type="button" class="filter-hele-norge">Hele Norge<\/button><\/div><input id="filter-maksAvstandKm"/,
+      )
+      // Exactly one button, and it is gone again once the requirement goes back to «Alle».
+      expect(html.match(/Hele Norge/g)).toHaveLength(1)
+      expect(render({ ...STANDARD_FILTER, maksAvstandKm: null })).not.toContain('Hele Norge')
+    })
+  })
 })
 
 // Story 3.4 (FR-15): the two quick picks, each a chip that fills the whole filter in one action.
