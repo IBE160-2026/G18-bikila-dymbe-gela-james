@@ -1,5 +1,5 @@
 #!/bin/sh
-# Local stand-in for CI until GitHub Actions is enabled for the repo.
+# Runs the same four checks as CI (ci.yml) before a push, and blocks pushes to main.
 # Installed by `npm ci` / `npm install` (the `prepare` script sets core.hooksPath).
 # Emergency bypass: git push --no-verify
 
