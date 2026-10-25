@@ -101,3 +101,24 @@
 > flytt den og jeg godkjenner
 
 **Svar (kort):** `fremdriftsplan.md` er flyttet til `3-Gjennomføringsfasen/`, og alle lenker er rettet. AGENTS.md har nye regler for møtereferat, `done` i `sprint-status.yaml` og oppdatering av fremdriftsplanen i samme PR som storyen.
+
+### 18
+> Hele gruppen er her . rydd opp nå
+
+**Svar (kort):** Utdatert status ble fjernet fra `milepæler.md` og `sprintplan.md`, og mappebeskrivelser som lovet innhold som ikke fantes, ble rettet.
+
+### 19
+> 25 November har vi satt som dato men den er egentlig i desember . / bare bruk 25 november som egentlig dato
+
+### 20
+> -Joseph , Sena, Aksel og Kelly / Joseph skal rydde mappstruktur, oppdatere regler i agent.md, neste møtet fordeler vi arbeidsoppgaver. Kelly kjører koden senere i kveld når jeg er ferdig med de oppgaver jeg jobber med. Sena kjører også Storyer etter kelly er ferdig. Aksel kjører storyene deretter.
+
+**Svar (kort):** Første møtereferat skrevet, og specen for 3.4 pushet til `story/3-4-hurtigvalg` så Kelly kan bygge den.
+
+### 21
+> kjør på / ta neste
+
+**Svar (kort):** PR #54 og #55 merget. E2E i #54 var rød fordi axe målte mens bunn-arket fadet inn. Rettet i `bmad-build` (oneshot) med Blind Hunter: axe-hjelperen emulerer nå redusert bevegelse.
+
+**Hva vi gjorde med det:**
+- Claude endret tilnærming etter gjennomgangen, fra å vente på animasjonene til å emulere redusert bevegelse. Feilen ble gjenskapt med kunstig treg animasjon før og etter rettingen.

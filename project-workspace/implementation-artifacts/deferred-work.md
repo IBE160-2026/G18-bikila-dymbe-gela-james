@@ -83,3 +83,6 @@
 - source_spec: `spec-3-5-filtrer-pa-sol.md`
   summary: Oppdater EXPERIENCE.md og DESIGN.md (begge kopier) via `bmad-ux` med filterpanelets fjerde slider, «Skydekke i dagslys» (0–100 %, steg 10), hjelpeteksten om mørketid, og antall treff og forslaget ved null treff fra Story 3.3. Kan tas sammen med oppføringen om bunn-arket fra 3.1.
   evidence: Gjennomgangen av 3.5 (Blind Hunter). UX-dokumentene nevner slidere for nysnø, vind og temperatur og sol som Bør ha, men ikke spennet, tekstene eller hjelpeteksten.
+- source_spec: `project-workspace/implementation-artifacts/spec-fix-e2e-axe-animasjon.md`
+  summary: Samle axe-kallet i én felles E2E-hjelper som emulerer redusert bevegelse, slik `filter.spec.ts` nå gjør, og bruk den også i `liste`, `sted`, `forklaring` og `tom`.
+  evidence: maybe-false, ville vært medium. De andre filene åpner ikke bunn-arket og har ikke feilet i CI, men Leaflets overganger kan gi samme feil. Avgjøres hvis en av dem feiler på kontrast med en blandet farge.
