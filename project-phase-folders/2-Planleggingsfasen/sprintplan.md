@@ -1,6 +1,6 @@
 # Sprintplan
 
-Laget 2026-09-27 i steg 8 og oppdatert 2026-10-07 i steg 8d av [fremdriftsplanen](fremdriftsplan.md), ut fra
+Laget 2026-09-27 i steg 8 og oppdatert 2026-10-07 i steg 8d av [fremdriftsplanen](../3-Gjennomføringsfasen/fremdriftsplan.md), ut fra
 [epics og stories](SnowFinder-Epics-og-Stories.md). Den maskinlesbare statusen for hver story
 ligger i
 [`project-workspace/implementation-artifacts/sprint-status.yaml`](../../project-workspace/implementation-artifacts/sprint-status.yaml)
@@ -37,25 +37,14 @@ koblet på i 1.3 og 1.5. Epic 2 bygges i sprint 1, fordi forklaringssiden bare t
 SnowScore-modulen (1.4). Lenkene fra kart, liste og stedsside kommer når de sidene bygges i
 sprint 2. Kvalitetspanelet i 2.3 viser demodataenes rapport til 1.5 er ferdig.
 
+**Avvik i sprint 3 (2026-10-23):** Story 3.5 (sol) ble bygget før 3.4 (hurtigvalg), fordi
+hurtigvalget «Sol etter snøfall» trenger solfilteret.
+
 **Ikke i v1 (v3):** Story 4.1 (PWA), 4.3 og 4.4 (snøvarsel) og hele Epic 5 (tilbakemelding).
 De står i `sprint-status.yaml` med kommentaren «Ikke i v1» og bygges ikke.
 
-### Status i sprint 1 og 2 (2026-10-09)
-
-| Story | Status | Merknad |
-|---|---|---|
-| 1.1 Prosjekt-skaffolding og CI | Ferdig (`done`) | Merget i PR #10. |
-| 1.2 Bygg stedskatalogen | Ferdig (`done`) | Merget i PR #18. Fil i stedet for database. 300 steder i `data/catalog.json`. Navnelista bør gjennomgås av gruppa. |
-| 1.4 Den delte SnowScore-modulen | Ferdig (`done`, PR #20) | `shared/snowscore.ts` med fasittabell og egenskapstester. Tidsvinduets lengde velges i 1.5. |
-| 1.10 Lokal kjøring med demodata | Ferdig (`done`, PR #22) | Kjernen i dataprogrammet mot innspilte MET- og NVE-svar; `public/data/demo.json` med 24 steder; datalaster, klokke og demobanner. SnowScore over neste 24 t. |
-| 1.3 Hent og valider værdata | Ferdig (`done`, PR #23) | `npm run data` henter MET og NVE for alle 300 steder (høyst 5 samtidige kall per kilde, 20 s tidsavbrudd) og skriver ut kvalitetsrapporten. Publisering kommer i 1.5. |
-| 1.5 Beregn og publiser SnowScore | Ferdig (`done`, PR #24) | `npm run data` skriver `public/data/latest.json` atomisk når minst 95 % av stedene er gyldige. Flyttallsfeil i C (over 15) rettet i `shared/snowscore.ts`. |
-| 1.7 Se Norgeskartet | Ferdig (`done`, PR #25) | Leaflet-kart med Kartverket topo, fire SnowScore-trinn (0–19 Lite, 20–44 Middels, 45–69 Godt, 70–100 Svært godt), hul markør for ufullstendige data, egen liten ruter og Playwright-røyktest (`npm run test:e2e`, `e2e.yml`). |
-| 1.8 Tilgjengelig listevisning | Ferdig (`done`, PR #27) | Kart/liste-veksler (`visning=liste`), tastaturnavigerbar liste med score som tall og etikett, sortering på score/avstand/navn, axe-test uten alvorlige eller kritiske brudd. |
-| 1.9 Stedsside med full poengsum | Ferdig (`done`, PR #30 og 1.9b) | Delpoeng A/B/C, rådata, høyde og kildetid i norsk tid; `shared/freshness.ts` merker «Utdatert» over 3 t og fjerner steder over 12 t fra kart, liste og stedsside. axe uten alvorlige eller kritiske brudd. |
-| 2.1–2.4 Forklaringssiden | Ferdig (`done`, PR #33–#36) | Kort fortalt, steg for steg, regneeksempel, datakilder og datakvalitet, kalkulatoren «Prøv selv» og endringslogg. Retrospektiv i PR #37, tiltak i PR #38. E2E var rød på GitHub fra #33 og ble rettet i PR #39. |
-| 1.11 Timesjobb og publisering | Ikke startet | Neste i sprint 2 sammen med Epic 3. |
-| 1.6 Hold tjenesten oppe ved nedetid | Ikke startet | Bør ha, sprint 4. |
+Status for hver story står i [fremdriftsplanen](../3-Gjennomføringsfasen/fremdriftsplan.md) og i
+`sprint-status.yaml`, ikke her.
 
 ## Dette må gruppa sette opp før sprint 2
 
@@ -67,5 +56,7 @@ De står i `sprint-status.yaml` med kommentaren «Ikke i v1» og bygges ikke.
 
 1. Amelia (`bmad-build`) bygger storyen på egen branch, `story/<nummer>-<kort-navn>`.
 2. Tester og CI må være grønne.
-3. Det åpnes en Pull Request, som merges til `main` når sjekkene er grønne.
-4. Statusen oppdateres i `sprint-status.yaml`, og KI-bruken logges i `ai-log/`.
+3. I samme PR settes storyen til `done` i `sprint-status.yaml`, fremdriftsplanen oppdateres, og
+   KI-bruken logges i `ai-log/`.
+4. Det åpnes en Pull Request. Et annet gruppemedlem tar review, og PR-en merges til `main` når
+   sjekkene er grønne og den er godkjent.

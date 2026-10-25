@@ -3,15 +3,28 @@
 Oversikt over hvordan vi går fram, steg for steg, så alle kan følge med selv om de ikke var
 på møtet. Oppdater statusen når et steg er ferdig.
 
-**Sist oppdatert:** 2026-10-23
+**Sist oppdatert:** 2026-10-25
 
 ## Slik holder du deg oppdatert
 
 1. Se **Hvor er vi nå?** under.
-2. Les siste referat i [`møtereferater/`](../3-Gjennomføringsfasen/møtereferater/).
+2. Les siste referat i [`møtereferater/`](møtereferater/).
 3. Se promptene fra siste økt i [`ai-log/prompter/`](../../ai-log/prompter/).
 
 ## Hvor er vi nå?
+
+**25. oktober: Round table med agentene, og opprydding i regler og mappestruktur.**
+
+- Agentene gikk gjennom prosjektet og fant feil og svakheter: skjev fordeling av arbeidet, ingen
+  møtereferater, steg 8c (wireframes og brukertestplan) ikke startet, og UX-dokumenter som har
+  glidd fra koden. Se [KI-loggen](../../ai-log/prompter/2026-10-25-joseph-round-table-og-agentregler.md).
+- Nye regler i `AGENTS.md` (PR #54): et annet gruppemedlem tar review før en story merges,
+  referat etter hvert møte, og ferdige stories oppdateres i samme PR. Denne planen er flyttet hit
+  fra `2-Planleggingsfasen/`, og status står nå bare her og i `sprint-status.yaml`.
+- Story 3.4 (hurtigvalg) har en godkjent spec og er klar til å bygges.
+- Gruppemøte ([referat](møtereferater/2026-10-25-møtereferat.md)): levering og demo 25. november.
+  Stories bygges i rekkefølgen Kelly (3.4, i kveld), Sena og Aksel. Resten av oppgavene fordeles
+  på neste møte.
 
 **23. oktober: Epic 1 (kjernen) og Epic 2 (forklaringssiden) er bygget, og Må ha i Epic 3 (filter) er ferdig.**
 
@@ -42,7 +55,7 @@ endringsrunder (PR #8–#13) har gjort dette:
 - **Nytt i Må ha:** lokal kjøring med demodata, så sensor kan starte appen med
   `npm ci && npm run dev` uten nøkler. Kvalitetsrapport for hver kjøring og fasittabeller.
 - Oppdatert: [produktbrief](../1-Oppstartsfasen/SnowFinder-Produktbrief.md),
-  [PRD v3](SnowFinder-PRD.md) og [arkitektur v4](SnowFinder-Arkitektur.md). Endringsforslagene
+  [PRD v3](../2-Planleggingsfasen/SnowFinder-PRD.md) og [arkitektur v4](../2-Planleggingsfasen/SnowFinder-Arkitektur.md). Endringsforslagene
   ligger i [`project-workspace/planning-artifacts/`](../../project-workspace/planning-artifacts/).
 
 **Story 1.1** (prosjektskjelett, CI-fil og design-tokens) er bygget, gjennomgått og merget (PR #10).
@@ -52,8 +65,9 @@ endringsrunder (PR #8–#13) har gjort dette:
 - #15: lokal pre-push-hook som kjører lint, typesjekk, tester og bygg før hver push, og avviser push til `main`;
 - #16: denne planen.
 
-Gruppa har bestemt (7. oktober) at godkjenning fra et annet gruppemedlem ikke kreves før merge.
-Den som lager PR-en, kan merge den selv når sjekkene er grønne.
+Gruppa bestemte 7. oktober at godkjenning fra et annet gruppemedlem ikke kreves før merge.
+**Endret 25. oktober:** En story-PR merges først når sjekkene er grønne og et annet gruppemedlem
+har godkjent den. Vi bytter på hvem som tar review, så alle kjenner koden. Se `AGENTS.md`.
 
 **GitHub Actions er på.** CI (`ci.yml`) kjører på hver PR og ved push til `main`. Pre-push-hooken
 kjører de samme sjekkene lokalt. Alle som har klonet repoet før #15, kjører `npm run prepare` én gang.
@@ -76,13 +90,13 @@ Vi bruker BMad Method med fem agenter. Hvert steg bygger på det forrige.
 | # | Steg | Agent | Resultat | Ansvarlig | Frist | Status |
 |---|---|---|---|---|---|---|
 | 1 | Produktbrief | Emnets BMAD-mal | [Produktbrief](../1-Oppstartsfasen/SnowFinder-Produktbrief.md) | Aksel | 2026-09-22 | ✅ Ferdig |
-| 2 | Første arkitekturgrunnlag | Winston (arkitekt) | [Arkitektur](SnowFinder-Arkitektur.md) | Joseph | 2026-09-22 | ✅ Ferdig |
+| 2 | Første arkitekturgrunnlag | Winston (arkitekt) | [Arkitektur](../2-Planleggingsfasen/SnowFinder-Arkitektur.md) | Joseph | 2026-09-22 | ✅ Ferdig |
 | 3 | Rette opp briefen (SnowScore-formel m.m.) | Mary (analytiker) | Oppdatert produktbrief | Joseph | 2026-09-27 | ✅ Ferdig |
-| 4 | Krav (PRD) | John (produktleder) | [PRD](SnowFinder-PRD.md) | Joseph | 2026-09-27 | ✅ Ferdig |
-| 5 | Design og brukeropplevelse | Sally (UX-designer) | [DESIGN.md](SnowFinder-DESIGN.md) / [EXPERIENCE.md](SnowFinder-EXPERIENCE.md) | Joseph | 2026-09-27 | ✅ Ferdig |
-| 6 | Oppdatere arkitekturen mot PRD og UX | Winston (arkitekt) | [Oppdatert arkitektur](SnowFinder-Arkitektur.md) | Joseph | 2026-09-27 | ✅ Ferdig |
-| 7 | Epics og stories | John (produktleder) | [Epics og stories](SnowFinder-Epics-og-Stories.md) | Joseph | 2026-09-27 | ✅ Ferdig |
-| 8 | Sprintplanlegging | bmad-sprint-planning | [Sprintplan](sprintplan.md) og [sprint-status.yaml](../../project-workspace/implementation-artifacts/sprint-status.yaml) | Aksel | 2026-09-27 | ✅ Ferdig |
+| 4 | Krav (PRD) | John (produktleder) | [PRD](../2-Planleggingsfasen/SnowFinder-PRD.md) | Joseph | 2026-09-27 | ✅ Ferdig |
+| 5 | Design og brukeropplevelse | Sally (UX-designer) | [DESIGN.md](../2-Planleggingsfasen/SnowFinder-DESIGN.md) / [EXPERIENCE.md](../2-Planleggingsfasen/SnowFinder-EXPERIENCE.md) | Joseph | 2026-09-27 | ✅ Ferdig |
+| 6 | Oppdatere arkitekturen mot PRD og UX | Winston (arkitekt) | [Oppdatert arkitektur](../2-Planleggingsfasen/SnowFinder-Arkitektur.md) | Joseph | 2026-09-27 | ✅ Ferdig |
+| 7 | Epics og stories | John (produktleder) | [Epics og stories](../2-Planleggingsfasen/SnowFinder-Epics-og-Stories.md) | Joseph | 2026-09-27 | ✅ Ferdig |
+| 8 | Sprintplanlegging | bmad-sprint-planning | [Sprintplan](../2-Planleggingsfasen/sprintplan.md) og [sprint-status.yaml](../../project-workspace/implementation-artifacts/sprint-status.yaml) | Aksel | 2026-09-27 | ✅ Ferdig |
 | 8b | Innarbeide faglærers tilbakemelding og forenkle (to endringsrunder) | `bmad-correct-course`, John, Winston | [Endringsforslag](../../project-workspace/planning-artifacts/), oppdatert brief, PRD v3 og arkitektur v4 | Joseph | 2026-10-07 | ✅ Ferdig |
 | 8c | Wireframes, kursets skjermkrav (uten pålogging, droppet 2026-10-09) og brukertestplan | Sally (UX-designer) | Oppdatert EXPERIENCE.md og wireframes | | | ⬜ Neste |
 | 8d | Oppdatere epics, stories og sprintplan etter forenklingen | John og `bmad-sprint-planning` | Epics og stories, sprintplan, `sprint-status.yaml` | Aksel | 2026-10-07 | ✅ Ferdig (epics v3, sprintplan og `sprint-status.yaml`) |

@@ -164,7 +164,7 @@ redigeres ikke for hånd. Appen ligger i `src/`, `shared/`, `scripts/`, `tests/`
 
 ## Følg fremdriften
 
-- [`fremdriftsplan.md`](project-phase-folders/2-Planleggingsfasen/fremdriftsplan.md) viser hvor
+- [`fremdriftsplan.md`](project-phase-folders/3-Gjennomføringsfasen/fremdriftsplan.md) viser hvor
   vi er, hva som kommer, og hvilken BMad-agent vi bruker i hvert steg.
 - [`ai-log/prompter/`](ai-log/prompter/) inneholder promptene vi har brukt, ordrett, én fil per
   økt.
