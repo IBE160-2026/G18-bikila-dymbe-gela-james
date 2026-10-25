@@ -1,5 +1,5 @@
 <!-- bmad:context -->
-<!-- Verified 2026-10-09 against f6a5afe. Managed by bmad-project-context; edits inside this block are replaced on refresh. Keep anything you want preserved outside the markers. -->
+<!-- Verified 2026-10-25 against cb97cf0. Managed by bmad-project-context; edits inside this block are replaced on refresh. Keep anything you want preserved outside the markers. -->
 
 ## SnowFinder (G18, IBE160)
 
@@ -8,9 +8,9 @@ Gruppeprosjekt i IBE160 ved Høgskolen i Molde: en statisk webapp som rangerer ~
 ## Policy
 
 - Utfør hvert oppdrag gjennom riktig BMAD-skill, aldri ad hoc: kode og rettinger → `bmad-build`; nye eller endrede krav og omfang → `bmad-correct-course`; arkitektur → `bmad-architecture`; UX → `bmad-ux`; denne filen → `bmad-project-context`.
-- Aldri commit eller push til `main`. Hver story får egen gren `story/<story-id>` og leveres som PR med grønne sjekker.
+- Aldri commit eller push til `main`. Én grein per oppgave: `story/<nr>-<kort-navn>` for kode og `docs/<tema>` for dokumentasjon og planlegging. Lever som PR med grønne sjekker, og slett greinen etter merge.
 - Logg hver vesentlig KI-økt: én rad i `ai-log/logg.md` (dato, fase, hvem, verktøy/modell, oppgave, endrede/avviste forslag, godkjent av), og promptene ordrett i `ai-log/prompter/ÅÅÅÅ-MM-DD-<navn>-<tema>.md`.
-- Svar og skriv nye dokumenter på norsk. Kode, kommentarer og navn i koden skrives på engelsk. Eksisterende engelske dokumenter (arkitekturen, story-specs) redigeres på engelsk.
+- Svar og skriv dokumenter på norsk, også story-specs og epic-kontekst. Kode, kommentarer og navn i koden skrives på engelsk. Arkitekturen er på engelsk og redigeres på engelsk.
 - Ikke legg til database, brukerkontoer, snøvarsel/push, tilbakemeldingsskjema eller andre tjenester som krever konto eller nøkkel. De er «Ikke i v1» etter faglærers råd; et slikt ønske går til `bmad-correct-course`.
 - Ingen hemmeligheter eller `.env` med ekte verdier i repoet. v1 trenger ingen nøkler; MET krever bare en identifiserende User-Agent.
 - Ikke rediger `_bmad/config.toml` (installeren overskriver den). Felles overstyringer går i `_bmad/custom/config.toml`.
@@ -19,7 +19,8 @@ Gruppeprosjekt i IBE160 ved Høgskolen i Molde: en statisk webapp som rangerer ~
 ## Where things are
 
 - Stegrekkefølge og status: `project-phase-folders/2-Planleggingsfasen/fremdriftsplan.md`. Oppdater status der når et steg er ferdig.
-- Planleggingen er ferdig. Nytt arbeid bygges av Amelia (`bmad-build`), én story om gangen, i rekkefølgen i `sprintplan.md`.
+- Planleggingsdokumentene er godkjent. Steg 8c (wireframes, kursets skjermkrav og brukertestplan) er fortsatt åpent hos Sally (`bmad-ux`).
+- Nytt arbeid bygges av Amelia (`bmad-build`), én story om gangen, i rekkefølgen i `sprintplan.md`. Bygges en story i en annen rekkefølge, før avviket inn i `sprintplan.md` i samme PR.
 - Story-status: `project-workspace/implementation-artifacts/sprint-status.yaml`. Story-specs og epic-kontekst ligger i samme mappe.
 - Epics og stories finnes bare i `project-phase-folders/2-Planleggingsfasen/SnowFinder-Epics-og-Stories.md`.
 - Utsatte funn fra kodegjennomganger: `project-workspace/implementation-artifacts/deferred-work.md`. Les dem før du bygger i samme område.
@@ -30,10 +31,12 @@ Gruppeprosjekt i IBE160 ved Høgskolen i Molde: en statisk webapp som rangerer ~
 - Node 24, eller 26 og nyere (`engines` i `package.json`). Node 25 støttes ikke av Vitest.
 - Kjør `npm run lint`, `npm run typecheck`, `npm test` og `npm run build` før hver commit. CI kjører alle fire, og `npm test` alene typesjekker ikke.
 - `npm run test:e2e` kjører i CI (`e2e.yml`), men ikke i pre-push-hooken. Kjør den lokalt før PR når du endrer UI.
+- Pre-push-hooken (`.githooks/pre-push`) kjører de fire sjekkene og avviser push når sporede filer har endringer som ikke er committet. Commit eller stash først.
 - Lås avhengigheter til eksakte versjoner uten `^`, og commit `package-lock.json`. Bruk TypeScript 6.0.x, ikke 7, fordi typescript-eslint krever <6.1.
 
 ## Conventions that differ from defaults
 
+- Commit-meldinger: prefiks `feat:`, `fix:`, `docs:` eller `chore:`, så story-nummer når det finnes, og en kort norsk beskrivelse i imperativ, for eksempel `feat: Story 3.5, filtrer på skydekke i dagslys`.
 - Planleggingsdokumentene finnes i to like kopier. Gjeldende er den i `project-phase-folders/`. Endre begge i samme commit:
   - `project-workspace/planning-artifacts/product-brief.md` ↔ `project-phase-folders/1-Oppstartsfasen/SnowFinder-Produktbrief.md`
   - `project-workspace/planning-artifacts/prd-*/prd.md` ↔ `project-phase-folders/2-Planleggingsfasen/SnowFinder-PRD.md`
@@ -62,18 +65,15 @@ Kort og bindende. Detaljer om krav, arkitektur og design står i brief, PRD, ark
 
 ## 2. Git-strategi (GitHub Flow)
 
-- `main` virker alltid, og ingen jobber direkte på den.
-- Én grein per oppgave: `story/<nr>-<kort-navn>` for kode og `docs/<tema>` for dokumentasjon og planlegging. Greinen slettes etter merge.
-- Små commits på norsk i imperativ («Legg til …», «Fiks …»), med story-nummer når det finnes.
 - Alt leveres som Pull Request. Beskrivelsen lenker til story og krav, og sier hva som er testet og hva som er utsatt.
-- Den som lager PR-en kan merge den selv når sjekkene er grønne. Gruppemedlemmer kan gjerne kommentere PR-er, men godkjenning kreves ikke (gruppas beslutning 2026-10-07).
-- Kodegjennomgang i to lag: først Amelias KI-gjennomgang i `bmad-build` (funn i spec-ens Review Triage Log), deretter eventuelle kommentarer fra gruppemedlemmer i PR-en.
+- En story-PR merges først når sjekkene er grønne og et annet gruppemedlem har godkjent den på GitHub («Approve»). Den som bygde storyen, ber om review med `gh pr create --reviewer <bruker>` og merger etter godkjenning. Dette erstatter beslutningen fra 2026-10-07 om at godkjenning ikke kreves (endret 2026-10-25).
+- Bytt på hvem som tar review, så alle i gruppa kjenner koden. Den som tar review, kjører `npm ci && npm run dev`, prøver storyen i appen, sjekker at testene dekker akseptkriteriene, og skriver funnene som kommentarer i PR-en.
+- Kodegjennomgang i to lag: først Amelias KI-gjennomgang i `bmad-build` (funn i spec-ens Review Triage Log), deretter review fra et gruppemedlem i PR-en.
+- `docs/`-PR-er trenger ikke godkjenning, men sjekkene må være grønne.
 
 ## 3. Kontinuerlig integrasjon
 
-- Hver PR kjører `npm ci`, lint, typesjekk, tester og bygg (`.github/workflows/ci.yml`) og E2E (`.github/workflows/e2e.yml`). Rød CI stopper merge.
-- Pre-push-hooken (`.githooks/pre-push`) kjører de fire sjekkene før push, og stopper push til `main`. Lim resultatet inn i PR-en.
-- Playwright-røyktesten i `tests/e2e/` kjører på demodata. Filteret tas med når Epic 3 bygges.
+- Playwright-røyktesten i `tests/e2e/` kjører på demodata.
 
 ## 4. Teststrategi
 
@@ -85,4 +85,3 @@ Kort og bindende. Detaljer om krav, arkitektur og design står i brief, PRD, ark
 ## 5. Åpent for gruppa
 
 - Kursets skjermkrav (profil, innsjekking, feed, arrangementer; pålogging er droppet 2026-10-09) kobles til SnowFinder av Sally (`bmad-ux`) – legg aldri til kontoer eller sosiale funksjoner selv.
-- `CONTRIBUTING.md` ligger lokalt hos Joseph og overlapper denne filen; avgjør om den skal inn eller slettes.

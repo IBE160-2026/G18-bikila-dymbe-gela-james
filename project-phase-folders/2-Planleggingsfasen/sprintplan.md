@@ -37,6 +37,9 @@ koblet på i 1.3 og 1.5. Epic 2 bygges i sprint 1, fordi forklaringssiden bare t
 SnowScore-modulen (1.4). Lenkene fra kart, liste og stedsside kommer når de sidene bygges i
 sprint 2. Kvalitetspanelet i 2.3 viser demodataenes rapport til 1.5 er ferdig.
 
+**Avvik i sprint 3 (2026-10-23):** Story 3.5 (sol) ble bygget før 3.4 (hurtigvalg), fordi
+hurtigvalget «Sol etter snøfall» trenger solfilteret.
+
 **Ikke i v1 (v3):** Story 4.1 (PWA), 4.3 og 4.4 (snøvarsel) og hele Epic 5 (tilbakemelding).
 De står i `sprint-status.yaml` med kommentaren «Ikke i v1» og bygges ikke.
 

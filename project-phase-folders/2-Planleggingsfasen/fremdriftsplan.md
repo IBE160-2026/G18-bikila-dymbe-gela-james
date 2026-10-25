@@ -52,8 +52,9 @@ endringsrunder (PR #8–#13) har gjort dette:
 - #15: lokal pre-push-hook som kjører lint, typesjekk, tester og bygg før hver push, og avviser push til `main`;
 - #16: denne planen.
 
-Gruppa har bestemt (7. oktober) at godkjenning fra et annet gruppemedlem ikke kreves før merge.
-Den som lager PR-en, kan merge den selv når sjekkene er grønne.
+Gruppa bestemte 7. oktober at godkjenning fra et annet gruppemedlem ikke kreves før merge.
+**Endret 25. oktober:** En story-PR merges først når sjekkene er grønne og et annet gruppemedlem
+har godkjent den. Vi bytter på hvem som tar review, så alle kjenner koden. Se `AGENTS.md`.
 
 **GitHub Actions er på.** CI (`ci.yml`) kjører på hver PR og ved push til `main`. Pre-push-hooken
 kjører de samme sjekkene lokalt. Alle som har klonet repoet før #15, kjører `npm run prepare` én gang.
