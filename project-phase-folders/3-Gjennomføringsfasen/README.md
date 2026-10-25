@@ -5,7 +5,8 @@ for sprint.
 
 ## Innhold (legges til etter hvert)
 
-- **Sprint-status** — fremdrift per sprint
+- **[`fremdriftsplan.md`](fremdriftsplan.md)** — hvor vi er nå, stegene og status for hver story.
+  Oppdateres i samme PR som hver ferdige story og etter hvert møte som endrer planen.
 - **[`møtereferater/`](møtereferater/)** — ett referat per gruppemøte
 - **Kodegjennomganger** — funn fra kodegjennomgang
 - **Endringshåndtering** — dokumenterte avvik fra plan

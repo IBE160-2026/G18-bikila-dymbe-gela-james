@@ -1,6 +1,6 @@
 # Sprintplan
 
-Laget 2026-09-27 i steg 8 og oppdatert 2026-10-07 i steg 8d av [fremdriftsplanen](fremdriftsplan.md), ut fra
+Laget 2026-09-27 i steg 8 og oppdatert 2026-10-07 i steg 8d av [fremdriftsplanen](../3-Gjennomføringsfasen/fremdriftsplan.md), ut fra
 [epics og stories](SnowFinder-Epics-og-Stories.md). Den maskinlesbare statusen for hver story
 ligger i
 [`project-workspace/implementation-artifacts/sprint-status.yaml`](../../project-workspace/implementation-artifacts/sprint-status.yaml)

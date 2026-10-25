@@ -21,8 +21,8 @@ for full produktbrief.
 
 - **`project-phase-folders/`** (denne mappen) — gruppens kuraterte dokumentasjon:
   - **Der nå:** produktbrief (`1-Oppstartsfasen/`), PRD, arkitektur, DESIGN/EXPERIENCE,
-    epics/stories, sprintplan, milepæler og fremdriftsplan (`2-Planleggingsfasen/`),
-    møtereferat-mal (`3-Gjennomføringsfasen/`)
+    epics/stories, sprintplan og milepæler (`2-Planleggingsfasen/`), fremdriftsplan og
+    møtereferater (`3-Gjennomføringsfasen/`)
   - **Kommer etter hvert:** testplan (`2-Planleggingsfasen/`), kodegjennomganger og
     endringslogg (`3-Gjennomføringsfasen/`), sluttrapport, retrospektiv og leveranse
     (`4-Avslutningsfasen/`)

@@ -15,8 +15,9 @@ Formål: oversette produktbrief til konkrete krav, arkitektur og en gjennomførb
   typografi, komponenter) og hvordan den oppfører seg (skjermer, tilstander, brukerflyter)
 - **[`SnowFinder-Epics-og-Stories.md`](SnowFinder-Epics-og-Stories.md)** — 5 epics og 29
   stories, organisert etter brukerverdi
-- **[`fremdriftsplan.md`](fremdriftsplan.md)** — stegene fra brief til ferdig app, hvilken
-  BMad-agent som brukes i hvert steg, og hvor vi er nå
+- **[`fremdriftsplan.md`](../3-Gjennomføringsfasen/fremdriftsplan.md)** (flyttet til
+  `3-Gjennomføringsfasen/` 2026-10-25) — stegene fra brief til ferdig app, hvilken BMad-agent
+  som brukes i hvert steg, og hvor vi er nå
 - **[`sprintplan.md`](sprintplan.md)** — readiness-sjekk, fire sprinter og hva gruppa må sette
   opp før sprint 2
 - **[`milepæler.md`](milepæler.md)** — prosjektets milepæler med status

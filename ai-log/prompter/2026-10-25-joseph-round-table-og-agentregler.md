@@ -70,3 +70,34 @@
 
 ### 11
 > ja , committe den og push til git
+
+**Svar (kort):** Committet og pushet. Pre-push-hooken stoppet først fordi `npm ci` ikke var kjørt etter at 83 commits ble hentet. Aksel laget PR #54.
+
+### 12
+> be andre ta review
+
+**Svar (kort):** Missbikila og kellygela ble bedt om review på PR #54, og bakgrunnen ble lagt i en kommentar.
+
+### 13
+> kan du fortsette med mappestrukturen ?
+
+**Svar (kort):** 21 ferdig-mergede greiner ble slettet på GitHub, og alle ble sjekket mot `main` først. README forklarer BMad-mappene, kommentaren i hooken er rettet, og `project-workspace/party-mode/` er lagt i `.gitignore` (PR #55).
+
+**Hva vi gjorde med det:**
+- Den lokale greina `story/3-4-hurtigvalg` ble slettet ved et uhell, fordi den ikke hadde egne commits. Den ble gjenopprettet med en gang, og specen lå trygt i stash.
+
+### 14
+> be sena ta review og skriv lenken her
+
+### 15
+> missbikila mente jeg
+
+### 16
+> legg dette i agent.md som ny regel, før opp altid møteprotokol vi har samt oppdater prosjekt fremgang i rikig mappe også. Du skal oppdatere storyene vi er ferdig med. har vi slik opplegg i dag ?
+
+**Svar (kort):** Bare delvis. Det finnes ingen regel om møtereferater (og ingen referater), fremdriftsplanen ble oppdatert av vane, og `done` i `sprint-status.yaml` settes for hånd.
+
+### 17
+> flytt den og jeg godkjenner
+
+**Svar (kort):** `fremdriftsplan.md` er flyttet til `3-Gjennomføringsfasen/`, og alle lenker er rettet. AGENTS.md har nye regler for møtereferat, `done` i `sprint-status.yaml` og oppdatering av fremdriftsplanen i samme PR som storyen.

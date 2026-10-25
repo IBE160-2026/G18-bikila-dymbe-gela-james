@@ -15,10 +15,13 @@ Gruppeprosjekt i IBE160 ved Høgskolen i Molde: en statisk webapp som rangerer ~
 - Ingen hemmeligheter eller `.env` med ekte verdier i repoet. v1 trenger ingen nøkler; MET krever bare en identifiserende User-Agent.
 - Ikke rediger `_bmad/config.toml` (installeren overskriver den). Felles overstyringer går i `_bmad/custom/config.toml`.
 - Ikke rediger `.claude/skills/`, `.agents/skills/` eller `.github/agents/` for hånd. De er installert av BMad.
+- Etter hvert gruppemøte: skriv referat i `project-phase-folders/3-Gjennomføringsfasen/møtereferater/ÅÅÅÅ-MM-DD-møtereferat.md` etter malen i mappens `README.md`. Får du møtenotater, skriv referatet fra dem. En beslutning som endrer krav eller regler går videre til riktig skill.
+- Når en story er ferdig: sett den til `done` i `sprint-status.yaml` (`bmad-build` setter bare `in-progress` og `review`), og oppdater «Hvor er vi nå?», steg 9 og «Sist oppdatert» i `fremdriftsplan.md`, i samme PR som storyen.
+- Når et steg i fremdriftsplanen er ferdig, eller et møte endrer planen, oppdater `fremdriftsplan.md` i samme PR.
 
 ## Where things are
 
-- Stegrekkefølge og status: `project-phase-folders/2-Planleggingsfasen/fremdriftsplan.md`. Oppdater status der når et steg er ferdig.
+- Prosjektets fremdrift og stegrekkefølge står bare i `project-phase-folders/3-Gjennomføringsfasen/fremdriftsplan.md`. Lag ingen egen statusfil andre steder.
 - Planleggingsdokumentene er godkjent. Steg 8c (wireframes, kursets skjermkrav og brukertestplan) er fortsatt åpent hos Sally (`bmad-ux`).
 - Nytt arbeid bygges av Amelia (`bmad-build`), én story om gangen, i rekkefølgen i `sprintplan.md`. Bygges en story i en annen rekkefølge, før avviket inn i `sprintplan.md` i samme PR.
 - Story-status: `project-workspace/implementation-artifacts/sprint-status.yaml`. Story-specs og epic-kontekst ligger i samme mappe.
