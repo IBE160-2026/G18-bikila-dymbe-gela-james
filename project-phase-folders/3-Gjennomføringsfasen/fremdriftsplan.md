@@ -22,6 +22,9 @@ på møtet. Oppdater statusen når et steg er ferdig.
   referat etter hvert møte, og ferdige stories oppdateres i samme PR. Denne planen er flyttet hit
   fra `2-Planleggingsfasen/`, og status står nå bare her og i `sprint-status.yaml`.
 - Story 3.4 (hurtigvalg) har en godkjent spec og er klar til å bygges.
+- Gruppemøte ([referat](møtereferater/2026-10-25-møtereferat.md)): levering og demo 25. november.
+  Stories bygges i rekkefølgen Kelly (3.4, i kveld), Sena og Aksel. Resten av oppgavene fordeles
+  på neste møte.
 
 **23. oktober: Epic 1 (kjernen) og Epic 2 (forklaringssiden) er bygget, og Må ha i Epic 3 (filter) er ferdig.**
 
