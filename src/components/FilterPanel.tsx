@@ -3,6 +3,7 @@ import {
   aktiveKrav,
   FILTER_GRENSER,
   FILTER_KRAV,
+  HURTIGVALG,
   STANDARD_FILTER,
   type FilterKrav,
   type FilterParams,
@@ -46,6 +47,52 @@ export function verdiTekst(krav: FilterKrav, verdi: number | null): string {
 /** A chip for an active requirement: «Nysnø minst 10 cm». */
 export function kravTekst(krav: FilterKrav, verdi: number | null): string {
   return `${KRAV_TEKST[krav].navn} ${verdiTekst(krav, verdi)}`
+}
+
+/** Story 3.4 (FR-15): a quick pick's description, in the same words as the active-requirement chips. */
+function hurtigvalgBeskrivelse(verdier: FilterParams): string {
+  return aktiveKrav(verdier)
+    .map((krav) => kravTekst(krav, verdier[krav]))
+    .join(', ')
+}
+
+/** Whether the filter is exactly this quick pick's combination, so its chip can show up as pressed. */
+function erHurtigvalgAktiv(params: FilterParams, verdier: FilterParams): boolean {
+  return FILTER_KRAV.every((krav) => params[krav] === verdier[krav])
+}
+
+/**
+ * Story 3.4 (FR-15): «Pudderdag» and «Sol etter snøfall» fill the whole filter in one action, with no
+ * dialog. A chip is pressed only when the filter is exactly its combination; moving a slider afterwards
+ * un-presses it. The description sits next to, not inside, the button, so the accessible name stays the
+ * short name while a screen reader still gets the combination through aria-describedby.
+ */
+function Hurtigvalgene({ params, onEndre }: Pick<Props, 'params' | 'onEndre'>) {
+  return (
+    <ul className="filter-hurtigvalg" aria-label="Hurtigvalg">
+      {HURTIGVALG.map(({ navn, verdier }, i) => {
+        const id = `hurtigvalg-${i}`
+        const beskrivelseId = `${id}-beskrivelse`
+        return (
+          <li key={navn} className="filter-hurtigvalg-element">
+            <button
+              type="button"
+              id={id}
+              className="filter-hurtigvalg-chip"
+              aria-pressed={erHurtigvalgAktiv(params, verdier)}
+              aria-describedby={beskrivelseId}
+              onClick={() => onEndre({ ...verdier })}
+            >
+              {navn}
+            </button>
+            <span id={beskrivelseId} className="filter-hurtigvalg-beskrivelse">
+              {hurtigvalgBeskrivelse(verdier)}
+            </span>
+          </li>
+        )
+      })}
+    </ul>
+  )
 }
 
 /** Story 3.3 (FR-14, UX-DR4): «24 treff», «1 treff», or «Ingen treff». */
@@ -177,6 +224,7 @@ export default function FilterPanel({ params, onEndre, antall }: Props) {
           <h2 className="filter-tittel">Filter</h2>
           <Antall antall={antall} />
         </div>
+        <Hurtigvalgene params={params} onEndre={onEndre} />
         {FILTER_KRAV.map((krav) => (
           <Filterfelt key={krav} krav={krav} verdi={params[krav]} onEndre={(verdi) => onEndre({ ...params, [krav]: verdi })} />
         ))}

@@ -2,9 +2,10 @@
 title: 'Story 3.4: Bruk hurtigvalg for vanlige kombinasjoner'
 type: 'feature'
 created: '2026-10-25'
-status: 'ready-for-dev'
+status: 'done'
 route: 'dispatch'
 review_loop_iteration: 0
+baseline_commit: 'e4c49496ffa4393c0c9b596b5fe8185ef31c242f'
 context:
   - '{project-root}/project-workspace/implementation-artifacts/epic-3-context.md'
   - '{project-root}/project-workspace/implementation-artifacts/spec-3-5-filtrer-pa-sol.md'
@@ -60,10 +61,10 @@ context:
 ## Tasks & Acceptance
 
 **Execution:**
-- [ ] `shared/filter.ts`, `shared/filter.test.ts` -- `HURTIGVALG` og testen av gyldige verdier.
-- [ ] `src/components/FilterPanel.tsx`, `src/styles/filter.css`, `FilterPanel.test.tsx` -- chipene, valgt-tilstand og verdiene som tekst.
-- [ ] `tests/e2e/filter.spec.ts` -- matrisen ved 1280 og 375 px, med axe.
-- [ ] `README.md` -- valgene.
+- [x] `shared/filter.ts`, `shared/filter.test.ts` -- `HURTIGVALG` og testen av gyldige verdier.
+- [x] `src/components/FilterPanel.tsx`, `src/styles/filter.css`, `FilterPanel.test.tsx` -- chipene, valgt-tilstand og verdiene som tekst.
+- [x] `tests/e2e/filter.spec.ts` -- matrisen ved 1280 og 375 px, med axe.
+- [x] `README.md` -- valgene.
 
 **Acceptance Criteria:**
 - Given Utforsk-siden med filterpanelet, when jeg trykker en hurtigvalg-chip, then fylles filteret med chipens faste, dokumenterte kombinasjon i én handling, og resultatet oppdateres umiddelbart.
@@ -71,9 +72,23 @@ context:
 
 ## Implementation Notes
 
+`HURTIGVALG` lives in `shared/filter.ts` next to `FILTER_GRENSER`/`FILTER_KRAV`. Each chip's description is a sibling `<span>` (not a child of the `<button>`), referenced with `aria-describedby`, so the button's accessible name stays the short name («Pudderdag») while the description is still announced; the chip stays pressed/un-pressed by comparing the whole `FilterParams` against the chip's fixed combination on every render, so moving any slider afterwards un-presses it automatically. Both quick picks give zero hits on the committed demo data (confirmed in the new E2E tests), so the Story 3.3 banner is what a user actually sees after pressing either chip — as the Intent anticipated.
+
+Checked locally after implementation: lint, typecheck, test (502, up from 498), build and `npm run test:e2e` (77, up from 70) are all green.
+
 ## Spec Change Log
 
 ## Review Triage Log
+
+- **false** (blind-hunter + verification-gap, samme rotårsak) — `sprint-status.yaml` viser `in-progress` mens spec-en viser `in-review`. Dette er en mellomtilstand i selve byggeflyten: step-05 (Present) setter sprint-status til `review` før noe committes, så denne uoverensstemmelsen rekker aldri å bli en del av det som skipes.
+- **false** (blind-hunter) — hevder begrunnelsen for de valgte verdiene («Ekte pudder») ikke er dokumentert i spec-en. Den står allerede i `## Intent`: «Verdiene (Joseph, 2026-10-25: «A: Ekte pudder»)». `## Spec Change Log` er for endringer en review-loop utløser, ikke for den opprinnelige planleggingsbegrunnelsen.
+- **low → patch** (blind-hunter) — README bruker «uendret» i parentesene om kravene en chip ikke nevner («skydekke uendret, «Alle»»), men koden erstatter hele filteret, så et tidligere satt krav nullstilles alltid til «Alle» – det bevares ikke. Ordet kan lede leseren til å tro verdien beholdes. Rettes til ordlyd som sier «settes til», ikke «uendret».
+- **low → patch** (blind-hunter) — CSS-kommentaren over `.filter-hurtigvalg-chip` sier den «gjenbruker» `.filter-chip` og `.filter-nullstill`, men regelen dupliserer verdiene i egne deklarasjoner (og `padding` er faktisk forskjellig fra `.filter-nullstill`) i stedet for å dele en selector. Kommentaren rettes til å beskrive samsvarende verdier, ikke gjenbruk.
+- **low → avvist** (blind-hunter) — mangler en E2E-test der «Pudderdag» overskriver et tidligere satt skydekke-krav (motstykket til testen som gjør dette for «Sol etter snøfall»). Samme kodevei (`onEndre({ ...verdier })`) er allerede bevist riktig av den eksisterende testen; usannsynlig å møte i praksis, og fiksen er ny testkode, ikke en direkte retting.
+- **low → avvist** (blind-hunter) — `aria-pressed` antyder normalt en av/på-knapp, men å trykke en allerede valgt chip gjør ingenting; avvalg skjer bare ved å flytte en slider. Dette er nøyaktig det `<frozen-after-approval>`-avsnittet spesifiserer («Flytter brukeren en slider etterpå, er den ikke lenger valgt»), så det er et bevisst, godkjent valg, ikke en mangel i byggingen. Usannsynlig å møtes i vanlig bruk, og fiksen (ekte av/på-logikk) er mer enn en direkte retting.
+- **low → avvist** (blind-hunter) — mangler en test på at `HURTIGVALG` har nøyaktig to, distinkte oppføringer. Spekulativ fremtidig regresjonsvakt for et problem som ikke finnes i dagens kode; fiksen legger til ny kompleksitet for et scenario som ikke kan inntreffe nå.
+- **avvist, fiksen er å redigere spec-en** (blind-hunter) — mener akseptansekriteriene burde nevne null-treff-banneret explisitt. Matrisens rad 5 dekker allerede dette, og testene bekrefter det; fiksen ville vært å redigere `{spec_file}`, som er avvist per regel.
+- (edge-case-hunter: ingen funn.)
 
 ## Verification
 
