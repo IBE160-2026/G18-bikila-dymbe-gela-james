@@ -45,6 +45,8 @@ playwright-report/
 _bmad/config.user.toml
 _bmad/custom/*.user.toml
 _bmad/render/
+# Party-mode memory is per-user agent state, not a deliverable
+project-workspace/party-mode/
 .claude/settings.local.json
 
 # Operating system / editors

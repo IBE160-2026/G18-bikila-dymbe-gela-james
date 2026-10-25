@@ -158,6 +158,10 @@ BMAD-verktøyets arbeidsmappe, ikke gruppens leveranse — se
 [`project-phase-folders/README.md`](project-phase-folders/README.md) for hva som ligger hvor.
 [`AGENTS.md`](AGENTS.md) inneholder reglene KI-agentene følger i repoet.
 
+`_bmad/`, `.claude/`, `.agents/` og `.github/agents/` er BMad-verktøyet, installert for hvert av
+KI-verktøyene vi bruker. De utgjør det meste av filene i repoet, men er ikke appens kode og
+redigeres ikke for hånd. Appen ligger i `src/`, `shared/`, `scripts/`, `tests/`, `data/` og `public/`.
+
 ## Følg fremdriften
 
 - [`fremdriftsplan.md`](project-phase-folders/2-Planleggingsfasen/fremdriftsplan.md) viser hvor
