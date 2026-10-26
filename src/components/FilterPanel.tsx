@@ -1,4 +1,4 @@
-import { useState, type CSSProperties } from 'react'
+import { useState, type CSSProperties, type ReactNode } from 'react'
 import {
   aktiveKrav,
   FILTER_GRENSER,
@@ -35,6 +35,8 @@ const KRAV_TEKST: Record<FilterKrav, { navn: string; retning: string; enhet: str
   maksTemperaturC: { navn: 'Temperatur', retning: 'høyst', enhet: '°C', kravet: 'temperaturkravet' },
   // Story 3.5 (FR-22): the mean over the hours with the sun above the horizon, not the whole day.
   maksSkydekkeDagslys: { navn: 'Skydekke i dagslys', retning: 'høyst', enhet: '%', kravet: 'skydekkekravet' },
+  // Story 3.6 (FR-23): distance from the user's own position, never shown on the map.
+  maksAvstandKm: { navn: 'Avstand', retning: 'høyst', enhet: 'km', kravet: 'avstandskravet' },
 }
 
 /** The value as words: «minst 10 cm», «høyst −5 °C», or «Alle» when the requirement is off. */
@@ -118,13 +120,22 @@ export function fokuserFilteret(krav: FilterKrav = FILTER_KRAV[0]): void {
   mal?.focus()
 }
 
-type FeltProps = { krav: FilterKrav; verdi: number | null; onEndre: (verdi: number | null) => void }
+type FeltProps = {
+  krav: FilterKrav
+  verdi: number | null
+  onEndre: (verdi: number | null) => void
+  hint?: string
+  /** Story 3.6: the distance slider's hint is a dynamic status (fetching/refused), unlike the cloud cover
+   * slider's fixed explanatory text, so only this one gets `role="status"` to announce it changing. */
+  hintErStatus?: boolean
+  /** Story 3.6 («Hele Norge»): an extra action shown next to this slider's label and value. */
+  ekstraKnapp?: ReactNode
+}
 
-function Filterfelt({ krav, verdi, onEndre }: FeltProps) {
+function Filterfelt({ krav, verdi, onEndre, hint, hintErStatus, ekstraKnapp }: FeltProps) {
   const { min, max, steg, standard } = FILTER_GRENSER[krav]
   const id = feltId(krav)
   const tekst = verdiTekst(krav, verdi)
-  const hint = HINT[krav]
   const hintId = `${id}-hint`
   const vist = verdi ?? standard
   // The accent part of the track is the range the requirement lets through: above the thumb for
@@ -139,6 +150,7 @@ function Filterfelt({ krav, verdi, onEndre }: FeltProps) {
         <span className="filter-verdi" aria-hidden="true">
           {tekst}
         </span>
+        {ekstraKnapp}
       </div>
       <input
         id={id}
@@ -156,7 +168,7 @@ function Filterfelt({ krav, verdi, onEndre }: FeltProps) {
         }}
       />
       {hint && (
-        <p id={hintId} className="filter-hint">
+        <p id={hintId} className="filter-hint" role={hintErStatus ? 'status' : undefined}>
           {hint}
         </p>
       )}
@@ -164,7 +176,17 @@ function Filterfelt({ krav, verdi, onEndre }: FeltProps) {
   )
 }
 
-type Props = { params: FilterParams; onEndre: (params: FilterParams) => void; antall: number }
+type Props = {
+  params: FilterParams
+  onEndre: (params: FilterParams) => void
+  antall: number
+  /** Story 3.6: whether the distance filter's own position is known (not the map/list sort's). */
+  posisjonKjent: boolean
+  /** The distance filter's status text: fetching, refused/unavailable, or empty when there is none. */
+  posisjonStatus: string
+  /** Asks for the position; called only when the user moves the distance slider away from «Alle». */
+  beOmPosisjon: () => void
+}
 
 /** The number of places the filter gives. Shown, not announced: Utforsk has the one live region. */
 function Antall({ antall }: Pick<Props, 'antall'>) {
@@ -187,7 +209,7 @@ export function Nullstill({ onEndre }: Pick<Props, 'onEndre'>) {
   )
 }
 
-export default function FilterPanel({ params, onEndre, antall }: Props) {
+export default function FilterPanel({ params, onEndre, antall, posisjonKjent, posisjonStatus, beOmPosisjon }: Props) {
   const [apen, setApen] = useState(false)
   const aktive = aktiveKrav(params)
 
@@ -226,7 +248,35 @@ export default function FilterPanel({ params, onEndre, antall }: Props) {
         </div>
         <Hurtigvalgene params={params} onEndre={onEndre} />
         {FILTER_KRAV.map((krav) => (
-          <Filterfelt key={krav} krav={krav} verdi={params[krav]} onEndre={(verdi) => onEndre({ ...params, [krav]: verdi })} />
+          <Filterfelt
+            key={krav}
+            krav={krav}
+            verdi={params[krav]}
+            // Story 3.6 (FR-23, NFR-Privacy): the position is asked for only here, on the user's own
+            // move away from «Alle», never automatically from a link or on load.
+            hint={krav === 'maksAvstandKm' ? posisjonStatus || undefined : HINT[krav]}
+            hintErStatus={krav === 'maksAvstandKm'}
+            // «Hele Norge» (Kelly, 2026-10-25): only when the distance requirement is active, so the
+            // user can get back to a national search without touching the other four requirements.
+            ekstraKnapp={
+              krav === 'maksAvstandKm' && params.maksAvstandKm !== null ? (
+                <button
+                  type="button"
+                  className="filter-hele-norge"
+                  onClick={() => {
+                    onEndre({ ...params, maksAvstandKm: null })
+                    fokuserFilteret('maksAvstandKm')
+                  }}
+                >
+                  Hele Norge
+                </button>
+              ) : undefined
+            }
+            onEndre={(verdi) => {
+              onEndre({ ...params, [krav]: verdi })
+              if (krav === 'maksAvstandKm' && verdi !== null && !posisjonKjent) beOmPosisjon()
+            }}
+          />
         ))}
         {aktive.length > 0 && <Nullstill onEndre={onEndre} />}
       </div>
