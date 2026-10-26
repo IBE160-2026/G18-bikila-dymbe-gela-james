@@ -5,19 +5,8 @@ import FilterPanel, { antallTekst, forslagTekst, kravTekst, verdiTekst } from '.
 
 // Story 3.1: the panel's markup, without a browser. Behaviour at 375 and 1280 px is in tests/e2e/filter.spec.ts.
 
-// Story 3.6: the distance filter's own position, defaulted here to "not known, nothing to say" so the
-// other tests are unaffected; its own describe block below sets posisjonKjent/posisjonStatus explicitly.
-const render = (params: FilterParams, antall = 24, posisjonKjent = false, posisjonStatus = '') =>
-  renderToStaticMarkup(
-    <FilterPanel
-      params={params}
-      onEndre={() => {}}
-      antall={antall}
-      posisjonKjent={posisjonKjent}
-      posisjonStatus={posisjonStatus}
-      beOmPosisjon={() => {}}
-    />,
-  )
+const render = (params: FilterParams, antall = 24) =>
+  renderToStaticMarkup(<FilterPanel params={params} onEndre={() => {}} antall={antall} />)
 
 describe('verdiTekst', () => {
   it('says «Alle» when a requirement is off, and the limit in words otherwise', () => {
@@ -32,9 +21,6 @@ describe('verdiTekst', () => {
     expect(verdiTekst('maksSkydekkeDagslys', 100)).toBe('Alle')
     expect(verdiTekst('maksSkydekkeDagslys', 60)).toBe('høyst 60 %')
     expect(kravTekst('maksSkydekkeDagslys', 0)).toBe('Skydekke i dagslys høyst 0 %')
-    expect(verdiTekst('maksAvstandKm', 200)).toBe('Alle')
-    expect(verdiTekst('maksAvstandKm', 50)).toBe('høyst 50 km')
-    expect(kravTekst('maksAvstandKm', 50)).toBe('Avstand høyst 50 km')
   })
 })
 
@@ -55,8 +41,6 @@ describe('antallTekst and forslagTekst', () => {
     expect(forslagTekst({ krav: 'maksTemperaturC', verdi: null, antall: 1 })).toBe('Prøv uten temperaturkravet.')
     expect(forslagTekst({ krav: 'maksSkydekkeDagslys', verdi: 30, antall: 2 })).toBe('Prøv skydekke i dagslys høyst 30 %.')
     expect(forslagTekst({ krav: 'maksSkydekkeDagslys', verdi: null, antall: 2 })).toBe('Prøv uten skydekkekravet.')
-    expect(forslagTekst({ krav: 'maksAvstandKm', verdi: 100, antall: 2 })).toBe('Prøv avstand høyst 100 km.')
-    expect(forslagTekst({ krav: 'maksAvstandKm', verdi: null, antall: 2 })).toBe('Prøv uten avstandskravet.')
     expect(forslagTekst(null)).toBe('Det hjelper ikke å endre bare ett krav. Prøv «Nullstill».')
   })
 })
@@ -76,14 +60,13 @@ describe('FilterPanel', () => {
     }
   })
 
-  it('has five labelled sliders at «Alle» by default, and no «Nullstill»', () => {
+  it('has four labelled sliders at «Alle» by default, and no «Nullstill»', () => {
     const html = render(STANDARD_FILTER)
     for (const [id, navn] of [
       ['filter-minNysnoCm', 'Nysnø'],
       ['filter-maksVindMs', 'Vind'],
       ['filter-maksTemperaturC', 'Temperatur'],
       ['filter-maksSkydekkeDagslys', 'Skydekke i dagslys'],
-      ['filter-maksAvstandKm', 'Avstand'],
     ]) {
       expect(html).toContain(`<label for="${id}">${navn}</label>`)
       expect(html).toMatch(new RegExp(`<input id="${id}" type="range"[^>]*aria-valuetext="Alle"`))
@@ -92,8 +75,7 @@ describe('FilterPanel', () => {
     expect(html).toMatch(/id="filter-maksVindMs" type="range" min="0" max="25" step="1"[^>]*value="25"/)
     expect(html).toMatch(/id="filter-maksTemperaturC" type="range" min="-20" max="10" step="1"[^>]*value="10"/)
     expect(html).toMatch(/id="filter-maksSkydekkeDagslys" type="range" min="0" max="100" step="10"[^>]*value="100"/)
-    expect(html).toMatch(/id="filter-maksAvstandKm" type="range" min="0" max="200" step="10"[^>]*value="200"/)
-    expect(html.match(/<span class="filter-verdi" aria-hidden="true">Alle<\/span>/g)).toHaveLength(5)
+    expect(html.match(/<span class="filter-verdi" aria-hidden="true">Alle<\/span>/g)).toHaveLength(4)
     expect(html).not.toContain('Nullstill')
     expect(html).not.toContain('filter-chips')
   })
@@ -118,7 +100,7 @@ describe('FilterPanel', () => {
   })
 
   it('shows active requirements as chips, their values in words and «Nullstill»', () => {
-    const html = render({ minNysnoCm: 2, maksVindMs: null, maksTemperaturC: 0, maksSkydekkeDagslys: null, maksAvstandKm: null })
+    const html = render({ minNysnoCm: 2, maksVindMs: null, maksTemperaturC: 0, maksSkydekkeDagslys: null })
     expect(html).toContain(
       '<ul class="filter-chips" aria-label="Aktive krav"><li class="filter-chip">Nysnø minst 2 cm</li><li class="filter-chip">Temperatur høyst 0 °C</li></ul>',
     )
@@ -129,66 +111,10 @@ describe('FilterPanel', () => {
   })
 })
 
-// Story 3.6 (FR-23, NFR-Privacy): the fifth slider's status text, in the same HINT pattern as the cloud
-// cover slider (Story 3.5), but driven by the position state passed in from Utforsk rather than fixed.
-describe('the distance slider (Story 3.6)', () => {
-  it('has no status text by default, and the whole filter at «Alle» has no aria-describedby at all', () => {
-    const html = render(STANDARD_FILTER)
-    expect(html).not.toMatch(/id="filter-maksAvstandKm"[^>]*aria-describedby=/)
-    expect(html).not.toContain('filter-maksAvstandKm-hint')
-  })
-
-  it('shows the given status text under the slider, describedby the same way as the cloud cover hint', () => {
-    const html = render(STANDARD_FILTER, 24, false, 'Fikk ikke tilgang til posisjonen din. Avstandskravet har ingen effekt.')
-    expect(html).toMatch(/id="filter-maksAvstandKm"[^>]*aria-describedby="filter-maksAvstandKm-hint"/)
-    expect(html).toContain(
-      '<p id="filter-maksAvstandKm-hint" class="filter-hint" role="status">Fikk ikke tilgang til posisjonen din. Avstandskravet har ingen effekt.</p>',
-    )
-    // Both the cloud cover slider's fixed hint and the distance slider's status text are now present.
-    expect(html.match(/<input[^>]*aria-describedby=/g)).toHaveLength(2)
-  })
-
-  it('gives only the distance slider\'s dynamic hint a status role, never the cloud cover slider\'s fixed one', () => {
-    const html = render(STANDARD_FILTER, 24, false, 'Henter posisjonen din …')
-    expect(html.match(/role="status"/g)).toHaveLength(1)
-    expect(html).not.toMatch(/id="filter-maksSkydekkeDagslys-hint"[^>]*role=/)
-  })
-
-  // «Hele Norge» (Kelly, 2026-10-25): resets only the distance requirement, next to its slider.
-  describe('«Hele Norge»', () => {
-    it('is absent while the distance requirement is off', () => {
-      const html = render(STANDARD_FILTER)
-      expect(html).not.toContain('Hele Norge')
-    })
-
-    it('appears next to the distance slider only once the requirement is active', () => {
-      const html = render({ ...STANDARD_FILTER, maksAvstandKm: 100 })
-      expect(html).toMatch(
-        /<button type="button" class="filter-hele-norge">Hele Norge<\/button><\/div><input id="filter-maksAvstandKm"/,
-      )
-      // Exactly one button, and it is gone again once the requirement goes back to «Alle».
-      expect(html.match(/Hele Norge/g)).toHaveLength(1)
-      expect(render({ ...STANDARD_FILTER, maksAvstandKm: null })).not.toContain('Hele Norge')
-    })
-  })
-})
-
 // Story 3.4 (FR-15): the two quick picks, each a chip that fills the whole filter in one action.
 describe('Hurtigvalgene', () => {
-  const PUDDERDAG: FilterParams = {
-    minNysnoCm: 10,
-    maksVindMs: 8,
-    maksTemperaturC: -2,
-    maksSkydekkeDagslys: null,
-    maksAvstandKm: null,
-  }
-  const SOL_ETTER_SNOFALL: FilterParams = {
-    minNysnoCm: 5,
-    maksVindMs: null,
-    maksTemperaturC: null,
-    maksSkydekkeDagslys: 30,
-    maksAvstandKm: null,
-  }
+  const PUDDERDAG: FilterParams = { minNysnoCm: 10, maksVindMs: 8, maksTemperaturC: -2, maksSkydekkeDagslys: null }
+  const SOL_ETTER_SNOFALL: FilterParams = { minNysnoCm: 5, maksVindMs: null, maksTemperaturC: null, maksSkydekkeDagslys: 30 }
 
   it('shows both as unpressed buttons, each with its fixed combination described underneath', () => {
     const html = render(STANDARD_FILTER)

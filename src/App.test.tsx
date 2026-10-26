@@ -18,10 +18,7 @@ const demoResult = medFerskhet({ status: 'ok', data: demo, source: 'demo' })
 const UTFORSK: Route = utforsk('kart')
 const LISTE = utforsk('liste')
 // Story 3.2b: the demo search with six hits, at least 2 cm new snow and at most 0 °C, in the list.
-const SEKS_I_LISTEN = {
-  ...LISTE,
-  filter: { minNysnoCm: 2, maksVindMs: null, maksTemperaturC: 0, maksSkydekkeDagslys: null, maksAvstandKm: null },
-}
+const SEKS_I_LISTEN = { ...LISTE, filter: { minNysnoCm: 2, maksVindMs: null, maksTemperaturC: 0, maksSkydekkeDagslys: null } }
 
 /** The text of every element with role="status" that contains `tekst`. */
 const statusMed = (html: string, tekst: string) =>
@@ -51,10 +48,7 @@ describe('AppView', () => {
 
   // Story 3.3 (FR-14): zero hits suggest the single requirement to ease, in the panel's words.
   it('suggests the nearest new snow that gives a place, with «Bruk forslaget» and «Nullstill»', () => {
-    const html = render(demoResult, {
-      ...UTFORSK,
-      filter: { minNysnoCm: 13, maksVindMs: null, maksTemperaturC: null, maksSkydekkeDagslys: null, maksAvstandKm: null },
-    })
+    const html = render(demoResult, { ...UTFORSK, filter: { minNysnoCm: 13, maksVindMs: null, maksTemperaturC: null, maksSkydekkeDagslys: null } })
     const tekst = 'Ingen treff. Prøv nysnø minst 12 cm.'
     expect(html).toContain(`<p class="visually-hidden" role="status">${tekst}</p>`)
     expect(html).toContain(
@@ -67,18 +61,12 @@ describe('AppView', () => {
   })
 
   it('says «Prøv uten nysnøkravet» when only «Alle» gives a place', () => {
-    const html = render(demoResult, {
-      ...UTFORSK,
-      filter: { minNysnoCm: 1, maksVindMs: 3, maksTemperaturC: null, maksSkydekkeDagslys: null, maksAvstandKm: null },
-    })
+    const html = render(demoResult, { ...UTFORSK, filter: { minNysnoCm: 1, maksVindMs: 3, maksTemperaturC: null, maksSkydekkeDagslys: null } })
     expect(html).toContain('<p>Ingen treff. Prøv uten nysnøkravet.</p>')
   })
 
   it('offers only «Nullstill» when no single change gives a place', () => {
-    const html = render(demoResult, {
-      ...UTFORSK,
-      filter: { minNysnoCm: 13, maksVindMs: null, maksTemperaturC: -11, maksSkydekkeDagslys: null, maksAvstandKm: null },
-    })
+    const html = render(demoResult, { ...UTFORSK, filter: { minNysnoCm: 13, maksVindMs: null, maksTemperaturC: -11, maksSkydekkeDagslys: null } })
     expect(html).toContain('<p>Ingen treff. Det hjelper ikke å endre bare ett krav. Prøv «Nullstill».</p>')
     expect(html).not.toContain('Bruk forslaget')
   })

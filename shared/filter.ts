@@ -1,4 +1,3 @@
-import { avstandKm, type Posisjon } from './avstand'
 import { rundTilEnDesimal } from './avrunding'
 import type { Sted } from './contracts/published'
 
@@ -15,12 +14,6 @@ export interface FilterParams {
   maksTemperaturC: number | null
   /** Story 3.5 (FR-22): mean cloud cover in the daylight hours at most this many % (inclusive). */
   maksSkydekkeDagslys: number | null
-  /**
-   * Story 3.6 (FR-23): distance from the user's own position at most this many km (inclusive). Without a
-   * known position (never asked, refused or unavailable) this requirement has no effect (NFR-Privacy):
-   * it never hides a place, unlike a place that is missing a value.
-   */
-  maksAvstandKm: number | null
 }
 
 export type FilterKrav = keyof FilterParams
@@ -40,19 +33,9 @@ export const FILTER_GRENSER: Readonly<Record<FilterKrav, KravGrense>> = {
   maksTemperaturC: { min: -20, max: 10, steg: 1, standard: 10 },
   // Story 3.5 (decided 2026-10-23): 0–100 % in steps of 10, where 100 means «Alle».
   maksSkydekkeDagslys: { min: 0, max: 100, steg: 10, standard: 100 },
-  // Story 3.6 (decided 2026-10-25, Kelly): 0–200 km in steps of 10, where 200 means «Alle». A day-trip
-  // span, not 500 km, which would rarely exclude anything since most catalog places lie within that of
-  // each other.
-  maksAvstandKm: { min: 0, max: 200, steg: 10, standard: 200 },
 }
 
-export const FILTER_KRAV: readonly FilterKrav[] = [
-  'minNysnoCm',
-  'maksVindMs',
-  'maksTemperaturC',
-  'maksSkydekkeDagslys',
-  'maksAvstandKm',
-]
+export const FILTER_KRAV: readonly FilterKrav[] = ['minNysnoCm', 'maksVindMs', 'maksTemperaturC', 'maksSkydekkeDagslys']
 
 /** A named, fixed combination of requirements (FR-15). A requirement it does not mention is «Alle». */
 export interface Hurtigvalg {
@@ -69,11 +52,11 @@ export interface Hurtigvalg {
 export const HURTIGVALG: readonly Hurtigvalg[] = [
   {
     navn: 'Pudderdag',
-    verdier: { minNysnoCm: 10, maksVindMs: 8, maksTemperaturC: -2, maksSkydekkeDagslys: null, maksAvstandKm: null },
+    verdier: { minNysnoCm: 10, maksVindMs: 8, maksTemperaturC: -2, maksSkydekkeDagslys: null },
   },
   {
     navn: 'Sol etter snøfall',
-    verdier: { minNysnoCm: 5, maksVindMs: null, maksTemperaturC: null, maksSkydekkeDagslys: 30, maksAvstandKm: null },
+    verdier: { minNysnoCm: 5, maksVindMs: null, maksTemperaturC: null, maksSkydekkeDagslys: 30 },
   },
 ]
 
@@ -82,18 +65,13 @@ export const STANDARD_FILTER: FilterParams = {
   maksVindMs: null,
   maksTemperaturC: null,
   maksSkydekkeDagslys: null,
-  maksAvstandKm: null,
 }
 
 /** The fields filtrerSteder reads, so the golden table can use small hand-written places. */
-export type Filtrerbar = Pick<Sted, 'nysnoCm' | 'vindMaks' | 'temperatur' | 'skydekkeDagslys' | 'lat' | 'lon'>
+export type Filtrerbar = Pick<Sted, 'nysnoCm' | 'vindMaks' | 'temperatur' | 'skydekkeDagslys'>
 
-/**
- * The place's value each requirement is compared with. Distance (Story 3.6) depends on the user's
- * position, not on a fixed field of the place, so it is handled separately in `oppfyller` and left out
- * of this lookup.
- */
-const FELT: Readonly<Record<Exclude<FilterKrav, 'maksAvstandKm'>, keyof Filtrerbar>> = {
+/** The place's value each requirement is compared with. */
+const FELT: Readonly<Record<FilterKrav, keyof Filtrerbar>> = {
   minNysnoCm: 'nysnoCm',
   maksVindMs: 'vindMaks',
   maksTemperaturC: 'temperatur',
@@ -113,12 +91,7 @@ export function aktiveKrav(params: FilterParams): FilterKrav[] {
   return aktiveGrenser(params).map(([krav]) => krav)
 }
 
-function oppfyller(sted: Filtrerbar, krav: FilterKrav, grense: number, posisjon?: Posisjon): boolean {
-  if (krav === 'maksAvstandKm') {
-    // Story 3.6 (FR-23, NFR-Privacy): without a known position the requirement has no effect, so it
-    // never hides a place, unlike a place with a missing value for one of the other requirements.
-    return !posisjon || avstandKm(posisjon, sted) <= grense
-  }
+function oppfyller(sted: Filtrerbar, krav: FilterKrav, grense: number): boolean {
   const verdi = sted[FELT[krav]]
   // A missing value cannot be shown to meet the requirement, so the place is left out.
   if (verdi === null) return false
@@ -127,14 +100,10 @@ function oppfyller(sted: Filtrerbar, krav: FilterKrav, grense: number, posisjon?
   return krav === 'minNysnoCm' ? vist >= grense : vist <= grense
 }
 
-/**
- * The places that meet every active requirement, in their original order. No active requirement keeps
- * all. `posisjon` is the user's own position for the distance requirement (Story 3.6); omit it, or leave
- * it `undefined`, when the position is not known.
- */
-export function filtrerSteder<T extends Filtrerbar>(steder: readonly T[], params: FilterParams, posisjon?: Posisjon): T[] {
+/** The places that meet every active requirement, in their original order. No active requirement keeps all. */
+export function filtrerSteder<T extends Filtrerbar>(steder: readonly T[], params: FilterParams): T[] {
   const aktive = aktiveGrenser(params)
-  return steder.filter((sted) => aktive.every(([krav, grense]) => oppfyller(sted, krav, grense, posisjon)))
+  return steder.filter((sted) => aktive.every(([krav, grense]) => oppfyller(sted, krav, grense)))
 }
 
 /** One requirement eased to `verdi` (`null` means without it), which gives `antall` places. */
@@ -149,11 +118,9 @@ export interface Forslag {
  * requirement it finds the nearest slider step towards «Alle» that gives at least one place while the
  * others stay, and picks the one that gives the most places; on a tie the fewest steps, then panel order.
  * `null` when there are places already, or when no single change gives any (the app then offers «Nullstill»).
- * `posisjon` is passed through to the trial `filtrerSteder` calls, so the distance requirement (Story 3.6)
- * can be eased like any other when a position is known.
  */
-export function forslagVedNullTreff(steder: readonly Filtrerbar[], params: FilterParams, posisjon?: Posisjon): Forslag | null {
-  if (filtrerSteder(steder, params, posisjon).length > 0) return null
+export function forslagVedNullTreff(steder: readonly Filtrerbar[], params: FilterParams): Forslag | null {
+  if (filtrerSteder(steder, params).length > 0) return null
   let best: (Forslag & { steg: number }) | null = null
   for (const [krav, grense] of aktiveGrenser(params)) {
     const { min, max, steg, standard } = FILTER_GRENSER[krav]
@@ -165,7 +132,7 @@ export function forslagVedNullTreff(steder: readonly Filtrerbar[], params: Filte
       const verdi = grense + retning * antallSteg
       // Reaching (or passing) the «Alle» end means trying without the requirement, which always ends the walk.
       const forsok = (retning > 0 ? verdi >= standard : verdi <= standard) ? null : verdi
-      const antall = filtrerSteder(steder, { ...params, [krav]: forsok }, posisjon).length
+      const antall = filtrerSteder(steder, { ...params, [krav]: forsok }).length
       if (antall > 0) {
         // Strictly better only, so an equal candidate earlier in panel order stays.
         if (!best || antall > best.antall || (antall === best.antall && antallSteg < best.steg)) {
@@ -188,9 +155,6 @@ const FILTER_PARAMETRE: Readonly<Record<FilterKrav, string>> = {
   maksVindMs: 'vind',
   maksTemperaturC: 'temp',
   maksSkydekkeDagslys: 'sky',
-  // Story 3.6 (AD-12): the limit itself is a normal filter parameter and rides along in a shared link;
-  // the position it is measured from never does (NFR-Privacy).
-  maksAvstandKm: 'avstand',
 }
 
 const HELTALL = /^-?\d+$/
@@ -214,7 +178,6 @@ export function parseFilter(search: URLSearchParams): FilterParams {
     maksVindMs: parseKrav('maksVindMs', search),
     maksTemperaturC: parseKrav('maksTemperaturC', search),
     maksSkydekkeDagslys: parseKrav('maksSkydekkeDagslys', search),
-    maksAvstandKm: parseKrav('maksAvstandKm', search),
   }
 }
 

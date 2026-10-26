@@ -39,29 +39,16 @@ krever nøkkel, men som trenger nett for å vise kartbildene.
 Velg «Liste» under navigasjonen (eller åpne `/?visning=liste`) for å se de samme stedene som en
 liste som virker med tastatur og skjermleser, sortert etter score, avstand eller navn.
 
-Filteret (til venstre på store skjermer, bak knappen «Filter» nederst på mobil) har fem krav:
-minst så mye nysnø, høyst så mye vind, høyst så høy temperatur, høyst så mye skydekke i dagslys
-(0–100 % i steg på 10, «Alle» ved 100) og høyst så langt unna din egen posisjon (0–200 km i steg på 10,
-«Alle» ved 200). Skydekket i dagslys er snittet av timene de neste 24 timene der solen står over horisonten
-på stedet, og stedssiden viser det i raden «Skydekke i dagslys». I mørketiden finnes ingen slike timer, så
-nordlige steder har ingen verdi og skjules når skydekkekravet er på. Kart og liste viser bare stedene som
-oppfyller alle kravene. Et sted som mangler verdien for et aktivt krav, vises ikke. «Nullstill» setter alle
-kravene tilbake til «Alle». Filteret viser hele tiden antall treff, og ved null treff foreslår appen det ene
-kravet som bør lempes (for eksempel «Prøv nysnø minst 12 cm»), som du kan bruke med knappen «Bruk forslaget».
-Forslagene bruker sliderens hele steg, så et sted med 12,6 cm nysnø gir forslaget «minst 12 cm».
-
-Avstandskravet spør om posisjonen din først når du selv flytter avstandsslideren bort fra «Alle», aldri
-automatisk ved lasting eller fra en delt lenke. Posisjonen brukes bare i nettleseren til å regne avstand til
-hvert sted; den sendes aldri noe sted og lagres aldri, verken i adressen eller på tjener. Avslår du
-forespørselen, eller er posisjonen ukjent av en annen grunn, har kravet ingen effekt — det skjuler ingen
-steder, i motsetning til et sted som mangler en verdi — og en tekst under slideren forklarer hvorfor.
-Avstandsgrensen selv (ikke posisjonen) er derimot et vanlig filterparameter som ligger i adressen, så en delt
-lenke bærer grensen videre uten å be mottakeren om posisjonen før de selv rører slideren. Avstand vises ikke
-på kartet eller i listen; den brukes bare til å avgrense treffene.
-
-Når avstandskravet er aktivt, vises knappen «Hele Norge» ved siden av slideren. Den setter bare avstanden
-tilbake til «Alle», slik at du kan oppdage de beste snøforholdene i hele landet igjen, uten å trykke
-«Nullstill» og dermed også miste nysnø-, vind-, temperatur- og skydekkekravet.
+Filteret (til venstre på store skjermer, bak knappen «Filter» nederst på mobil) har fire krav:
+minst så mye nysnø, høyst så mye vind, høyst så høy temperatur og høyst så mye skydekke i dagslys
+(0–100 % i steg på 10, «Alle» ved 100). Skydekket i dagslys er snittet av timene de neste 24 timene der
+solen står over horisonten på stedet, og stedssiden viser det i raden «Skydekke i dagslys». I mørketiden
+finnes ingen slike timer, så nordlige steder har ingen verdi og skjules når skydekkekravet er på. Kart og liste
+viser bare stedene som oppfyller alle kravene. Et sted som mangler verdien for et aktivt krav, vises ikke. «Nullstill»
+setter alle kravene tilbake til «Alle». Filteret viser hele tiden antall treff, og ved null treff
+foreslår appen det ene kravet som bør lempes (for eksempel «Prøv nysnø minst 12 cm»), som du kan bruke
+med knappen «Bruk forslaget». Forslagene bruker sliderens hele steg, så et sted med 12,6 cm nysnø gir
+forslaget «minst 12 cm».
 
 Øverst i det åpne panelet står to hurtigvalg-chips som fyller hele filteret i ett trykk, uten dialog:
 «Pudderdag» setter nysnø minst 10 cm, vind høyst 8 m/s og temperatur høyst −2 °C (skydekke settes til
@@ -71,12 +58,10 @@ stod på før, så samme chip gir samme resultat hver gang. Chipen vises som val
 du justerer en slider etterpå.
 
 Filteret, visningen og sorteringen ligger i nettadressen, for eksempel
-`/?visning=liste&nysno=5&vind=10&temp=-2&sky=60&avstand=100&sortering=navn`. Kopier adressen for å dele
-søket: lenken åpner samme filter, samme visning og samme treff, men ber ikke om posisjonen din — den spørres
-bare ved at mottakeren selv rører avstandsslideren eller velger sortering etter avstand. Krav som står på
-«Alle», og ugyldige verdier tas ikke med. Sortering etter avstand lagres ikke, bare avstandskravets egen
-grense gjør. Tilbake fra en stedsside viser søket slik du forlot det, og en endring i filteret lager ikke et
-nytt steg i historikken.
+`/?visning=liste&nysno=5&vind=10&temp=-2&sky=60&sortering=navn`. Kopier adressen for å dele søket: lenken
+åpner samme filter, samme visning og samme treff. Krav som står på «Alle», og ugyldige verdier tas ikke
+med. Sortering etter avstand lagres ikke, så en delt lenke ber aldri om posisjonen din. Tilbake fra en
+stedsside viser søket slik du forlot det, og en endring i filteret lager ikke et nytt steg i historikken.
 Stedssidens adresse bærer også søket (for eksempel `/sted/gaustatoppen?visning=liste&nysno=2&temp=0`),
 så en delt stedslenke går «Tilbake» til samme søk.
 

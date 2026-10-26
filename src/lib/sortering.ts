@@ -1,4 +1,3 @@
-import { avstandKm, type Posisjon } from '../../shared/avstand'
 import type { Sted } from '../../shared/contracts/published'
 
 // Story 1.8: sorting for the list view. Pure, so the order is tested without a browser.
@@ -6,9 +5,18 @@ import type { Sted } from '../../shared/contracts/published'
 export const SORTERINGER = ['score', 'avstand', 'navn'] as const
 export type Sortering = (typeof SORTERINGER)[number]
 
-// Re-exported from shared/avstand.ts (Story 3.6 review: shared/ must not depend on src/, AD-6), so every
-// existing import of avstandKm/Posisjon from here keeps working unchanged.
-export { avstandKm, type Posisjon }
+export type Posisjon = { lat: number; lon: number }
+
+const EARTH_RADIUS_KM = 6371
+const toRadians = (deg: number) => (deg * Math.PI) / 180
+
+/** Great-circle distance in km (haversine); well within a kilometre at Norwegian distances. */
+export function avstandKm(a: Posisjon, b: Posisjon): number {
+  const dLat = toRadians(b.lat - a.lat)
+  const dLon = toRadians(b.lon - a.lon)
+  const h = Math.sin(dLat / 2) ** 2 + Math.cos(toRadians(a.lat)) * Math.cos(toRadians(b.lat)) * Math.sin(dLon / 2) ** 2
+  return 2 * EARTH_RADIUS_KM * Math.asin(Math.min(1, Math.sqrt(h)))
+}
 
 const navnCollator = new Intl.Collator('nb')
 
