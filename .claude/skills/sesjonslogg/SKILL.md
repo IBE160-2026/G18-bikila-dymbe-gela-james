@@ -1,11 +1,11 @@
 ---
 name: sesjonslogg
-description: Dokumenterer arbeidssesjonen i `.logs/` i prosjektroten (Oppgave + Plan + Resultat + åpne punkter) og vedlikeholder åpne punkter som `Agent`-merkede Issues gjennom `book issues`, slik at sluttoppsummeringer og «husk at»-punkter ikke forsvinner i chat-scrollback. Bruk denne ved slutten av ENHVER arbeidsøkt eller fullført oppgave som endret tilstand — også små mekaniske økter som en commit, push, publisering eller konfig-endring — alltid før du skriver sluttoppsummeringen til brukeren, og særlig når oppsummeringen inneholder «åpne punkter», «gjenstår», «husk at», «legg merke til», «neste steg», «ikke gjort» eller lignende. Bruk den også når brukeren sier «logg sesjonen», «logg dette», «oppdater loggen», «skriv sesjonslogg», og når du trenger å vite hva som ble gjort i en tidligere sesjon (les da `.logs/` og hent Agent-Issues med book-CLI-en i stedet for å gjette).
+description: Dokumenterer arbeidssesjonen i `.logs/` i prosjektroten (Oppgave + Plan + Resultat + åpne punkter) og vedlikeholder åpne punkter i `issues.md`, slik at sluttoppsummeringer og «husk at»-punkter ikke forsvinner i chat-scrollback. Bruk denne ved slutten av ENHVER arbeidsøkt eller fullført oppgave som endret tilstand — også små mekaniske økter som en commit, push, publisering eller konfig-endring — alltid før du skriver sluttoppsummeringen til brukeren, og særlig når oppsummeringen inneholder «åpne punkter», «gjenstår», «husk at», «legg merke til», «neste steg», «ikke gjort» eller lignende. Bruk den også når brukeren sier «logg sesjonen», «logg dette», «oppdater loggen», «skriv sesjonslogg», og når du trenger å vite hva som ble gjort i en tidligere sesjon (les da `.logs/` og `issues.md` i stedet for å gjette).
 ---
 
 # Sesjonslogg
 
-Formål: brukeren leser ikke alltid sluttoppsummeringen i terminalen, og den forsvinner uansett når vinduet lukkes. Hva som ble gjort og bevisst *ikke* ble gjort skal overleve som Markdown i `.logs/`; hvert reelt «husk at …» / «gjenstår …»-punkt skal i tillegg overleve som et søkbart Issue i akseptansebasen. Loggen er brukerens sesjonshukommelse, mens Issues er prosjektets oppgaveliste.
+Formål: brukeren leser ikke alltid sluttoppsummeringen i terminalen, og den forsvinner uansett når vinduet lukkes. Hva som ble gjort og bevisst *ikke* ble gjort skal overleve som Markdown i `.logs/`; hvert reelt «husk at …» / «gjenstår …»-punkt skal i tillegg overleve som en linje i `issues.md`. Loggen er brukerens sesjonshukommelse, mens `issues.md` er den samlede lista over det som gjenstår.
 
 ## Hvor og når
 
@@ -47,15 +47,34 @@ testresultater, hva som ble verifisert. Konkret nok til at en fremtidig sesjon k
 bygge videre uten å gjette.
 
 ### Åpne punkter
-- Alt som gjenstår, ble bevisst utsatt, eller må huskes. Oppgi `Issue #N` for hvert punkt som er opprettet med `book issues`.
+- Alt som gjenstår, ble bevisst utsatt, eller må huskes. Hvert punkt speiles i `issues.md` (se under).
 - Skriv «Ingen.» hvis det ikke er noen.
 ```
 
 Dato-overskriften bærer klokkeslettet for når loggen skrives **og hvem som kjørte oppgaven**: `## yyyy-mm-dd kl. hh:mm — <utfører>` (24-timers; `date "+%F kl. %H:%M"` / `Get-Date -Format "yyyy-MM-dd 'kl.' HH:mm"`). Utføreren er git-brukeren: `git config user.name` (fall tilbake på `user.email`, eller utelat hvis begge mangler). Fortsettelser: legg `## <ny dato> kl. <tid> — <utfører>` **nederst** i den eksisterende fila, med de samme fire underseksjonene — slik ser man også hvem som kjørte hver økt.
 
+## Commit loggfila (alltid)
+
+Etter at loggfila er skrevet (ny fil, ny dato-seksjon eller oppdatert dagens seksjon), **skal** den committes umiddelbart, før sluttoppsummeringen. Ellers blir loggene glemt som ukommitterte filer og kommer ut av sync mellom brukere og maskiner. Dette er et krav, ikke et valg — ikke spør om lov, og hopp det ikke over fordi økten var liten.
+
+**Commit kun loggfila og `issues.md` — ingenting annet.** `issues.md` oppdateres i samme økt (se under), og må med, ellers blir den stående ukommittert og kommer ut av sync. Andre endringer i arbeidskopien (kode, konfig, utracket filer, ting brukeren selv har staget) skal ikke bli med. Bruk en path-begrenset commit, slik at annet som allerede ligger i staging-området ikke dras med:
+
+```sh
+git add -- ".logs/<bruker-slug>/<fil>.md" ".logs/<bruker-slug>/issues.md"
+git commit -m "Logg: <tittel>" -- ".logs/<bruker-slug>/<fil>.md" ".logs/<bruker-slug>/issues.md"
+```
+
+- Meldingen er `Logg: <tittel>` (tittelen er den samme som i fila, f.eks. `Logg: kurstab-redesign`), pluss eventuelle attribusjonslinjer harnessen krever for commits. Angir prosjektets `CLAUDE.md`/`AGENTS.md` en egen commit-meldingskonvensjon for logger, følg den i stedet.
+- Var `issues.md` uendret i økten (eller finnes den ikke), utelates den fra kommandoene, og bare loggfila committes.
+- Kontroller etterpå med `git show --stat HEAD` at commiten inneholder nøyaktig disse filene: loggfila og eventuelt `issues.md`. Inneholder den mer, angre med `git reset --soft HEAD~1`, unstage det som ikke hører til, og commit på nytt.
+- **Ikke push** med mindre brukeren ber om det i økten. Skillen committer bare lokalt.
+- Er `.logs/` git-ignorert, eller er prosjektet ikke et git-repo, hopp over commit og nevn det kort i sluttoppsummeringen.
+- Hook-feil: løs årsaken og commit på nytt. Aldri `--no-verify`.
+- Loggfila kan ikke selv inneholde hashen til sin egen commit. Under «Resultat» refererer du til commit-hasher for det *arbeidet* som ble gjort, ikke til loggcommiten.
+
 ## Hva er (ikke) et åpent punkt?
 
-Et åpent punkt er noe som gjenstår i selve produktet eller prosjektet: en manglende test, en kjent bug, konfig som må settes ved deploy, en beslutning som venter, noe brukeren eksplisitt ba deg huske. Git- og prosesstatus er **ikke** åpne punkter — brukeren ser git-status selv, og slike punkter drukner de ekte. (I Resultat-seksjonen kan commit-hash eller «ukommittert» nevnes kort som faktum.) Eksempler på ting som IKKE skal inn i Åpne punkter eller opprettes som Issues:
+Et åpent punkt er noe som gjenstår i selve produktet eller prosjektet: en manglende test, en kjent bug, konfig som må settes ved deploy, en beslutning som venter, noe brukeren eksplisitt ba deg huske. Git- og prosesstatus er **ikke** åpne punkter — brukeren ser git-status selv, og slike punkter drukner de ekte. (I Resultat-seksjonen kan commit-hash eller «ukommittert» nevnes kort som faktum.) Eksempler på ting som IKKE skal inn i Åpne punkter eller `issues.md`:
 
 - «Ingen av endringene er committet — husk å committe.» / «må pushes»
 - Samordningsbeskjeder om repo-tilstand: «NN må `git pull` / re-synke klonene sine»
@@ -63,34 +82,19 @@ Et åpent punkt er noe som gjenstår i selve produktet eller prosjektet: en mang
 
 Unntaket er når tilstanden er reelt kritisk — f.eks. en migrasjon er kjørt mot en delt database mens koden ikke er delt, slik at andre kan rammes.
 
-## Issues gjennom book-CLI-en
+## issues.md
 
-`.logs/<bruker-slug>/issues.md` er utfaset. **Aldri opprett, les eller oppdater
-den fila.** Den samlede oppgavelista er Issues i akseptansebasen, og alle
-agentopprettede punkter har etiketten `Agent` (`agent`).
+`.logs/<bruker-slug>/issues.md` er brukerens samlede liste over åpne punkter på tvers av alle sesjoner — det er denne brukeren faktisk sjekker. Opprett fila med overskriften `# Åpne punkter` hvis den mangler. Vedlikehold den hver gang du logger, **før** sesjonsfila committes:
 
-1. Sørg for at repoets `book`-kommando er installert etter prosjektets
-   `book-cli`-skill, og sett UTF-8 i Windows-skallet. Kjør `book issues actors`.
-   Følg en eksplisitt slug/aktør-mapping i prosjektets agentreferanser hvis den
-   finnes. Ellers: finn den menneskelige aktøren som tilsvarer git-brukeren,
-   helst med eksakt e-post, ellers eksakt/entydig visningsnavn. Bruk aktørens
-   UUID som `AKTØR` i resten av økten. Ikke skriv på vegne av en annen person;
-   be brukeren avklare hvis treffet ikke er entydig.
-2. **Les åpne punkter** før du logger:
-   `book issues list --state open --label agent --author AKTØR --all`.
-   Les aktuelle kandidater med `book issues get NUMMER`; ikke konkluder fra
-   tittelen alene.
-3. **Lukk punkter økten løste**, også eldre punkter. Bruk revisjonen fra `get`:
-   `book issues update NUMMER --expected-revision REV --state closed --by AKTØR`.
-   Utelat `--label` ved lukking, slik at eksisterende etiketter bevares. Referer
-   nummeret i Resultat (`Løser Issue #N`).
-4. **Opprett ett Issue per nytt åpent punkt** før sesjonsfila skrives. Hent
-   commit-SHA med `git rev-parse HEAD`, og kjør:
-   `book issues create --title "kort, konkret tittel" --body "detaljer, hvorfor det gjenstår, og relativ sti til planlagt sesjonslogg" --label agent --environment local --target-commit SHA --by AKTØR`.
-   Bruk nummeret fra svaret i sesjonsfilas Åpne punkter (`Issue #N — …`). Ikke
-   opprett et Issue for `Ingen.` og ikke dupliser et eksisterende åpent Issue.
-5. Issue-numre er globale og monotone. Ved en revisjonskonflikt: hent issuet på
-   nytt, kontroller at du fortsatt bør endre det, og prøv mot fersk revisjon.
+1. **Les lista først**, så du ikke dupliserer et punkt som alt er åpent.
+2. **Legg til** hvert nytt åpent punkt fra økten, med dato og lenke til sesjonsfila:
+   ```markdown
+   - [ ] 2026-08-08 [kurstab-redesign](999-2026-08-08-14-31-07-kurstab-redesign.md) — e2e-test for tastaturnavigasjon gjenstår
+   ```
+   Ikke legg til noe for `Ingen.`.
+3. **Lukk** punkter denne økten løste — også punkter fra tidligere sesjoner. Marker løste punkter med `[x]` og løsningsdato: `- [x] … (løst 2026-08-08)`. Ikke slett linjer — historikken har verdi. Referer til det lukkede punktet i Resultat.
+
+Unntak: sier prosjektets rot-`CLAUDE.md`/`AGENTS.md` eksplisitt at åpne punkter skal føres et annet sted (f.eks. i en egen issue-tracker), følg den instruksen i stedet. Uten slik instruks gjelder alltid `issues.md`.
 
 ## Forankring i CLAUDE.md/AGENTS.md
 
@@ -98,9 +102,9 @@ Sjekk ved hver bruk om prosjektets rot-`CLAUDE.md` eller `AGENTS.md` refererer t
 
 - Legg regelen der prosjektets agent-instruksjoner faktisk bor: i `AGENTS.md` hvis den finnes (eller hvis `CLAUDE.md` bare er en `@AGENTS.md`-import), ellers i `CLAUDE.md`; finnes ingen av dem, opprett `CLAUDE.md` med regelen.
 - Hold den kort og tilpass filens eksisterende struktur og språk, f.eks.:
-  > **Logg sesjonen.** Når en oppgave/økt avsluttes — før sluttoppsummeringen — bruk `sesjonslogg`-skillen: den logger Oppgave + Plan + Resultat + åpne punkter per bruker i `.logs/<bruker>/` og oppretter/lukker åpne punkter som `Agent`-merkede Issues via `book issues`.
+  > **Logg sesjonen.** Når en oppgave/økt avsluttes — før sluttoppsummeringen — bruk `sesjonslogg`-skillen: den logger Oppgave + Plan + Resultat + åpne punkter per bruker i `.logs/<bruker>/`, fører åpne punkter i `issues.md` og committer loggfilene.
 - Ikke dupliser: står referansen alt et sted i en av filene, er alt i orden.
 
 ## Ved oppstart av en fortsettelse
 
-Når brukeren refererer til tidligere arbeid («fortsett med …», «hva gjorde vi sist med …»), les den relevante fila i `.logs/` (brukerens egen mappe først, deretter eventuelt andre brukeres), finn aktøren med `book issues actors`, og hent vedkommendes åpne `Agent`-Issues med `book issues list --state open --label agent --author AKTØR --all` **før** du begynner. Les aktuelle Issues med `book issues get NUMMER`; dette er raskere og sikrere enn å rekonstruere fra koden eller hukommelsen.
+Når brukeren refererer til tidligere arbeid («fortsett med …», «hva gjorde vi sist med …»), les den relevante fila i `.logs/` (brukerens egen mappe først, deretter eventuelt andre brukeres) og brukerens `issues.md` **før** du begynner — det er raskere og sikrere enn å rekonstruere fra koden eller hukommelsen.
