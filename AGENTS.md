@@ -88,3 +88,7 @@ Kort og bindende. Detaljer om krav, arkitektur og design står i brief, PRD, ark
 ## 5. Åpent for gruppa
 
 - Kursets skjermkrav (profil, innsjekking, feed, arrangementer; pålogging er droppet 2026-10-09) kobles til SnowFinder av Sally (`bmad-ux`) – legg aldri til kontoer eller sosiale funksjoner selv.
+
+## Sesjonslogg
+
+Når en oppgave eller økt avsluttes, før sluttoppsummeringen, bruk `sesjonslogg`-skillen: dokumenter Oppgave + Plan + Resultat + åpne punkter i `.logs/<bruker>/`, og før åpne punkter i `.logs/<bruker>/issues.md`. Skillen committer loggfila lokalt; push gjør du selv. Gruppens egne regler for commit og språk gjelder foran dette.
