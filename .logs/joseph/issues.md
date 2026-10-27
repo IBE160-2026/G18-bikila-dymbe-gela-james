@@ -8,4 +8,6 @@
 - [ ] 2026-10-27 [synlig-pr-for-sena](998-2026-10-27-21-40-29-synlig-pr-for-sena-story-3-7.md) — #66 (Story 3.7) trenger «Approve» fra Aksel (eller Kelly når kontoen er fri)
 - [ ] 2026-10-27 [synlig-pr-for-sena](998-2026-10-27-21-40-29-synlig-pr-for-sena-story-3-7.md) — etter merge av #66: 3.7 `done` og oppdatert fremdriftsplan, Sena lukker #65, slett begge 3.7-greinene
 - [ ] 2026-10-27 [synlig-pr-for-sena](998-2026-10-27-21-40-29-synlig-pr-for-sena-story-3-7.md) — Sena får kontoen sluppet fri via GitHub Support
-- [ ] 2026-10-27 [synlig-pr-for-sena](998-2026-10-27-21-40-29-synlig-pr-for-sena-story-3-7.md) — sett 3.6 til `done` på `main` og oppdater fremdriftsplanen
+- [x] 2026-10-27 [synlig-pr-for-sena](998-2026-10-27-21-40-29-synlig-pr-for-sena-story-3-7.md) — sett 3.6 til `done` på `main` og oppdater fremdriftsplanen (løst 2026-10-27 i PR #68, gjelder når den er merget)
+- [ ] 2026-10-27 [tidslinje-milepaeler-og-aktivitetsdiagram](997-2026-10-27-22-58-20-tidslinje-milepaeler-og-aktivitetsdiagram.md) — gruppa vedtar eller endrer de foreslåtte fristene (M4, F3, M1/M5, F4, F5), og «forslag» byttes med «vedtatt»
+- [ ] 2026-10-27 [tidslinje-milepaeler-og-aktivitetsdiagram](997-2026-10-27-22-58-20-tidslinje-milepaeler-og-aktivitetsdiagram.md) — sjekk at diagrammene vises riktig på GitHub, og merge #68
