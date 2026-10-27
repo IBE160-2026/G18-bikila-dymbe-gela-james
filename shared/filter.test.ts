@@ -91,6 +91,7 @@ describe('maksAvstandKm without a known position', () => {
 describe('forslagVedNullTreff', () => {
   const sted = (nysnoCm: number, vindMaks: number): Filtrerbar => ({
     nysnoCm,
+    nveNysnoSisteDognMm: null,
     vindMaks,
     temperatur: 0,
     skydekkeDagslys: 0,
@@ -98,7 +99,7 @@ describe('forslagVedNullTreff', () => {
     lon: 10,
     type: 'skisted',
   })
-  const UTEN_AVSTAND = { maksSkydekkeDagslys: null, maksAvstandKm: null, stedstyper: null } as const
+  const UTEN_AVSTAND = { maksSkydekkeDagslys: null, maksAvstandKm: null, stedstyper: null, nysnoKilde: 'met' } as const
 
   it('prefers the requirement that gives the most places over the one that needs fewer steps', () => {
     // Easing new snow 3 steps to 2 cm gives one place; easing wind 15 steps to 20 m/s gives two.
@@ -112,7 +113,7 @@ describe('forslagVedNullTreff', () => {
 
   it('skips a place without the value while easing, and counts it only once the requirement is removed', () => {
     // The golden places cannot show this: «dyp» meets every limit the others meet, so a walk stops before «Alle».
-    const steder: Filtrerbar[] = [{ nysnoCm: null, vindMaks: 5, temperatur: 0, skydekkeDagslys: 0, lat: 60, lon: 10, type: 'skisted' }, sted(2, 20)]
+    const steder: Filtrerbar[] = [{ nysnoCm: null, nveNysnoSisteDognMm: null, vindMaks: 5, temperatur: 0, skydekkeDagslys: 0, lat: 60, lon: 10, type: 'skisted' }, sted(2, 20)]
     expect(forslagVedNullTreff(steder, { minNysnoCm: 5, maksVindMs: 5, maksTemperaturC: null, ...UTEN_AVSTAND })).toEqual({
       krav: 'minNysnoCm',
       verdi: null,
@@ -162,8 +163,8 @@ describe('HURTIGVALG', () => {
 describe('aktiveKrav', () => {
   it('counts only limits that are set and away from the "no limit" end', () => {
     expect(aktiveKrav(STANDARD_FILTER)).toEqual([])
-    expect(aktiveKrav({ minNysnoCm: 0, maksVindMs: 25, maksTemperaturC: 10, maksSkydekkeDagslys: 100, maksAvstandKm: 200, stedstyper: null })).toEqual([])
-    expect(aktiveKrav({ minNysnoCm: 1, maksVindMs: 24, maksTemperaturC: 9, maksSkydekkeDagslys: 90, maksAvstandKm: 190, stedstyper: null })).toEqual([
+    expect(aktiveKrav({ minNysnoCm: 0, maksVindMs: 25, maksTemperaturC: 10, maksSkydekkeDagslys: 100, maksAvstandKm: 200, stedstyper: null, nysnoKilde: 'met' })).toEqual([])
+    expect(aktiveKrav({ minNysnoCm: 1, maksVindMs: 24, maksTemperaturC: 9, maksSkydekkeDagslys: 90, maksAvstandKm: 190, stedstyper: null, nysnoKilde: 'met' })).toEqual([
       'minNysnoCm',
       'maksVindMs',
       'maksTemperaturC',
@@ -187,12 +188,12 @@ describe('filtrerSteder on the demo data', () => {
   )
 
   it('keeps the six places with at least 2 cm new snow and at most 0 °C', () => {
-    const treff = filtrerSteder(demo.steder, { minNysnoCm: 2, maksVindMs: null, maksTemperaturC: 0, maksSkydekkeDagslys: null, maksAvstandKm: null, stedstyper: null })
+    const treff = filtrerSteder(demo.steder, { minNysnoCm: 2, maksVindMs: null, maksTemperaturC: 0, maksSkydekkeDagslys: null, maksAvstandKm: null, stedstyper: null, nysnoKilde: 'met' })
     expect(ids(treff).sort()).toEqual(['galdhopiggen', 'gaustatoppen', 'jiehkkevarri', 'oksskolten', 'oppdal-skisenter', 'rondeslottet'])
   })
 
   it('suggests 12 cm for at least 13 cm new snow, which gives Trysil', () => {
-    const filter: FilterParams = { minNysnoCm: 13, maksVindMs: null, maksTemperaturC: null, maksSkydekkeDagslys: null, maksAvstandKm: null, stedstyper: null }
+    const filter: FilterParams = { minNysnoCm: 13, maksVindMs: null, maksTemperaturC: null, maksSkydekkeDagslys: null, maksAvstandKm: null, stedstyper: null, nysnoKilde: 'met' }
     expect(forslagVedNullTreff(demo.steder, filter)).toEqual({ krav: 'minNysnoCm', verdi: 12, antall: 1 })
     expect(ids(filtrerSteder(demo.steder, { ...filter, minNysnoCm: 12 }))).toEqual(['trysil'])
   })
@@ -222,10 +223,25 @@ describe('filtrerSteder on the demo data', () => {
     expect(filtrerSteder(demo.steder, { ...STANDARD_FILTER, stedstyper: ['skisted', 'by'] })).toHaveLength(16)
   })
 
+  it('with at least 5 cm, the forecast gives three places and NVE’s last day two (Story 3.8)', () => {
+    const filter: FilterParams = { ...STANDARD_FILTER, minNysnoCm: 5 }
+    expect(ids(filtrerSteder(demo.steder, filter)).sort()).toEqual(['gaustatoppen', 'jiehkkevarri', 'trysil'])
+    expect(ids(filtrerSteder(demo.steder, { ...filter, nysnoKilde: 'nve' })).sort()).toEqual(['jiehkkevarri', 'oksskolten'])
+    // At «Alle» the source has no effect, so every place is kept.
+    expect(filtrerSteder(demo.steder, { ...STANDARD_FILTER, nysnoKilde: 'nve' })).toHaveLength(demo.steder.length)
+  })
+
+  it('at zero hits from NVE eases new snow along NVE’s values: 20 cm and wind at most 12 suggest 15 cm', () => {
+    const filter: FilterParams = { ...STANDARD_FILTER, minNysnoCm: 20, maksVindMs: 12, nysnoKilde: 'nve' }
+    expect(filtrerSteder(demo.steder, filter)).toEqual([])
+    expect(forslagVedNullTreff(demo.steder, filter)).toEqual({ krav: 'minNysnoCm', verdi: 15, antall: 1 })
+    expect(ids(filtrerSteder(demo.steder, { ...filter, minNysnoCm: 15 }))).toEqual(['oksskolten'])
+  })
+
   it('filters 300 places far below the 2 s of NFR-1', () => {
     const steder = Array.from({ length: 300 }, (_, i) => demo.steder[i % demo.steder.length])
     const start = performance.now()
-    const treff = filtrerSteder(steder, { minNysnoCm: 2, maksVindMs: 10, maksTemperaturC: 0, maksSkydekkeDagslys: null, maksAvstandKm: null, stedstyper: null })
+    const treff = filtrerSteder(steder, { minNysnoCm: 2, maksVindMs: 10, maksTemperaturC: 0, maksSkydekkeDagslys: null, maksAvstandKm: null, stedstyper: null, nysnoKilde: 'met' })
     const ms = performance.now() - start
     expect(treff.length).toBeGreaterThan(0)
     expect(ms).toBeLessThan(200)
@@ -246,9 +262,10 @@ describe('parseFilter and serializeFilter', () => {
     }
   })
 
-  it('round-trips a filter with all six requirements set', () => {
-    // The cloud cover in daylight goes after `temp` (Story 3.5), distance after it (Story 3.6), and the
-    // place types last of all (Story 3.7). URLSearchParams escapes the comma; the router writes it plain.
+  it('round-trips a filter with all six requirements and the new snow source set', () => {
+    // The new snow source follows `nysno` (Story 3.8), the cloud cover in daylight goes after `temp`
+    // (Story 3.5), distance after it (Story 3.6), and the place types last of all (Story 3.7).
+    // URLSearchParams escapes the comma; the router writes it plain.
     const params: FilterParams = {
       minNysnoCm: 5,
       maksVindMs: 10,
@@ -256,8 +273,9 @@ describe('parseFilter and serializeFilter', () => {
       maksSkydekkeDagslys: 60,
       maksAvstandKm: 80,
       stedstyper: ['skisted', 'by'],
+      nysnoKilde: 'nve',
     }
-    expect(query(params)).toBe('nysno=5&vind=10&temp=-2&sky=60&avstand=80&type=skisted%2Cby')
+    expect(query(params)).toBe('nysno=5&nysnokilde=nve&vind=10&temp=-2&sky=60&avstand=80&type=skisted%2Cby')
     expect(parse(query(params))).toEqual(params)
   })
 
@@ -275,10 +293,10 @@ describe('parseFilter and serializeFilter', () => {
   it('writes only active requirements, in panel order, so one filter gives one address', () => {
     expect(serializeFilter(STANDARD_FILTER)).toEqual([])
     expect(
-      serializeFilter({ minNysnoCm: 0, maksVindMs: 25, maksTemperaturC: 10, maksSkydekkeDagslys: 100, maksAvstandKm: 200, stedstyper: null }),
+      serializeFilter({ minNysnoCm: 0, maksVindMs: 25, maksTemperaturC: 10, maksSkydekkeDagslys: 100, maksAvstandKm: 200, stedstyper: null, nysnoKilde: 'met' }),
     ).toEqual([])
     expect(
-      serializeFilter({ maksSkydekkeDagslys: null, maksTemperaturC: 0, maksVindMs: null, minNysnoCm: 2, maksAvstandKm: null, stedstyper: null }),
+      serializeFilter({ maksSkydekkeDagslys: null, maksTemperaturC: 0, maksVindMs: null, minNysnoCm: 2, maksAvstandKm: null, stedstyper: null, nysnoKilde: 'met' }),
     ).toEqual([
       ['nysno', '2'],
       ['temp', '0'],
@@ -295,7 +313,7 @@ describe('parseFilter and serializeFilter', () => {
   })
 
   it('reads the parameters in any order', () => {
-    expect(parse('temp=0&nysno=2')).toEqual({ minNysnoCm: 2, maksVindMs: null, maksTemperaturC: 0, maksSkydekkeDagslys: null, maksAvstandKm: null, stedstyper: null })
+    expect(parse('temp=0&nysno=2')).toEqual({ minNysnoCm: 2, maksVindMs: null, maksTemperaturC: 0, maksSkydekkeDagslys: null, maksAvstandKm: null, stedstyper: null, nysnoKilde: 'met' })
   })
 
   it('turns a value the panel could not have set into «Alle», and keeps the other requirements', () => {
@@ -365,6 +383,46 @@ describe('parseFilter and serializeFilter', () => {
       const params: FilterParams = { ...STANDARD_FILTER, minNysnoCm: 2, stedstyper }
       expect(parse(query(params)), String(stedstyper)).toEqual(params)
     }
+  })
+})
+
+// Story 3.8 (FR-25): the new snow source as `nysnokilde=nve`, right after `nysno`, and never the default.
+describe('the new snow source in the address', () => {
+  const parse = (query: string) => parseFilter(new URLSearchParams(query))
+
+  it('writes `nysnokilde=nve` right after `nysno`, or first when new snow is «Alle», and never `met`', () => {
+    expect(serializeFilter({ ...STANDARD_FILTER, minNysnoCm: 5, maksVindMs: 10, nysnoKilde: 'nve' })).toEqual([
+      ['nysno', '5'],
+      ['nysnokilde', 'nve'],
+      ['vind', '10'],
+    ])
+    expect(serializeFilter({ ...STANDARD_FILTER, maksVindMs: 10, nysnoKilde: 'nve' })).toEqual([
+      ['nysnokilde', 'nve'],
+      ['vind', '10'],
+    ])
+    expect(serializeFilter({ ...STANDARD_FILTER, minNysnoCm: 5 })).toEqual([['nysno', '5']])
+  })
+
+  it('reads `nve` in any position, and anything else, `met` or twice, as the default', () => {
+    expect(parse('nysnokilde=nve&nysno=5')).toEqual({ ...STANDARD_FILTER, minNysnoCm: 5, nysnoKilde: 'nve' })
+    for (const ugyldig of ['nysnokilde=yr', 'nysnokilde=met', 'nysnokilde=', 'nysnokilde=NVE', 'nysnokilde=nve&nysnokilde=nve']) {
+      expect(parse(`${ugyldig}&nysno=5`), ugyldig).toEqual({ ...STANDARD_FILTER, minNysnoCm: 5 })
+    }
+  })
+
+  it('round-trips the source with and without a new snow requirement', () => {
+    for (const params of [
+      { ...STANDARD_FILTER, minNysnoCm: 5, nysnoKilde: 'nve' as const },
+      { ...STANDARD_FILTER, nysnoKilde: 'nve' as const },
+    ]) {
+      expect(parseFilter(new URLSearchParams(serializeFilter(params)))).toEqual(params)
+    }
+  })
+
+  it('counts a source away from the default for «Nullstill», even with new snow at «Alle»', () => {
+    expect(harAktiveKrav({ ...STANDARD_FILTER, nysnoKilde: 'nve' })).toBe(true)
+    // It hides nothing, so it is not a slider requirement.
+    expect(aktiveKrav({ ...STANDARD_FILTER, nysnoKilde: 'nve' })).toEqual([])
   })
 })
 

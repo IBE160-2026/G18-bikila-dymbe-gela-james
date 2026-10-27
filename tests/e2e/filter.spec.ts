@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs'
 import AxeBuilder from '@axe-core/playwright'
 import { expect, test, type Locator, type Page } from '@playwright/test'
 import { zoomStep } from './kartZoom'
@@ -468,9 +469,11 @@ test.describe('the hit count and the suggestion at 1280px', () => {
     await expect(markers(page)).toHaveCount(24)
     await expect(antall(page)).toHaveText('24 treff')
     await expect(live(page)).toHaveText('24 treff')
-    // Only one status region speaks the count; the panel shows it without being live.
+    // Only one status region speaks the count; the panel shows it without being live. (Story 3.8 gives the
+    // panel its own, empty NVE status, which never speaks the count.)
     await expect(page.getByRole('status').filter({ hasText: 'treff' })).toHaveCount(1)
-    await expect(panel(page).getByRole('status')).toHaveCount(0)
+    await expect(panel(page).getByRole('status').filter({ hasText: 'treff' })).toHaveCount(0)
+    await expect(panel(page).getByRole('status')).toHaveText([''])
 
     await nysno(page).fill('12')
     await expect(markers(page)).toHaveCount(1)
@@ -1172,5 +1175,251 @@ test.describe('the place type filter at 375px', () => {
     await filterKnapp(page).click()
     await expect(fjelltopp(page)).toBeChecked()
     await expectNoBlockingViolations(page)
+  })
+})
+
+// Story 3.8 (FR-25, decided 2026-10-27, Sena): the new snow source, two radio buttons right under the new
+// snow slider, in the address as `nysnokilde=nve` right after `nysno`. On the demo data at least 5 cm gives
+// three places from the forecast (Gaustatoppen 10, Jiehkkevárri 6,4 and Trysil 12,6 cm) and two from NVE's
+// last day (Jiehkkevárri 53 and Oksskolten 15 mm). No demo place lacks an NVE value, so the test that needs
+// one serves a copy of the demo file with Jiehkkevárri's value removed.
+const prognose = (page: Page) => page.getByRole('radio', { name: 'Prognose (MET, neste 24 t)' })
+const siste24 = (page: Page) => page.getByRole('radio', { name: 'Siste 24 t (NVE, modellert)' })
+const kildeGruppe = (page: Page) => page.getByRole('group', { name: 'Datagrunnlag for nysnø' })
+const PROGNOSE_TRE = ['gaustatoppen', 'jiehkkevarri', 'trysil']
+const NVE_TO = ['jiehkkevarri', 'oksskolten']
+
+async function expectMarkers(page: Page, ids: string[]): Promise<void> {
+  await expect(markers(page)).toHaveCount(ids.length)
+  for (const id of ids) await expect(page.locator(`path[data-sted-id="${id}"]`)).toHaveCount(1)
+}
+
+type DemoSted = { id: string; nveNysnoSisteDognMm: number | null }
+
+/** Serves the demo file with `utenNve(sted)` places' NVE values removed, so a test can show what null does. */
+async function serveDemoUtenNve(page: Page, utenNve: (sted: DemoSted) => boolean): Promise<void> {
+  const demo = JSON.parse(readFileSync(new URL('../../public/data/demo.json', import.meta.url), 'utf8')) as { steder: DemoSted[] }
+  const steder = demo.steder.map((sted) => (utenNve(sted) ? { ...sted, nveNysnoSisteDognMm: null } : sted))
+  await page.route('**/data/demo.json', (route) => route.fulfill({ json: { ...demo, steder } }))
+}
+
+test.describe('the new snow source at 1280px', () => {
+  test.use({ viewport: DESKTOP })
+
+  test('NVE’s last day replaces the forecast for the new snow requirement, on the map, in the list and in the address', async ({
+    page,
+  }) => {
+    await page.goto('/')
+    await expect(markers(page)).toHaveCount(24)
+    await expect(prognose(page)).toBeChecked()
+    await nysno(page).fill('5')
+    await expectMarkers(page, PROGNOSE_TRE)
+
+    await siste24(page).check()
+    await expect(page).toHaveURL(/\/\?nysno=5&nysnokilde=nve$/)
+    await expectMarkers(page, NVE_TO)
+    await expect(live(page)).toHaveText('2 treff')
+
+    await page.getByRole('link', { name: 'Liste', exact: true }).click()
+    await expect(page).toHaveURL(/\/\?visning=liste&nysno=5&nysnokilde=nve$/)
+    await expect(rows(page)).toHaveCount(2)
+  })
+
+  test('it says plainly, also to a screen reader, that NVE’s values are modelled, not measured snow', async ({ page }) => {
+    await page.goto('/')
+    await expect(kildeGruppe(page)).toBeVisible()
+    await expect(siste24(page)).toBeVisible()
+    await expect(kildeGruppe(page)).toHaveAccessibleDescription(/modellerte verdier fra seNorge, ikke målt snø/)
+    await expect(page.getByText('NVEs nysnø siste døgn er modellerte verdier fra seNorge, ikke målt snø', { exact: false })).toBeVisible()
+  })
+
+  test('a place without an NVE value is hidden only while the new snow requirement is on, never at «Alle»', async ({ page }) => {
+    await serveDemoUtenNve(page, ({ id }) => id === 'jiehkkevarri')
+
+    await page.goto('/?nysnokilde=nve')
+    await expect(siste24(page)).toBeChecked()
+    await expect(markers(page)).toHaveCount(24)
+    await expect(page.locator('path[data-sted-id="jiehkkevarri"]')).toHaveCount(1)
+
+    await nysno(page).fill('5')
+    await expect(page).toHaveURL(/\/\?nysno=5&nysnokilde=nve$/)
+    await expectMarkers(page, ['oksskolten'])
+    await expect(page.locator('path[data-sted-id="jiehkkevarri"]')).toHaveCount(0)
+  })
+
+  test('the source chosen at «Alle» hides nothing, stays in the address and offers «Nullstill»', async ({ page }) => {
+    await page.goto('/')
+    await expect(markers(page)).toHaveCount(24)
+    await siste24(page).check()
+    await expect(page).toHaveURL(/\/\?nysnokilde=nve$/)
+    await expect(markers(page)).toHaveCount(24)
+    await expect(panel(page).getByRole('button', { name: 'Nullstill' })).toBeVisible()
+  })
+
+  test('a shared link restores the source, and an invalid one gives the forecast', async ({ page }) => {
+    await page.goto('/?nysno=5&nysnokilde=nve')
+    await expect(siste24(page)).toBeChecked()
+    await expectMarkers(page, NVE_TO)
+
+    await page.goto('/?nysno=5&nysnokilde=yr')
+    await expect(page).toHaveURL(/\/\?nysno=5$/)
+    await expect(prognose(page)).toBeChecked()
+    await expectMarkers(page, PROGNOSE_TRE)
+    await expect(page.getByRole('alert')).toHaveCount(0)
+  })
+
+  test('zero hits from NVE suggest easing new snow along NVE’s values, and keep the source', async ({ page }) => {
+    await page.goto('/?nysno=20&nysnokilde=nve&vind=12')
+    await expect(markers(page)).toHaveCount(0)
+    await expect(banner(page).getByRole('paragraph')).toHaveText('Ingen treff. Prøv nysnø siste 24 t minst 15 cm.')
+    await brukForslaget(page).click()
+    await expect(page).toHaveURL(/\/\?nysno=15&nysnokilde=nve&vind=12$/)
+    await expectMarkers(page, ['oksskolten'])
+    await expect(siste24(page)).toBeChecked()
+    await expect(nysno(page)).toBeFocused()
+  })
+
+  test('«Nullstill» and a quick pick both set the source back to the forecast', async ({ page }) => {
+    await page.goto('/?nysno=5&nysnokilde=nve')
+    await expectMarkers(page, NVE_TO)
+    await panel(page).getByRole('button', { name: 'Nullstill' }).click()
+    await expect(page).toHaveURL(/\/$/)
+    await expect(prognose(page)).toBeChecked()
+
+    await page.goto('/?nysno=5&nysnokilde=nve')
+    await expectMarkers(page, NVE_TO)
+    await page.getByRole('button', { name: 'Pudderdag' }).click()
+    await expect(page).toHaveURL(/\/\?nysno=10&vind=8&temp=-2$/)
+    await expect(prognose(page)).toBeChecked()
+  })
+
+  test('the new snow source has no serious or critical WCAG 2.1 AA violations, idle or on NVE', async ({ page }) => {
+    await page.goto('/')
+    await expect(markers(page)).toHaveCount(24)
+    await expectNoBlockingViolations(page)
+    await page.goto('/?nysno=5&nysnokilde=nve')
+    await expectMarkers(page, NVE_TO)
+    await expectNoBlockingViolations(page)
+  })
+})
+
+test.describe('the new snow source at 375px', () => {
+  test.use({ viewport: MOBIL })
+
+  test('each choice is at least 44px tall, the chip names the source, and nothing scrolls sideways', async ({ page }) => {
+    for (const width of [320, 375]) {
+      await page.setViewportSize({ width, height: MOBIL.height })
+      await page.goto('/')
+      await expect(markers(page)).toHaveCount(24)
+      await page.addStyleTag({ content: BRED_FONT })
+
+      await filterKnapp(page).click()
+      for (const valg of [prognose(page), siste24(page)]) {
+        const etikett = page.locator('label.filter-valg').filter({ has: valg })
+        await etikett.scrollIntoViewIfNeeded()
+        expect((await box(etikett)).height).toBeGreaterThanOrEqual(44)
+      }
+      await nysno(page).fill('5')
+      await siste24(page).check()
+      await expectNoSidewaysScroll(page)
+      await filterKnapp(page).click()
+      await expect(page.getByRole('list', { name: 'Aktive krav' }).getByRole('listitem')).toHaveText(['Nysnø siste 24 t minst 5 cm'])
+      await expectNoSidewaysScroll(page)
+    }
+  })
+
+  test('the open sheet with the new snow source has no serious or critical WCAG 2.1 AA violations', async ({ page }) => {
+    await page.goto('/?nysno=5&nysnokilde=nve')
+    await expectMarkers(page, NVE_TO)
+    await filterKnapp(page).click()
+    await expect(siste24(page)).toBeChecked()
+    await expectNoBlockingViolations(page)
+  })
+
+  // Review round 1 (Sena 2A): with new snow at «Alle», the source gets its own chip next to «Nullstill».
+  test('the closed sheet shows a chip for the source when new snow is «Alle»', async ({ page }) => {
+    await page.goto('/?nysnokilde=nve')
+    await expect(markers(page)).toHaveCount(24)
+    await expect(page.getByRole('list', { name: 'Aktive krav' }).getByRole('listitem')).toHaveText(['Datagrunnlag siste 24 t (NVE)'])
+    await expect(page.locator('.filter-linje').getByRole('button', { name: 'Nullstill' })).toBeVisible()
+  })
+})
+
+// Review round 1 of Story 3.8 (Sena, 1A and 2A): the list shows the new snow the filter compares with, and
+// «Siste 24 t» says so when NVE is missing from the whole run.
+test.describe('the new snow source in the list and without NVE at 1280px', () => {
+  test.use({ viewport: DESKTOP })
+
+  const rad = (page: Page, id: string) => page.locator(`a.liste-rad[href*="/sted/${id}"]`)
+
+  test('each row shows NVE’s last day with NVE as the source, and the forecast otherwise', async ({ page }) => {
+    await page.goto('/?visning=liste&nysno=5&nysnokilde=nve')
+    await expect(rows(page)).toHaveCount(2)
+    await expect(rad(page, 'oksskolten')).toContainText('Nysnø siste 24 t 15 cm')
+    await expect(rad(page, 'oksskolten')).not.toContainText('2,9 cm')
+
+    await prognose(page).check()
+    await expect(page).toHaveURL(/\/\?visning=liste&nysno=5$/)
+    await expect(rows(page)).toHaveCount(3)
+    await expect(rad(page, 'gaustatoppen')).toContainText('Nysnø 10 cm')
+  })
+
+  test('with NVE missing for every place, «Siste 24 t» says so and keeps the source', async ({ page }) => {
+    await serveDemoUtenNve(page, () => true)
+    const melding = page.getByRole('status').filter({ hasText: 'NVE-data mangler i denne kjøringen' })
+
+    await page.goto('/?nysno=5')
+    await expectMarkers(page, PROGNOSE_TRE)
+    await expect(melding).toHaveCount(0)
+
+    await siste24(page).check()
+    await expect(melding).toHaveText('NVE-data mangler i denne kjøringen. Velg «Prognose» for å filtrere på nysnø.')
+    await expect(siste24(page)).toBeChecked()
+    await expect(markers(page)).toHaveCount(0)
+
+    await prognose(page).check()
+    await expect(melding).toHaveCount(0)
+    await expectMarkers(page, PROGNOSE_TRE)
+  })
+
+  test('the message without NVE has no serious or critical WCAG 2.1 AA violations', async ({ page }) => {
+    await serveDemoUtenNve(page, () => true)
+    await page.goto('/?nysno=5&nysnokilde=nve')
+    await expect(kildeGruppe(page).getByRole('status')).toContainText('NVE-data mangler i denne kjøringen')
+    await expectNoBlockingViolations(page)
+  })
+
+  test('from 768px the zero-hit banner leaves the NVE message to the open panel, so it is said once', async ({ page }) => {
+    await serveDemoUtenNve(page, () => true)
+    await page.goto('/?nysno=5&nysnokilde=nve')
+    await expect(banner(page)).toBeVisible()
+    await expect(banner(page).locator('.ingen-treff-nve')).toBeHidden()
+    await expect(page.getByText('NVE-data mangler i denne kjøringen', { exact: false })).toHaveCount(2)
+    await expect(page.getByText('NVE-data mangler i denne kjøringen', { exact: false }).locator('visible=true')).toHaveCount(1)
+  })
+})
+
+// Review round 2 of Story 3.8 (Sena): below 768px the closed sheet hides the panel, so the zero-hit banner
+// says why NVE gives no hits.
+test.describe('the new snow source without NVE at 375px', () => {
+  test.use({ viewport: MOBIL })
+
+  test('the zero-hit banner says NVE is missing while the sheet is closed', async ({ page }) => {
+    await serveDemoUtenNve(page, () => true)
+    await page.goto('/?nysno=5&nysnokilde=nve')
+    await expect(markers(page)).toHaveCount(0)
+    await expect(siste24(page)).toBeHidden()
+    await expect(banner(page).locator('.ingen-treff-nve')).toHaveText(
+      'NVE-data mangler i denne kjøringen. Velg «Prognose» for å filtrere på nysnø.',
+    )
+    await expectNoSidewaysScroll(page)
+    await expectNoBlockingViolations(page)
+  })
+
+  test('the banner says nothing about NVE when the forecast is the source', async ({ page }) => {
+    await serveDemoUtenNve(page, () => true)
+    await page.goto('/?nysno=13')
+    await expect(banner(page)).toBeVisible()
+    await expect(banner(page).locator('.ingen-treff-nve')).toHaveCount(0)
   })
 })

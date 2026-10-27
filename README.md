@@ -54,6 +54,17 @@ kravet som bør lempes (for eksempel «Prøv nysnø minst 12 cm» eller «Prøv 
 bruke med knappen «Bruk forslaget».
 Forslagene bruker sliderens hele steg, så et sted med 12,6 cm nysnø gir forslaget «minst 12 cm».
 
+Rett under nysnø-slideren velger du datagrunnlag for nysnøkravet: «Prognose (MET, neste 24 t)», som er
+standard, eller «Siste 24 t (NVE, modellert)». Det siste bruker NVEs døgnverdi for nysnø fra seNorge, for det
+sist fullførte døgnet (kl. 06–06 UTC), ikke et glidende 24-timersvindu. Det er
+**modellerte estimater, ikke målt snø**. SnowFinder bruker en forenklet omregning der 1 mm vannekvivalent
+tilsvarer omtrent 1 cm snø, og faktisk snødybde kan variere. Steder uten NVE-verdi skjules bare når
+nysnøkravet er på. Står det på «Alle», har valget ingen effekt, og alle steder vises. Chipen, forslaget ved
+null treff og hver rad i listen viser nysnø fra kilden som gjelder, for eksempel «Nysnø siste 24 t 15 cm».
+Mangler NVE-data for alle steder i siste kjøring, står det under valget, og på mobil også i banneret ved
+null treff. «Nullstill» og hurtigvalgene setter
+kilden tilbake til prognosen.
+
 Avstandskravet spør om posisjonen din først når du selv flytter avstandsslideren bort fra «Alle», aldri
 automatisk ved lasting eller fra en delt lenke. Posisjonen brukes bare i nettleseren til å regne avstand til
 hvert sted; den sendes aldri noe sted og lagres aldri, verken i adressen eller på tjener. Avslår du
@@ -75,7 +86,8 @@ stod på før, så samme chip gir samme resultat hver gang. Chipen vises som val
 du justerer en slider etterpå.
 
 Filteret, visningen og sorteringen ligger i nettadressen, for eksempel
-`/?visning=liste&nysno=5&vind=10&temp=-2&sky=60&avstand=100&type=skisted,by&sortering=navn`. Valgte
+`/?visning=liste&nysno=5&nysnokilde=nve&vind=10&temp=-2&sky=60&avstand=100&type=skisted,by&sortering=navn`.
+`nysnokilde=nve` står rett etter `nysno` og tas bare med når «Siste 24 t» er valgt. Valgte
 stedstyper står alltid i rekkefølgen skisted, fjelltopp, by, uansett rekkefølgen du krysset av i.
 Kopier adressen for å dele søket: lenken åpner samme filter, samme visning og samme treff, men ber ikke om posisjonen din — den spørres
 bare ved at mottakeren selv rører avstandsslideren eller velger sortering etter avstand. Krav som står på
