@@ -75,7 +75,9 @@ function utforskQuery({ visning, filter, sortering }: UtforskRoute): string {
   if (visning === 'liste') params.append('visning', 'liste')
   for (const [navn, verdi] of serializeFilter(filter)) params.append(navn, verdi)
   if (sortering === 'navn') params.append('sortering', 'navn')
-  const query = params.toString()
+  // Story 3.7: the place types are comma-separated (`type=skisted,by`). URLSearchParams escapes the comma,
+  // which a query may carry as it is, so it is written plain to keep a shared link readable.
+  const query = params.toString().replaceAll('%2C', ',')
   return query === '' ? '' : `?${query}`
 }
 

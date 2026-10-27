@@ -86,3 +86,6 @@
 - source_spec: `project-workspace/implementation-artifacts/spec-fix-e2e-axe-animasjon.md`
   summary: Samle axe-kallet i én felles E2E-hjelper som emulerer redusert bevegelse, slik `filter.spec.ts` nå gjør, og bruk den også i `liste`, `sted`, `forklaring` og `tom`.
   evidence: maybe-false, ville vært medium. De andre filene åpner ikke bunn-arket og har ikke feilet i CI, men Leaflets overganger kan gi samme feil. Avgjøres hvis en av dem feiler på kontrast med en blandet farge.
+- source_spec: `project-workspace/implementation-artifacts/spec-3-7-filtrer-pa-stedstype.md`
+  summary: Oppdater adresselisten i AD-12 i arkitekturen (begge kopier, på engelsk, via `bmad-architecture`) med `avstand` (Story 3.6) og `type` (Story 3.7, kommaseparert, i `STED_TYPES`-rekkefølge, etter `avstand`), og oppdater UX-dokumentene via `bmad-ux` med stedstypefilterets tre avkrysningsbokser og hjelpeteksten.
+  evidence: Gjennomgangen av 3.7 (Blind Hunter). `SnowFinder-Arkitektur.md` linje 260 lister bare `visning`, `nysno`, `vind`, `temp`, `sky` og `sortering`, mens koden også skriver `avstand` og `type`.

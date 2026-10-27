@@ -218,6 +218,40 @@
   letter-spacing: var(--typography-meta-letter-spacing);
 }
 
+/* Story 3.7: the place type checkboxes. The whole label is the touch target, 48px tall like the sliders,
+   and the legend reads like a slider's label. */
+.filter-stedstyper {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.filter-stedstyper legend {
+  padding: 0;
+}
+
+.filter-stedstype {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  min-height: var(--spacing-7);
+  cursor: pointer;
+}
+
+.filter-stedstype input {
+  width: var(--spacing-5);
+  height: var(--spacing-5);
+  margin: 0;
+  accent-color: var(--color-accent);
+  cursor: pointer;
+}
+
+.filter-stedstype input:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
 /* DESIGN.md filter-slider: a 4px track, a 24px thumb and an accent fill. The input is 48px tall, so the
    touch target stays above 44px. --fra and --til are set per slider and mark the accent part. */
 .filter-felt input[type='range'] {

@@ -39,15 +39,19 @@ krever nøkkel, men som trenger nett for å vise kartbildene.
 Velg «Liste» under navigasjonen (eller åpne `/?visning=liste`) for å se de samme stedene som en
 liste som virker med tastatur og skjermleser, sortert etter score, avstand eller navn.
 
-Filteret (til venstre på store skjermer, bak knappen «Filter» nederst på mobil) har fem krav:
+Filteret (til venstre på store skjermer, bak knappen «Filter» nederst på mobil) har seks krav:
 minst så mye nysnø, høyst så mye vind, høyst så høy temperatur, høyst så mye skydekke i dagslys
-(0–100 % i steg på 10, «Alle» ved 100) og høyst så langt unna din egen posisjon (0–200 km i steg på 10,
-«Alle» ved 200). Skydekket i dagslys er snittet av timene de neste 24 timene der solen står over horisonten
+(0–100 % i steg på 10, «Alle» ved 100), høyst så langt unna din egen posisjon (0–200 km i steg på 10,
+«Alle» ved 200) og stedstype. Stedstype er tre avkrysningsbokser, «Skisted», «Fjelltopp» og «By»: ingen
+avkrysset betyr «Alle», og kryss av for å se bare de typene. Fjerner du siste kryss, er stedstypekravet av
+igjen.
+Skydekket i dagslys er snittet av timene de neste 24 timene der solen står over horisonten
 på stedet, og stedssiden viser det i raden «Skydekke i dagslys». I mørketiden finnes ingen slike timer, så
 nordlige steder har ingen verdi og skjules når skydekkekravet er på. Kart og liste viser bare stedene som
 oppfyller alle kravene. Et sted som mangler verdien for et aktivt krav, vises ikke. «Nullstill» setter alle
 kravene tilbake til «Alle». Filteret viser hele tiden antall treff, og ved null treff foreslår appen det ene
-kravet som bør lempes (for eksempel «Prøv nysnø minst 12 cm»), som du kan bruke med knappen «Bruk forslaget».
+kravet som bør lempes (for eksempel «Prøv nysnø minst 12 cm» eller «Prøv uten stedstypekravet»), som du kan
+bruke med knappen «Bruk forslaget».
 Forslagene bruker sliderens hele steg, så et sted med 12,6 cm nysnø gir forslaget «minst 12 cm».
 
 Avstandskravet spør om posisjonen din først når du selv flytter avstandsslideren bort fra «Alle», aldri
@@ -66,13 +70,14 @@ tilbake til «Alle», slik at du kan oppdage de beste snøforholdene i hele land
 Øverst i det åpne panelet står to hurtigvalg-chips som fyller hele filteret i ett trykk, uten dialog:
 «Pudderdag» setter nysnø minst 10 cm, vind høyst 8 m/s og temperatur høyst −2 °C (skydekke settes til
 «Alle»), og «Sol etter snøfall» setter nysnø minst 5 cm og skydekke i dagslys høyst 30 % (vind og
-temperatur settes til «Alle»). Et krav en chip ikke nevner, settes alltid til «Alle», uansett hva det
+temperatur settes til «Alle»). Et krav en chip ikke nevner, også avstand og stedstype, settes alltid til «Alle», uansett hva det
 stod på før, så samme chip gir samme resultat hver gang. Chipen vises som valgt når filteret er nøyaktig lik kombinasjonen, og blir det ikke lenger når
 du justerer en slider etterpå.
 
 Filteret, visningen og sorteringen ligger i nettadressen, for eksempel
-`/?visning=liste&nysno=5&vind=10&temp=-2&sky=60&avstand=100&sortering=navn`. Kopier adressen for å dele
-søket: lenken åpner samme filter, samme visning og samme treff, men ber ikke om posisjonen din — den spørres
+`/?visning=liste&nysno=5&vind=10&temp=-2&sky=60&avstand=100&type=skisted,by&sortering=navn`. Valgte
+stedstyper står alltid i rekkefølgen skisted, fjelltopp, by, uansett rekkefølgen du krysset av i.
+Kopier adressen for å dele søket: lenken åpner samme filter, samme visning og samme treff, men ber ikke om posisjonen din — den spørres
 bare ved at mottakeren selv rører avstandsslideren eller velger sortering etter avstand. Krav som står på
 «Alle», og ugyldige verdier tas ikke med. Sortering etter avstand lagres ikke, bare avstandskravets egen
 grense gjør. Tilbake fra en stedsside viser søket slik du forlot det, og en endring i filteret lager ikke et

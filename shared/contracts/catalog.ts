@@ -5,6 +5,7 @@ import { z } from 'zod'
 export const NORWAY_BOUNDS = { minLat: 57.9, maxLat: 71.2, minLon: 4.5, maxLon: 31.2 } as const
 
 export const STED_TYPES = ['skisted', 'fjelltopp', 'by'] as const
+export type StedType = (typeof STED_TYPES)[number]
 export const KILDER = ['osm', 'kartverket'] as const
 
 // Floating-point products like 59.1234 * 1e4 are not exact integers, so allow a tiny tolerance.

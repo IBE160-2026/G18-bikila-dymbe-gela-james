@@ -8,7 +8,7 @@ const LISTE: UtforskRoute = utforsk('liste')
 const FILTRERT: UtforskRoute = {
   name: 'utforsk',
   visning: 'liste',
-  filter: { minNysnoCm: 5, maksVindMs: 10, maksTemperaturC: -2, maksSkydekkeDagslys: null, maksAvstandKm: null },
+  filter: { minNysnoCm: 5, maksVindMs: 10, maksTemperaturC: -2, maksSkydekkeDagslys: null, maksAvstandKm: null, stedstyper: null },
   sortering: 'navn',
 }
 const FORKLARING: Route = { name: 'forklaring' }
@@ -75,7 +75,7 @@ describe.each(BASES)('router with base %s', (base) => {
     // Without visning the filter opens on the map.
     expect(parseRoute(base, base, '?nysno=2&temp=0')).toEqual({
       ...KART,
-      filter: { minNysnoCm: 2, maksVindMs: null, maksTemperaturC: 0, maksSkydekkeDagslys: null, maksAvstandKm: null },
+      filter: { minNysnoCm: 2, maksVindMs: null, maksTemperaturC: 0, maksSkydekkeDagslys: null, maksAvstandKm: null, stedstyper: null },
     })
   })
 
@@ -125,7 +125,7 @@ describe.each(BASES)('router with base %s', (base) => {
   it('writes the query in a fixed order and leaves out every default', () => {
     expect(href(FILTRERT, base)).toBe(`${base}?visning=liste&nysno=5&vind=10&temp=-2&sortering=navn`)
     expect(
-      href({ ...KART, filter: { minNysnoCm: 0, maksVindMs: 25, maksTemperaturC: 0, maksSkydekkeDagslys: null, maksAvstandKm: null } }, base),
+      href({ ...KART, filter: { minNysnoCm: 0, maksVindMs: 25, maksTemperaturC: 0, maksSkydekkeDagslys: null, maksAvstandKm: null, stedstyper: null } }, base),
     ).toBe(`${base}?temp=0`)
     expect(href({ ...KART, sortering: 'navn' }, base)).toBe(`${base}?sortering=navn`)
   })
@@ -145,6 +145,15 @@ describe.each(BASES)('router with base %s', (base) => {
     expect(parseRoute(base, base, '?visning=liste&nysno=5&vind=10&temp=-2&avstand=100&sortering=navn')).toEqual(avstand)
     expect(parseRoute(base, base, '?avstand=105')).toEqual(KART)
     for (const nokkel of ['lat', 'lon', 'posisjon']) expect(href(avstand, base)).not.toContain(nokkel)
+  })
+
+  // Story 3.7 (AD-12, FR-24): the place types after `avstand` and before `sortering`, with a plain comma.
+  it('carries the place types as `type`, after `avstand`, with the comma unescaped', () => {
+    const typer: UtforskRoute = { ...FILTRERT, filter: { ...FILTRERT.filter, maksAvstandKm: 100, stedstyper: ['skisted', 'by'] } }
+    expect(href(typer, base)).toBe(`${base}?visning=liste&nysno=5&vind=10&temp=-2&avstand=100&type=skisted,by&sortering=navn`)
+    expect(parseRoute(base, base, '?visning=liste&nysno=5&vind=10&temp=-2&avstand=100&type=skisted,by&sortering=navn')).toEqual(typer)
+    expect(href(sted('gaustatoppen', typer), base)).toContain('&type=skisted,by&')
+    expect(parseRoute(base, base, '?type=innsjo')).toEqual(KART)
   })
 })
 

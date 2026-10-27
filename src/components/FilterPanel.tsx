@@ -1,9 +1,12 @@
 import { useState, type CSSProperties, type ReactNode } from 'react'
+import { STED_TYPES, type StedType } from '../../shared/contracts/catalog'
 import {
   aktiveKrav,
   FILTER_GRENSER,
   FILTER_KRAV,
+  harAktiveKrav,
   HURTIGVALG,
+  normaliserStedstyper,
   STANDARD_FILTER,
   type FilterKrav,
   type FilterParams,
@@ -14,12 +17,19 @@ import { tall } from '../lib/format'
 // Story 3.1 (FR-20): new snow, wind and temperature, and from Story 3.5 (FR-22) cloud cover in daylight,
 // combined with AND. A fixed left side panel from 768px, a bottom sheet below. The sheet opens with a
 // button rather than a drag (decided 2026-10-22), so it works with the keyboard and a screen reader.
-// Story 3.3 (FR-14, UX-DR4) shows the hit count in the panel and on the closed sheet.
+// Story 3.3 (FR-14, UX-DR4) shows the hit count in the panel and on the closed sheet. Story 3.7 (FR-24)
+// adds the place type as three checkboxes after the sliders.
 
 export const ALLE = 'Alle'
 export const KNAPP_ID = 'filter-knapp'
 const INNHOLD_ID = 'filter-innhold'
 const feltId = (krav: FilterKrav) => `filter-${krav}`
+const stedstypeId = (type: StedType) => `filter-stedstyper-${type}`
+
+/** Story 3.7: the checkbox labels; the chip uses them in lower case, the address the type itself. */
+const STEDSTYPE_NAVN: Record<StedType, string> = { skisted: 'Skisted', fjelltopp: 'Fjelltopp', by: 'By' }
+const STEDSTYPE_HINT_ID = 'filter-stedstyper-hint'
+const STEDSTYPE_HINT = 'Ingen avkrysset viser alle stedstyper.'
 
 /**
  * Story 3.5: why places vanish when the sun requirement is on. A place without daylight hours in the
@@ -51,6 +61,11 @@ export function kravTekst(krav: FilterKrav, verdi: number | null): string {
   return `${KRAV_TEKST[krav].navn} ${verdiTekst(krav, verdi)}`
 }
 
+/** Story 3.7: the place type chip, «Stedstype skisted, by». */
+export function stedstypeTekst(stedstyper: readonly StedType[]): string {
+  return `Stedstype ${stedstyper.map((type) => STEDSTYPE_NAVN[type].toLowerCase()).join(', ')}`
+}
+
 /** Story 3.4 (FR-15): a quick pick's description, in the same words as the active-requirement chips. */
 function hurtigvalgBeskrivelse(verdier: FilterParams): string {
   return aktiveKrav(verdier)
@@ -60,7 +75,10 @@ function hurtigvalgBeskrivelse(verdier: FilterParams): string {
 
 /** Whether the filter is exactly this quick pick's combination, so its chip can show up as pressed. */
 function erHurtigvalgAktiv(params: FilterParams, verdier: FilterParams): boolean {
-  return FILTER_KRAV.every((krav) => params[krav] === verdier[krav])
+  return (
+    FILTER_KRAV.every((krav) => params[krav] === verdier[krav]) &&
+    String(params.stedstyper) === String(verdier.stedstyper)
+  )
 }
 
 /**
@@ -105,6 +123,8 @@ export function antallTekst(antall: number): string {
 /** What to try at zero hits, in the panel's words: «Prøv vind høyst 8 m/s.», «Prøv uten vindkravet.» */
 export function forslagTekst(forslag: Forslag | null): string {
   if (!forslag) return 'Det hjelper ikke å endre bare ett krav. Prøv «Nullstill».'
+  // Story 3.7 (decided 2026-10-27, Sena): the place type is only ever eased all the way to «Alle».
+  if (forslag.krav === 'stedstyper') return 'Prøv uten stedstypekravet.'
   const { krav, verdi } = forslag
   if (verdi === null) return `Prøv uten ${KRAV_TEKST[krav].kravet}.`
   return `Prøv ${KRAV_TEKST[krav].navn.toLowerCase()} ${verdiTekst(krav, verdi)}.`
@@ -112,10 +132,10 @@ export function forslagTekst(forslag: Forslag | null): string {
 
 /**
  * After «Nullstill» or «Bruk forslaget» the button is gone, so focus moves to the slider of the requirement
- * (the first one by default), or to «Filter» when the sheet is closed.
+ * (the first one by default), the first place type checkbox, or to «Filter» when the sheet is closed.
  */
-export function fokuserFilteret(krav: FilterKrav = FILTER_KRAV[0]): void {
-  const felt = document.getElementById(feltId(krav))
+export function fokuserFilteret(krav: FilterKrav | 'stedstyper' = FILTER_KRAV[0]): void {
+  const felt = document.getElementById(krav === 'stedstyper' ? stedstypeId(STED_TYPES[0]) : feltId(krav))
   const mal = felt && felt.offsetParent !== null ? felt : document.getElementById(KNAPP_ID)
   mal?.focus()
 }
@@ -176,6 +196,38 @@ function Filterfelt({ krav, verdi, onEndre, hint, hintErStatus, ekstraKnapp }: F
   )
 }
 
+/**
+ * Story 3.7 (FR-24, decided 2026-10-27, Sena): nothing ticked is «Alle», ticking narrows to those types,
+ * and unticking the last one gives «Alle» again, never zero hits. Ordinary checkboxes, so a screen reader
+ * gets the group name from the legend and each state from the box itself.
+ */
+function Stedstyper({ params, onEndre }: Pick<Props, 'params' | 'onEndre'>) {
+  const valgte = params.stedstyper ?? []
+  return (
+    // The note says what the sliders' «Alle» says, so a screen reader also hears that nothing ticked hides nothing.
+    <fieldset className="filter-felt filter-stedstyper" aria-describedby={STEDSTYPE_HINT_ID}>
+      <legend>Stedstype</legend>
+      <p id={STEDSTYPE_HINT_ID} className="filter-hint">
+        {STEDSTYPE_HINT}
+      </p>
+      {STED_TYPES.map((type) => (
+        <label key={type} className="filter-stedstype">
+          <input
+            id={stedstypeId(type)}
+            type="checkbox"
+            checked={valgte.includes(type)}
+            onChange={(event) => {
+              const typer = event.target.checked ? [...valgte, type] : valgte.filter((valgt) => valgt !== type)
+              onEndre({ ...params, stedstyper: normaliserStedstyper(typer) })
+            }}
+          />
+          {STEDSTYPE_NAVN[type]}
+        </label>
+      ))}
+    </fieldset>
+  )
+}
+
 type Props = {
   params: FilterParams
   onEndre: (params: FilterParams) => void
@@ -212,6 +264,7 @@ export function Nullstill({ onEndre }: Pick<Props, 'onEndre'>) {
 export default function FilterPanel({ params, onEndre, antall, posisjonKjent, posisjonStatus, beOmPosisjon }: Props) {
   const [apen, setApen] = useState(false)
   const aktive = aktiveKrav(params)
+  const harAktive = harAktiveKrav(params)
 
   return (
     <aside className={`filter kort${apen ? ' filter--apen' : ''}`} aria-label="Filter">
@@ -228,7 +281,7 @@ export default function FilterPanel({ params, onEndre, antall, posisjonKjent, po
           Filter
         </button>
         <Antall antall={antall} />
-        {!apen && aktive.length > 0 && (
+        {!apen && harAktive && (
           <>
             <ul className="filter-chips" aria-label="Aktive krav">
               {aktive.map((krav) => (
@@ -236,6 +289,7 @@ export default function FilterPanel({ params, onEndre, antall, posisjonKjent, po
                   {kravTekst(krav, params[krav])}
                 </li>
               ))}
+              {params.stedstyper && <li className="filter-chip">{stedstypeTekst(params.stedstyper)}</li>}
             </ul>
             <Nullstill onEndre={onEndre} />
           </>
@@ -278,7 +332,8 @@ export default function FilterPanel({ params, onEndre, antall, posisjonKjent, po
             }}
           />
         ))}
-        {aktive.length > 0 && <Nullstill onEndre={onEndre} />}
+        <Stedstyper params={params} onEndre={onEndre} />
+        {harAktive && <Nullstill onEndre={onEndre} />}
       </div>
     </aside>
   )
