@@ -3,6 +3,12 @@
 Formål: oppsummere prosjektet ved levering — hva ble oppnådd, hva ble lært, og hvordan det
 presenteres/leveres.
 
+## Frister
+
+Sluttrapport og presentasjon klare 2026-11-23 (forslag), levering og demo 2026-11-25 (vedtatt).
+Se [milepælene](../2-Planleggingsfasen/milepæler.md) og
+[tidslinjen](../3-Gjennomføringsfasen/fremdriftsplan.md#tidslinje).
+
 ## Innhold (legges til etter hvert)
 
 - **Sluttrapport** — sammenstilling av mål, resultat og avvik mot produktbrief og
