@@ -17,7 +17,7 @@ flowchart TD
     start(["Start 2026-10-28"]) --> fork1{{"Tre spor parallelt"}}
 
     %% Spor A: storyene som gjenstår
-    fork1 --> a1["Velg neste story i sprintplan.md:<br/>3.8, deretter 1.6 og 4.2 parallelt"]
+    fork1 --> a1["Velg neste story i sprintplan.md:<br/>1.6 og 4.2 parallelt<br/>(1.11 venter på faglærer)"]
     a1 --> a2["Bygg med bmad-build på greinen<br/>story/nr-kort-navn"]
     a2 --> a3["Kjør lint, typecheck, test, build<br/>og test:e2e lokalt"]
     a3 --> a4["Sett storyen til done i sprint-status.yaml,<br/>oppdater fremdriftsplan og tidslinje,<br/>logg KI-økten i ai-log"]
@@ -32,7 +32,7 @@ flowchart TD
     a10 -- "Ja" --> a11["Merge og slett greinen"]
     a11 --> a12{"Flere v1-stories igjen?"}
     a12 -- "Ja" --> a1
-    a12 -- "Nei" --> m4["M4 filter ferdig, forslag 2026-11-01<br/>M5 kodefrys, forslag 2026-11-11"]
+    a12 -- "Nei" --> m4["M5 kodefrys<br/>forslag 2026-11-11"]
 
     %% Spor B: Story 1.11
     fork1 --> b1{"Har faglærer satt GitHub Pages<br/>til GitHub Actions?"}
@@ -140,8 +140,8 @@ flowchart LR
     classDef ferdig fill:#d7f0dd,stroke:#2e7d32,color:#1b1b1b
     classDef gjenstar fill:#fff1c7,stroke:#b26a00,color:#1b1b1b
     classDef ikkev1 fill:#ececec,stroke:#9e9e9e,color:#555555,stroke-dasharray:4 3
-    class s1_1,s1_2,s1_3,s1_4,s1_5,s1_7,s1_8,s1_9,s1_10,s2_1,s2_2,s2_3,s2_4,s3_1,s3_2,s3_3,s3_4,s3_5,s3_6,s3_7 ferdig
-    class s1_6,s1_11,s3_8,s4_2 gjenstar
+    class s1_1,s1_2,s1_3,s1_4,s1_5,s1_7,s1_8,s1_9,s1_10,s2_1,s2_2,s2_3,s2_4,s3_1,s3_2,s3_3,s3_4,s3_5,s3_6,s3_7,s3_8 ferdig
+    class s1_6,s1_11,s4_2 gjenstar
     class s4_1,s4_3,s4_4,s5_1,s5_2 ikkev1
 ```
 
@@ -175,7 +175,7 @@ flowchart LR
 | 3.4 | Bruk hurtigvalg for vanlige kombinasjoner | Bør ha | 3.5 | 3 | Kelly | 2026-10-25 (PR #57) |
 | 3.6 | Filtrer på avstand | Bør ha | 3.1 | 3 | Kelly | 2026-10-27 (PR #63) |
 | 3.7 | Filtrer på stedstype | Bør ha | 3.1 | 3 | Sena | 2026-10-28 (PR #66) |
-| 3.8 | Filtrer på nysnø siste 24 timer | Bør ha | 3.1, 1.3 | 3 | Sena | 2026-11-01, forslag (bygget, venter på PR og review) |
+| 3.8 | Filtrer på nysnø siste 24 timer | Bør ha | 3.1, 1.3 | 3 | Sena | 2026-10-28 (PR #71) |
 | – | Retrospektiv for Epic 3 (valgfri) | – | 3.1–3.8 | 4 | Fordeles på møtet | 2026-11-03, forslag |
 | **Epic 4** | **Få mer ut av et sted jeg følger med på** | | | | | |
 | 4.2 | Se beste skivindu på stedssiden | Bør ha | 1.9 | 4 | Fordeles på møtet | 2026-11-11, forslag |
@@ -196,7 +196,7 @@ flowchart LR
 | P4 | Forenkling etter faglærers tilbakemelding (steg 8b og 8d) | Planlegging | P3 | Joseph og Aksel | 2026-10-07 (F2, PR #8–#21) |
 | P5 | Revisjon og rettinger i dataprogrammet | Gjennomføring | Epic 1 og 2 | Aksel | 2026-10-22 (PR #43–#47) |
 | P6 | Wireframes, kursets skjermkrav og brukertestplan (steg 8c, `bmad-ux`) | Planlegging | P4 | Fordeles på møtet | 2026-11-04, forslag (F3) |
-| P7 | Kodefrys: alle v1-stories merget | Gjennomføring | 1.6, 1.11, 3.8, 4.2 | Hele gruppa | 2026-11-11, forslag (M1 og M5) |
+| P7 | Kodefrys: alle v1-stories merget | Gjennomføring | 1.6, 1.11, 4.2 | Hele gruppa | 2026-11-11, forslag (M1 og M5) |
 | P8 | Brukertest med minst fem personer | Gjennomføring | P6, P7 | Fordeles på møtet | 2026-11-16, forslag (F4) |
 | P9 | Rettinger etter brukertesten (bare kritiske funn) | Gjennomføring | P8 | Fordeles etter testen | 2026-11-20, forslag |
 | P10 | Sluttrapport, retrospektiv og presentasjon | Avslutning | P8 | Hele gruppa | 2026-11-23, forslag (F5) |

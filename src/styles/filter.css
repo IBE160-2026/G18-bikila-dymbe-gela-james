@@ -218,20 +218,28 @@
   letter-spacing: var(--typography-meta-letter-spacing);
 }
 
-/* Story 3.7: the place type checkboxes. The whole label is the touch target, 48px tall like the sliders,
-   and the legend reads like a slider's label. */
-.filter-stedstyper {
+/* Story 3.8: the always-present status under the new snow source takes no room while it is empty. */
+.filter-hint:empty {
+  margin: 0;
+}
+
+/* Story 3.7: the place type checkboxes, and from Story 3.8 the new snow source radio buttons. The whole
+   label is the touch target, 48px tall like the sliders, and the legend reads like a slider's label. */
+.filter-stedstyper,
+.filter-nysnokilde {
   min-width: 0;
   margin: 0;
   padding: 0;
   border: 0;
 }
 
-.filter-stedstyper legend {
+.filter-stedstyper legend,
+.filter-nysnokilde legend {
   padding: 0;
 }
 
-.filter-stedstype {
+.filter-stedstype,
+.filter-valg {
   display: flex;
   align-items: center;
   gap: var(--spacing-2);
@@ -239,7 +247,9 @@
   cursor: pointer;
 }
 
-.filter-stedstype input {
+.filter-stedstype input,
+.filter-valg input {
+  flex: none;
   width: var(--spacing-5);
   height: var(--spacing-5);
   margin: 0;
@@ -247,7 +257,8 @@
   cursor: pointer;
 }
 
-.filter-stedstype input:focus-visible {
+.filter-stedstype input:focus-visible,
+.filter-valg input:focus-visible {
   outline: 2px solid var(--color-accent);
   outline-offset: 2px;
 }
@@ -331,6 +342,14 @@
   margin: 0;
 }
 
+/* Story 3.8: why NVE gives zero hits, on its own line at the bottom of the banner. Below 768px only: from
+   there the panel is always open and says it already, so the banner does not repeat it. */
+.ingen-treff .ingen-treff-nve {
+  flex-basis: 100%;
+  order: 1;
+  color: var(--color-ink-secondary);
+}
+
 .ingen-treff-knapper {
   display: flex;
   flex-wrap: wrap;
@@ -355,6 +374,10 @@
   }
 
   .filter-linje {
+    display: none;
+  }
+
+  .ingen-treff .ingen-treff-nve {
     display: none;
   }
 

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import type { Sted } from '../../shared/contracts/published'
-import { filtrerSteder, forslagVedNullTreff, type FilterParams } from '../../shared/filter'
-import FilterPanel, { antallTekst, fokuserFilteret, forslagTekst, Nullstill } from '../components/FilterPanel'
+import { aktiveKrav, filtrerSteder, forslagVedNullTreff, type FilterParams } from '../../shared/filter'
+import FilterPanel, { antallTekst, fokuserFilteret, forslagTekst, Nullstill, NVE_MANGLER } from '../components/FilterPanel'
 import KartVisning from '../components/KartVisning'
 import Lenke from '../components/Lenke'
 import ListeVisning from '../components/ListeVisning'
@@ -77,7 +77,14 @@ export default function Utforsk({ steder, utdatert, route }: Props) {
     () => (treff.length === 0 ? forslagVedNullTreff(steder, filter, avstandPosisjon ?? undefined) : null),
     [treff, steder, filter, avstandPosisjon],
   )
-  const nullTreff = treff.length === 0 ? `${antallTekst(0)}. ${forslagTekst(forslag)}` : null
+  const nullTreff = treff.length === 0 ? `${antallTekst(0)}. ${forslagTekst(forslag, filter.nysnoKilde)}` : null
+  // Story 3.8 (review round 1, Sena 2A): over all fresh places, not the hits, since NVE missing for the
+  // whole run is what the message explains. Memoised, as it walks every place.
+  const nveMangler = useMemo(() => steder.every((sted) => sted.nveNysnoSisteDognMm === null), [steder])
+  // Review round 2 (Sena): the zero hits come from NVE missing only while new snow is on and NVE is the
+  // source, so only then does the banner say so. Shown below 768px, where the closed sheet hides the panel's
+  // own message; from 768px the panel is always open and says it already.
+  const nveForklaring = nullTreff !== null && filter.nysnoKilde === 'nve' && aktiveKrav(filter).includes('minNysnoCm') && nveMangler
   // The suggestion goes the same way as a slider change, so the address is replaced as for any other step.
   const brukForslaget = () => {
     if (!forslag) return
@@ -116,6 +123,7 @@ export default function Utforsk({ steder, utdatert, route }: Props) {
               posisjonKjent={avstandPosisjon !== null}
               posisjonStatus={avstandStatus}
               beOmPosisjon={beOmAvstandPosisjon}
+              nveMangler={nveMangler}
             />
             <div className="utforsk-resultat">
               {/* Story 3.3 (FR-14, UX-DR4): the one live region for the hit count and the suggestion. It is
@@ -128,6 +136,7 @@ export default function Utforsk({ steder, utdatert, route }: Props) {
               {nullTreff && (
                 <div className="ingen-treff kort">
                   <p>{nullTreff}</p>
+                  {nveForklaring && <p className="ingen-treff-nve">{NVE_MANGLER}</p>}
                   <div className="ingen-treff-knapper">
                     {forslag && (
                       <button type="button" className="filter-forslag" onClick={brukForslaget}>

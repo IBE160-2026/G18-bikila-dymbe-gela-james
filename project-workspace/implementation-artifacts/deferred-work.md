@@ -89,3 +89,6 @@
 - source_spec: `project-workspace/implementation-artifacts/spec-3-7-filtrer-pa-stedstype.md`
   summary: Oppdater adresselisten i AD-12 i arkitekturen (begge kopier, på engelsk, via `bmad-architecture`) med `avstand` (Story 3.6) og `type` (Story 3.7, kommaseparert, i `STED_TYPES`-rekkefølge, etter `avstand`), og oppdater UX-dokumentene via `bmad-ux` med stedstypefilterets tre avkrysningsbokser og hjelpeteksten.
   evidence: Gjennomgangen av 3.7 (Blind Hunter). `SnowFinder-Arkitektur.md` linje 260 lister bare `visning`, `nysno`, `vind`, `temp`, `sky` og `sortering`, mens koden også skriver `avstand` og `type`.
+- source_spec: `project-workspace/implementation-artifacts/spec-3-8-filtrer-pa-nysno-siste-24-timer.md`
+  summary: Ta med `nysnokilde=nve` (Story 3.8, rett etter `nysno`) i adresselisten i AD-12 sammen med `avstand` og `type` fra oppføringen for 3.7, og beskriv valget av datagrunnlag for nysnø, hjelpeteksten om modellerte estimater og meldingen når NVE-data mangler, i UX-dokumentene (`bmad-architecture`, `bmad-ux`).
+  evidence: Story 3.8 la til parameteret og grensesnittet. `SnowFinder-Arkitektur.md` og `SnowFinder-EXPERIENCE.md` nevner dem ikke.

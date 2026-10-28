@@ -8,7 +8,7 @@ const LISTE: UtforskRoute = utforsk('liste')
 const FILTRERT: UtforskRoute = {
   name: 'utforsk',
   visning: 'liste',
-  filter: { minNysnoCm: 5, maksVindMs: 10, maksTemperaturC: -2, maksSkydekkeDagslys: null, maksAvstandKm: null, stedstyper: null },
+  filter: { minNysnoCm: 5, maksVindMs: 10, maksTemperaturC: -2, maksSkydekkeDagslys: null, maksAvstandKm: null, stedstyper: null, nysnoKilde: 'met' },
   sortering: 'navn',
 }
 const FORKLARING: Route = { name: 'forklaring' }
@@ -75,7 +75,7 @@ describe.each(BASES)('router with base %s', (base) => {
     // Without visning the filter opens on the map.
     expect(parseRoute(base, base, '?nysno=2&temp=0')).toEqual({
       ...KART,
-      filter: { minNysnoCm: 2, maksVindMs: null, maksTemperaturC: 0, maksSkydekkeDagslys: null, maksAvstandKm: null, stedstyper: null },
+      filter: { minNysnoCm: 2, maksVindMs: null, maksTemperaturC: 0, maksSkydekkeDagslys: null, maksAvstandKm: null, stedstyper: null, nysnoKilde: 'met' },
     })
   })
 
@@ -125,7 +125,7 @@ describe.each(BASES)('router with base %s', (base) => {
   it('writes the query in a fixed order and leaves out every default', () => {
     expect(href(FILTRERT, base)).toBe(`${base}?visning=liste&nysno=5&vind=10&temp=-2&sortering=navn`)
     expect(
-      href({ ...KART, filter: { minNysnoCm: 0, maksVindMs: 25, maksTemperaturC: 0, maksSkydekkeDagslys: null, maksAvstandKm: null, stedstyper: null } }, base),
+      href({ ...KART, filter: { minNysnoCm: 0, maksVindMs: 25, maksTemperaturC: 0, maksSkydekkeDagslys: null, maksAvstandKm: null, stedstyper: null, nysnoKilde: 'met' } }, base),
     ).toBe(`${base}?temp=0`)
     expect(href({ ...KART, sortering: 'navn' }, base)).toBe(`${base}?sortering=navn`)
   })
@@ -154,6 +154,16 @@ describe.each(BASES)('router with base %s', (base) => {
     expect(parseRoute(base, base, '?visning=liste&nysno=5&vind=10&temp=-2&avstand=100&type=skisted,by&sortering=navn')).toEqual(typer)
     expect(href(sted('gaustatoppen', typer), base)).toContain('&type=skisted,by&')
     expect(parseRoute(base, base, '?type=innsjo')).toEqual(KART)
+  })
+
+  // Story 3.8 (AD-12, FR-25): the new snow source right after `nysno`, written only when it is NVE.
+  it('carries the new snow source as `nysnokilde=nve` right after `nysno`, and leaves out the forecast', () => {
+    const nve: UtforskRoute = { ...FILTRERT, filter: { ...FILTRERT.filter, nysnoKilde: 'nve' } }
+    expect(href(nve, base)).toBe(`${base}?visning=liste&nysno=5&nysnokilde=nve&vind=10&temp=-2&sortering=navn`)
+    expect(parseRoute(base, base, '?visning=liste&nysno=5&nysnokilde=nve&vind=10&temp=-2&sortering=navn')).toEqual(nve)
+    expect(href(sted('gaustatoppen', nve), base)).toContain('?visning=liste&nysno=5&nysnokilde=nve&')
+    expect(href(FILTRERT, base)).not.toContain('nysnokilde')
+    expect(parseRoute(base, base, '?nysnokilde=yr')).toEqual(KART)
   })
 })
 

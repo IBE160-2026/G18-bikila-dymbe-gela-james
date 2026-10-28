@@ -2,6 +2,7 @@ import { avstandKm, type Posisjon } from './avstand'
 import { rundTilEnDesimal } from './avrunding'
 import { STED_TYPES, type StedType } from './contracts/catalog'
 import type { Sted } from './contracts/published'
+import { mmToCm } from './snowscore'
 
 // AD-6: the only filter logic (FR-20). Map and list both show filtrerSteder's result; the golden table in
 // tests/golden/filter.json locks the rules. Pure, so it runs the same in the browser and in Vitest.
@@ -27,13 +28,23 @@ export interface FilterParams {
    * «Alle»; otherwise never empty, and always in STED_TYPES order so the same choice gives the same address.
    */
   stedstyper: readonly StedType[] | null
+  /**
+   * Story 3.8 (FR-25, decided 2026-10-27, Sena): which value the new snow requirement reads. `met` is the
+   * forecast for the next 24 hours (`nysnoCm`), the default; `nve` is NVE seNorge's modelled new snow for
+   * the last day (`nveNysnoSisteDognMm`, 1 mm ≈ 1 cm). Without an active new snow requirement it has no effect.
+   */
+  nysnoKilde: NysnoKilde
 }
 
+/** Story 3.8: the sources of the new snow requirement; the first is the default. */
+export const NYSNO_KILDER = ['met', 'nve'] as const
+export type NysnoKilde = (typeof NYSNO_KILDER)[number]
+
 /**
- * The requirements that are a limit along a slider. The place type is a set, not a scale, so it has its
- * own field and stays out of FILTER_GRENSER and the slider walk.
+ * The requirements that are a limit along a slider. The place type is a set and the new snow source a
+ * choice, not scales, so each has its own field and stays out of FILTER_GRENSER and the slider walk.
  */
-export type FilterKrav = Exclude<keyof FilterParams, 'stedstyper'>
+export type FilterKrav = Exclude<keyof FilterParams, 'stedstyper' | 'nysnoKilde'>
 
 export interface KravGrense {
   min: number
@@ -86,6 +97,7 @@ export const HURTIGVALG: readonly Hurtigvalg[] = [
       maksSkydekkeDagslys: null,
       maksAvstandKm: null,
       stedstyper: null,
+      nysnoKilde: 'met',
     },
   },
   {
@@ -97,6 +109,7 @@ export const HURTIGVALG: readonly Hurtigvalg[] = [
       maksSkydekkeDagslys: 30,
       maksAvstandKm: null,
       stedstyper: null,
+      nysnoKilde: 'met',
     },
   },
 ]
@@ -108,10 +121,14 @@ export const STANDARD_FILTER: FilterParams = {
   maksSkydekkeDagslys: null,
   maksAvstandKm: null,
   stedstyper: null,
+  nysnoKilde: 'met',
 }
 
 /** The fields filtrerSteder reads, so the golden table can use small hand-written places. */
-export type Filtrerbar = Pick<Sted, 'nysnoCm' | 'vindMaks' | 'temperatur' | 'skydekkeDagslys' | 'lat' | 'lon' | 'type'>
+export type Filtrerbar = Pick<
+  Sted,
+  'nysnoCm' | 'nveNysnoSisteDognMm' | 'vindMaks' | 'temperatur' | 'skydekkeDagslys' | 'lat' | 'lon' | 'type'
+>
 
 /**
  * The place's value each requirement is compared with. Distance (Story 3.6) depends on the user's
@@ -138,9 +155,20 @@ export function aktiveKrav(params: FilterParams): FilterKrav[] {
   return aktiveGrenser(params).map(([krav]) => krav)
 }
 
-/** Whether any requirement is on, slider or place type: what «Nullstill» and the chips are shown for. */
+/**
+ * Whether anything is away from its default, slider, place type or new snow source: what «Nullstill» is
+ * shown for. The source counts even while new snow is «Alle» (decided 2026-10-27, Sena), so it can be reset.
+ */
 export function harAktiveKrav(params: FilterParams): boolean {
-  return aktiveGrenser(params).length > 0 || params.stedstyper !== null
+  return aktiveGrenser(params).length > 0 || params.stedstyper !== null || params.nysnoKilde === 'nve'
+}
+
+/** Story 3.8: the new snow value the requirement reads, from the chosen source, in cm. */
+function nysnoVerdi(sted: Filtrerbar, kilde: NysnoKilde): number | null {
+  // Anything but `nve` reads the forecast, the default, so a filter without a source never hides a place
+  // for lacking an NVE value.
+  if (kilde !== 'nve') return sted.nysnoCm
+  return sted.nveNysnoSisteDognMm === null ? null : mmToCm(sted.nveNysnoSisteDognMm)
 }
 
 /** Story 3.7: the ticked types in STED_TYPES order, without repeats; nothing ticked is «Alle» (`null`). */
@@ -149,13 +177,15 @@ export function normaliserStedstyper(typer: readonly StedType[]): readonly StedT
   return valgte.length > 0 ? valgte : null
 }
 
-function oppfyller(sted: Filtrerbar, krav: FilterKrav, grense: number, posisjon?: Posisjon): boolean {
+function oppfyller(sted: Filtrerbar, krav: FilterKrav, grense: number, kilde: NysnoKilde, posisjon?: Posisjon): boolean {
   if (krav === 'maksAvstandKm') {
     // Story 3.6 (FR-23, NFR-Privacy): without a known position the requirement has no effect, so it
     // never hides a place, unlike a place with a missing value for one of the other requirements.
     return !posisjon || avstandKm(posisjon, sted) <= grense
   }
-  const verdi = sted[FELT[krav]]
+  // Only reached for an active requirement, so a place without an NVE value is hidden only while the new
+  // snow requirement is on, never at «Alle».
+  const verdi = krav === 'minNysnoCm' ? nysnoVerdi(sted, kilde) : sted[FELT[krav]]
   // A missing value cannot be shown to meet the requirement, so the place is left out.
   if (verdi === null) return false
   // Compared as the app shows it (src/lib/format.ts `tall` rounds the same way).
@@ -170,11 +200,11 @@ function oppfyller(sted: Filtrerbar, krav: FilterKrav, grense: number, posisjon?
  */
 export function filtrerSteder<T extends Filtrerbar>(steder: readonly T[], params: FilterParams, posisjon?: Posisjon): T[] {
   const aktive = aktiveGrenser(params)
-  const { stedstyper } = params
+  const { stedstyper, nysnoKilde } = params
   return steder.filter(
     (sted) =>
       (stedstyper === null || stedstyper.includes(sted.type)) &&
-      aktive.every(([krav, grense]) => oppfyller(sted, krav, grense, posisjon)),
+      aktive.every(([krav, grense]) => oppfyller(sted, krav, grense, nysnoKilde, posisjon)),
   )
 }
 
@@ -277,6 +307,15 @@ function parseStedstyper(search: URLSearchParams): readonly StedType[] | null {
   return normaliserStedstyper(typer)
 }
 
+/** Story 3.8: the new snow source, written right after `nysno`, and only when it is not the default. */
+const NYSNO_KILDE_PARAMETER = 'nysnokilde'
+
+/** The source from the address. Only `nve` can come from the panel; anything else, or twice, is the default. */
+function parseNysnoKilde(search: URLSearchParams): NysnoKilde {
+  const verdier = search.getAll(NYSNO_KILDE_PARAMETER)
+  return verdier.length === 1 && verdier[0] === 'nve' ? 'nve' : NYSNO_KILDER[0]
+}
+
 /** The filter in a query. Invalid or missing values give «Alle»; the page never fails on a bad link. */
 export function parseFilter(search: URLSearchParams): FilterParams {
   return {
@@ -286,12 +325,20 @@ export function parseFilter(search: URLSearchParams): FilterParams {
     maksSkydekkeDagslys: parseKrav('maksSkydekkeDagslys', search),
     maksAvstandKm: parseKrav('maksAvstandKm', search),
     stedstyper: parseStedstyper(search),
+    nysnoKilde: parseNysnoKilde(search),
   }
 }
 
 /** The active requirements as query pairs, in panel order, so the same filter always gives the same address. */
 export function serializeFilter(params: FilterParams): [string, string][] {
   const par = aktiveGrenser(params).map(([krav, verdi]): [string, string] => [FILTER_PARAMETRE[krav], String(verdi)])
+  // The source belongs to the new snow requirement, so it follows `nysno` when that is set, and comes
+  // first among the filter's parameters when it is not.
+  // Tested on `nve`, like the value the requirement reads, so anything else counts as the default everywhere.
+  if (params.nysnoKilde === 'nve') {
+    const etter = par.findIndex(([navn]) => navn === FILTER_PARAMETRE.minNysnoCm) + 1
+    par.splice(etter, 0, [NYSNO_KILDE_PARAMETER, 'nve'])
+  }
   // Normalised again, so a hand-built filter in another order still gives the one address.
   const stedstyper = params.stedstyper && normaliserStedstyper(params.stedstyper)
   if (stedstyper) par.push([STEDSTYPE_PARAMETER, stedstyper.join(',')])

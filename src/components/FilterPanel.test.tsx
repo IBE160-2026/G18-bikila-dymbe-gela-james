@@ -1,13 +1,14 @@
 import { renderToStaticMarkup } from 'react-dom/server'
 import { describe, expect, it } from 'vitest'
-import { STANDARD_FILTER, type FilterParams } from '../../shared/filter'
+import { HURTIGVALG, STANDARD_FILTER, type FilterParams } from '../../shared/filter'
 import FilterPanel, { antallTekst, forslagTekst, kravTekst, verdiTekst } from './FilterPanel'
 
 // Story 3.1: the panel's markup, without a browser. Behaviour at 375 and 1280 px is in tests/e2e/filter.spec.ts.
 
 // Story 3.6: the distance filter's own position, defaulted here to "not known, nothing to say" so the
 // other tests are unaffected; its own describe block below sets posisjonKjent/posisjonStatus explicitly.
-const render = (params: FilterParams, antall = 24, posisjonKjent = false, posisjonStatus = '') =>
+// Story 3.8: NVE values are there by default; the new snow source block sets nveMangler itself.
+const render = (params: FilterParams, antall = 24, posisjonKjent = false, posisjonStatus = '', nveMangler = false) =>
   renderToStaticMarkup(
     <FilterPanel
       params={params}
@@ -16,6 +17,7 @@ const render = (params: FilterParams, antall = 24, posisjonKjent = false, posisj
       posisjonKjent={posisjonKjent}
       posisjonStatus={posisjonStatus}
       beOmPosisjon={() => {}}
+      nveMangler={nveMangler}
     />,
   )
 
@@ -72,7 +74,10 @@ describe('FilterPanel', () => {
       expect(html).toContain(`aria-controls="filter-innhold">Filter</button><span class="filter-antall">${tekst}</span>`)
       expect(html).toContain(`<h2 class="filter-tittel">Filter</h2><span class="filter-antall">${tekst}</span>`)
       expect(html).not.toContain('aria-live')
-      expect(html).not.toContain('role="status"')
+      // The count itself is never a status; the only one in the panel is Story 3.8's empty NVE status.
+      expect(html).not.toMatch(/class="filter-antall"[^>]*role=/)
+      expect(html.match(/role="status"/g)).toEqual(['role="status"'])
+      expect(html).toContain('<p class="filter-hint" role="status"></p>')
     }
   })
 
@@ -118,7 +123,7 @@ describe('FilterPanel', () => {
   })
 
   it('shows active requirements as chips, their values in words and «Nullstill»', () => {
-    const html = render({ minNysnoCm: 2, maksVindMs: null, maksTemperaturC: 0, maksSkydekkeDagslys: null, maksAvstandKm: null, stedstyper: null })
+    const html = render({ minNysnoCm: 2, maksVindMs: null, maksTemperaturC: 0, maksSkydekkeDagslys: null, maksAvstandKm: null, stedstyper: null, nysnoKilde: 'met' })
     expect(html).toContain(
       '<ul class="filter-chips" aria-label="Aktive krav"><li class="filter-chip">Nysnø minst 2 cm</li><li class="filter-chip">Temperatur høyst 0 °C</li></ul>',
     )
@@ -188,7 +193,8 @@ describe('the distance slider (Story 3.6)', () => {
 
   it('gives only the distance slider\'s dynamic hint a status role, never the cloud cover slider\'s fixed one', () => {
     const html = render(STANDARD_FILTER, 24, false, 'Henter posisjonen din …')
-    expect(html.match(/role="status"/g)).toHaveLength(1)
+    // Story 3.8's NVE status is always in the panel but empty here, so count only the ones with text.
+    expect(html.match(/role="status">[^<]/g)).toHaveLength(1)
     expect(html).not.toMatch(/id="filter-maksSkydekkeDagslys-hint"[^>]*role=/)
   })
 
@@ -220,6 +226,7 @@ describe('Hurtigvalgene', () => {
     maksSkydekkeDagslys: null,
     maksAvstandKm: null,
     stedstyper: null,
+    nysnoKilde: 'met',
   }
   const SOL_ETTER_SNOFALL: FilterParams = {
     minNysnoCm: 5,
@@ -228,6 +235,7 @@ describe('Hurtigvalgene', () => {
     maksSkydekkeDagslys: 30,
     maksAvstandKm: null,
     stedstyper: null,
+    nysnoKilde: 'met',
   }
 
   it('shows both as unpressed buttons, each with its fixed combination described underneath', () => {
@@ -258,5 +266,70 @@ describe('Hurtigvalgene', () => {
 
     // Story 3.7: a ticked place type is part of the combination too, so it un-presses the chip as well.
     expect(render({ ...PUDDERDAG, stedstyper: ['by'] })).toMatch(/id="hurtigvalg-0" class="filter-hurtigvalg-chip" aria-pressed="false"/)
+  })
+})
+
+// Story 3.8 (FR-25, decided 2026-10-27, Sena): the new snow source as two radio buttons under the new snow
+// slider, saying plainly that NVE's values are modelled, not measured snow.
+describe('FilterPanel new snow source', () => {
+  it('has a «Datagrunnlag for nysnø» group right under the new snow slider, with the forecast chosen', () => {
+    const html = render(STANDARD_FILTER)
+    expect(html).toContain(
+      '<fieldset class="filter-felt filter-nysnokilde" aria-describedby="filter-nysnokilde-hint"><legend>Datagrunnlag for nysnø</legend>',
+    )
+    expect(html).toContain(
+      '<label class="filter-valg"><input id="filter-nysnokilde-met" type="radio" name="nysnokilde" checked="" value="met"/>Prognose (MET, neste 24 t)</label>',
+    )
+    expect(html).toContain(
+      '<label class="filter-valg"><input id="filter-nysnokilde-nve" type="radio" name="nysnokilde" value="nve"/>Siste 24 t (NVE, modellert)</label>',
+    )
+    const gruppe = html.indexOf('filter-nysnokilde')
+    expect(html.indexOf('id="filter-minNysnoCm"')).toBeLessThan(gruppe)
+    expect(gruppe).toBeLessThan(html.indexOf('id="filter-maksVindMs"'))
+    expect(html).not.toContain('Nullstill')
+  })
+
+  it('says in the linked hint that NVE’s values are modelled estimates, not measured snow, and how they are converted', () => {
+    expect(render(STANDARD_FILTER)).toContain(
+      '<p id="filter-nysnokilde-hint" class="filter-hint">NVEs nysnø siste døgn er modellerte verdier fra seNorge, ikke målt snø. ' +
+        'NVE-verdiene er modellerte estimater. SnowFinder bruker en forenklet omregning der 1 mm vannekvivalent tilsvarer omtrent ' +
+        '1 cm snø. Faktisk snødybde kan variere. Med «Siste 24 t» valgt og nysnøkravet på skjules steder uten NVE-verdi. ' +
+        'Står nysnø på «Alle», har valget ingen effekt.</p>',
+    )
+  })
+
+  it('names the source in the chip, and gives a chip of its own next to «Nullstill» while new snow is «Alle»', () => {
+    const aktiv = render({ ...STANDARD_FILTER, minNysnoCm: 5, nysnoKilde: 'nve' })
+    expect(aktiv).toContain('<input id="filter-nysnokilde-nve" type="radio" name="nysnokilde" checked="" value="nve"/>')
+    expect(aktiv).toContain('<ul class="filter-chips" aria-label="Aktive krav"><li class="filter-chip">Nysnø siste 24 t minst 5 cm</li></ul>')
+
+    const utenKrav = render({ ...STANDARD_FILTER, nysnoKilde: 'nve' })
+    expect(utenKrav).toContain('<ul class="filter-chips" aria-label="Aktive krav"><li class="filter-chip">Datagrunnlag siste 24 t (NVE)</li></ul>')
+    expect(utenKrav.match(/>Nullstill<\/button>/g)).toHaveLength(2)
+  })
+
+  it('says NVE is missing from the run only with NVE chosen, as a status, and leaves the source as it is', () => {
+    const melding = '<p class="filter-hint" role="status">NVE-data mangler i denne kjøringen. Velg «Prognose» for å filtrere på nysnø.</p>'
+    const nve = { ...STANDARD_FILTER, nysnoKilde: 'nve' } as const
+    expect(render(nve, 24, false, '', true)).toContain(melding)
+    expect(render(nve, 24, false, '', true)).toContain('checked="" value="nve"')
+    // The status stays in the page, empty, so the message is announced when it is filled in.
+    expect(render(STANDARD_FILTER, 24, false, '', true)).toContain('<p class="filter-hint" role="status"></p>')
+    expect(render(nve, 24, false, '', false)).toContain('<p class="filter-hint" role="status"></p>')
+  })
+
+  it('names the source in the suggestion, and leaves the forecast’s words as they were', () => {
+    const forslag = { krav: 'minNysnoCm', verdi: 15, antall: 1 } as const
+    expect(forslagTekst(forslag, 'nve')).toBe('Prøv nysnø siste 24 t minst 15 cm.')
+    expect(forslagTekst(forslag, 'met')).toBe('Prøv nysnø minst 15 cm.')
+    expect(forslagTekst(forslag)).toBe('Prøv nysnø minst 15 cm.')
+    expect(kravTekst('minNysnoCm', 5, 'nve')).toBe('Nysnø siste 24 t minst 5 cm')
+    expect(kravTekst('maksVindMs', 8, 'nve')).toBe('Vind høyst 8 m/s')
+  })
+
+  it('un-presses a quick pick when the source is NVE, since the pick means the forecast', () => {
+    const pudderdag = HURTIGVALG[0].verdier
+    expect(render(pudderdag)).toMatch(/id="hurtigvalg-0" class="filter-hurtigvalg-chip" aria-pressed="true"/)
+    expect(render({ ...pudderdag, nysnoKilde: 'nve' })).toMatch(/id="hurtigvalg-0" class="filter-hurtigvalg-chip" aria-pressed="false"/)
   })
 })
