@@ -279,7 +279,7 @@ describe('AppView', () => {
 
   it.each(['gaustatoppen', 'trondheim'])('links the SnowScore card on the place page %s to the explanation', (id) => {
     const html = render(demoResult, sted(id))
-    const kort = /<section class="sted-kort kort" aria-labelledby="sted-snowscore">(.*?)<\/section>/.exec(html)?.[1] ?? ''
+    const kort = /<section class="sted-kort kort snowscore" aria-labelledby="sted-snowscore">(.*?)<\/section>/.exec(html)?.[1] ?? ''
     expect(kort).toContain('<a href="/slik-beregner-vi-snowscore" class="forklaring-lenke">Slik beregner vi SnowScore</a>')
     expect(html).not.toContain('aria-current="page"')
   })

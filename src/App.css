@@ -263,9 +263,27 @@ select:focus-visible {
   margin-bottom: var(--spacing-4);
 }
 
+/* Story 4.2: from 768px SnowScore and Grunnlag share the left column and the ski window card has the
+   right one, so the DOM order (SnowScore, skivindu, Grunnlag) stays the mobile order. */
 @media (min-width: 768px) {
   .sted-kolonner {
     grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      'snowscore skivindu'
+      'grunnlag skivindu';
+    align-items: start;
+  }
+
+  .sted-kolonner .snowscore {
+    grid-area: snowscore;
+  }
+
+  .sted-kolonner .skivindu {
+    grid-area: skivindu;
+  }
+
+  .sted-kolonner .grunnlag {
+    grid-area: grunnlag;
   }
 }
 
@@ -297,6 +315,31 @@ select:focus-visible {
   font-size: var(--typography-display-font-size);
   font-weight: var(--typography-display-font-weight);
   line-height: var(--typography-display-line-height);
+}
+
+/* Story 4.2: the ski window card is sunken so it reads apart from the raw data cards (EXPERIENCE).
+   The span is in heading, the reasons in meta. */
+.kort.skivindu {
+  background: var(--color-surface-sunken);
+}
+
+.skivindu-tid {
+  margin: 0 0 var(--spacing-2);
+  font-family: var(--typography-heading-font-family);
+  font-size: var(--typography-heading-font-size);
+  font-weight: var(--typography-heading-font-weight);
+  line-height: var(--typography-heading-line-height);
+}
+
+.skivindu-grunn,
+.skivindu-mangler {
+  margin: 0 0 var(--spacing-1);
+  color: var(--color-ink-secondary);
+  font-family: var(--typography-meta-font-family);
+  font-size: var(--typography-meta-font-size);
+  font-weight: var(--typography-meta-font-weight);
+  line-height: var(--typography-meta-line-height);
+  letter-spacing: var(--typography-meta-letter-spacing);
 }
 
 .tall-liste {

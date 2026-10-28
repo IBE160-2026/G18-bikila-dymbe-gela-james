@@ -5,6 +5,7 @@ import { latestNveValue } from '../../shared/contracts/nve'
 import type { Sted } from '../../shared/contracts/published'
 import type { RunContext } from '../../shared/contracts/run'
 import { computeSnowScore, mmToCm, selectWindow, SNOWSCORE, type HourlyValue } from '../../shared/snowscore'
+import { besteSkivindu, SKIVINDU, type SkivinduTime } from '../../shared/skivindu'
 import { erDagslystime } from '../../shared/sol'
 
 interface Weather {
@@ -14,6 +15,8 @@ interface Weather {
   vindMaks: number | null
   skydekke: number | null
   skydekkeDagslys: number | null
+  skivindu: Sted['skivindu']
+  skivinduUtenDagslys: boolean
 }
 
 // AD-2: a place whose response failed still appears, as incomplete data and without old values.
@@ -24,6 +27,8 @@ const NO_WEATHER: Weather = {
   vindMaks: null,
   skydekke: null,
   skydekkeDagslys: null,
+  skivindu: null,
+  skivinduUtenDagslys: false,
 }
 
 const HOUR_MS = 3_600_000
@@ -50,6 +55,26 @@ function cloudInDaylight(
   return mean(present.map((step) => step.data.instant.details.cloud_area_fraction))
 }
 
+/**
+ * Story 4.2: one entry per hour over the ski window's 48-hour period, from the hour containing the
+ * reference time as in selectWindow (which stays at SnowScore's 24 hours). A missing step is an hour of nulls.
+ */
+function skivinduTimer(steps: MetForecast['properties']['timeseries'], referenceTime: string): SkivinduTime[] {
+  const start = Math.floor(Date.parse(referenceTime) / HOUR_MS) * HOUR_MS
+  const byTime = new Map(steps.map((step) => [Date.parse(step.time), step]))
+  return Array.from({ length: SKIVINDU.periodeTimer }, (_, i) => {
+    const ms = start + i * HOUR_MS
+    const step = byTime.get(ms)
+    return {
+      time: new Date(ms).toISOString().replace('.000Z', 'Z'),
+      vindMs: step?.data.instant.details.wind_speed ?? null,
+      skydekke: step?.data.instant.details.cloud_area_fraction ?? null,
+      nedborMm: step?.data.next_1_hours?.details.precipitation_amount ?? null,
+      temperaturC: step?.data.instant.details.air_temperature ?? null,
+    }
+  })
+}
+
 /** `position` is the place's own lat/lon, where Story 3.5 checks whether each hour is daylight. */
 export function weatherFromForecast(
   forecast: MetForecast,
@@ -68,6 +93,11 @@ export function weatherFromForecast(
   const vindMaks = present.length > 0 ? Math.max(...present.map((d) => d.wind_speed)) : null
   const skydekke = mean(present.map((d) => d.cloud_area_fraction))
   const skydekkeDagslys = cloudInDaylight(window, referenceTime, position)
+  const { skivindu, skivinduUtenDagslys } = besteSkivindu(
+    skivinduTimer(forecast.properties.timeseries, referenceTime),
+    position.lat,
+    position.lon,
+  )
 
   return {
     snowScore,
@@ -76,6 +106,8 @@ export function weatherFromForecast(
     vindMaks,
     skydekke,
     skydekkeDagslys,
+    skivindu,
+    skivinduUtenDagslys,
   }
 }
 

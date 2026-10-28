@@ -134,8 +134,70 @@ describe('score', () => {
       vindMaks: null,
       skydekke: null,
       skydekkeDagslys: null,
+      skivindu: null,
+      skivinduUtenDagslys: false,
       nveNysnoSisteDognMm: 5,
     })
+  })
+
+  it('finds the ski window over 48 hours, after the snowfall, while SnowScore keeps its 24', () => {
+    // Snow for the first 24 hours (to 8 October 19:00 UTC), then calm and dry. The window is the next
+    // morning's first daylight hours, beyond SnowScore's window; hours after the 48 are ignored.
+    const hours: HourInput[] = [
+      ...snowyDay(),
+      ...Array.from({ length: 24 }, () => ({ precipitation: 0, temperature: -8, wind: 2, cloud: 10 })),
+      ...Array.from({ length: 6 }, () => ({ precipitation: 0, temperature: -8, wind: 0, cloud: 0 })),
+    ]
+    const [sted] = scored([{ id: 'a', met: metResponse(hours), nve: nveResponse() }]).steder
+    expect(sted.snowScore).toMatchObject({ kind: 'score', score: 86 })
+    expect(sted.skivinduUtenDagslys).toBe(false)
+    expect(sted.skivindu).toEqual({
+      start: '2026-10-09T06:00:00Z',
+      timer: 4,
+      snittVindMs: 2,
+      snittSkydekke: 10,
+      etterSnofall: true,
+    })
+  })
+
+  it('looks only at the 48 hours from the hour containing the reference time', () => {
+    // The forecast starts at 14:00 UTC, six hours before the reference hour (20:00). Calm daylight hours
+    // lie before it (14–16 on 7 October) and after the period (06–09 on 10 October, hours 64–67);
+    // inside the period every hour has 3 m/s, so the window is the first daylight hours on 8 October.
+    const stille = (j: number) => j <= 2 || (j >= 64 && j <= 67)
+    const hours: HourInput[] = Array.from({ length: 72 }, (_, j) => ({
+      precipitation: 0,
+      temperature: -8,
+      wind: stille(j) ? 0 : 3,
+      cloud: 50,
+    }))
+    const [sted] = scored([{ id: 'a', met: metResponse(hours, undefined, '2026-10-07T14:00:00Z'), nve: nveResponse() }])
+      .steder
+    expect(sted.skivindu).toMatchObject({ start: '2026-10-08T06:00:00Z', timer: 4, snittVindMs: 3 })
+  })
+
+  it('gives no ski window when the forecast has no step in the 48 hours', () => {
+    const met = metResponse(snowyDay(), undefined, '2026-10-06T18:00:00Z')
+    const [sted] = scored([{ id: 'a', met, nve: nveResponse() }]).steder
+    expect(sted.skivindu).toBeNull()
+    expect(sted.skivinduUtenDagslys).toBe(false)
+  })
+
+  it('flags the ski window in the polar night and still picks one among the dark hours', () => {
+    // Tromsø from 21 December 00:00 UTC: no daylight hour in the 48. Hours 30–33 are the calmest.
+    const hours: HourInput[] = Array.from({ length: 48 }, (_, i) => ({
+      precipitation: 0,
+      temperature: -8,
+      wind: i >= 30 && i <= 33 ? 1 : 6,
+    }))
+    const ctx = validate(rawContext([{ id: 'a', met: metResponse(hours, undefined, '2026-12-21T00:00:00Z'), nve: nveResponse() }]))
+    const [sted] = score({
+      ...ctx,
+      referenceTime: '2026-12-21T00:30:00Z',
+      catalog: ctx.catalog.map((entry) => ({ ...entry, lat: 69.65, lon: 18.96 })),
+    }).steder
+    expect(sted.skivinduUtenDagslys).toBe(true)
+    expect(sted.skivindu).toMatchObject({ start: '2026-12-22T06:00:00Z', timer: 4, snittVindMs: 1 })
   })
 
   it('uses NVE’s last daily value before the reference time, and null for NoDataValue', () => {

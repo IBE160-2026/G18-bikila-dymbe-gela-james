@@ -45,6 +45,14 @@
       "vindMaks": 5.1,
       "skydekke": 41.545833333333334,
       "skydekkeDagslys": 11.19090909090909,
+      "skivindu": {
+        "start": "2026-10-08T06:00:00Z",
+        "timer": 4,
+        "snittVindMs": 3.0999999999999996,
+        "snittSkydekke": 27.75,
+        "etterSnofall": false
+      },
+      "skivinduUtenDagslys": false,
       "nveNysnoSisteDognMm": 0
     },
     {
@@ -72,6 +80,14 @@
       "vindMaks": 11.2,
       "skydekke": 90.35833333333333,
       "skydekkeDagslys": 91.34545454545454,
+      "skivindu": {
+        "start": "2026-10-09T06:00:00Z",
+        "timer": 4,
+        "snittVindMs": 4.05,
+        "snittSkydekke": 84.6,
+        "etterSnofall": true
+      },
+      "skivinduUtenDagslys": false,
       "nveNysnoSisteDognMm": 1
     },
     {
@@ -99,6 +115,8 @@
       "vindMaks": 12,
       "skydekke": 85,
       "skydekkeDagslys": 87.90909090909089,
+      "skivindu": null,
+      "skivinduUtenDagslys": false,
       "nveNysnoSisteDognMm": 0
     },
     {
@@ -126,6 +144,14 @@
       "vindMaks": 6.4,
       "skydekke": 98.13333333333334,
       "skydekkeDagslys": 99.48181818181818,
+      "skivindu": {
+        "start": "2026-10-09T11:00:00Z",
+        "timer": 4,
+        "snittVindMs": 1.4,
+        "snittSkydekke": 91.39999999999999,
+        "etterSnofall": true
+      },
+      "skivinduUtenDagslys": false,
       "nveNysnoSisteDognMm": 0
     },
     {
@@ -153,6 +179,8 @@
       "vindMaks": 4,
       "skydekke": 84.62083333333332,
       "skydekkeDagslys": 89.62727272727273,
+      "skivindu": null,
+      "skivinduUtenDagslys": false,
       "nveNysnoSisteDognMm": 0
     },
     {
@@ -180,6 +208,14 @@
       "vindMaks": 17.5,
       "skydekke": 84.20833333333334,
       "skydekkeDagslys": 75.86,
+      "skivindu": {
+        "start": "2026-10-09T11:00:00Z",
+        "timer": 4,
+        "snittVindMs": 2.975,
+        "snittSkydekke": 25,
+        "etterSnofall": true
+      },
+      "skivinduUtenDagslys": false,
       "nveNysnoSisteDognMm": 53
     },
     {
@@ -207,6 +243,14 @@
       "vindMaks": 13.7,
       "skydekke": 65.25416666666665,
       "skydekkeDagslys": 62.620000000000005,
+      "skivindu": {
+        "start": "2026-10-09T09:00:00Z",
+        "timer": 4,
+        "snittVindMs": 5.25,
+        "snittSkydekke": 38.575,
+        "etterSnofall": false
+      },
+      "skivinduUtenDagslys": false,
       "nveNysnoSisteDognMm": 0
     },
     {
@@ -234,6 +278,8 @@
       "vindMaks": 6.9,
       "skydekke": 65.03333333333332,
       "skydekkeDagslys": 46.2,
+      "skivindu": null,
+      "skivinduUtenDagslys": false,
       "nveNysnoSisteDognMm": 0
     },
     {
@@ -261,6 +307,14 @@
       "vindMaks": 4.8,
       "skydekke": 97.60833333333333,
       "skydekkeDagslys": 99.19090909090909,
+      "skivindu": {
+        "start": "2026-10-09T12:00:00Z",
+        "timer": 4,
+        "snittVindMs": 1.2,
+        "snittSkydekke": 99.225,
+        "etterSnofall": false
+      },
+      "skivinduUtenDagslys": false,
       "nveNysnoSisteDognMm": 0
     },
     {
@@ -288,6 +342,14 @@
       "vindMaks": 2.7,
       "skydekke": 88.3,
       "skydekkeDagslys": 91.03,
+      "skivindu": {
+        "start": "2026-10-08T06:00:00Z",
+        "timer": 4,
+        "snittVindMs": 0.4,
+        "snittSkydekke": 97.025,
+        "etterSnofall": false
+      },
+      "skivinduUtenDagslys": false,
       "nveNysnoSisteDognMm": 0
     },
     {
@@ -315,6 +377,14 @@
       "vindMaks": 6.1,
       "skydekke": 82.825,
       "skydekkeDagslys": 89.67999999999999,
+      "skivindu": {
+        "start": "2026-10-09T11:00:00Z",
+        "timer": 4,
+        "snittVindMs": 2.475,
+        "snittSkydekke": 0.525,
+        "etterSnofall": false
+      },
+      "skivinduUtenDagslys": false,
       "nveNysnoSisteDognMm": 0
     },
     {
@@ -342,6 +412,14 @@
       "vindMaks": 10.9,
       "skydekke": 88.5,
       "skydekkeDagslys": 91.44999999999999,
+      "skivindu": {
+        "start": "2026-10-08T08:00:00Z",
+        "timer": 4,
+        "snittVindMs": 3.4499999999999997,
+        "snittSkydekke": 97.35000000000001,
+        "etterSnofall": true
+      },
+      "skivinduUtenDagslys": false,
       "nveNysnoSisteDognMm": 15
     },
     {
@@ -369,6 +447,14 @@
       "vindMaks": 6.1,
       "skydekke": 94.44583333333334,
       "skydekkeDagslys": 99.4090909090909,
+      "skivindu": {
+        "start": "2026-10-09T07:00:00Z",
+        "timer": 4,
+        "snittVindMs": 3.275,
+        "snittSkydekke": 20.6,
+        "etterSnofall": true
+      },
+      "skivinduUtenDagslys": false,
       "nveNysnoSisteDognMm": 0
     },
     {
@@ -396,6 +482,14 @@
       "vindMaks": 7.7,
       "skydekke": 98.07916666666667,
       "skydekkeDagslys": 99.93636363636364,
+      "skivindu": {
+        "start": "2026-10-09T08:00:00Z",
+        "timer": 4,
+        "snittVindMs": 1.15,
+        "snittSkydekke": 75.175,
+        "etterSnofall": false
+      },
+      "skivinduUtenDagslys": false,
       "nveNysnoSisteDognMm": 0
     },
     {
@@ -423,6 +517,14 @@
       "vindMaks": 13.7,
       "skydekke": 94.4541666666667,
       "skydekkeDagslys": 97.89090909090909,
+      "skivindu": {
+        "start": "2026-10-09T07:00:00Z",
+        "timer": 4,
+        "snittVindMs": 3.2750000000000004,
+        "snittSkydekke": 27.5,
+        "etterSnofall": true
+      },
+      "skivinduUtenDagslys": false,
       "nveNysnoSisteDognMm": 0
     },
     {
@@ -450,6 +552,14 @@
       "vindMaks": 7.5,
       "skydekke": 56.987500000000004,
       "skydekkeDagslys": 31.463636363636365,
+      "skivindu": {
+        "start": "2026-10-09T06:00:00Z",
+        "timer": 4,
+        "snittVindMs": 0.675,
+        "snittSkydekke": 100,
+        "etterSnofall": false
+      },
+      "skivinduUtenDagslys": false,
       "nveNysnoSisteDognMm": 0
     },
     {
@@ -477,6 +587,14 @@
       "vindMaks": 12.3,
       "skydekke": 91.65416666666665,
       "skydekkeDagslys": 94.23636363636363,
+      "skivindu": {
+        "start": "2026-10-09T08:00:00Z",
+        "timer": 4,
+        "snittVindMs": 7.4,
+        "snittSkydekke": 69.10000000000001,
+        "etterSnofall": true
+      },
+      "skivinduUtenDagslys": false,
       "nveNysnoSisteDognMm": 0
     },
     {
@@ -504,6 +622,14 @@
       "vindMaks": 8.1,
       "skydekke": 46.43750000000001,
       "skydekkeDagslys": 25.518181818181816,
+      "skivindu": {
+        "start": "2026-10-09T06:00:00Z",
+        "timer": 4,
+        "snittVindMs": 4.45,
+        "snittSkydekke": 100,
+        "etterSnofall": false
+      },
+      "skivinduUtenDagslys": false,
       "nveNysnoSisteDognMm": 0
     },
     {
@@ -531,6 +657,8 @@
       "vindMaks": 9.5,
       "skydekke": 74.92916666666667,
       "skydekkeDagslys": 70.73636363636363,
+      "skivindu": null,
+      "skivinduUtenDagslys": false,
       "nveNysnoSisteDognMm": 4
     },
     {
@@ -558,6 +686,14 @@
       "vindMaks": 8.1,
       "skydekke": 91.65000000000002,
       "skydekkeDagslys": 87.99,
+      "skivindu": {
+        "start": "2026-10-09T10:00:00Z",
+        "timer": 4,
+        "snittVindMs": 1.225,
+        "snittSkydekke": 8.875,
+        "etterSnofall": false
+      },
+      "skivinduUtenDagslys": false,
       "nveNysnoSisteDognMm": 0
     },
     {
@@ -585,6 +721,14 @@
       "vindMaks": 8,
       "skydekke": 91.53750000000001,
       "skydekkeDagslys": 88.28,
+      "skivindu": {
+        "start": "2026-10-09T10:00:00Z",
+        "timer": 4,
+        "snittVindMs": 1.3250000000000002,
+        "snittSkydekke": 10.575000000000001,
+        "etterSnofall": true
+      },
+      "skivinduUtenDagslys": false,
       "nveNysnoSisteDognMm": 0
     },
     {
@@ -606,6 +750,14 @@
       "vindMaks": 5.1,
       "skydekke": 87.395,
       "skydekkeDagslys": 91.41818181818182,
+      "skivindu": {
+        "start": "2026-10-09T07:00:00Z",
+        "timer": 4,
+        "snittVindMs": 1.375,
+        "snittSkydekke": 31.725,
+        "etterSnofall": false
+      },
+      "skivinduUtenDagslys": false,
       "nveNysnoSisteDognMm": 0
     },
     {
@@ -633,6 +785,14 @@
       "vindMaks": 9.5,
       "skydekke": 99.99583333333334,
       "skydekkeDagslys": 100,
+      "skivindu": {
+        "start": "2026-10-09T12:00:00Z",
+        "timer": 4,
+        "snittVindMs": 3.3,
+        "snittSkydekke": 52.95,
+        "etterSnofall": true
+      },
+      "skivinduUtenDagslys": false,
       "nveNysnoSisteDognMm": 0
     },
     {
@@ -660,6 +820,8 @@
       "vindMaks": 3.4,
       "skydekke": 57.299999999999976,
       "skydekkeDagslys": 37.23636363636365,
+      "skivindu": null,
+      "skivinduUtenDagslys": false,
       "nveNysnoSisteDognMm": 0
     }
   ]

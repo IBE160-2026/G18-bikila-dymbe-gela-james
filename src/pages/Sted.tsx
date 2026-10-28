@@ -2,6 +2,7 @@ import type { Sted as StedData } from '../../shared/contracts/published'
 import { SNOWSCORE } from '../../shared/snowscore'
 import Lenke from '../components/Lenke'
 import ScoreBadge from '../components/ScoreBadge'
+import Skivindukort from '../components/Skivindukort'
 import { delpoeng, medEnhet, norskTid, utdatertTekst } from '../lib/format'
 import { useEffect } from 'react'
 import { href, replace, sted as stedRoute, type UtforskRoute } from '../lib/router'
@@ -51,7 +52,7 @@ export default function Sted({ sted, utdatert, sok }: Props) {
       <h1 className="sted-navn">{sted.navn}</h1>
       {utdatert && <p className="utdatert">{utdatertTekst(sted.kildeTidspunkt)}</p>}
       <div className="sted-kolonner">
-        <section className="sted-kort kort" aria-labelledby="sted-snowscore">
+        <section className="sted-kort kort snowscore" aria-labelledby="sted-snowscore">
           <h2 id="sted-snowscore">SnowScore</h2>
           <p className="sted-score">
             <ScoreBadge snowScore={snowScore} />
@@ -69,7 +70,9 @@ export default function Sted({ sted, utdatert, sok }: Props) {
             Slik beregner vi SnowScore
           </Lenke>
         </section>
-        <section className="sted-kort kort" aria-labelledby="sted-grunnlag">
+        {/* Story 4.2: under SnowScore on mobile, in the right-hand column from 768px (App.css). */}
+        <Skivindukort skivindu={sted.skivindu} skivinduUtenDagslys={sted.skivinduUtenDagslys} />
+        <section className="sted-kort kort grunnlag" aria-labelledby="sted-grunnlag">
           <h2 id="sted-grunnlag">Grunnlag</h2>
           <Tall rader={grunnlag} />
           <p className="sted-kilde">

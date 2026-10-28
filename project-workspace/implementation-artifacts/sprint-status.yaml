@@ -29,7 +29,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 # - Retrospective appends its action items to action_items; the status view surfaces open ones
 generated: 09-27-2026 12:00
-last_updated: 10-28-2026 19:00
+last_updated: 10-28-2026 20:15
 project: G18-bikila-dymbe-gela-james
 project_key: NOKEY
 tracking_system: file-system
@@ -67,9 +67,9 @@ development_status:
   3-8-filtrer-på-nysnø-siste-24-timer: done
   epic-3-retrospective: optional
 
-  epic-4: backlog
+  epic-4: done  # 4.1, 4.3 og 4.4 er Ikke i v1
   4-1-gjør-snowfinder-installerbar-som-pwa: backlog  # Ikke i v1 (v3)
-  4-2-se-beste-skivindu-på-stedssiden: backlog
+  4-2-se-beste-skivindu-på-stedssiden: done
   4-3-registrer-et-snøvarsel-uten-konto: backlog  # Ikke i v1 (v3)
   4-4-motta-og-meld-deg-av-et-snøvarsel: backlog  # Ikke i v1 (v3)
   epic-4-retrospective: optional

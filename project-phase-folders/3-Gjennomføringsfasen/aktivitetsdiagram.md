@@ -17,7 +17,7 @@ flowchart TD
     start(["Start 2026-10-28"]) --> fork1{{"Tre spor parallelt"}}
 
     %% Spor A: storyene som gjenstår
-    fork1 --> a1["Velg neste story i sprintplan.md:<br/>1.6 og 4.2 parallelt<br/>(1.11 venter på faglærer)"]
+    fork1 --> a1["Velg neste story i sprintplan.md:<br/>1.6<br/>(1.11 venter på faglærer)"]
     a1 --> a2["Bygg med bmad-build på greinen<br/>story/nr-kort-navn"]
     a2 --> a3["Kjør lint, typecheck, test, build<br/>og test:e2e lokalt"]
     a3 --> a4["Sett storyen til done i sprint-status.yaml,<br/>oppdater fremdriftsplan og tidslinje,<br/>logg KI-økten i ai-log"]
@@ -178,7 +178,7 @@ flowchart LR
 | 3.8 | Filtrer på nysnø siste 24 timer | Bør ha | 3.1, 1.3 | 3 | Sena | 2026-10-28 (PR #71) |
 | – | Retrospektiv for Epic 3 (valgfri) | – | 3.1–3.8 | 4 | Fordeles på møtet | 2026-11-03, forslag |
 | **Epic 4** | **Få mer ut av et sted jeg følger med på** | | | | | |
-| 4.2 | Se beste skivindu på stedssiden | Bør ha | 1.9 | 4 | Fordeles på møtet | 2026-11-11, forslag |
+| 4.2 | Se beste skivindu på stedssiden | Bør ha | 1.9 | 4 | Aksel | 2026-10-28 (bygget, venter på review) |
 | 4.1 | Gjør SnowFinder installerbar som PWA | Ikke i v1 | – | – | – | – |
 | 4.3 | Registrer et snøvarsel uten konto | Ikke i v1 | – | – | – | – |
 | 4.4 | Motta og meld deg av et snøvarsel | Ikke i v1 | 4.3 | – | – | – |

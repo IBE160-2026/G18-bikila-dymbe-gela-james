@@ -39,6 +39,36 @@ export function norskTid(iso: string | null): string {
   return Number.isFinite(ms) ? tidFormat.format(ms) : '–'
 }
 
+const timeFormat = new Intl.DateTimeFormat('nb-NO', {
+  timeZone: 'Europe/Oslo',
+  weekday: 'long',
+  hour: '2-digit',
+  hourCycle: 'h23',
+})
+
+/** Weekday and two-digit hour in Norwegian local time, from formatToParts so the order is fixed. */
+function dagOgTime(ms: number): { dag: string; time: string } {
+  const parts = timeFormat.formatToParts(ms)
+  const del = (type: Intl.DateTimeFormatPartTypes) => parts.find((p) => p.type === type)?.value ?? ''
+  return { dag: del('weekday'), time: del('hour') }
+}
+
+const HOUR_MS = 3_600_000
+
+/**
+ * Story 4.2: the ski window as a span of whole hours in Norwegian local time: "lørdag 10–14". A window
+ * ending at midnight ends at "24"; one that crosses midnight names both days: "lørdag 22–søndag 02".
+ */
+export function tidsrom(startIso: string, timer: number): string {
+  const startMs = Date.parse(startIso)
+  if (!Number.isFinite(startMs)) return '–'
+  const start = dagOgTime(startMs)
+  const slutt = dagOgTime(startMs + timer * HOUR_MS)
+  if (slutt.dag === start.dag) return `${start.dag} ${start.time}–${slutt.time}`
+  if (slutt.time === '00') return `${start.dag} ${start.time}–24`
+  return `${start.dag} ${start.time}–${slutt.dag} ${slutt.time}`
+}
+
 /** The «Utdatert» mark with the source time (EXPERIENCE: small meta text with a timestamp). */
 export function utdatertTekst(kildeTidspunkt: string | null): string {
   return `Utdatert · data fra ${norskTid(kildeTidspunkt)}`
