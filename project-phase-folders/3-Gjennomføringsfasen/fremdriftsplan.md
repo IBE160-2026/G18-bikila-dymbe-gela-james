@@ -20,8 +20,12 @@ på møtet. Oppdater statusen når et steg er ferdig.
 - Story 3.7 (filter på stedstype) er godkjent av Aksel, merget (PR #66) og satt til `done`.
 - Story 3.8 (nysnø siste 24 timer) er bygget av Sena på greina
   `story/3-8-filtrer-pa-nysno-siste-24-timer`, men har ingen synlig PR ennå.
-- Igjen i v1: 3.8 (PR og review), 1.11 (venter på faglærer), 4.2 (beste skivindu), steg 8c,
-  brukertesten og sluttrapporten.
+- Igjen i v1: 3.8 (PR og review), 1.11 (venter på faglærer), 1.6 (robusthet ved nedetid), 4.2
+  (beste skivindu), steg 8c, brukertesten og sluttrapporten.
+- Nytt forslag til frister fram til levering, med kodefrys 11. november og en uke til rettinger
+  etter brukertesten ([milepæler](../2-Planleggingsfasen/milepæler.md#forslaget-fra-2026-10-28)).
+  Alle aktivitetene fra epics og stories står i
+  [aktivitetslisten](aktivitetsdiagram.md#aktivitetsliste). Gruppa vedtar fristene på neste møte.
 
 **27. oktober: Story 3.4 og 3.6 ferdige, Story 3.7 venter på review, og tidslinje med datoer er lagt til.**
 
@@ -136,7 +140,7 @@ gantt
     Sprintplan (steg 8)                           : done, 2026-09-27, 2026-10-03
     Faglærers tilbakemelding, forenkling (8b, 8d) : done, 2026-10-03, 2026-10-07
     F2 Planleggingen ferdig                       : milestone, done, 2026-10-07, 0d
-    Wireframes, skjermkrav, brukertestplan (8c)   : 2026-10-28, 2026-11-04
+    Wireframes, skjermkrav, brukertestplan (8c)   : active, 2026-10-28, 2026-11-04
     F3 Steg 8c ferdig                             : milestone, 2026-11-04, 0d
 
     section 3 Gjennomføring
@@ -145,17 +149,21 @@ gantt
     M3 Kart og stedssider                         : milestone, done, 2026-10-08, 0d
     M2 SnowScore og forklaringsside               : milestone, done, 2026-10-09, 0d
     Revisjon og rettinger                         : done, 2026-10-09, 2026-10-22
-    Sprint 3 filter (3.1-3.8)                     : active, 2026-10-22, 2026-11-01
+    Sprint 3 filter (3.1-3.7)                     : done, 2026-10-22, 2026-10-28
+    Story 3.8 PR, review og merge                 : active, 2026-10-28, 2026-11-01
     M4 Filter ferdig                              : milestone, 2026-11-01, 0d
-    Story 1.11 timesjobb (venter på faglærer)     : 2026-11-02, 2026-11-11
-    Sprint 4 beste skivindu (4.2)                 : 2026-11-02, 2026-11-11
-    M1 og M5 pipeline i drift og Bør ha           : milestone, 2026-11-11, 0d
+    Retrospektiv Epic 3 (valgfri)                 : 2026-11-02, 2026-11-03
+    Sprint 4 robusthet (1.6) og skivindu (4.2)    : 2026-11-02, 2026-11-11
+    Story 1.11 timesjobb (reserve fra 04.11)      : 2026-11-02, 2026-11-11
+    M1 og M5 pipeline i drift og kodefrys         : milestone, 2026-11-11, 0d
     Brukertest med fem personer                   : 2026-11-12, 2026-11-16
     F4 Brukertest ferdig                          : milestone, 2026-11-16, 0d
+    Rettinger etter brukertesten                  : 2026-11-17, 2026-11-20
 
     section 4 Avslutning
     Sluttrapport og presentasjon                  : 2026-11-16, 2026-11-23
     F5 Sluttrapport klar                          : milestone, 2026-11-23, 0d
+    Generalprøve etter README                     : 2026-11-24, 2026-11-25
     M6 Levering og demo                           : milestone, crit, 2026-11-25, 0d
 ```
 
@@ -170,11 +178,14 @@ gantt
 | 2026-10-09 | M2 Epic 2 ferdig: forklaringssiden og kalkulatoren (PR #33–#38) | Gjennomføring | ✅ |
 | 2026-10-22 | Revisjonens feil rettet (PR #43–#47), filteret startet (PR #48) | Gjennomføring | ✅ |
 | 2026-10-27 | Story 3.1–3.6 ferdige (PR #48–#64) | Gjennomføring | ✅ |
-| 2026-11-01 | M4 Filteret ferdig: 3.7 og 3.8 | Gjennomføring | 🔄 forslag |
-| 2026-11-04 | F3 Wireframes, skjermkrav og brukertestplan (steg 8c) | Planlegging | ⬜ forslag |
-| 2026-11-11 | M1 Timesjobb og publisering (1.11) og M5 beste skivindu (4.2) | Gjennomføring | ⬜ forslag |
+| 2026-10-28 | Story 3.7 ferdig (PR #66) | Gjennomføring | ✅ |
+| 2026-11-01 | M4 Filteret ferdig: 3.8 | Gjennomføring | 🔄 forslag |
+| 2026-11-04 | F3 Wireframes, skjermkrav og brukertestplan (steg 8c), og valg av reserve for 1.11 | Planlegging | 🔄 forslag |
+| 2026-11-11 | M1 Timesjobb og publisering (1.11) og M5 kodefrys: robusthet (1.6) og beste skivindu (4.2) | Gjennomføring | ⬜ forslag |
 | 2026-11-16 | F4 Brukertest med fem personer | Gjennomføring | ⬜ forslag |
+| 2026-11-20 | Kritiske funn fra brukertesten rettet | Gjennomføring | ⬜ forslag |
 | 2026-11-23 | F5 Sluttrapport og presentasjon | Avslutning | ⬜ forslag |
+| 2026-11-24 | Generalprøve: `npm ci && npm run dev` etter README på en ren maskin | Avslutning | ⬜ forslag |
 | 2026-11-25 | M6 Levering og demo | Avslutning | ⬜ vedtatt |
 
 ## Stegene

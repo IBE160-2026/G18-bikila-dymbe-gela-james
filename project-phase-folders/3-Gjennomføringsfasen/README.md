@@ -9,7 +9,9 @@ for sprint.
   fra oppstart til levering, stegene og status for hver story. Oppdateres i samme PR som hver
   ferdige story og etter hvert møte som endrer planen.
 - **[`aktivitetsdiagram.md`](aktivitetsdiagram.md)** — arbeidsflyten fram til levering
-  2026-11-25: storyene som gjenstår, Story 1.11, steg 8c, brukertest og sluttrapport
+  2026-11-25 (storyene som gjenstår, Story 1.11, steg 8c, brukertest og sluttrapport), og
+  [aktivitetslisten](aktivitetsdiagram.md#aktivitetsliste) med alle epics og stories, avhengigheter,
+  ansvarlig og frist
 - **[`møtereferater/`](møtereferater/)** — ett referat per gruppemøte
 
 ## Hvor resten ligger
