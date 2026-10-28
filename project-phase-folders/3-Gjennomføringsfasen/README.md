@@ -5,9 +5,13 @@ for sprint.
 
 ## Innhold (legges til etter hvert)
 
-- **[`fremdriftsplan.md`](fremdriftsplan.md)** — hvor vi er nå, stegene og status for hver story.
-  Oppdateres i samme PR som hver ferdige story og etter hvert møte som endrer planen.
+- **[`fremdriftsplan.md`](fremdriftsplan.md)** — hvor vi er nå, [tidslinjen](fremdriftsplan.md#tidslinje)
+  fra oppstart til levering, stegene og status for hver story. Oppdateres i samme PR som hver
+  ferdige story og etter hvert møte som endrer planen.
+- **[`aktivitetsdiagram.md`](aktivitetsdiagram.md)** — arbeidsflyten fram til levering
+  2026-11-25: storyene som gjenstår, Story 1.11, steg 8c, brukertest og sluttrapport
 - **[`møtereferater/`](møtereferater/)** — ett referat per gruppemøte
+
 ## Hvor resten ligger
 
 Dette lages av BMad-verktøyet og ligger i `project-workspace/`. Det lenkes hit i stedet for å
