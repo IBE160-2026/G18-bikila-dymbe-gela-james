@@ -209,7 +209,8 @@ SnowScore-visning, slik at en bruker lærer «rundt = poengsum».
   tallene i `numeric`. Bruker ikke SnowScore-skalaen; avviste svar vises som tall, ikke i
   danger-rødt.
 - **Beste skivindu-kort** — `surface-sunken` bakgrunn (skiller det visuelt fra rådata-kortene
-  rundt), tidsromtekst i `heading`, begrunnelse («etter nattens snøfall») i `meta`.
+  rundt), tidsromtekst i `heading` («fredag 13–17»), begrunnelse («Snittvind 1 m/s, skydekke 91 %,
+  etter snøfallet») og eventuelle forbehold (kortere vindu, mørketid) i `meta`. *(Bygget i Story 4.2.)*
 
 ## Do's and Don'ts
 

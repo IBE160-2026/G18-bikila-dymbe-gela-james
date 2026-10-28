@@ -36,14 +36,23 @@ async function tryFetch(fetchFn: FetchFn, url: string): Promise<Attempt> {
   }
 }
 
+/** Fields added after the first published files, with the value an older file gets for them. */
+const NYERE_FELT = {
+  // Story 3.5
+  skydekkeDagslys: null,
+  // Story 4.2
+  skivindu: null,
+  skivinduUtenDagslys: false,
+}
+
 /**
- * Story 3.5: a latest.json written before `skydekkeDagslys` existed gets it as null, so the app keeps
- * working until the next pipeline run. Read side only; publish.ts still requires the field.
+ * Stories 3.5 and 4.2: a latest.json written before a field existed gets its default, so the app keeps
+ * working until the next pipeline run. Read side only; publish.ts still requires the fields.
  */
-function medSkydekkeDagslys(body: unknown): unknown {
+function medNyereFelt(body: unknown): unknown {
   if (typeof body !== 'object' || body === null || !('steder' in body) || !Array.isArray(body.steder)) return body
   const steder: unknown[] = body.steder.map((sted: unknown) =>
-    typeof sted === 'object' && sted !== null && !('skydekkeDagslys' in sted) ? { ...sted, skydekkeDagslys: null } : sted,
+    typeof sted === 'object' && sted !== null ? { ...NYERE_FELT, ...sted } : sted,
   )
   return { ...body, steder }
 }
@@ -60,7 +69,7 @@ export async function loadPublishedData(fetchFn: FetchFn = (url, init) => fetch(
       console.error(attempt.reason)
       return { status: 'error', message: LOAD_ERROR_MESSAGE }
     }
-    const parsed = PublishedData.safeParse(medSkydekkeDagslys(attempt.body))
+    const parsed = PublishedData.safeParse(medNyereFelt(attempt.body))
     if (!parsed.success) {
       console.error(`${url} følger ikke PublishedData`, parsed.error.issues)
       return { status: 'error', message: LOAD_ERROR_MESSAGE }
