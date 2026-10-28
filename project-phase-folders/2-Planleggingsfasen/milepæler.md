@@ -4,7 +4,8 @@ Rekkefølgen følger utviklingsprosessen i produktbriefen: stedskatalog og pipel
 → kart og stedssider → filter → «bør ha»-funksjoner.
 
 Tidslinjen med alle milepælene står i
-[fremdriftsplanen](../3-Gjennomføringsfasen/fremdriftsplan.md#tidslinje).
+[fremdriftsplanen](../3-Gjennomføringsfasen/fremdriftsplan.md#tidslinje), og hver aktivitet som
+fører fram til dem står i [aktivitetslisten](../3-Gjennomføringsfasen/aktivitetsdiagram.md#aktivitetsliste).
 
 ## Hvordan datoene leses
 
@@ -27,12 +28,33 @@ Tidslinjen med alle milepælene står i
 
 | # | Milepæl | Epic og sprint | Frist |
 |---|---|---|---|
-| 1 | Stedskatalog og datapipeline (MET, NVE, Kartverket, OSM) | Epic 1, sprint 1–2 | Katalog og pipeline nådd 2026-10-08 (PR #18, #23, #24). Timesjobb og publisering (1.11): 2026-11-11, forslag. Venter på at faglærer setter GitHub Pages til «GitHub Actions» |
+| 1 | Stedskatalog og datapipeline (MET, NVE, Kartverket, OSM) | Epic 1, sprint 1–2 | Katalog og pipeline nådd 2026-10-08 (PR #18, #23, #24). Timesjobb og publisering (1.11): 2026-11-11, forslag. Har ikke faglærer satt GitHub Pages til «GitHub Actions» innen 2026-11-04, brukes reserven i Story 1.11 (datafila på grenen `data`) |
 | 2 | SnowScore-beregning og forklaringsside | Epic 1 (1.4) og Epic 2, sprint 1 | 2026-10-09, nådd (PR #20, #33–#36) |
 | 3 | Norgeskart og stedssider | Epic 1 (1.7–1.9), sprint 2 | 2026-10-08, nådd (PR #25–#32) |
-| 4 | Filter (nysnø, vind, sol, temperatur, avstand, stedstype) | Epic 3, sprint 3 | ✅ Ferdig 2026-10-28 (forslag var 2026-11-01) |
-| 5 | «Bør ha»: beste skivindu og kalkulator (snøvarsel og tilbakemelding er «Ikke i v1») | 1.6 og 4.2 i sprint 4, 2.4 i sprint 1 | 2026-11-11, forslag |
+| 4 | Filter (nysnø, vind, sol, temperatur, avstand, stedstype, nysnø siste 24 timer) | Epic 3, sprint 3 | 2026-10-28, nådd (PR #48–#71). Forslaget var 2026-11-01 |
+| 5 | «Bør ha» ferdig og kodefrys for v1: robusthet ved nedetid (1.6) og beste skivindu (4.2). Etter dette bygges bare rettinger fra brukertesten (snøvarsel og tilbakemelding er «Ikke i v1») | 1.6 og 4.2 i sprint 4, 2.4 i sprint 1 | 2026-11-11, forslag |
 | 6 | Levering og demo | Avslutningsfasen | 2026-11-25, vedtatt ([referat 2026-10-25](../3-Gjennomføringsfasen/møtereferater/2026-10-25-møtereferat.md)) |
+
+## Forslaget fra 2026-10-28
+
+Fra 28. oktober er det fire uker igjen til levering. Fristene er satt slik at hver del får omtrent
+én uke, og at det er plass til å rette det brukertesten finner:
+
+- **Uke 44 (28. oktober–1. november): steg 8c starter.** Filteret (M4) ble ferdig 28. oktober med
+  3.7 og 3.8, fire dager før forslaget. Steg 8c kan starte nå, fordi det ikke avhenger av koden.
+- **Uke 45 (2.–8. november): sprint 4 og steg 8c (F3).** 1.6 og 4.2 bygges parallelt av to
+  personer, fordi de berører ulike filer (banner for gamle data og stedssiden). Steg 8c må være
+  ferdig 4. november, så brukertestplanen er klar i god tid. Samme dag avgjør vi reserven for
+  Story 1.11.
+- **9.–11. november: kodefrys (M1 og M5).** Siste v1-stories merges, og 1.11 settes i drift.
+  Brukertesten skal teste den ferdige appen, ikke en halvferdig versjon.
+- **12.–16. november: brukertest (F4).** Minst fem personer, etter planen fra steg 8c.
+- **17.–20. november: rettinger etter brukertesten.** Bare kritiske funn bygges, som egne
+  `fix`-PR-er med review. Resten skrives inn i sluttrapporten som videre arbeid.
+- **16.–23. november: sluttrapport og presentasjon (F5).** Starter mens rettingene pågår, fordi
+  det meste av innholdet allerede finnes i fremdriftsplanen, KI-loggen og retrospektivene.
+- **24. november: generalprøve.** `npm ci && npm run dev` etter README på en ren maskin.
+- **25. november: levering og demo (M6).**
 
 Hvor langt vi har kommet på hver milepæl, står i
 [fremdriftsplanen](../3-Gjennomføringsfasen/fremdriftsplan.md). Datoene her endres når en
