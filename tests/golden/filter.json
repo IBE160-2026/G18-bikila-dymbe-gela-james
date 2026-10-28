@@ -1,179 +1,205 @@
 {
-  "grenser": "Kravene kombineres med OG: et sted vises bare når det oppfyller alle aktive krav. Alle grenser er inkluderende: nysnø ≥ X cm, vind ≤ Y m/s, temperatur ≤ Z °C, skydekke i dagslys ≤ W % (Story 3.5, steg på 10 %) og avstand fra brukerposisjonen ≤ V km (Story 3.6, steg på 10 km). Nysnø, vind, temperatur og skydekke avrundes som Math.round(verdi × 10) / 10, samme som visningen, før sammenligningen. Derfor teller 2,96 cm og 3,000000000000001 cm begge som 3,0, −0,04 °C som 0, og både −5,04 °C og −4,96 °C som −5,0. Avstanden (haversine, src/lib/sortering.ts avstandKm) sammenlignes derimot uavrundet, siden den aldri vises. Et krav er av når grensen er null eller står i ytterpunktet som betyr «ingen grense» (nysnø 0, vind 25, temperatur +10, skydekke 100, avstand 200); da vises også steder over ytterpunktet, som vind 30 m/s eller +12 °C. Mangler stedet verdien for et aktivt krav (null), vises det ikke. Det gjelder også skydekke i dagslys i mørketiden, der verdien er null. En verdi på 0 er en ekte verdi, ikke en manglende. Avstandskravet er unntaket: uten en kjent brukerposisjon har det ingen effekt i det hele tatt (det skjuler ingen steder), selv når grensen er aktiv — forskjellig fra et sted som mangler en verdi. Uten aktive krav vises alle steder, også de med ufullstendige data. Rekkefølgen er stedenes egen rekkefølge. Stedstype (Story 3.7) er en mengde, ikke en grense: null betyr «Alle», ellers vises bare steder med en av de valgte typene. Typen mangler aldri, så den skjuler ikke ufullstendige steder av riktig type, og alle tre valgt viser alle steder.",
-  "forslag": "Ved null treff (Story 3.3): for hvert aktivt krav finnes den nærmeste verdien på sliderens steg, i retning «Alle», som gir minst ett treff når de andre kravene står. Ytterpunktet betyr uten kravet (verdi null). Forslaget er kravet som da gir flest treff; ved likhet vinner færrest steg, deretter panelets rekkefølge (nysnø, vind, temperatur, skydekke, avstand, stedstype). Stedstype lempes bare rett til «Alle» (verdi null), som ett steg (Story 3.7). Gir ingen enkeltendring treff, er forventetForslag null, og appen foreslår «Nullstill». Tilfeller med treff har aldri forslag. Avstandskravet lempes på samme måte som de andre når brukerposisjonen er kjent (Story 3.6).",
+  "grenser": "Kravene kombineres med OG: et sted vises bare når det oppfyller alle aktive krav. Alle grenser er inkluderende: nysnø ≥ X cm, vind ≤ Y m/s, temperatur ≤ Z °C, skydekke i dagslys ≤ W % (Story 3.5, steg på 10 %) og avstand fra brukerposisjonen ≤ V km (Story 3.6, steg på 10 km). Nysnø, vind, temperatur og skydekke avrundes som Math.round(verdi × 10) / 10, samme som visningen, før sammenligningen. Derfor teller 2,96 cm og 3,000000000000001 cm begge som 3,0, −0,04 °C som 0, og både −5,04 °C og −4,96 °C som −5,0. Avstanden (haversine, src/lib/sortering.ts avstandKm) sammenlignes derimot uavrundet, siden den aldri vises. Et krav er av når grensen er null eller står i ytterpunktet som betyr «ingen grense» (nysnø 0, vind 25, temperatur +10, skydekke 100, avstand 200); da vises også steder over ytterpunktet, som vind 30 m/s eller +12 °C. Mangler stedet verdien for et aktivt krav (null), vises det ikke. Det gjelder også skydekke i dagslys i mørketiden, der verdien er null. En verdi på 0 er en ekte verdi, ikke en manglende. Avstandskravet er unntaket: uten en kjent brukerposisjon har det ingen effekt i det hele tatt (det skjuler ingen steder), selv når grensen er aktiv — forskjellig fra et sted som mangler en verdi. Uten aktive krav vises alle steder, også de med ufullstendige data. Rekkefølgen er stedenes egen rekkefølge. Stedstype (Story 3.7) er en mengde, ikke en grense: null betyr «Alle», ellers vises bare steder med en av de valgte typene. Typen mangler aldri, så den skjuler ikke ufullstendige steder av riktig type, og alle tre valgt viser alle steder. Nysnøkravet leser prognosen (nysnoCm) med kilden met, som er standard, og NVEs modellerte nysnø siste døgn (nveNysnoSisteDognMm, omregnet med mmToCm, 1 mm ≈ 1 cm) med kilden nve (Story 3.8). Avrunding og manglende verdier behandles likt for begge. Kilden har ingen effekt når nysnøkravet er av, så et sted uten NVE-verdi skjules bare når kravet er på.",
+  "forslag": "Ved null treff (Story 3.3): for hvert aktivt krav finnes den nærmeste verdien på sliderens steg, i retning «Alle», som gir minst ett treff når de andre kravene står. Ytterpunktet betyr uten kravet (verdi null). Forslaget er kravet som da gir flest treff; ved likhet vinner færrest steg, deretter panelets rekkefølge (nysnø, vind, temperatur, skydekke, avstand, stedstype). Stedstype lempes bare rett til «Alle» (verdi null), som ett steg (Story 3.7). Gir ingen enkeltendring treff, er forventetForslag null, og appen foreslår «Nullstill». Tilfeller med treff har aldri forslag. Avstandskravet lempes på samme måte som de andre når brukerposisjonen er kjent (Story 3.6). Med kilden nve lempes nysnøkravet langs NVE-verdiene. Kilden byttes aldri som forslag (Story 3.8).",
   "brukerposisjon": { "lat": 60, "lon": 10 },
   "steder": [
-    { "id": "dyp", "nysnoCm": 12, "vindMaks": 4, "temperatur": -5.04, "skydekkeDagslys": 10, "lat": 60.5, "lon": 10, "type": "skisted" },
-    { "id": "grense-eksakt", "nysnoCm": 3.000000000000001, "vindMaks": 10, "temperatur": 0, "skydekkeDagslys": 50, "lat": 61.0, "lon": 10, "type": "skisted" },
-    { "id": "grense-avrundet", "nysnoCm": 2.96, "vindMaks": 10.04, "temperatur": -0.04, "skydekkeDagslys": 50.04, "lat": 61.5, "lon": 10, "type": "fjelltopp" },
-    { "id": "rett-over", "nysnoCm": 2.94, "vindMaks": 10.1, "temperatur": 0.1, "skydekkeDagslys": 50.1, "lat": 61.8, "lon": 10, "type": "fjelltopp" },
-    { "id": "storm", "nysnoCm": 8, "vindMaks": 30, "temperatur": -10, "skydekkeDagslys": 100, "lat": 63.0, "lon": 10, "type": "fjelltopp" },
-    { "id": "varmt", "nysnoCm": 0, "vindMaks": 3, "temperatur": 12, "skydekkeDagslys": 0, "lat": 58.0, "lon": 10, "type": "by" },
-    { "id": "ufullstendig", "nysnoCm": null, "vindMaks": 5, "temperatur": null, "skydekkeDagslys": null, "lat": 65.0, "lon": 10, "type": "by" },
-    { "id": "uten-vind", "nysnoCm": 4, "vindMaks": null, "temperatur": -4.96, "skydekkeDagslys": 30, "lat": 60.2, "lon": 10, "type": "skisted" }
+    { "id": "dyp", "nysnoCm": 12, "nveNysnoSisteDognMm": 20, "vindMaks": 4, "temperatur": -5.04, "skydekkeDagslys": 10, "lat": 60.5, "lon": 10, "type": "skisted" },
+    { "id": "grense-eksakt", "nysnoCm": 3.000000000000001, "nveNysnoSisteDognMm": 3, "vindMaks": 10, "temperatur": 0, "skydekkeDagslys": 50, "lat": 61.0, "lon": 10, "type": "skisted" },
+    { "id": "grense-avrundet", "nysnoCm": 2.96, "nveNysnoSisteDognMm": 2.96, "vindMaks": 10.04, "temperatur": -0.04, "skydekkeDagslys": 50.04, "lat": 61.5, "lon": 10, "type": "fjelltopp" },
+    { "id": "rett-over", "nysnoCm": 2.94, "nveNysnoSisteDognMm": 2.94, "vindMaks": 10.1, "temperatur": 0.1, "skydekkeDagslys": 50.1, "lat": 61.8, "lon": 10, "type": "fjelltopp" },
+    { "id": "storm", "nysnoCm": 8, "nveNysnoSisteDognMm": null, "vindMaks": 30, "temperatur": -10, "skydekkeDagslys": 100, "lat": 63.0, "lon": 10, "type": "fjelltopp" },
+    { "id": "varmt", "nysnoCm": 0, "nveNysnoSisteDognMm": 0, "vindMaks": 3, "temperatur": 12, "skydekkeDagslys": 0, "lat": 58.0, "lon": 10, "type": "by" },
+    { "id": "ufullstendig", "nysnoCm": null, "nveNysnoSisteDognMm": null, "vindMaks": 5, "temperatur": null, "skydekkeDagslys": null, "lat": 65.0, "lon": 10, "type": "by" },
+    { "id": "uten-vind", "nysnoCm": 4, "nveNysnoSisteDognMm": 6, "vindMaks": null, "temperatur": -4.96, "skydekkeDagslys": 30, "lat": 60.2, "lon": 10, "type": "skisted" }
   ],
   "tilfeller": [
     {
       "navn": "Ingen krav viser alle, også ufullstendige og de over ytterpunktene",
-      "filter": { "minNysnoCm": null, "maksVindMs": null, "maksTemperaturC": null, "maksSkydekkeDagslys": null, "maksAvstandKm": null, "stedstyper": null },
+      "filter": { "minNysnoCm": null, "maksVindMs": null, "maksTemperaturC": null, "maksSkydekkeDagslys": null, "maksAvstandKm": null, "stedstyper": null, "nysnoKilde": "met" },
       "forventet": ["dyp", "grense-eksakt", "grense-avrundet", "rett-over", "storm", "varmt", "ufullstendig", "uten-vind"]
     },
     {
       "navn": "Grenser i ytterpunktet er av, også for vind 30 m/s og +12 °C",
-      "filter": { "minNysnoCm": 0, "maksVindMs": 25, "maksTemperaturC": 10, "maksSkydekkeDagslys": 100, "maksAvstandKm": 200, "stedstyper": null },
+      "filter": { "minNysnoCm": 0, "maksVindMs": 25, "maksTemperaturC": 10, "maksSkydekkeDagslys": 100, "maksAvstandKm": 200, "stedstyper": null, "nysnoKilde": "met" },
       "forventet": ["dyp", "grense-eksakt", "grense-avrundet", "rett-over", "storm", "varmt", "ufullstendig", "uten-vind"]
     },
     {
       "navn": "Nysnø minst 3 cm, inkludert det som vises som 3",
-      "filter": { "minNysnoCm": 3, "maksVindMs": null, "maksTemperaturC": null, "maksSkydekkeDagslys": null, "maksAvstandKm": null, "stedstyper": null },
+      "filter": { "minNysnoCm": 3, "maksVindMs": null, "maksTemperaturC": null, "maksSkydekkeDagslys": null, "maksAvstandKm": null, "stedstyper": null, "nysnoKilde": "met" },
       "forventet": ["dyp", "grense-eksakt", "grense-avrundet", "storm", "uten-vind"]
     },
     {
       "navn": "Nysnø minst 1 cm skjuler 0 cm for verdien, og null fordi den mangler",
-      "filter": { "minNysnoCm": 1, "maksVindMs": null, "maksTemperaturC": null, "maksSkydekkeDagslys": null, "maksAvstandKm": null, "stedstyper": null },
+      "filter": { "minNysnoCm": 1, "maksVindMs": null, "maksTemperaturC": null, "maksSkydekkeDagslys": null, "maksAvstandKm": null, "stedstyper": null, "nysnoKilde": "met" },
       "forventet": ["dyp", "grense-eksakt", "grense-avrundet", "rett-over", "storm", "uten-vind"]
     },
     {
       "navn": "Vind høyst 10 m/s, inkludert 10,04",
-      "filter": { "minNysnoCm": null, "maksVindMs": 10, "maksTemperaturC": null, "maksSkydekkeDagslys": null, "maksAvstandKm": null, "stedstyper": null },
+      "filter": { "minNysnoCm": null, "maksVindMs": 10, "maksTemperaturC": null, "maksSkydekkeDagslys": null, "maksAvstandKm": null, "stedstyper": null, "nysnoKilde": "met" },
       "forventet": ["dyp", "grense-eksakt", "grense-avrundet", "varmt", "ufullstendig"]
     },
     {
       "navn": "Temperatur høyst 0 °C, inkludert −0,04, og ufullstendige skjules",
-      "filter": { "minNysnoCm": null, "maksVindMs": null, "maksTemperaturC": 0, "maksSkydekkeDagslys": null, "maksAvstandKm": null, "stedstyper": null },
+      "filter": { "minNysnoCm": null, "maksVindMs": null, "maksTemperaturC": 0, "maksSkydekkeDagslys": null, "maksAvstandKm": null, "stedstyper": null, "nysnoKilde": "met" },
       "forventet": ["dyp", "grense-eksakt", "grense-avrundet", "storm", "uten-vind"]
     },
     {
       "navn": "Temperatur høyst −5 °C: −5,04 og −4,96 avrundes begge til −5,0 og vises",
-      "filter": { "minNysnoCm": null, "maksVindMs": null, "maksTemperaturC": -5, "maksSkydekkeDagslys": null, "maksAvstandKm": null, "stedstyper": null },
+      "filter": { "minNysnoCm": null, "maksVindMs": null, "maksTemperaturC": -5, "maksSkydekkeDagslys": null, "maksAvstandKm": null, "stedstyper": null, "nysnoKilde": "met" },
       "forventet": ["dyp", "storm", "uten-vind"]
     },
     {
       "navn": "Manglende vind skjuler stedet selv med en vid grense",
-      "filter": { "minNysnoCm": null, "maksVindMs": 24, "maksTemperaturC": null, "maksSkydekkeDagslys": null, "maksAvstandKm": null, "stedstyper": null },
+      "filter": { "minNysnoCm": null, "maksVindMs": 24, "maksTemperaturC": null, "maksSkydekkeDagslys": null, "maksAvstandKm": null, "stedstyper": null, "nysnoKilde": "met" },
       "forventet": ["dyp", "grense-eksakt", "grense-avrundet", "rett-over", "varmt", "ufullstendig"]
     },
     {
       "navn": "Alle tre kombinert med OG",
-      "filter": { "minNysnoCm": 2, "maksVindMs": 10, "maksTemperaturC": 0, "maksSkydekkeDagslys": null, "maksAvstandKm": null, "stedstyper": null },
+      "filter": { "minNysnoCm": 2, "maksVindMs": 10, "maksTemperaturC": 0, "maksSkydekkeDagslys": null, "maksAvstandKm": null, "stedstyper": null, "nysnoKilde": "met" },
       "forventet": ["dyp", "grense-eksakt", "grense-avrundet"]
     },
     {
       "navn": "Skydekke i dagslys høyst 50 %, inkludert 50,04, og ufullstendige skjules",
-      "filter": { "minNysnoCm": null, "maksVindMs": null, "maksTemperaturC": null, "maksSkydekkeDagslys": 50, "maksAvstandKm": null, "stedstyper": null },
+      "filter": { "minNysnoCm": null, "maksVindMs": null, "maksTemperaturC": null, "maksSkydekkeDagslys": 50, "maksAvstandKm": null, "stedstyper": null, "nysnoKilde": "met" },
       "forventet": ["dyp", "grense-eksakt", "grense-avrundet", "varmt", "uten-vind"]
     },
     {
       "navn": "Skydekke i dagslys høyst 0 %: 0 er en ekte verdi, null (mørketid) skjules",
-      "filter": { "minNysnoCm": null, "maksVindMs": null, "maksTemperaturC": null, "maksSkydekkeDagslys": 0, "maksAvstandKm": null, "stedstyper": null },
+      "filter": { "minNysnoCm": null, "maksVindMs": null, "maksTemperaturC": null, "maksSkydekkeDagslys": 0, "maksAvstandKm": null, "stedstyper": null, "nysnoKilde": "met" },
       "forventet": ["varmt"]
     },
     {
       "navn": "Alle fire kombinert med OG",
-      "filter": { "minNysnoCm": 2, "maksVindMs": 10, "maksTemperaturC": 0, "maksSkydekkeDagslys": 40, "maksAvstandKm": null, "stedstyper": null },
+      "filter": { "minNysnoCm": 2, "maksVindMs": 10, "maksTemperaturC": 0, "maksSkydekkeDagslys": 40, "maksAvstandKm": null, "stedstyper": null, "nysnoKilde": "met" },
       "forventet": ["dyp"]
     },
     {
       "navn": "Avstand høyst 190 km alene, med kjent brukerposisjon",
-      "filter": { "minNysnoCm": null, "maksVindMs": null, "maksTemperaturC": null, "maksSkydekkeDagslys": null, "maksAvstandKm": 190, "stedstyper": null },
+      "filter": { "minNysnoCm": null, "maksVindMs": null, "maksTemperaturC": null, "maksSkydekkeDagslys": null, "maksAvstandKm": 190, "stedstyper": null, "nysnoKilde": "met" },
       "forventet": ["dyp", "grense-eksakt", "grense-avrundet", "uten-vind"]
     },
     {
       "navn": "Avstand kombinert med vindkravet: bare det som er nært og har vind innenfor grensen",
-      "filter": { "minNysnoCm": null, "maksVindMs": 5, "maksTemperaturC": null, "maksSkydekkeDagslys": null, "maksAvstandKm": 190, "stedstyper": null },
+      "filter": { "minNysnoCm": null, "maksVindMs": 5, "maksTemperaturC": null, "maksSkydekkeDagslys": null, "maksAvstandKm": 190, "stedstyper": null, "nysnoKilde": "met" },
       "forventet": ["dyp"]
     },
     {
       "navn": "Stedstype by alene, også ufullstendige, siden typen alltid er kjent",
-      "filter": { "minNysnoCm": null, "maksVindMs": null, "maksTemperaturC": null, "maksSkydekkeDagslys": null, "maksAvstandKm": null, "stedstyper": ["by"] },
+      "filter": { "minNysnoCm": null, "maksVindMs": null, "maksTemperaturC": null, "maksSkydekkeDagslys": null, "maksAvstandKm": null, "stedstyper": ["by"], "nysnoKilde": "met" },
       "forventet": ["varmt", "ufullstendig"]
     },
     {
       "navn": "Stedstype skisted og by: begge typene, i stedenes egen rekkefølge",
-      "filter": { "minNysnoCm": null, "maksVindMs": null, "maksTemperaturC": null, "maksSkydekkeDagslys": null, "maksAvstandKm": null, "stedstyper": ["skisted", "by"] },
+      "filter": { "minNysnoCm": null, "maksVindMs": null, "maksTemperaturC": null, "maksSkydekkeDagslys": null, "maksAvstandKm": null, "stedstyper": ["skisted", "by"], "nysnoKilde": "met" },
       "forventet": ["dyp", "grense-eksakt", "varmt", "ufullstendig", "uten-vind"]
     },
     {
       "navn": "Alle tre stedstypene viser alle steder",
-      "filter": { "minNysnoCm": null, "maksVindMs": null, "maksTemperaturC": null, "maksSkydekkeDagslys": null, "maksAvstandKm": null, "stedstyper": ["skisted", "fjelltopp", "by"] },
+      "filter": { "minNysnoCm": null, "maksVindMs": null, "maksTemperaturC": null, "maksSkydekkeDagslys": null, "maksAvstandKm": null, "stedstyper": ["skisted", "fjelltopp", "by"], "nysnoKilde": "met" },
       "forventet": ["dyp", "grense-eksakt", "grense-avrundet", "rett-over", "storm", "varmt", "ufullstendig", "uten-vind"]
     },
     {
       "navn": "Stedstype fjelltopp kombinert med nysnø minst 3 cm (OG): 2,96 vises som 3, 2,94 ikke",
-      "filter": { "minNysnoCm": 3, "maksVindMs": null, "maksTemperaturC": null, "maksSkydekkeDagslys": null, "maksAvstandKm": null, "stedstyper": ["fjelltopp"] },
+      "filter": { "minNysnoCm": 3, "maksVindMs": null, "maksTemperaturC": null, "maksSkydekkeDagslys": null, "maksAvstandKm": null, "stedstyper": ["fjelltopp"], "nysnoKilde": "met" },
       "forventet": ["grense-avrundet", "storm"]
     },
     {
+      "navn": "Kilde NVE uten nysnøkrav viser alle, også steder uten NVE-verdi (storm, ufullstendig)",
+      "filter": { "minNysnoCm": null, "maksVindMs": null, "maksTemperaturC": null, "maksSkydekkeDagslys": null, "maksAvstandKm": null, "stedstyper": null, "nysnoKilde": "nve" },
+      "forventet": ["dyp", "grense-eksakt", "grense-avrundet", "rett-over", "storm", "varmt", "ufullstendig", "uten-vind"]
+    },
+    {
+      "navn": "Nysnø siste 24 t minst 3 cm: NVE-verdien avrundes som visningen (2,96 er 3), og storm (8 cm prognose, ingen NVE) skjules",
+      "filter": { "minNysnoCm": 3, "maksVindMs": null, "maksTemperaturC": null, "maksSkydekkeDagslys": null, "maksAvstandKm": null, "stedstyper": null, "nysnoKilde": "nve" },
+      "forventet": ["dyp", "grense-eksakt", "grense-avrundet", "uten-vind"]
+    },
+    {
+      "navn": "Nysnø siste 24 t minst 5 cm: uten-vind har 6 mm fra NVE, men bare 4 cm i prognosen",
+      "filter": { "minNysnoCm": 5, "maksVindMs": null, "maksTemperaturC": null, "maksSkydekkeDagslys": null, "maksAvstandKm": null, "stedstyper": null, "nysnoKilde": "nve" },
+      "forventet": ["dyp", "uten-vind"]
+    },
+    {
+      "navn": "Nysnø siste 24 t minst 10 cm kombinert med vind høyst 5 m/s (OG)",
+      "filter": { "minNysnoCm": 10, "maksVindMs": 5, "maksTemperaturC": null, "maksSkydekkeDagslys": null, "maksAvstandKm": null, "stedstyper": null, "nysnoKilde": "nve" },
+      "forventet": ["dyp"]
+    },
+    {
       "navn": "Null treff",
-      "filter": { "minNysnoCm": 30, "maksVindMs": null, "maksTemperaturC": null, "maksSkydekkeDagslys": null, "maksAvstandKm": null, "stedstyper": null },
+      "filter": { "minNysnoCm": 30, "maksVindMs": null, "maksTemperaturC": null, "maksSkydekkeDagslys": null, "maksAvstandKm": null, "stedstyper": null, "nysnoKilde": "met" },
       "forventet": [],
       "forventetForslag": { "krav": "minNysnoCm", "verdi": 12, "antall": 1 }
     },
     {
       "navn": "Null treff, to krav med like mange treff og like mange steg: panelets rekkefølge avgjør",
-      "filter": { "minNysnoCm": 9, "maksVindMs": null, "maksTemperaturC": -6, "maksSkydekkeDagslys": null, "maksAvstandKm": null, "stedstyper": null },
+      "filter": { "minNysnoCm": 9, "maksVindMs": null, "maksTemperaturC": -6, "maksSkydekkeDagslys": null, "maksAvstandKm": null, "stedstyper": null, "nysnoKilde": "met" },
       "forventet": [],
       "forventetForslag": { "krav": "minNysnoCm", "verdi": 8, "antall": 1 }
     },
     {
       "navn": "Null treff, like mange treff: færrest steg vinner (vind 4 framfor nysnø uten krav)",
-      "filter": { "minNysnoCm": 5, "maksVindMs": 3, "maksTemperaturC": null, "maksSkydekkeDagslys": null, "maksAvstandKm": null, "stedstyper": null },
+      "filter": { "minNysnoCm": 5, "maksVindMs": 3, "maksTemperaturC": null, "maksSkydekkeDagslys": null, "maksAvstandKm": null, "stedstyper": null, "nysnoKilde": "met" },
       "forventet": [],
       "forventetForslag": { "krav": "maksVindMs", "verdi": 4, "antall": 1 }
     },
     {
       "navn": "Null treff, bare ytterpunktet hjelper: uten nysnøkravet",
-      "filter": { "minNysnoCm": 13, "maksVindMs": 3, "maksTemperaturC": null, "maksSkydekkeDagslys": null, "maksAvstandKm": null, "stedstyper": null },
+      "filter": { "minNysnoCm": 13, "maksVindMs": 3, "maksTemperaturC": null, "maksSkydekkeDagslys": null, "maksAvstandKm": null, "stedstyper": null, "nysnoKilde": "met" },
       "forventet": [],
       "forventetForslag": { "krav": "minNysnoCm", "verdi": null, "antall": 1 }
     },
     {
       "navn": "Null treff, uten temperaturkravet tar færre steg enn uten vindkravet",
-      "filter": { "minNysnoCm": null, "maksVindMs": 3, "maksTemperaturC": -6, "maksSkydekkeDagslys": null, "maksAvstandKm": null, "stedstyper": null },
+      "filter": { "minNysnoCm": null, "maksVindMs": 3, "maksTemperaturC": -6, "maksSkydekkeDagslys": null, "maksAvstandKm": null, "stedstyper": null, "nysnoKilde": "met" },
       "forventet": [],
       "forventetForslag": { "krav": "maksTemperaturC", "verdi": null, "antall": 1 }
     },
     {
       "navn": "Null treff, et sted uten verdi teller ikke mens kravet lempes: vind 3 gir bare varmt, ikke uten-vind (som bare ville telt uten vindkravet)",
-      "filter": { "minNysnoCm": null, "maksVindMs": 2, "maksTemperaturC": null, "maksSkydekkeDagslys": null, "maksAvstandKm": null, "stedstyper": null },
+      "filter": { "minNysnoCm": null, "maksVindMs": 2, "maksTemperaturC": null, "maksSkydekkeDagslys": null, "maksAvstandKm": null, "stedstyper": null, "nysnoKilde": "met" },
       "forventet": [],
       "forventetForslag": { "krav": "maksVindMs", "verdi": 3, "antall": 1 }
     },
     {
       "navn": "Null treff, ingen enkeltendring hjelper: forslaget er «Nullstill»",
-      "filter": { "minNysnoCm": 9, "maksVindMs": 3, "maksTemperaturC": -6, "maksSkydekkeDagslys": null, "maksAvstandKm": null, "stedstyper": null },
+      "filter": { "minNysnoCm": 9, "maksVindMs": 3, "maksTemperaturC": -6, "maksSkydekkeDagslys": null, "maksAvstandKm": null, "stedstyper": null, "nysnoKilde": "met" },
       "forventet": [],
       "forventetForslag": null
     },
     {
       "navn": "Null treff, skydekke høyst 10 % tar ett steg, mens nysnøkravet må fjernes (tre steg)",
-      "filter": { "minNysnoCm": 3, "maksVindMs": null, "maksTemperaturC": null, "maksSkydekkeDagslys": 0, "maksAvstandKm": null, "stedstyper": null },
+      "filter": { "minNysnoCm": 3, "maksVindMs": null, "maksTemperaturC": null, "maksSkydekkeDagslys": 0, "maksAvstandKm": null, "stedstyper": null, "nysnoKilde": "met" },
       "forventet": [],
       "forventetForslag": { "krav": "maksSkydekkeDagslys", "verdi": 10, "antall": 1 }
     },
     {
       "navn": "Null treff, like mange treff og steg: nysnø står før skydekke i panelet",
-      "filter": { "minNysnoCm": 1, "maksVindMs": null, "maksTemperaturC": null, "maksSkydekkeDagslys": 0, "maksAvstandKm": null, "stedstyper": null },
+      "filter": { "minNysnoCm": 1, "maksVindMs": null, "maksTemperaturC": null, "maksSkydekkeDagslys": 0, "maksAvstandKm": null, "stedstyper": null, "nysnoKilde": "met" },
       "forventet": [],
       "forventetForslag": { "krav": "minNysnoCm", "verdi": null, "antall": 1 }
     },
     {
       "navn": "Null treff, avstand alene høyst 10 km: nærmeste steg som treffer er 30 km (uten-vind på 22,24 km)",
-      "filter": { "minNysnoCm": null, "maksVindMs": null, "maksTemperaturC": null, "maksSkydekkeDagslys": null, "maksAvstandKm": 10, "stedstyper": null },
+      "filter": { "minNysnoCm": null, "maksVindMs": null, "maksTemperaturC": null, "maksSkydekkeDagslys": null, "maksAvstandKm": 10, "stedstyper": null, "nysnoKilde": "met" },
       "forventet": [],
       "forventetForslag": { "krav": "maksAvstandKm", "verdi": 30, "antall": 1 }
     },
     {
       "navn": "Null treff, by og nysnø minst 3 cm: uten stedstypekravet gir fem, uten nysnøkravet bare to",
-      "filter": { "minNysnoCm": 3, "maksVindMs": null, "maksTemperaturC": null, "maksSkydekkeDagslys": null, "maksAvstandKm": null, "stedstyper": ["by"] },
+      "filter": { "minNysnoCm": 3, "maksVindMs": null, "maksTemperaturC": null, "maksSkydekkeDagslys": null, "maksAvstandKm": null, "stedstyper": ["by"], "nysnoKilde": "met" },
       "forventet": [],
       "forventetForslag": { "krav": "stedstyper", "verdi": null, "antall": 5 }
     },
     {
       "navn": "Null treff, skisted og vind høyst 3 m/s: vind 4 og uten stedstype gir ett hver på ett steg, og vind står først i panelet",
-      "filter": { "minNysnoCm": null, "maksVindMs": 3, "maksTemperaturC": null, "maksSkydekkeDagslys": null, "maksAvstandKm": null, "stedstyper": ["skisted"] },
+      "filter": { "minNysnoCm": null, "maksVindMs": 3, "maksTemperaturC": null, "maksSkydekkeDagslys": null, "maksAvstandKm": null, "stedstyper": ["skisted"], "nysnoKilde": "met" },
       "forventet": [],
       "forventetForslag": { "krav": "maksVindMs", "verdi": 4, "antall": 1 }
+    },
+    {
+      "navn": "Null treff, nysnø siste 24 t minst 25 cm: lempes langs NVE-verdiene til 20 cm (dyp), ikke til prognosens 12",
+      "filter": { "minNysnoCm": 25, "maksVindMs": null, "maksTemperaturC": null, "maksSkydekkeDagslys": null, "maksAvstandKm": null, "stedstyper": null, "nysnoKilde": "nve" },
+      "forventet": [],
+      "forventetForslag": { "krav": "minNysnoCm", "verdi": 20, "antall": 1 }
     }
   ]
 }

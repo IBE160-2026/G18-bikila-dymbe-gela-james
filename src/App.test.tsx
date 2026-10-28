@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { describe, expect, it, vi } from 'vitest'
 import { PublishedData } from '../shared/contracts/published'
+import { STANDARD_FILTER } from '../shared/filter'
 import { FJERNES_ETTER_MS } from '../shared/freshness'
 import { AppView } from './App'
 import { kvalitetLinjer } from './components/Datakvalitet'
@@ -20,7 +21,7 @@ const LISTE = utforsk('liste')
 // Story 3.2b: the demo search with six hits, at least 2 cm new snow and at most 0 °C, in the list.
 const SEKS_I_LISTEN = {
   ...LISTE,
-  filter: { minNysnoCm: 2, maksVindMs: null, maksTemperaturC: 0, maksSkydekkeDagslys: null, maksAvstandKm: null, stedstyper: null },
+  filter: { minNysnoCm: 2, maksVindMs: null, maksTemperaturC: 0, maksSkydekkeDagslys: null, maksAvstandKm: null, stedstyper: null, nysnoKilde: 'met' as const },
 }
 
 /** The text of every element with role="status" that contains `tekst`. */
@@ -53,7 +54,7 @@ describe('AppView', () => {
   it('suggests the nearest new snow that gives a place, with «Bruk forslaget» and «Nullstill»', () => {
     const html = render(demoResult, {
       ...UTFORSK,
-      filter: { minNysnoCm: 13, maksVindMs: null, maksTemperaturC: null, maksSkydekkeDagslys: null, maksAvstandKm: null, stedstyper: null },
+      filter: { minNysnoCm: 13, maksVindMs: null, maksTemperaturC: null, maksSkydekkeDagslys: null, maksAvstandKm: null, stedstyper: null, nysnoKilde: 'met' },
     })
     const tekst = 'Ingen treff. Prøv nysnø minst 12 cm.'
     expect(html).toContain(`<p class="visually-hidden" role="status">${tekst}</p>`)
@@ -69,7 +70,7 @@ describe('AppView', () => {
   it('says «Prøv uten nysnøkravet» when only «Alle» gives a place', () => {
     const html = render(demoResult, {
       ...UTFORSK,
-      filter: { minNysnoCm: 1, maksVindMs: 3, maksTemperaturC: null, maksSkydekkeDagslys: null, maksAvstandKm: null, stedstyper: null },
+      filter: { minNysnoCm: 1, maksVindMs: 3, maksTemperaturC: null, maksSkydekkeDagslys: null, maksAvstandKm: null, stedstyper: null, nysnoKilde: 'met' },
     })
     expect(html).toContain('<p>Ingen treff. Prøv uten nysnøkravet.</p>')
   })
@@ -77,7 +78,7 @@ describe('AppView', () => {
   it('offers only «Nullstill» when no single change gives a place', () => {
     const html = render(demoResult, {
       ...UTFORSK,
-      filter: { minNysnoCm: 13, maksVindMs: null, maksTemperaturC: -11, maksSkydekkeDagslys: null, maksAvstandKm: null, stedstyper: null },
+      filter: { minNysnoCm: 13, maksVindMs: null, maksTemperaturC: -11, maksSkydekkeDagslys: null, maksAvstandKm: null, stedstyper: null, nysnoKilde: 'met' },
     })
     expect(html).toContain('<p>Ingen treff. Det hjelper ikke å endre bare ett krav. Prøv «Nullstill».</p>')
     expect(html).not.toContain('Bruk forslaget')
@@ -326,5 +327,42 @@ describe('AppView', () => {
     const html = render(demoResult, LISTE)
     const row = /<a href="\/sted\/gaustatoppen\?visning=liste" class="liste-rad">(.*?)<\/a>/.exec(html)?.[1] ?? ''
     expect(row.replace(/<[^>]+>/g, '')).toBe('Gaustatoppen, 58 · Godt, Nysnø 10 cm, Vind 12 m/s, Temp −6,4 °C')
+  })
+
+  // Story 3.8 (review round 1, Sena 1A): each row shows the new snow the filter compares with.
+  it('shows NVE’s last day in each row when that is the source, and the forecast otherwise', () => {
+    const tekst = (html: string, id: string) =>
+      (new RegExp(`<a href="/sted/${id}\\?[^"]*" class="liste-rad">(.*?)</a>`).exec(html)?.[1] ?? '').replace(/<[^>]+>/g, '')
+    const nve = render(demoResult, { ...SEKS_I_LISTEN, filter: { ...STANDARD_FILTER, minNysnoCm: 5, nysnoKilde: 'nve' } })
+    // Oksskolten meets «at least 5 cm» on NVE's 15 mm, not on its forecast of 2,9 cm.
+    expect(tekst(nve, 'oksskolten')).toContain('Nysnø siste 24 t 15 cm')
+    expect(tekst(nve, 'oksskolten')).not.toContain('2,9 cm')
+    expect(tekst(render(demoResult, LISTE), 'oksskolten')).toContain('Nysnø 2,9 cm')
+  })
+
+  // Review round 2 (Sena): the zero-hit banner says why when NVE is missing from the whole run.
+  it('says in the zero-hit banner that NVE is missing, only when that is why there are no hits', () => {
+    const utenNve = medFerskhet({ status: 'ok', data: { ...demo, steder: demo.steder.map((s) => ({ ...s, nveNysnoSisteDognMm: null })) }, source: 'demo' })
+    const linje = '<p class="ingen-treff-nve">NVE-data mangler i denne kjøringen. Velg «Prognose» for å filtrere på nysnø.</p>'
+    expect(render(utenNve, { ...UTFORSK, filter: { ...STANDARD_FILTER, minNysnoCm: 5, nysnoKilde: 'nve' } })).toContain(linje)
+    // With the forecast, or with NVE values present, the zero hits have another cause.
+    expect(render(utenNve, { ...UTFORSK, filter: { ...STANDARD_FILTER, minNysnoCm: 13 } })).not.toContain('ingen-treff-nve')
+    const nveMedNullTreff = render(demoResult, {
+      ...UTFORSK,
+      filter: { ...STANDARD_FILTER, minNysnoCm: 20, maksVindMs: 12, nysnoKilde: 'nve' },
+    })
+    expect(nveMedNullTreff).toContain('<p>Ingen treff. Prøv nysnø siste 24 t minst 15 cm.</p>')
+    expect(nveMedNullTreff).not.toContain('ingen-treff-nve')
+  })
+
+  it('shows a dash, not the forecast, for a place without an NVE value when NVE is the source', () => {
+    const tekst = (html: string, id: string) =>
+      (new RegExp(`<a href="/sted/${id}\\?[^"]*" class="liste-rad">(.*?)</a>`).exec(html)?.[1] ?? '').replace(/<[^>]+>/g, '')
+    // Gaustatoppen has 10 cm in the forecast; without an NVE value its row must not borrow that number.
+    const steder = demo.steder.map((s) => (s.id === 'gaustatoppen' ? { ...s, nveNysnoSisteDognMm: null } : s))
+    const utenNve = medFerskhet({ status: 'ok', data: { ...demo, steder }, source: 'demo' })
+    const html = render(utenNve, { ...LISTE, filter: { ...STANDARD_FILTER, nysnoKilde: 'nve' } })
+    expect(tekst(html, 'gaustatoppen')).toContain('Nysnø siste 24 t –')
+    expect(tekst(html, 'gaustatoppen')).not.toContain('10 cm')
   })
 })

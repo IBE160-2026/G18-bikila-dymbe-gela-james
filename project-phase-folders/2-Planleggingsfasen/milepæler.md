@@ -30,7 +30,7 @@ Tidslinjen med alle milepælene står i
 | 1 | Stedskatalog og datapipeline (MET, NVE, Kartverket, OSM) | Epic 1, sprint 1–2 | Katalog og pipeline nådd 2026-10-08 (PR #18, #23, #24). Timesjobb og publisering (1.11): 2026-11-11, forslag. Venter på at faglærer setter GitHub Pages til «GitHub Actions» |
 | 2 | SnowScore-beregning og forklaringsside | Epic 1 (1.4) og Epic 2, sprint 1 | 2026-10-09, nådd (PR #20, #33–#36) |
 | 3 | Norgeskart og stedssider | Epic 1 (1.7–1.9), sprint 2 | 2026-10-08, nådd (PR #25–#32) |
-| 4 | Filter (nysnø, vind, sol, temperatur, avstand, stedstype) | Epic 3, sprint 3 | 2026-11-01, forslag |
+| 4 | Filter (nysnø, vind, sol, temperatur, avstand, stedstype) | Epic 3, sprint 3 | ✅ Ferdig 2026-10-28 (forslag var 2026-11-01) |
 | 5 | «Bør ha»: beste skivindu og kalkulator (snøvarsel og tilbakemelding er «Ikke i v1») | 1.6 og 4.2 i sprint 4, 2.4 i sprint 1 | 2026-11-11, forslag |
 | 6 | Levering og demo | Avslutningsfasen | 2026-11-25, vedtatt ([referat 2026-10-25](../3-Gjennomføringsfasen/møtereferater/2026-10-25-møtereferat.md)) |
 

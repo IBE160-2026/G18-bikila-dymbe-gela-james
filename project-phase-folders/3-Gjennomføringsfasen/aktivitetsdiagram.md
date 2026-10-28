@@ -14,7 +14,7 @@ flowchart TD
     start(["Start 2026-10-27"]) --> fork1{{"Tre spor parallelt"}}
 
     %% Spor A: storyene som gjenstår
-    fork1 --> a1["Velg neste story i sprintplan.md:<br/>3.7, 3.8, deretter 4.2"]
+    fork1 --> a1["Velg neste story i sprintplan.md:<br/>4.2 (1.11 venter på faglærer)"]
     a1 --> a2["Bygg med bmad-build på greinen<br/>story/nr-kort-navn"]
     a2 --> a3["Kjør lint, typecheck, test, build<br/>og test:e2e lokalt"]
     a3 --> a4["Sett storyen til done i sprint-status.yaml,<br/>oppdater fremdriftsplan og tidslinje,<br/>logg KI-økten i ai-log"]

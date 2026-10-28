@@ -29,7 +29,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 # - Retrospective appends its action items to action_items; the status view surfaces open ones
 generated: 09-27-2026 12:00
-last_updated: 10-27-2026 22:52
+last_updated: 10-28-2026 19:00
 project: G18-bikila-dymbe-gela-james
 project_key: NOKEY
 tracking_system: file-system
@@ -56,15 +56,15 @@ development_status:
   2-4-prøv-snowscore-kalkulatoren-selv: done
   epic-2-retrospective: done
 
-  epic-3: in-progress
+  epic-3: done
   3-1-filtrer-på-nysnø-vind-og-temperatur: done
   3-2-del-og-gjenåpne-et-filtrert-søk: done
   3-3-få-hjelp-ved-null-treff-og-se-antall-treff-live: done
   3-4-bruk-hurtigvalg-for-vanlige-kombinasjoner: done
   3-5-filtrer-på-sol: done
   3-6-filtrer-på-avstand: done
-  3-7-filtrer-på-stedstype: review
-  3-8-filtrer-på-nysnø-siste-24-timer: backlog
+  3-7-filtrer-på-stedstype: done
+  3-8-filtrer-på-nysnø-siste-24-timer: done
   epic-3-retrospective: optional
 
   epic-4: backlog

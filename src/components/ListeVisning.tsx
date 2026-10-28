@@ -1,5 +1,7 @@
 import { useEffect, useState, type ChangeEvent } from 'react'
 import type { Sted } from '../../shared/contracts/published'
+import type { NysnoKilde } from '../../shared/filter'
+import { mmToCm } from '../../shared/snowscore'
 import { medEnhet, utdatertTekst } from '../lib/format'
 import { sted as stedRoute, type UrlSortering, type UtforskRoute } from '../lib/router'
 import { SORTERINGER, avstandKm, sorterSteder, type Posisjon, type Sortering } from '../lib/sortering'
@@ -20,6 +22,16 @@ const kmFormat = new Intl.NumberFormat('nb-NO', { maximumFractionDigits: 0 })
 
 // Read by screen readers only, so a row's link is announced as "Gaustatoppen, 58 · Godt, Nysnø 10 cm, …".
 const Skille = () => <span className="visually-hidden">, </span>
+
+/**
+ * Story 3.8 (decided 2026-10-27, Sena): the new snow the filter compares with, so a row that meets
+ * «Nysnø siste 24 t minst 5 cm» never shows a lower forecast value. NVE's mm are converted like the filter.
+ */
+function nysnoTekst(sted: Sted, kilde: NysnoKilde): string {
+  if (kilde !== 'nve') return `Nysnø ${medEnhet(sted.nysnoCm, 'cm')}`
+  const cm = sted.nveNysnoSisteDognMm === null ? null : mmToCm(sted.nveNysnoSisteDognMm)
+  return `Nysnø siste 24 t ${medEnhet(cm, 'cm')}`
+}
 
 type Props = {
   steder: Sted[]
@@ -102,7 +114,7 @@ export default function ListeVisning({ steder, utdatert, sortering: urlSortering
       <ol className="liste-rader" aria-label="Steder">
         {sortert.map((sted) => {
           const detaljer = [
-            `Nysnø ${medEnhet(sted.nysnoCm, 'cm')}`,
+            nysnoTekst(sted, sok.filter.nysnoKilde),
             `Vind ${medEnhet(sted.vindMaks, 'm/s')}`,
             `Temp ${medEnhet(sted.temperatur, '°C')}`,
             ...(avstandFra ? [`${kmFormat.format(avstandKm(avstandFra, sted))} km unna`] : []),

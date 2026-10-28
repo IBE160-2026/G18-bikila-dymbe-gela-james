@@ -1,4 +1,4 @@
-import { useState, type CSSProperties, type ReactNode } from 'react'
+import { Fragment, useState, type CSSProperties, type ReactNode } from 'react'
 import { STED_TYPES, type StedType } from '../../shared/contracts/catalog'
 import {
   aktiveKrav,
@@ -7,10 +7,12 @@ import {
   harAktiveKrav,
   HURTIGVALG,
   normaliserStedstyper,
+  NYSNO_KILDER,
   STANDARD_FILTER,
   type FilterKrav,
   type FilterParams,
   type Forslag,
+  type NysnoKilde,
 } from '../../shared/filter'
 import { tall } from '../lib/format'
 
@@ -18,7 +20,8 @@ import { tall } from '../lib/format'
 // combined with AND. A fixed left side panel from 768px, a bottom sheet below. The sheet opens with a
 // button rather than a drag (decided 2026-10-22), so it works with the keyboard and a screen reader.
 // Story 3.3 (FR-14, UX-DR4) shows the hit count in the panel and on the closed sheet. Story 3.7 (FR-24)
-// adds the place type as three checkboxes after the sliders.
+// adds the place type as three checkboxes after the sliders, and Story 3.8 (FR-25) the new snow source as
+// two radio buttons under the new snow slider.
 
 export const ALLE = 'Alle'
 export const KNAPP_ID = 'filter-knapp'
@@ -30,6 +33,27 @@ const stedstypeId = (type: StedType) => `filter-stedstyper-${type}`
 const STEDSTYPE_NAVN: Record<StedType, string> = { skisted: 'Skisted', fjelltopp: 'Fjelltopp', by: 'By' }
 const STEDSTYPE_HINT_ID = 'filter-stedstyper-hint'
 const STEDSTYPE_HINT = 'Ingen avkrysset viser alle stedstyper.'
+
+/**
+ * Story 3.8 (decided 2026-10-27, Sena): the labels say which source and that NVE's values are modelled,
+ * and the hint says it in plain words, so nobody reads them as measured snow.
+ */
+const NYSNO_KILDE_NAVN: Record<NysnoKilde, string> = {
+  met: 'Prognose (MET, neste 24 t)',
+  nve: 'Siste 24 t (NVE, modellert)',
+}
+const nysnoKildeId = (kilde: NysnoKilde) => `filter-nysnokilde-${kilde}`
+const NYSNO_KILDE_HINT_ID = 'filter-nysnokilde-hint'
+// Review round 1 (Sena, 3A): the conversion in her own words, word for word.
+const NYSNO_KILDE_HINT =
+  'NVEs nysnø siste døgn er modellerte verdier fra seNorge, ikke målt snø. NVE-verdiene er modellerte ' +
+  'estimater. SnowFinder bruker en forenklet omregning der 1 mm vannekvivalent tilsvarer omtrent 1 cm snø. ' +
+  'Faktisk snødybde kan variere. Med «Siste 24 t» valgt og nysnøkravet på skjules steder uten NVE-verdi. ' +
+  'Står nysnø på «Alle», har valget ingen effekt.'
+/** Review round 1 (Sena, 2A): NVE was missing from the whole run, so the source cannot filter on anything. */
+export const NVE_MANGLER = 'NVE-data mangler i denne kjøringen. Velg «Prognose» for å filtrere på nysnø.'
+/** The closed sheet's chip for a source chosen while new snow is «Alle», so «Nullstill» has a visible reason. */
+export const KILDE_CHIP = 'Datagrunnlag siste 24 t (NVE)'
 
 /**
  * Story 3.5: why places vanish when the sun requirement is on. A place without daylight hours in the
@@ -56,9 +80,14 @@ export function verdiTekst(krav: FilterKrav, verdi: number | null): string {
   return `${retning} ${tall(verdi)} ${enhet}`
 }
 
-/** A chip for an active requirement: «Nysnø minst 10 cm». */
-export function kravTekst(krav: FilterKrav, verdi: number | null): string {
-  return `${KRAV_TEKST[krav].navn} ${verdiTekst(krav, verdi)}`
+/** The requirement's name, with the source for new snow from NVE (Story 3.8): «Nysnø siste 24 t». */
+function kravNavn(krav: FilterKrav, kilde: NysnoKilde): string {
+  return krav === 'minNysnoCm' && kilde === 'nve' ? 'Nysnø siste 24 t' : KRAV_TEKST[krav].navn
+}
+
+/** A chip for an active requirement: «Nysnø minst 10 cm», or «Nysnø siste 24 t minst 10 cm» from NVE. */
+export function kravTekst(krav: FilterKrav, verdi: number | null, kilde: NysnoKilde = NYSNO_KILDER[0]): string {
+  return `${kravNavn(krav, kilde)} ${verdiTekst(krav, verdi)}`
 }
 
 /** Story 3.7: the place type chip, «Stedstype skisted, by». */
@@ -69,7 +98,7 @@ export function stedstypeTekst(stedstyper: readonly StedType[]): string {
 /** Story 3.4 (FR-15): a quick pick's description, in the same words as the active-requirement chips. */
 function hurtigvalgBeskrivelse(verdier: FilterParams): string {
   return aktiveKrav(verdier)
-    .map((krav) => kravTekst(krav, verdier[krav]))
+    .map((krav) => kravTekst(krav, verdier[krav], verdier.nysnoKilde))
     .join(', ')
 }
 
@@ -77,7 +106,8 @@ function hurtigvalgBeskrivelse(verdier: FilterParams): string {
 function erHurtigvalgAktiv(params: FilterParams, verdier: FilterParams): boolean {
   return (
     FILTER_KRAV.every((krav) => params[krav] === verdier[krav]) &&
-    String(params.stedstyper) === String(verdier.stedstyper)
+    String(params.stedstyper) === String(verdier.stedstyper) &&
+    params.nysnoKilde === verdier.nysnoKilde
   )
 }
 
@@ -120,14 +150,17 @@ export function antallTekst(antall: number): string {
   return antall === 0 ? 'Ingen treff' : `${antall} treff`
 }
 
-/** What to try at zero hits, in the panel's words: «Prøv vind høyst 8 m/s.», «Prøv uten vindkravet.» */
-export function forslagTekst(forslag: Forslag | null): string {
+/**
+ * What to try at zero hits, in the panel's words: «Prøv vind høyst 8 m/s.», «Prøv uten vindkravet.», and
+ * with the source for new snow from NVE (Story 3.8): «Prøv nysnø siste 24 t minst 15 cm.»
+ */
+export function forslagTekst(forslag: Forslag | null, kilde: NysnoKilde = NYSNO_KILDER[0]): string {
   if (!forslag) return 'Det hjelper ikke å endre bare ett krav. Prøv «Nullstill».'
   // Story 3.7 (decided 2026-10-27, Sena): the place type is only ever eased all the way to «Alle».
   if (forslag.krav === 'stedstyper') return 'Prøv uten stedstypekravet.'
   const { krav, verdi } = forslag
   if (verdi === null) return `Prøv uten ${KRAV_TEKST[krav].kravet}.`
-  return `Prøv ${KRAV_TEKST[krav].navn.toLowerCase()} ${verdiTekst(krav, verdi)}.`
+  return `Prøv ${kravNavn(krav, kilde).toLowerCase()} ${verdiTekst(krav, verdi)}.`
 }
 
 /**
@@ -228,6 +261,40 @@ function Stedstyper({ params, onEndre }: Pick<Props, 'params' | 'onEndre'>) {
   )
 }
 
+/**
+ * Story 3.8 (FR-25, decided 2026-10-27, Sena): which value the new snow slider compares with. Both choices
+ * are always shown and never disabled; the choice stays while new snow is «Alle», where it has no effect.
+ * The hint is linked to the group, so a screen reader also hears that NVE's values are modelled.
+ */
+function Nysnokilde({ params, onEndre, nveMangler }: Pick<Props, 'params' | 'onEndre' | 'nveMangler'>) {
+  return (
+    <fieldset className="filter-felt filter-nysnokilde" aria-describedby={NYSNO_KILDE_HINT_ID}>
+      <legend>Datagrunnlag for nysnø</legend>
+      {NYSNO_KILDER.map((kilde) => (
+        <label key={kilde} className="filter-valg">
+          <input
+            id={nysnoKildeId(kilde)}
+            type="radio"
+            name="nysnokilde"
+            value={kilde}
+            checked={params.nysnoKilde === kilde}
+            onChange={() => onEndre({ ...params, nysnoKilde: kilde })}
+          />
+          {NYSNO_KILDE_NAVN[kilde]}
+        </label>
+      ))}
+      {/* Always in the page and only its text changes, since many screen readers announce a live region's
+          new text but not a region that arrives already filled. The source is never switched for the user. */}
+      <p className="filter-hint" role="status">
+        {params.nysnoKilde === 'nve' && nveMangler ? NVE_MANGLER : ''}
+      </p>
+      <p id={NYSNO_KILDE_HINT_ID} className="filter-hint">
+        {NYSNO_KILDE_HINT}
+      </p>
+    </fieldset>
+  )
+}
+
 type Props = {
   params: FilterParams
   onEndre: (params: FilterParams) => void
@@ -238,6 +305,8 @@ type Props = {
   posisjonStatus: string
   /** Asks for the position; called only when the user moves the distance slider away from «Alle». */
   beOmPosisjon: () => void
+  /** Story 3.8: no place in the data has an NVE value, so «Siste 24 t» says why it can show nothing. */
+  nveMangler: boolean
 }
 
 /** The number of places the filter gives. Shown, not announced: Utforsk has the one live region. */
@@ -261,7 +330,15 @@ export function Nullstill({ onEndre }: Pick<Props, 'onEndre'>) {
   )
 }
 
-export default function FilterPanel({ params, onEndre, antall, posisjonKjent, posisjonStatus, beOmPosisjon }: Props) {
+export default function FilterPanel({
+  params,
+  onEndre,
+  antall,
+  posisjonKjent,
+  posisjonStatus,
+  beOmPosisjon,
+  nveMangler,
+}: Props) {
   const [apen, setApen] = useState(false)
   const aktive = aktiveKrav(params)
   const harAktive = harAktiveKrav(params)
@@ -286,9 +363,12 @@ export default function FilterPanel({ params, onEndre, antall, posisjonKjent, po
             <ul className="filter-chips" aria-label="Aktive krav">
               {aktive.map((krav) => (
                 <li key={krav} className="filter-chip">
-                  {kravTekst(krav, params[krav])}
+                  {kravTekst(krav, params[krav], params.nysnoKilde)}
                 </li>
               ))}
+              {/* Story 3.8: with new snow at «Alle» the new snow chip is gone, so the source gets its own,
+                  and «Nullstill» next to it always has a visible reason. */}
+              {params.nysnoKilde === 'nve' && !aktive.includes('minNysnoCm') && <li className="filter-chip">{KILDE_CHIP}</li>}
               {params.stedstyper && <li className="filter-chip">{stedstypeTekst(params.stedstyper)}</li>}
             </ul>
             <Nullstill onEndre={onEndre} />
@@ -302,8 +382,8 @@ export default function FilterPanel({ params, onEndre, antall, posisjonKjent, po
         </div>
         <Hurtigvalgene params={params} onEndre={onEndre} />
         {FILTER_KRAV.map((krav) => (
+          <Fragment key={krav}>
           <Filterfelt
-            key={krav}
             krav={krav}
             verdi={params[krav]}
             // Story 3.6 (FR-23, NFR-Privacy): the position is asked for only here, on the user's own
@@ -331,6 +411,9 @@ export default function FilterPanel({ params, onEndre, antall, posisjonKjent, po
               if (krav === 'maksAvstandKm' && verdi !== null && !posisjonKjent) beOmPosisjon()
             }}
           />
+          {/* Story 3.8: the source belongs to the new snow requirement, so it sits right under its slider. */}
+          {krav === 'minNysnoCm' && <Nysnokilde params={params} onEndre={onEndre} nveMangler={nveMangler} />}
+          </Fragment>
         ))}
         <Stedstyper params={params} onEndre={onEndre} />
         {harAktive && <Nullstill onEndre={onEndre} />}
