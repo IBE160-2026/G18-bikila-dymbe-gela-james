@@ -159,8 +159,8 @@ flowchart LR
 | 1.7 | Se Norgeskartet med fargelagte steder (med 1.7b) | Må ha | 1.10 | 2 | Aksel | 2026-10-08 (PR #25, #28) |
 | 1.8 | Bruk tilgjengelig listevisning i stedet for kart | Må ha | 1.10 | 2 | Aksel | 2026-10-08 (PR #27) |
 | 1.9 | Åpne en stedsside med full poengsum (med 1.9b og 1.9c) | Må ha | 1.7, 1.8 | 2 | Aksel | 2026-10-08 (PR #30–#32) |
-| 1.11 | Kjør dataprogrammet hver time og publiser appen | Må ha | 1.5, GitHub Pages fra faglærer (ellers reserven) | 2, flyttet til 4 | Fordeles på møtet | 2026-11-11, forslag |
-| 1.6 | Hold tjenesten oppe når en datakilde er nede | Bør ha | 1.9 | 4 | Fordeles på møtet | 2026-11-11, forslag |
+| 1.11 | Kjør dataprogrammet hver time og publiser appen | Må ha | 1.5, GitHub Pages fra faglærer (ellers reserven) | 2, flyttet til 4 | Aksel | 2026-11-11, forslag |
+| 1.6 | Hold tjenesten oppe når en datakilde er nede | Bør ha | 1.9 | 4 | Aksel | 2026-11-11, forslag |
 | **Epic 2** | **Forstå og stole på SnowScore** | | | | | |
 | 2.1 | Les kort fortalt og steg for steg | Må ha | 1.4 | 1 | Aksel | 2026-10-09 (PR #33) |
 | 2.2 | Se det utledede regneeksempelet | Må ha | 2.1 | 1 | Aksel | 2026-10-09 (PR #34) |
@@ -178,7 +178,7 @@ flowchart LR
 | 3.8 | Filtrer på nysnø siste 24 timer | Bør ha | 3.1, 1.3 | 3 | Sena | 2026-10-28 (PR #71) |
 | – | Retrospektiv for Epic 3 (valgfri) | – | 3.1–3.8 | 4 | Fordeles på møtet | 2026-11-03, forslag |
 | **Epic 4** | **Få mer ut av et sted jeg følger med på** | | | | | |
-| 4.2 | Se beste skivindu på stedssiden | Bør ha | 1.9 | 4 | Fordeles på møtet | 2026-11-11, forslag |
+| 4.2 | Se beste skivindu på stedssiden | Bør ha | 1.9 | 4 | Aksel | 2026-11-11, forslag |
 | 4.1 | Gjør SnowFinder installerbar som PWA | Ikke i v1 | – | – | – | – |
 | 4.3 | Registrer et snøvarsel uten konto | Ikke i v1 | – | – | – | – |
 | 4.4 | Motta og meld deg av et snøvarsel | Ikke i v1 | 4.3 | – | – | – |
@@ -195,12 +195,12 @@ flowchart LR
 | P3 | Sprintplan (steg 8) | Planlegging | P2 | Hele gruppa | 2026-10-03 (PR #6) |
 | P4 | Forenkling etter faglærers tilbakemelding (steg 8b og 8d) | Planlegging | P3 | Joseph og Aksel | 2026-10-07 (F2, PR #8–#21) |
 | P5 | Revisjon og rettinger i dataprogrammet | Gjennomføring | Epic 1 og 2 | Aksel | 2026-10-22 (PR #43–#47) |
-| P6 | Wireframes, kursets skjermkrav og brukertestplan (steg 8c, `bmad-ux`) | Planlegging | P4 | Fordeles på møtet | 2026-11-04, forslag (F3) |
+| P6 | Wireframes, kursets skjermkrav og brukertestplan (steg 8c, `bmad-ux`) | Planlegging | P4 | Joseph og Aksel | 2026-11-04, forslag (F3) |
 | P7 | Kodefrys: alle v1-stories merget | Gjennomføring | 1.6, 1.11, 4.2 | Hele gruppa | 2026-11-11, forslag (M1 og M5) |
-| P8 | Brukertest med minst fem personer | Gjennomføring | P6, P7 | Fordeles på møtet | 2026-11-16, forslag (F4) |
+| P8 | Brukertest med minst fem personer | Gjennomføring | P6, P7 | Joseph og Aksel | 2026-11-16, forslag (F4) |
 | P9 | Rettinger etter brukertesten (bare kritiske funn) | Gjennomføring | P8 | Fordeles etter testen | 2026-11-20, forslag |
 | P10 | Sluttrapport, retrospektiv og presentasjon | Avslutning | P8 | Hele gruppa | 2026-11-23, forslag (F5) |
-| P11 | Generalprøve: `npm ci && npm run dev` etter README på en ren maskin | Avslutning | P9, P10 | Fordeles på møtet | 2026-11-24, forslag |
+| P11 | Generalprøve: `npm ci && npm run dev` etter README på en ren maskin | Avslutning | P9, P10 | Joseph og Aksel | 2026-11-24, forslag |
 | P12 | Levering og demo | Avslutning | P11 | Hele gruppa | 2026-11-25, vedtatt (M6) |
 
 Diagrammene og listen oppdateres når arbeidsflyten endres, for eksempel når et spor er ferdig, når
