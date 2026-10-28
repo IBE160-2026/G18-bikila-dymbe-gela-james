@@ -83,15 +83,18 @@
 - source_spec: `spec-3-5-filtrer-pa-sol.md`
   summary: Oppdater EXPERIENCE.md og DESIGN.md (begge kopier) via `bmad-ux` med filterpanelets fjerde slider, «Skydekke i dagslys» (0–100 %, steg 10), hjelpeteksten om mørketid, og antall treff og forslaget ved null treff fra Story 3.3. Kan tas sammen med oppføringen om bunn-arket fra 3.1.
   evidence: Gjennomgangen av 3.5 (Blind Hunter). UX-dokumentene nevner slidere for nysnø, vind og temperatur og sol som Bør ha, men ikke spennet, tekstene eller hjelpeteksten.
+  resolved: PR #74 (2026-10-28). Arkitekturen (AD-2, AD-12) og EXPERIENCE.md/DESIGN.md (begge kopier) er oppdatert via `bmad-architecture` og `bmad-ux` så de stemmer med koden.
 - source_spec: `project-workspace/implementation-artifacts/spec-fix-e2e-axe-animasjon.md`
   summary: Samle axe-kallet i én felles E2E-hjelper som emulerer redusert bevegelse, slik `filter.spec.ts` nå gjør, og bruk den også i `liste`, `sted`, `forklaring` og `tom`.
   evidence: maybe-false, ville vært medium. De andre filene åpner ikke bunn-arket og har ikke feilet i CI, men Leaflets overganger kan gi samme feil. Avgjøres hvis en av dem feiler på kontrast med en blandet farge.
 - source_spec: `project-workspace/implementation-artifacts/spec-3-7-filtrer-pa-stedstype.md`
   summary: Oppdater adresselisten i AD-12 i arkitekturen (begge kopier, på engelsk, via `bmad-architecture`) med `avstand` (Story 3.6) og `type` (Story 3.7, kommaseparert, i `STED_TYPES`-rekkefølge, etter `avstand`), og oppdater UX-dokumentene via `bmad-ux` med stedstypefilterets tre avkrysningsbokser og hjelpeteksten.
   evidence: Gjennomgangen av 3.7 (Blind Hunter). `SnowFinder-Arkitektur.md` linje 260 lister bare `visning`, `nysno`, `vind`, `temp`, `sky` og `sortering`, mens koden også skriver `avstand` og `type`.
+  resolved: PR #74 (2026-10-28). Arkitekturen (AD-2, AD-12) og EXPERIENCE.md/DESIGN.md (begge kopier) er oppdatert via `bmad-architecture` og `bmad-ux` så de stemmer med koden.
 - source_spec: `project-workspace/implementation-artifacts/spec-3-8-filtrer-pa-nysno-siste-24-timer.md`
   summary: Ta med `nysnokilde=nve` (Story 3.8, rett etter `nysno`) i adresselisten i AD-12 sammen med `avstand` og `type` fra oppføringen for 3.7, og beskriv valget av datagrunnlag for nysnø, hjelpeteksten om modellerte estimater og meldingen når NVE-data mangler, i UX-dokumentene (`bmad-architecture`, `bmad-ux`).
   evidence: Story 3.8 la til parameteret og grensesnittet. `SnowFinder-Arkitektur.md` og `SnowFinder-EXPERIENCE.md` nevner dem ikke.
+  resolved: PR #74 (2026-10-28). Arkitekturen (AD-2, AD-12) og EXPERIENCE.md/DESIGN.md (begge kopier) er oppdatert via `bmad-architecture` og `bmad-ux` så de stemmer med koden.
 - source_spec: `project-workspace/implementation-artifacts/spec-4-2-beste-skivindu.md`
   summary: Avvik fra FR-30 og epic 4-konteksten («demodatasettet får ett sted i mørketid»): demodataene har ikke noe sted i mørketid. Vurder i `bmad-correct-course` om kravet skal endres, eller om demodata skal få et sted i mørketid (for eksempel en egen fixture fra desember).
   evidence: Aksels beslutning 2026-10-28 (A) i Story 4.2. Demodataene gjelder 7. oktober, da det ikke er mørketid noe sted i Norge, og gruppa legger ikke til et fiktivt demosted. Mørketid dekkes av fasittabellen `tests/golden/skivindu.json`, enhetstester i `shared/skivindu.test.ts` og `scripts/pipeline/score.test.ts`, og en E2E-test i `tests/e2e/sted.spec.ts` som setter `skivinduUtenDagslys` i en kopi av datafila.
@@ -101,3 +104,4 @@
 - source_spec: `project-workspace/implementation-artifacts/spec-4-2-beste-skivindu.md`
   summary: Beskriv `skivindu` og `skivinduUtenDagslys` i AD-12 (arkitekturen, begge kopier, på engelsk, via `bmad-architecture`), og kortets tekster i UX-dokumentene via `bmad-ux`: «Fant ikke noe skivindu de neste 48 timene.», «Bare N sammenhengende dagslystimer/timer», «etter snøfallet», og at kortet alltid vises.
   evidence: Gjennomgangen av 4.2 (Blind Hunter). Feltene står i `shared/contracts/data-dictionary.md`, men ikke i `SnowFinder-Arkitektur.md` eller `SnowFinder-EXPERIENCE.md`.
+  resolved: PR #74 (2026-10-28). Arkitekturen (AD-2, AD-12) og EXPERIENCE.md/DESIGN.md (begge kopier) er oppdatert via `bmad-architecture` og `bmad-ux` så de stemmer med koden.
