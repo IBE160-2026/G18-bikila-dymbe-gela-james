@@ -9,3 +9,7 @@
 - [ ] 2026-10-28 [story-4-2-beste-skivindu](998-2026-10-28-20-55-44-story-4-2-beste-skivindu.md) — avviket fra FR-30 (ingen demosted i mørketid) må avgjøres i bmad-correct-course
 - [ ] 2026-10-28 [story-4-2-beste-skivindu](998-2026-10-28-20-55-44-story-4-2-beste-skivindu.md) — mørketidsvinduet kan havne midt på natta; mulig kravendring
 - [ ] 2026-10-28 [story-4-2-beste-skivindu](998-2026-10-28-20-55-44-story-4-2-beste-skivindu.md) — AD-12 og UX-dokumentene mangler skivindu-feltene og kortets tekster
+- [ ] 2026-10-28 [steg-8c](997-2026-10-28-22-46-40-steg-8c-wireframes-skjermkrav-brukertest.md) — Rekruttere minst fem testpersoner til brukertesten (Joseph og Aksel, forslag 11. november)
+- [ ] 2026-10-28 [steg-8c](997-2026-10-28-22-46-40-steg-8c-wireframes-skjermkrav-brukertest.md) — Faglærer har ikke bekreftet at pålogging droppes
+- [ ] 2026-10-28 [steg-8c](997-2026-10-28-22-46-40-steg-8c-wireframes-skjermkrav-brukertest.md) — Vurder tegnforklaring på kartet og stedstype på stedssiden (deferred-work.md)
+- [ ] 2026-10-28 [steg-8c](997-2026-10-28-22-46-40-steg-8c-wireframes-skjermkrav-brukertest.md) — Sett UX-dokumentene til final etter brukertesten

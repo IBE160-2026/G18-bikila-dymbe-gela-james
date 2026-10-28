@@ -797,7 +797,9 @@ testen kan gjennomføres så snart Må ha er ferdig.
    `bmad-correct-course`. *(v4, 2026-10-09)* Gruppa har besluttet at pålogging droppes: SnowFinder
    har ingen kontoer, så det finnes ingen påloggingsskjerm å vise. Profil, innsjekking, sosial feed
    og arrangementer kobles fortsatt til nærmeste SnowFinder-skjerm i EXPERIENCE.md (steg 8c).
-   Faglærer har ikke bekreftet beslutningen ennå.
+   Faglærer har ikke bekreftet beslutningen ennå. *(Løst i steg 8c, 2026-10-28: profil og
+   innsjekking → stedssiden, sosial feed → listevisningen, arrangementer → beste skivindu. Ingen
+   nye funksjoner. Se «Kursets skjermkrav» i EXPERIENCE.md.)*
 4. **Skalatall for NFR-8:** Er «noen tusen brukere» en reell forventning for
    innleveringen/demoen, eller kun en arkitektonisk forsikring? Påvirker om lasttesting hører
    hjemme i Må ha-QA-minimumet.

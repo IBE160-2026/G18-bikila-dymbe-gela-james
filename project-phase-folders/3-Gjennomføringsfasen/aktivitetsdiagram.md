@@ -46,7 +46,7 @@ flowchart TD
     %% Spor C: UX og brukertestplan
     fork1 --> c1["Steg 8c med bmad-ux:<br/>wireframes og kursets skjermkrav"]
     c1 --> c2["Brukertestplan:<br/>oppgaver, minst fem personer"]
-    c2 --> f3["F3: steg 8c ferdig<br/>forslag 2026-11-04"]
+    c2 --> f3["F3: steg 8c ferdig<br/>nådd 2026-10-28"]
 
     m4 --> join1{{"Alle tre spor ferdige:<br/>kodefrys"}}
     m1 --> join1
@@ -196,7 +196,7 @@ flowchart LR
 | P3 | Sprintplan (steg 8) | Planlegging | P2 | Hele gruppa | 2026-10-03 (PR #6) |
 | P4 | Forenkling etter faglærers tilbakemelding (steg 8b og 8d) | Planlegging | P3 | Joseph og Aksel | 2026-10-07 (F2, PR #8–#21) |
 | P5 | Revisjon og rettinger i dataprogrammet | Gjennomføring | Epic 1 og 2 | Aksel | 2026-10-22 (PR #43–#47) |
-| P6 | Wireframes, kursets skjermkrav og brukertestplan (steg 8c, `bmad-ux`) | Planlegging | P4 | Joseph og Aksel | 2026-11-04, forslag (F3) |
+| P6 | Wireframes, kursets skjermkrav og brukertestplan (steg 8c, `bmad-ux`) | Planlegging | P4 | Aksel | 2026-10-28, ferdig (F3) |
 | P7 | Kodefrys: alle v1-stories merget | Gjennomføring | 1.6, 1.11, 4.2 | Hele gruppa | 2026-11-11, forslag (M1 og M5) |
 | P8 | Brukertest med minst fem personer | Gjennomføring | P6, P7 | Joseph og Aksel | 2026-11-16, forslag (F4) |
 | P9 | Rettinger etter brukertesten (bare kritiske funn) | Gjennomføring | P8 | Fordeles etter testen | 2026-11-20, forslag |
