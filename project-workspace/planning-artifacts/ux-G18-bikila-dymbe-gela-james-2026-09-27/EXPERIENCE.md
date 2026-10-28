@@ -6,7 +6,7 @@ sources:
   - project-phase-folders/1-Oppstartsfasen/SnowFinder-Produktbrief.md
   - project-workspace/planning-artifacts/sprint-change-proposal-2026-10-07.md
   - project-workspace/planning-artifacts/sprint-change-proposal-2026-10-07-forenkling.md
-updated: 2026-10-08
+updated: 2026-10-28
 ---
 
 # SnowFinder — Experience Spine
@@ -61,7 +61,9 @@ Rolig, presis, aldri alarmerende eller selgende — SnowFinder lover aldri snø 
 | «Ingen treff. Prøv vind under 8 m/s i stedet» | «Ingen resultater» (uten forslag) |
 | «Viser siste kjente data fra kl. 14:00 — MET svarer ikke nå» | «Feil: API timeout» |
 | «Ufullstendige data for dette stedet» | Vise 0 eller en gjettet poengsum |
-| «Mørketid — vindu vist uten dagslys» | La skivindu-kortet forsvinne stille |
+| «Mørketid – vindu vist uten dagslys» | La skivindu-kortet forsvinne stille |
+| «Fant ikke noe skivindu de neste 48 timene.» | Skjule kortet når det snør hele perioden |
+| «Siste 24 t (NVE, modellert)» og «ikke målt snø» i hjelpeteksten | Kalle NVEs modellerte nysnø for målt snø |
 | «Demodata – ikke ekte prognoser» | Vise demodata uten merking, som om de var ekte |
 | «Siste kjøring: 297 av 300 steder gyldige, kl. 14:05» | «Datakvalitet: OK» uten tall |
 
@@ -74,9 +76,12 @@ Atferd. Visuelle spesifikasjoner ligger i `SnowFinder-DESIGN.md.Components`.
 | Kartmarkør | Utforsk (kart) | Klikk/trykk åpner stedsside. Hover (desktop) viser stedsnavn + score i tooltip. *(v3, 2026-10-08)* Ingen klynging: markørene er små på landsnivå og vokser når brukeren zoomer inn (mål i DESIGN.md `{components.map-marker}`), så ingen sted forsvinner inn i en klynge. |
 | Listerad | Utforsk (liste) | Tab-navigerbar, Enter åpner stedsside. Sorterbar (score/avstand/navn) via en ordinær `<select>` eller knapperad — aldri en museavhengig dra-og-slipp. |
 | Score-badge | Overalt SnowScore vises | Tall + tekstetikett alltid sammen. Trykk/tap gjør ingenting i seg selv (badge er ikke en egen lenke) — hele kortet/raden er klikkmålet. |
-| Filterpanel | Utforsk (kart + liste) | Slidere for nysnø/vind/temperatur (Må ha) + sol/avstand/stedstype (Bør ha). Antall treff oppdateres live (`aria-live="polite"`) mens sliderne justeres. Nullstill-knapp alltid synlig når minst ett filter avviker fra standard. |
+| Filterpanel | Utforsk (kart + liste) | Slidere for nysnø/vind/temperatur (Må ha) + skydekke i dagslys/avstand (Bør ha), pluss avkrysning for stedstype og valg av datagrunnlag for nysnø (Bør ha). Antall treff oppdateres live (`aria-live="polite"`) mens sliderne justeres. Nullstill-knapp alltid synlig når minst ett filter avviker fra standard. Alle krav kombineres med OG. |
+| Skydekke i dagslys *(Story 3.5)* | Filterpanel | Slider «Skydekke i dagslys», høyst X % i steg på 10. Hjelpeteksten sier «Steder uten dagslys de neste 24 timene (mørketid) vises ikke når kravet er på.» |
+| Stedstype *(Story 3.7)* | Filterpanel | Tre avkrysningsbokser, «Skisted», «Fjelltopp» og «By», i en gruppe med overskriften «Stedstype». Ingen avkrysset betyr «Alle» og er standard; å fjerne siste kryss gir «Alle» igjen, aldri null treff. Hjelpeteksten «Ingen avkrysset viser alle stedstyper.» er koblet til gruppen med `aria-describedby`. Chip på det lukkede bunn-arket: «Stedstype skisted, by». Ved null treff kan forslaget være «Prøv uten stedstypekravet.» |
+| Datagrunnlag for nysnø *(Story 3.8)* | Filterpanel, under nysnø-slideren | To radioknapper: «Prognose (MET, neste 24 t)» (standard) og «Siste 24 t (NVE, modellert)». Aldri deaktivert. Hjelpeteksten sier at NVEs verdier er modellerte estimater fra seNorge, ikke målt snø, og at 1 mm vannekvivalent regnes som omtrent 1 cm snø. Listen viser nysnø fra kilden filteret bruker. Forslaget ved null treff bytter aldri kilde. Chip når kilden er valgt mens nysnø står på «Alle»: «Datagrunnlag siste 24 t (NVE)». |
 | Hurtigvalg-chip | Filterpanel | «Pudderdag», «Sol etter snøfall» — trykk fyller filteret og oppdaterer resultatet i samme handling, ingen bekreftelsesdialog. |
-| Beste skivindu-kort | Stedsside | Vises kun når vinduet finnes (Bør ha); mørketid-fallback-tekst når ingen dagslystimer finnes i perioden. |
+| Beste skivindu-kort *(Story 4.2)* | Stedsside | Vises alltid. Tidsrom i norsk tid («fredag 13–17») og en begrunnelse («Snittvind 1 m/s, skydekke 91 %, etter snøfallet»). Finnes ikke fire sammenhengende dagslystimer, vises det beste kortere vinduet med «Bare N sammenhengende dagslystimer» («timer» i mørketid, entall ved 1). Kortet leser bare dataprogrammets felt, også mørketid-flagget, og regner aldri dagslys selv. |
 | Kalkulator («prøv selv») | Forklaringsside | To numeriske inndata (nedbør, temperatur) → live-oppdatert A/B/C + sum, samme modul som dataprogrammet (PRD FR-10, Bør ha). |
 | Demobanner | Alle flater, øverst under navigasjonen | Vises når datafilen er demodata (`mode: "demo"`): «Demodata – ikke ekte prognoser». Kan ikke lukkes, men blokkerer ingenting. Lenker til README-avsnittet om ekte data. |
 | Datakvalitetspanel | Forklaringsside | Viser siste publiserte kjørings kvalitetsrapport i klartekst: tidspunkt, antall steder, andel gyldige, avviste svar per kilde og antall med ufullstendige data (NFR-DQ2). Ingen grafer kreves; en enkel tabell eller liste. |
@@ -95,6 +100,8 @@ Atferd. Visuelle spesifikasjoner ligger i `SnowFinder-DESIGN.md.Components`.
 | Demodata | Global banner | Demobanneret (se Komponentmønstre). Alder regnes mot demodatasettets egen «nå», så «Utdatert» og «fjernet» oppfører seg likt hver gang. |
 | Ufullstendige data | Stedsside, kort | Tekst «Ufullstendige data» i stedet for et score-badge — aldri en tallverdi som ser reell ut. |
 | Mørketid (skivindu) | Stedsside | «Mørketid – vindu vist uten dagslys», vinduet beregnes blant alle timer. |
+| Ingen skivindu | Stedsside | «Fant ikke noe skivindu de neste 48 timene.» når det snør hele perioden eller data mangler. Kortet blir stående. |
+| NVE-data mangler | Filterpanel | Med «Siste 24 t» valgt og ingen NVE-verdier i kjøringen: «NVE-data mangler i denne kjøringen. Velg «Prognose» for å filtrere på nysnø.» |
 | Ugyldig inndata | Kalkulator, filterfelt | Feilmelding rett under feltet, programmatisk koblet (`aria-describedby`). |
 | Fokus | Alle flater | Synlig fokusring i `{colors.accent}` på alt interaktivt — aldri `outline: none` uten erstatning. |
 
@@ -134,10 +141,10 @@ listevisningen, som **er** fullt AA).
   nettbrett-spesifikk layout — nettbrett bruker desktop-layouten skalert ned.
 - **Mobil (<768px):** Kart/liste fyller skjermen under toppnavigasjonen. Filterpanelet ligger i
   et bunn-ark som starter delvis synlig (viser aktive filterverdier som chips) og kan dras opp
-  til full høyde. Stedsside er én kolonne; beste skivindu-kort ligger under delpoengene.
+  til full høyde. Stedsside er én kolonne; beste skivindu-kort ligger under SnowScore-kortet med delpoengene, over grunnlaget.
 - **Desktop (≥768px):** Filterpanelet er et fast venstre sidepanel (ikke bunn-ark), kart/liste
-  fyller resten. Stedsside bruker to kolonner (rådata + delpoeng til venstre, beste skivindu til
-  høyre).
+  fyller resten. Stedsside bruker to kolonner (SnowScore med delpoeng og grunnlaget under hverandre til
+  venstre, beste skivindu til høyre).
 - **PWA:** *(Ikke i v1, v2.)* Ingen installasjon eller install-prompt.
 
 ## Nøkkelflyter

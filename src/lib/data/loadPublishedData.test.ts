@@ -60,6 +60,30 @@ describe('loadPublishedData', () => {
     if (result.status === 'ok') expect(result.data.steder.every((s) => s.skydekkeDagslys === null)).toBe(true)
   })
 
+  it('loads a latest.json written before Story 4.2, without a ski window and without the polar night flag', async () => {
+    const gammel = {
+      ...live,
+      steder: live.steder.map((sted: Record<string, unknown>) => {
+        const kopi = { ...sted }
+        delete kopi.skivindu
+        delete kopi.skivinduUtenDagslys
+        return kopi
+      }),
+    }
+    expect(live.steder.some((s: { skivindu: unknown }) => s.skivindu !== null)).toBe(true)
+    const result = await loadPublishedData(fakeFetch({ '/data/latest.json': () => json(gammel) }))
+    expect(result).toMatchObject({ status: 'ok', source: 'latest' })
+    if (result.status === 'ok') {
+      expect(result.data.steder.every((s) => s.skivindu === null && !s.skivinduUtenDagslys)).toBe(true)
+    }
+  })
+
+  it('keeps the values of a file that has the newer fields', async () => {
+    const result = await loadPublishedData(fakeFetch({ '/data/latest.json': () => json(live) }))
+    if (result.status !== 'ok') throw new Error('expected ok')
+    expect(result.data.steder.map((s) => s.skivindu)).toEqual(live.steder.map((s: { skivindu: unknown }) => s.skivindu))
+  })
+
   it('treats an HTML answer (dev server fallback) as missing', async () => {
     const result = await loadPublishedData(
       fakeFetch({ '/data/latest.json': indexHtml, '/data/demo.json': () => json(demo) }),

@@ -7,7 +7,7 @@ paradigm: 'Pipes-and-Filters data program (Node) publishing one static data file
 scope: 'Repository structure and system architecture for SnowFinder v1 (IBE160, G18)'
 status: final
 created: '2026-09-22'
-updated: '2026-10-07'
+updated: '2026-10-28'
 binds: []
 sources:
   - project-phase-folders/1-Oppstartsfasen/SnowFinder-Produktbrief.md
@@ -111,8 +111,10 @@ flowchart LR
     concurrency. There is no circuit breaker, because there is no state between runs.
   - **Call rate.** `fetch.ts` starts at most one call per 100 ms per source (10/s), on top of the
     concurrency cap. MET's terms require an agreement above 20 requests/s per application (FR-2).
-  - When the Should-have best ski window (FR-17) is built, `score.ts` writes an explicit
-    `skivinduUtenDagslys` flag. The app reads it verbatim and never re-derives mørketid.
+  - **Best ski window** *(Story 4.2, 2026-10-28)*. `score.ts` computes `skivindu` and an explicit
+    `skivinduUtenDagslys` flag with `shared/skivindu.ts`, over its own 48 hours from the hour
+    containing the reference time. SnowScore's 24-hour window is unchanged. The app reads both fields
+    verbatim and never re-derives mørketid by counting daylight hours.
 
 ### AD-3 — *Retired in v4*
 
@@ -255,12 +257,27 @@ flowchart LR
   - **The data file.** `PublishedData`, `Sted`, `RunReport` and `Catalog` are single Zod
     schemas with camelCase fields. `publish.ts` validates the file against `PublishedData`
     before writing it, and `src/lib/data/` parses it with the same schema when loading.
+  - **Fields added later** *(Stories 3.5 and 4.2)*. `Sted` carries `skydekkeDagslys` (number or
+    null), `skivindu` (null, or `start` as ISO UTC, `timer` 1–4, `snittVindMs`, `snittSkydekke`
+    and `etterSnofall`) and `skivinduUtenDagslys` (boolean). `publish.ts` requires them. Only the
+    read side in `src/lib/data/` gives an older file the defaults (`null`, `null`, `false`), so the
+    app keeps working until the next run. `shared/contracts/data-dictionary.md` describes every field.
   - **Filter parameters.** `shared/filter.ts` owns `FilterParams` and the only URL ↔ filter
     `parse` and `serialize` functions.
-  - **The Utforsk address** *(Story 3.2, 2026-10-23)*. The query is `visning`, `nysno`, `vind`,
-    `temp`, `sky` and `sortering`, always in that order, so the same search gives the same address
-    (`sky`, the cloud cover in daylight at most X % in steps of 10, was added by Story 3.5,
-    2026-10-23). A value at its default (`kart`, «Alle», `score`) is not written. An invalid or
+  - **The Utforsk address** *(Story 3.2, 2026-10-23; updated 2026-10-28)*. The query is
+    `visning`, `nysno`, `nysnokilde`, `vind`, `temp`, `sky`, `avstand`, `type` and `sortering`,
+    always in that order, so the same search gives the same address. Added later:
+    - `sky` *(Story 3.5)*: the cloud cover in daylight, at most X % in steps of 10.
+    - `avstand` *(Story 3.6)*: the distance limit in km. The position it is measured from is never
+      written, so a shared link carries the limit but never asks the receiver for their position
+      until they move the slider themselves.
+    - `nysnokilde=nve` *(Story 3.8)*: the new-snow requirement reads NVE's modelled new snow for the
+      last day instead of MET's forecast. It follows `nysno`, or comes first among the filter
+      parameters when `nysno` is not set. The default (`met`) is not written.
+    - `type` *(Story 3.7)*: the ticked place types, comma-separated in `STED_TYPES` order with the
+      comma unencoded (`type=skisted,by`). An unknown, empty or repeated type gives «Alle».
+
+    A value at its default (`kart`, «Alle», `met`, `score`) is not written. An invalid or
     repeated value counts as the default, and the address is rewritten to the clean form on load.
     Filter and sort changes replace the history entry (`replaceState`); switching view or opening a
     place adds one. The distance sort is never written, so a shared link never asks the receiver
@@ -268,7 +285,7 @@ flowchart LR
     and read by the same functions *(Story 3.2b, 2026-10-23)*, so a shared place link keeps the
     search and its «Tilbake» returns to it.
   - **Golden tables.** They use these shapes (`tests/golden/snowscore.json`, `filter.json`,
-    later `skivindu.json`) and state their boundary rules: inclusive or exclusive limits, nulls
+    `skivindu.json`) and state their boundary rules: inclusive or exclusive limits, nulls
     and tie-break order.
 
 ## Data Files and Owners *(v4, replaces «Tables and Owners»)*

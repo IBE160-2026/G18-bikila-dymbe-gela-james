@@ -85,12 +85,22 @@ Katalogfeltene (`id`, `navn`, `lat`, `lon`, `hoyde`, `type`, `kilde`, se `catalo
 | `vindMaks` | m/s | ≥ 0 eller `null` | Høyeste `wind_speed` i vinduet. `null` når ingen time finnes. |
 | `skydekke` | % | 0–100 eller `null` | Snitt av `cloud_area_fraction` i vinduet. `null` når ingen time finnes. |
 | `skydekkeDagslys` | % | 0–100 eller `null` | Snitt av `cloud_area_fraction` i dagslystimene i vinduet på stedet. En time er dagslys når solen står over horisonten ved stegets `time` eller en halv time senere, så en kort vinterdag nær polarsirkelen ikke blir borte mellom to hele timer. «Over horisonten» er geometrisk (solhøyde > 0°, regnet med `shared/sol.ts`, uten lysbrytning). Brukes av skydekkekravet i filteret (FR-22). `null` når vinduet ikke har noen dagslystime (mørketid), eller når mer enn 10 % av dagslystimene mangler data (samme regel som SnowScore). Feltet er påkrevd i fila som skrives; bare appen leser en eldre fil uten feltet som `null`. |
+| `skivindu` | – | se under, eller `null` | Beste skivindu (Story 4.2, FR-17), regnet med `shared/skivindu.ts` over de 48 timene fra og med timen som inneholder `referenceTime`. `null` når ingen time er kandidat: det snør hele perioden, eller vind og skydekke mangler. Reglene står også i `tests/golden/skivindu.json` (`grenser`). Bare appen leser en eldre fil uten feltet som `null`. |
+| `skivinduUtenDagslys` | – | boolsk | `true` når ingen av de 48 timene er en dagslystime (mørketid, `erDagslystime` i `shared/sol.ts`); da er vinduet valgt blant alle timer. Appen leser flagget og teller aldri dagslystimer selv. `false` når MET-svaret manglet, og når appen leser en eldre fil uten feltet. |
 | `nveNysnoSisteDognMm` | mm | ≥ 0 eller `null` | NVEs siste døgnverdi kl. 06 UTC på eller før `referenceTime`. Verdien stemplet D kl. 06 UTC gjelder døgnet fra kl. 06 UTC dagen før til kl. 06 UTC på D (seNorge, https://github.com/metno/seNorge2), altså det sist fullførte døgnet (kl. 07 eller 08 norsk tid). `null` ved `NoDataValue`, manglende/avvist svar, eller når den nyeste dagsverdien er stemplet 24 timer eller mer før `referenceTime` (NVE henger etter, eller svaret slutter tidligere enn vi ba om), fordi verdien da ikke er «siste døgn». |
 
 **Vinduet** er de 24 timene fra og med timen som inneholder `referenceTime`. En time mangler når
 MET-serien ikke har steget, eller steget mangler `next_1_hours`. Mangler mer enn 10 % av timene, er
 `snowScore` `{ "kind": "incomplete", "missingShare": … }` uten tall. Et sted der MET-svaret manglet
 eller ble avvist, får `missingShare: 1`, og ingen verdier fra tidligere kjøringer.
+
+`skivindu` er `{ start (ISO 8601 UTC, første time), timer (heltall 1–4), snittVindMs (m/s, uavrundet),
+snittSkydekke (%, uavrundet), etterSnofall (boolsk) }`. Perioden er 48 timer, mens SnowScore-vinduet er 24;
+et manglende MET-steg er en time uten data. Vinduet er fire sammenhengende kandidattimer. En kandidattime
+har vind og skydekke, ligger etter periodens siste time med snøfall (nedbør × snøandel ≥ 0,1 mm) og er en
+dagslystime (unntatt i mørketid). Finnes ingen rekke på fire, er `timer` lengden på den lengste rekken.
+Lavest snittvind avrundet til hele m/s vinner, så lavest snittskydekke, så det tidligste vinduet.
+`etterSnofall` er `true` når perioden har en time med snøfall.
 
 `snowScore` er enten `{ kind: "score", score (heltall 0–100), a (0–60), b (0–25), c (0–15),
 newSnowMm, precipitationMm, meanTemperatureC }` eller `{ kind: "incomplete", missingShare (0–1) }`.

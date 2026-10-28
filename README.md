@@ -98,7 +98,14 @@ Stedssidens adresse bærer også søket (for eksempel `/sted/gaustatoppen?visnin
 så en delt stedslenke går «Tilbake» til samme søk.
 
 Stedssiden (`/sted/<id>`) viser SnowScore med delpoengene A, B og C, værdataene bak dem og når MET
-sist oppdaterte prognosen. Data eldre enn 3 timer merkes «Utdatert», og steder med data eldre enn
+sist oppdaterte prognosen. Kortet «Beste skivindu» viser fire sammenhengende dagslystimer de neste
+48 timene, etter et eventuelt snøfall (Story 4.2). Lavest snittvind avrundet til hele m/s avgjør; skydekket
+teller bare ved lik vind, og deretter vinner det tidligste vinduet. Finnes ikke fire sammenhengende timer,
+vises det lengste kortere vinduet («Bare N sammenhengende dagslystimer»), og finnes ingen, sier kortet at
+det ikke fant noe skivindu de neste 48 timene. Dataprogrammet
+regner det ut med `shared/skivindu.ts`, og reglene står i fasittabellen `tests/golden/skivindu.json`.
+I mørketid velges vinduet blant alle timer, og kortet sier «Mørketid – vindu vist uten dagslys».
+Data eldre enn 3 timer merkes «Utdatert», og steder med data eldre enn
 12 timer vises ikke i kartet, listen eller på stedssiden (i demo regnes alderen mot demodatasettets egen «nå»).
 Er alle stedene for gamle, for eksempel fordi `latest.json` fra `npm run data` er mer enn 12 timer
 gammel, viser forsiden «Ingen ferske data». Kjør `npm run data` på nytt, eller slett

@@ -75,6 +75,29 @@ export const Sted = z.strictObject({
    * rejects a pipeline that stops writing it; only the app's loader fills it in for older files.
    */
   skydekkeDagslys: z.number().min(0).max(100).nullable(),
+  /**
+   * Story 4.2 (FR-17): the best ski window in the 48 hours from the hour containing the reference time,
+   * computed by shared/skivindu.ts; null when no hour qualifies (snow all period, or no data).
+   */
+  skivindu: z
+    .strictObject({
+      /** First hour of the window. */
+      start: isoUtc,
+      /** Hours in the window; under 4 when no longer run of consecutive candidate hours exists. */
+      timer: z.number().int().min(1).max(4),
+      /** Mean wind over the window in m/s, unrounded. */
+      snittVindMs: z.number().min(0),
+      /** Mean cloud cover over the window in %, unrounded. */
+      snittSkydekke: z.number().min(0).max(100),
+      /** True when snow fell in the period, so the window starts after the snowfall. */
+      etterSnofall: z.boolean(),
+    })
+    .nullable(),
+  /**
+   * Story 4.2: true when none of the 48 hours is a daylight hour (polar night), so the window ignores
+   * daylight. The app reads this flag and never counts daylight hours itself (AD-2).
+   */
+  skivinduUtenDagslys: z.boolean(),
   /** NVE seNorge new snow over the last day at or before the reference time, in mm; null when missing. */
   nveNysnoSisteDognMm: z.number().min(0).nullable(),
 })
