@@ -27,3 +27,18 @@ implementering og tre gjennomgangslag (Blind Hunter, Edge Case Hunter, Verificat
 - Tre gjennomgangslag fant 21 funn. 5 ble rettet, 2 utsatt til `deferred-work.md` (mørketidsvindu om natta
   og AD-12/UX-dokumentene), og resten ble avvist med begrunnelse i spec-ens Review Triage Log.
 - Lint, typesjekk, 607/607 tester, build og 121/121 E2E er grønne lokalt.
+
+## Oppfølging: arkitektur og UX før merge
+
+Prompt ordrett:
+
+4. ta arkitekturen (AD-12) og UX-dokumentene mangler de nye feltene og tekstene før du merger pren
+
+Claude brukte `bmad-architecture` (Update) og `bmad-ux` (Update) uten nye beslutninger, bare samsvar med koden:
+- Arkitekturen (begge kopier): AD-12 lister adressen i riktig rekkefølge med `avstand`, `nysnokilde` og `type`,
+  og beskriver feltene `skydekkeDagslys`, `skivindu` og `skivinduUtenDagslys`. AD-2 beskriver skivinduet i
+  dataprogrammet. Linteren `lint_spine.py` fant ingen feil. Den fulle reviewer-porten med underagenter ble ikke kjørt,
+  fordi endringen bare speiler koden.
+- UX (begge kopier): EXPERIENCE.md har nye rader for skydekke i dagslys, stedstype, datagrunnlag for nysnø og
+  skivindu-kortet, med tekstene fra koden, og tilstandene «Ingen skivindu» og «NVE-data mangler». DESIGN.md har
+  oppdatert eksempeltekst for kortet. Reviewer-porten (valgfri) ble ikke kjørt.
