@@ -1,5 +1,6 @@
 import { avstandKm, type Posisjon } from './avstand'
 import { rundTilEnDesimal } from './avrunding'
+import { STED_TYPES, type StedType } from './contracts/catalog'
 import type { Sted } from './contracts/published'
 
 // AD-6: the only filter logic (FR-20). Map and list both show filtrerSteder's result; the golden table in
@@ -21,9 +22,18 @@ export interface FilterParams {
    * it never hides a place, unlike a place that is missing a value.
    */
   maksAvstandKm: number | null
+  /**
+   * Story 3.7 (FR-24, decided 2026-10-27, Sena): only places of these types. `null` (nothing ticked) means
+   * «Alle»; otherwise never empty, and always in STED_TYPES order so the same choice gives the same address.
+   */
+  stedstyper: readonly StedType[] | null
 }
 
-export type FilterKrav = keyof FilterParams
+/**
+ * The requirements that are a limit along a slider. The place type is a set, not a scale, so it has its
+ * own field and stays out of FILTER_GRENSER and the slider walk.
+ */
+export type FilterKrav = Exclude<keyof FilterParams, 'stedstyper'>
 
 export interface KravGrense {
   min: number
@@ -69,11 +79,25 @@ export interface Hurtigvalg {
 export const HURTIGVALG: readonly Hurtigvalg[] = [
   {
     navn: 'Pudderdag',
-    verdier: { minNysnoCm: 10, maksVindMs: 8, maksTemperaturC: -2, maksSkydekkeDagslys: null, maksAvstandKm: null },
+    verdier: {
+      minNysnoCm: 10,
+      maksVindMs: 8,
+      maksTemperaturC: -2,
+      maksSkydekkeDagslys: null,
+      maksAvstandKm: null,
+      stedstyper: null,
+    },
   },
   {
     navn: 'Sol etter snøfall',
-    verdier: { minNysnoCm: 5, maksVindMs: null, maksTemperaturC: null, maksSkydekkeDagslys: 30, maksAvstandKm: null },
+    verdier: {
+      minNysnoCm: 5,
+      maksVindMs: null,
+      maksTemperaturC: null,
+      maksSkydekkeDagslys: 30,
+      maksAvstandKm: null,
+      stedstyper: null,
+    },
   },
 ]
 
@@ -83,17 +107,18 @@ export const STANDARD_FILTER: FilterParams = {
   maksTemperaturC: null,
   maksSkydekkeDagslys: null,
   maksAvstandKm: null,
+  stedstyper: null,
 }
 
 /** The fields filtrerSteder reads, so the golden table can use small hand-written places. */
-export type Filtrerbar = Pick<Sted, 'nysnoCm' | 'vindMaks' | 'temperatur' | 'skydekkeDagslys' | 'lat' | 'lon'>
+export type Filtrerbar = Pick<Sted, 'nysnoCm' | 'vindMaks' | 'temperatur' | 'skydekkeDagslys' | 'lat' | 'lon' | 'type'>
 
 /**
  * The place's value each requirement is compared with. Distance (Story 3.6) depends on the user's
  * position, not on a fixed field of the place, so it is handled separately in `oppfyller` and left out
  * of this lookup.
  */
-const FELT: Readonly<Record<Exclude<FilterKrav, 'maksAvstandKm'>, keyof Filtrerbar>> = {
+const FELT: Readonly<Record<Exclude<FilterKrav, 'maksAvstandKm'>, Exclude<keyof Filtrerbar, 'type'>>> = {
   minNysnoCm: 'nysnoCm',
   maksVindMs: 'vindMaks',
   maksTemperaturC: 'temperatur',
@@ -108,9 +133,20 @@ function aktiveGrenser(params: FilterParams): [FilterKrav, number][] {
   })
 }
 
-/** The requirements that can hide a place, in panel order. */
+/** The slider requirements that can hide a place, in panel order. The place type is checked on its own. */
 export function aktiveKrav(params: FilterParams): FilterKrav[] {
   return aktiveGrenser(params).map(([krav]) => krav)
+}
+
+/** Whether any requirement is on, slider or place type: what «Nullstill» and the chips are shown for. */
+export function harAktiveKrav(params: FilterParams): boolean {
+  return aktiveGrenser(params).length > 0 || params.stedstyper !== null
+}
+
+/** Story 3.7: the ticked types in STED_TYPES order, without repeats; nothing ticked is «Alle» (`null`). */
+export function normaliserStedstyper(typer: readonly StedType[]): readonly StedType[] | null {
+  const valgte = STED_TYPES.filter((type) => typer.includes(type))
+  return valgte.length > 0 ? valgte : null
 }
 
 function oppfyller(sted: Filtrerbar, krav: FilterKrav, grense: number, posisjon?: Posisjon): boolean {
@@ -134,15 +170,21 @@ function oppfyller(sted: Filtrerbar, krav: FilterKrav, grense: number, posisjon?
  */
 export function filtrerSteder<T extends Filtrerbar>(steder: readonly T[], params: FilterParams, posisjon?: Posisjon): T[] {
   const aktive = aktiveGrenser(params)
-  return steder.filter((sted) => aktive.every(([krav, grense]) => oppfyller(sted, krav, grense, posisjon)))
+  const { stedstyper } = params
+  return steder.filter(
+    (sted) =>
+      (stedstyper === null || stedstyper.includes(sted.type)) &&
+      aktive.every(([krav, grense]) => oppfyller(sted, krav, grense, posisjon)),
+  )
 }
 
-/** One requirement eased to `verdi` (`null` means without it), which gives `antall` places. */
-export interface Forslag {
-  krav: FilterKrav
-  verdi: number | null
-  antall: number
-}
+/**
+ * One requirement eased to `verdi` (`null` means without it), which gives `antall` places. The place type
+ * (Story 3.7) is only ever eased all the way, so its `verdi` is always `null`.
+ */
+export type Forslag =
+  | { krav: FilterKrav; verdi: number | null; antall: number }
+  | { krav: 'stedstyper'; verdi: null; antall: number }
 
 /**
  * Story 3.3 (FR-14): which single requirement to ease when the filter gives no places. For each active
@@ -150,11 +192,12 @@ export interface Forslag {
  * others stay, and picks the one that gives the most places; on a tie the fewest steps, then panel order.
  * `null` when there are places already, or when no single change gives any (the app then offers «Nullstill»).
  * `posisjon` is passed through to the trial `filtrerSteder` calls, so the distance requirement (Story 3.6)
- * can be eased like any other when a position is known.
+ * can be eased like any other when a position is known. The place type (Story 3.7, decided 2026-10-27,
+ * Sena) comes last in panel order and is tried as one step straight to «Alle».
  */
 export function forslagVedNullTreff(steder: readonly Filtrerbar[], params: FilterParams, posisjon?: Posisjon): Forslag | null {
   if (filtrerSteder(steder, params, posisjon).length > 0) return null
-  let best: (Forslag & { steg: number }) | null = null
+  let best: Kandidat | null = null
   for (const [krav, grense] of aktiveGrenser(params)) {
     const { min, max, steg, standard } = FILTER_GRENSER[krav]
     // A limit the slider cannot set gets no suggestion; the bound below keeps the walk finite for any range.
@@ -167,16 +210,27 @@ export function forslagVedNullTreff(steder: readonly Filtrerbar[], params: Filte
       const forsok = (retning > 0 ? verdi >= standard : verdi <= standard) ? null : verdi
       const antall = filtrerSteder(steder, { ...params, [krav]: forsok }, posisjon).length
       if (antall > 0) {
-        // Strictly better only, so an equal candidate earlier in panel order stays.
-        if (!best || antall > best.antall || (antall === best.antall && antallSteg < best.steg)) {
-          best = { krav, verdi: forsok, antall, steg: antallSteg }
-        }
+        best = bedre({ forslag: { krav, verdi: forsok, antall }, steg: antallSteg }, best)
         break
       }
       if (forsok === null) break
     }
   }
-  return best && { krav: best.krav, verdi: best.verdi, antall: best.antall }
+  if (params.stedstyper !== null) {
+    const antall = filtrerSteder(steder, { ...params, stedstyper: null }, posisjon).length
+    if (antall > 0) best = bedre({ forslag: { krav: 'stedstyper', verdi: null, antall }, steg: 1 }, best)
+  }
+  return best && best.forslag
+}
+
+type Kandidat = { forslag: Forslag; steg: number }
+
+/** The better of two suggestions: more places, then fewer steps. Strictly better only, so an equal
+ * candidate earlier in panel order stays. */
+function bedre(kandidat: Kandidat, best: Kandidat | null): Kandidat {
+  if (!best) return kandidat
+  const { antall } = kandidat.forslag
+  return antall > best.forslag.antall || (antall === best.forslag.antall && kandidat.steg < best.steg) ? kandidat : best
 }
 
 // AD-12 (Story 3.2, FR-21): the only translation between the address and the filter. The router carries
@@ -207,6 +261,22 @@ function parseKrav(krav: FilterKrav, search: URLSearchParams): number | null {
   return verdi
 }
 
+/** Story 3.7: the place types as one comma-separated parameter, written after every slider requirement. */
+const STEDSTYPE_PARAMETER = 'type'
+
+/**
+ * The place types from the address, in STED_TYPES order. An unknown or repeated type, an empty item or a
+ * repeated parameter could not have come from the panel, so the requirement is «Alle».
+ */
+function parseStedstyper(search: URLSearchParams): readonly StedType[] | null {
+  const verdier = search.getAll(STEDSTYPE_PARAMETER)
+  if (verdier.length !== 1) return null
+  const deler = verdier[0].split(',')
+  const typer = deler.filter((del): del is StedType => (STED_TYPES as readonly string[]).includes(del))
+  if (typer.length !== deler.length || new Set(typer).size !== typer.length) return null
+  return normaliserStedstyper(typer)
+}
+
 /** The filter in a query. Invalid or missing values give «Alle»; the page never fails on a bad link. */
 export function parseFilter(search: URLSearchParams): FilterParams {
   return {
@@ -215,10 +285,15 @@ export function parseFilter(search: URLSearchParams): FilterParams {
     maksTemperaturC: parseKrav('maksTemperaturC', search),
     maksSkydekkeDagslys: parseKrav('maksSkydekkeDagslys', search),
     maksAvstandKm: parseKrav('maksAvstandKm', search),
+    stedstyper: parseStedstyper(search),
   }
 }
 
 /** The active requirements as query pairs, in panel order, so the same filter always gives the same address. */
 export function serializeFilter(params: FilterParams): [string, string][] {
-  return aktiveGrenser(params).map(([krav, verdi]): [string, string] => [FILTER_PARAMETRE[krav], String(verdi)])
+  const par = aktiveGrenser(params).map(([krav, verdi]): [string, string] => [FILTER_PARAMETRE[krav], String(verdi)])
+  // Normalised again, so a hand-built filter in another order still gives the one address.
+  const stedstyper = params.stedstyper && normaliserStedstyper(params.stedstyper)
+  if (stedstyper) par.push([STEDSTYPE_PARAMETER, stedstyper.join(',')])
+  return par
 }

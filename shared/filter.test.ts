@@ -7,7 +7,9 @@ import {
   FILTER_KRAV,
   filtrerSteder,
   forslagVedNullTreff,
+  harAktiveKrav,
   HURTIGVALG,
+  normaliserStedstyper,
   parseFilter,
   serializeFilter,
   STANDARD_FILTER,
@@ -94,8 +96,9 @@ describe('forslagVedNullTreff', () => {
     skydekkeDagslys: 0,
     lat: 60,
     lon: 10,
+    type: 'skisted',
   })
-  const UTEN_AVSTAND = { maksSkydekkeDagslys: null, maksAvstandKm: null } as const
+  const UTEN_AVSTAND = { maksSkydekkeDagslys: null, maksAvstandKm: null, stedstyper: null } as const
 
   it('prefers the requirement that gives the most places over the one that needs fewer steps', () => {
     // Easing new snow 3 steps to 2 cm gives one place; easing wind 15 steps to 20 m/s gives two.
@@ -109,7 +112,7 @@ describe('forslagVedNullTreff', () => {
 
   it('skips a place without the value while easing, and counts it only once the requirement is removed', () => {
     // The golden places cannot show this: «dyp» meets every limit the others meet, so a walk stops before «Alle».
-    const steder: Filtrerbar[] = [{ nysnoCm: null, vindMaks: 5, temperatur: 0, skydekkeDagslys: 0, lat: 60, lon: 10 }, sted(2, 20)]
+    const steder: Filtrerbar[] = [{ nysnoCm: null, vindMaks: 5, temperatur: 0, skydekkeDagslys: 0, lat: 60, lon: 10, type: 'skisted' }, sted(2, 20)]
     expect(forslagVedNullTreff(steder, { minNysnoCm: 5, maksVindMs: 5, maksTemperaturC: null, ...UTEN_AVSTAND })).toEqual({
       krav: 'minNysnoCm',
       verdi: null,
@@ -144,6 +147,10 @@ describe('HURTIGVALG', () => {
     }
   })
 
+  it('mentions no place type, so a quick pick sets it to «Alle» like any other requirement it leaves out', () => {
+    for (const { navn, verdier } of HURTIGVALG) expect(verdier.stedstyper, navn).toBeNull()
+  })
+
   it('round-trips through the address unchanged, so a shared quick-pick link restores it exactly', () => {
     for (const { navn, verdier } of HURTIGVALG) {
       const query = new URLSearchParams(serializeFilter(verdier)).toString()
@@ -155,8 +162,8 @@ describe('HURTIGVALG', () => {
 describe('aktiveKrav', () => {
   it('counts only limits that are set and away from the "no limit" end', () => {
     expect(aktiveKrav(STANDARD_FILTER)).toEqual([])
-    expect(aktiveKrav({ minNysnoCm: 0, maksVindMs: 25, maksTemperaturC: 10, maksSkydekkeDagslys: 100, maksAvstandKm: 200 })).toEqual([])
-    expect(aktiveKrav({ minNysnoCm: 1, maksVindMs: 24, maksTemperaturC: 9, maksSkydekkeDagslys: 90, maksAvstandKm: 190 })).toEqual([
+    expect(aktiveKrav({ minNysnoCm: 0, maksVindMs: 25, maksTemperaturC: 10, maksSkydekkeDagslys: 100, maksAvstandKm: 200, stedstyper: null })).toEqual([])
+    expect(aktiveKrav({ minNysnoCm: 1, maksVindMs: 24, maksTemperaturC: 9, maksSkydekkeDagslys: 90, maksAvstandKm: 190, stedstyper: null })).toEqual([
       'minNysnoCm',
       'maksVindMs',
       'maksTemperaturC',
@@ -180,12 +187,12 @@ describe('filtrerSteder on the demo data', () => {
   )
 
   it('keeps the six places with at least 2 cm new snow and at most 0 °C', () => {
-    const treff = filtrerSteder(demo.steder, { minNysnoCm: 2, maksVindMs: null, maksTemperaturC: 0, maksSkydekkeDagslys: null, maksAvstandKm: null })
+    const treff = filtrerSteder(demo.steder, { minNysnoCm: 2, maksVindMs: null, maksTemperaturC: 0, maksSkydekkeDagslys: null, maksAvstandKm: null, stedstyper: null })
     expect(ids(treff).sort()).toEqual(['galdhopiggen', 'gaustatoppen', 'jiehkkevarri', 'oksskolten', 'oppdal-skisenter', 'rondeslottet'])
   })
 
   it('suggests 12 cm for at least 13 cm new snow, which gives Trysil', () => {
-    const filter: FilterParams = { minNysnoCm: 13, maksVindMs: null, maksTemperaturC: null, maksSkydekkeDagslys: null, maksAvstandKm: null }
+    const filter: FilterParams = { minNysnoCm: 13, maksVindMs: null, maksTemperaturC: null, maksSkydekkeDagslys: null, maksAvstandKm: null, stedstyper: null }
     expect(forslagVedNullTreff(demo.steder, filter)).toEqual({ krav: 'minNysnoCm', verdi: 12, antall: 1 })
     expect(ids(filtrerSteder(demo.steder, { ...filter, minNysnoCm: 12 }))).toEqual(['trysil'])
   })
@@ -194,7 +201,7 @@ describe('filtrerSteder on the demo data', () => {
     // Story 3.6: a day-trip scenario (Oslo, 59.9139° N 10.7522° E). The same position and span the
     // network E2E test uses, so the two stay consistent with each other.
     const posisjon = { lat: 59.9139, lon: 10.7522 }
-    const filter: FilterParams = { ...STANDARD_FILTER, maksAvstandKm: 150 }
+    const filter: FilterParams = { ...STANDARD_FILTER, maksAvstandKm: 150, stedstyper: null }
     expect(ids(filtrerSteder(demo.steder, filter, posisjon)).sort()).toEqual(['gaustatoppen', 'hafjell', 'lillehammer', 'oslo'])
     // Trysil has more new snow but lies 174 km away, just outside the span: only Gaustatoppen (10 cm)
     // is both close enough and snowy enough.
@@ -208,10 +215,17 @@ describe('filtrerSteder on the demo data', () => {
     expect(ids(filtrerSteder(demo.steder, { ...filter, maksSkydekkeDagslys: 20 }))).toEqual(['bergen'])
   })
 
+  it('keeps the eight ski resorts, and sixteen with the cities too (Story 3.7)', () => {
+    const skisteder = filtrerSteder(demo.steder, { ...STANDARD_FILTER, stedstyper: ['skisted'] })
+    expect(skisteder).toHaveLength(8)
+    expect(skisteder.every(({ type }) => type === 'skisted')).toBe(true)
+    expect(filtrerSteder(demo.steder, { ...STANDARD_FILTER, stedstyper: ['skisted', 'by'] })).toHaveLength(16)
+  })
+
   it('filters 300 places far below the 2 s of NFR-1', () => {
     const steder = Array.from({ length: 300 }, (_, i) => demo.steder[i % demo.steder.length])
     const start = performance.now()
-    const treff = filtrerSteder(steder, { minNysnoCm: 2, maksVindMs: 10, maksTemperaturC: 0, maksSkydekkeDagslys: null, maksAvstandKm: null })
+    const treff = filtrerSteder(steder, { minNysnoCm: 2, maksVindMs: 10, maksTemperaturC: 0, maksSkydekkeDagslys: null, maksAvstandKm: null, stedstyper: null })
     const ms = performance.now() - start
     expect(treff.length).toBeGreaterThan(0)
     expect(ms).toBeLessThan(200)
@@ -232,10 +246,18 @@ describe('parseFilter and serializeFilter', () => {
     }
   })
 
-  it('round-trips a filter with all five requirements set', () => {
-    // The cloud cover in daylight goes after `temp` (Story 3.5), and distance last of all (Story 3.6).
-    const params: FilterParams = { minNysnoCm: 5, maksVindMs: 10, maksTemperaturC: -2, maksSkydekkeDagslys: 60, maksAvstandKm: 80 }
-    expect(query(params)).toBe('nysno=5&vind=10&temp=-2&sky=60&avstand=80')
+  it('round-trips a filter with all six requirements set', () => {
+    // The cloud cover in daylight goes after `temp` (Story 3.5), distance after it (Story 3.6), and the
+    // place types last of all (Story 3.7). URLSearchParams escapes the comma; the router writes it plain.
+    const params: FilterParams = {
+      minNysnoCm: 5,
+      maksVindMs: 10,
+      maksTemperaturC: -2,
+      maksSkydekkeDagslys: 60,
+      maksAvstandKm: 80,
+      stedstyper: ['skisted', 'by'],
+    }
+    expect(query(params)).toBe('nysno=5&vind=10&temp=-2&sky=60&avstand=80&type=skisted%2Cby')
     expect(parse(query(params))).toEqual(params)
   })
 
@@ -253,19 +275,19 @@ describe('parseFilter and serializeFilter', () => {
   it('writes only active requirements, in panel order, so one filter gives one address', () => {
     expect(serializeFilter(STANDARD_FILTER)).toEqual([])
     expect(
-      serializeFilter({ minNysnoCm: 0, maksVindMs: 25, maksTemperaturC: 10, maksSkydekkeDagslys: 100, maksAvstandKm: 200 }),
+      serializeFilter({ minNysnoCm: 0, maksVindMs: 25, maksTemperaturC: 10, maksSkydekkeDagslys: 100, maksAvstandKm: 200, stedstyper: null }),
     ).toEqual([])
     expect(
-      serializeFilter({ maksSkydekkeDagslys: null, maksTemperaturC: 0, maksVindMs: null, minNysnoCm: 2, maksAvstandKm: null }),
+      serializeFilter({ maksSkydekkeDagslys: null, maksTemperaturC: 0, maksVindMs: null, minNysnoCm: 2, maksAvstandKm: null, stedstyper: null }),
     ).toEqual([
       ['nysno', '2'],
       ['temp', '0'],
     ])
-    expect(serializeFilter({ ...STANDARD_FILTER, maksAvstandKm: 150 })).toEqual([['avstand', '150']])
+    expect(serializeFilter({ ...STANDARD_FILTER, maksAvstandKm: 150, stedstyper: null })).toEqual([['avstand', '150']])
   })
 
   it('reads `avstand` on its own, and off its steps of 10 or outside 0–200 into «Alle»', () => {
-    expect(parse('avstand=150')).toEqual({ ...STANDARD_FILTER, maksAvstandKm: 150 })
+    expect(parse('avstand=150')).toEqual({ ...STANDARD_FILTER, maksAvstandKm: 150, stedstyper: null })
     for (const ugyldig of ['avstand=155', 'avstand=abc', 'avstand=210', 'avstand=-10', 'avstand=200', 'avstand=100&avstand=120']) {
       expect(parse(`${ugyldig}&temp=0`), ugyldig).toEqual({ ...STANDARD_FILTER, maksTemperaturC: 0 })
     }
@@ -273,7 +295,7 @@ describe('parseFilter and serializeFilter', () => {
   })
 
   it('reads the parameters in any order', () => {
-    expect(parse('temp=0&nysno=2')).toEqual({ minNysnoCm: 2, maksVindMs: null, maksTemperaturC: 0, maksSkydekkeDagslys: null, maksAvstandKm: null })
+    expect(parse('temp=0&nysno=2')).toEqual({ minNysnoCm: 2, maksVindMs: null, maksTemperaturC: 0, maksSkydekkeDagslys: null, maksAvstandKm: null, stedstyper: null })
   })
 
   it('turns a value the panel could not have set into «Alle», and keeps the other requirements', () => {
@@ -304,5 +326,60 @@ describe('parseFilter and serializeFilter', () => {
 
   it('ignores unknown parameters', () => {
     expect(parse('visning=liste&sortering=navn&annet=1')).toEqual(STANDARD_FILTER)
+  })
+
+  // Story 3.7 (FR-24): the place types as one comma-separated parameter, after every slider requirement.
+  it('writes the place types last, in STED_TYPES order whatever the order they were ticked in', () => {
+    expect(serializeFilter({ ...STANDARD_FILTER, stedstyper: ['skisted'] })).toEqual([['type', 'skisted']])
+    expect(serializeFilter({ ...STANDARD_FILTER, stedstyper: ['by', 'skisted'] })).toEqual([['type', 'skisted,by']])
+    expect(serializeFilter({ ...STANDARD_FILTER, maksAvstandKm: 80, stedstyper: ['fjelltopp'] })).toEqual([
+      ['avstand', '80'],
+      ['type', 'fjelltopp'],
+    ])
+  })
+
+  it('reads the place types in any order, as STED_TYPES order', () => {
+    expect(parse('type=skisted')).toEqual({ ...STANDARD_FILTER, stedstyper: ['skisted'] })
+    expect(parse('type=by,fjelltopp')).toEqual({ ...STANDARD_FILTER, stedstyper: ['fjelltopp', 'by'] })
+    expect(parse('type=by%2Cskisted').stedstyper).toEqual(['skisted', 'by'])
+    expect(parse('type=by,fjelltopp,skisted').stedstyper).toEqual(['skisted', 'fjelltopp', 'by'])
+  })
+
+  it('turns place types the panel could not have set into «Alle», and keeps the other requirements', () => {
+    for (const ugyldig of ['type=innsjo', 'type=', 'type=skisted,', 'type=,by', 'type=by,by', 'type=Skisted', 'type=skisted&type=by']) {
+      expect(parse(`${ugyldig}&temp=0`), ugyldig).toEqual({ ...STANDARD_FILTER, maksTemperaturC: 0 })
+    }
+  })
+
+  it('round-trips every combination of place types', () => {
+    const kombinasjoner: FilterParams['stedstyper'][] = [
+      ['skisted'],
+      ['fjelltopp'],
+      ['by'],
+      ['skisted', 'fjelltopp'],
+      ['skisted', 'by'],
+      ['fjelltopp', 'by'],
+      ['skisted', 'fjelltopp', 'by'],
+    ]
+    for (const stedstyper of kombinasjoner) {
+      const params: FilterParams = { ...STANDARD_FILTER, minNysnoCm: 2, stedstyper }
+      expect(parse(query(params)), String(stedstyper)).toEqual(params)
+    }
+  })
+})
+
+describe('normaliserStedstyper and harAktiveKrav', () => {
+  it('orders the ticked types as STED_TYPES, drops repeats, and makes nothing ticked «Alle»', () => {
+    expect(normaliserStedstyper(['by', 'skisted'])).toEqual(['skisted', 'by'])
+    expect(normaliserStedstyper(['by', 'by'])).toEqual(['by'])
+    expect(normaliserStedstyper([])).toBeNull()
+  })
+
+  it('counts the place type as an active requirement, alone or with a slider', () => {
+    expect(harAktiveKrav(STANDARD_FILTER)).toBe(false)
+    expect(harAktiveKrav({ ...STANDARD_FILTER, stedstyper: ['by'] })).toBe(true)
+    expect(harAktiveKrav({ ...STANDARD_FILTER, minNysnoCm: 2 })).toBe(true)
+    // The place type is not a slider, so aktiveKrav leaves it out.
+    expect(aktiveKrav({ ...STANDARD_FILTER, stedstyper: ['by'] })).toEqual([])
   })
 })

@@ -1010,3 +1010,167 @@ test.describe('the distance filter at 375px', () => {
     await expect(avstand(page)).toBeFocused()
   })
 })
+
+// Story 3.7 (FR-24, decided 2026-10-27, Sena): three checkboxes, none ticked is «Alle», combined with AND,
+// in the address as `type` after `avstand`. The demo data has eight of each type. Of the eight cities none
+// has new snow, so «by» and at least 1 cm gives zero hits; without the place type it gives 11 (all eight
+// summits, and Hemsedal 1,0, Oppdal 2,8 and Trysil 12,6), without new snow only the eight cities.
+const skisted = (page: Page) => page.getByRole('checkbox', { name: 'Skisted' })
+const fjelltopp = (page: Page) => page.getByRole('checkbox', { name: 'Fjelltopp' })
+const by = (page: Page) => page.getByRole('checkbox', { name: 'By' })
+const stedstypeGruppe = (page: Page) => page.getByRole('group', { name: 'Stedstype' })
+
+test.describe('the place type filter at 1280px', () => {
+  test.use({ viewport: DESKTOP })
+
+  test('one type keeps its eight places, two keep sixteen, on the map, in the list and in the address', async ({ page }) => {
+    await page.goto('/')
+    await expect(markers(page)).toHaveCount(24)
+    await expect(stedstypeGruppe(page)).toBeVisible()
+    for (const boks of [skisted(page), fjelltopp(page), by(page)]) await expect(boks).not.toBeChecked()
+
+    await skisted(page).check()
+    await expect(page).toHaveURL(/\/\?type=skisted$/)
+    await expect(markers(page)).toHaveCount(8)
+    await expect(page.locator('path[data-sted-id="trysil"]')).toHaveCount(1)
+    await expect(page.locator('path[data-sted-id="oslo"]')).toHaveCount(0)
+    await expect(live(page)).toHaveText('8 treff')
+
+    await by(page).check()
+    await expect(page).toHaveURL(/\/\?type=skisted,by$/)
+    await expect(markers(page)).toHaveCount(16)
+
+    await page.getByRole('link', { name: 'Liste', exact: true }).click()
+    await expect(page).toHaveURL(/\/\?visning=liste&type=skisted,by$/)
+    await expect(rows(page)).toHaveCount(16)
+  })
+
+  test('the address is the same whatever order the types are ticked in', async ({ page }) => {
+    await page.goto('/')
+    await expect(markers(page)).toHaveCount(24)
+    await by(page).check()
+    await skisted(page).check()
+    await expect(page).toHaveURL(/\/\?type=skisted,by$/)
+  })
+
+  test('unticking the last type gives «Alle» again, never zero hits', async ({ page }) => {
+    await page.goto('/?type=by')
+    await expect(markers(page)).toHaveCount(8)
+    await by(page).uncheck()
+    await expect(page).toHaveURL(/\/$/)
+    await expect(markers(page)).toHaveCount(24)
+    await expect(banner(page)).toHaveCount(0)
+  })
+
+  test('combined with new snow (AND), only the ski resorts with at least 2 cm are left', async ({ page }) => {
+    await page.goto('/')
+    await expect(markers(page)).toHaveCount(24)
+    await nysno(page).fill('2')
+    await skisted(page).check()
+    await expect(page).toHaveURL(/\/\?nysno=2&type=skisted$/)
+    await expect(markers(page)).toHaveCount(2)
+    await expect(page.locator('path[data-sted-id="oppdal-skisenter"]')).toHaveCount(1)
+    await expect(page.locator('path[data-sted-id="trysil"]')).toHaveCount(1)
+  })
+
+  test('a shared link restores the types and is rewritten to STED_TYPES order', async ({ page }) => {
+    await page.goto('/?type=by,fjelltopp')
+    await expect(page).toHaveURL(/\/\?type=fjelltopp,by$/)
+    await expect(markers(page)).toHaveCount(16)
+    await expect(skisted(page)).not.toBeChecked()
+    await expect(fjelltopp(page)).toBeChecked()
+    await expect(by(page)).toBeChecked()
+  })
+
+  test('an invalid or empty type turns the requirement off and keeps the others', async ({ page }) => {
+    for (const ugyldig of ['type=innsjo', 'type=']) {
+      await page.goto(`/?${ugyldig}&temp=0`)
+      await expect(page).toHaveURL(/\/\?temp=0$/)
+      for (const boks of [skisted(page), fjelltopp(page), by(page)]) await expect(boks).not.toBeChecked()
+      await expect(page.getByRole('alert')).toHaveCount(0)
+    }
+  })
+
+  test('zero hits suggest dropping the place type, and «Bruk forslaget» moves focus to the first checkbox', async ({ page }) => {
+    await page.goto('/?nysno=1&type=by')
+    await expect(markers(page)).toHaveCount(0)
+    await expect(banner(page).getByRole('paragraph')).toHaveText('Ingen treff. Prøv uten stedstypekravet.')
+    await brukForslaget(page).click()
+    await expect(page).toHaveURL(/\/\?nysno=1$/)
+    await expect(markers(page)).toHaveCount(11)
+    await expect(by(page)).not.toBeChecked()
+    await expect(skisted(page)).toBeFocused()
+  })
+
+  test('«Nullstill» and a quick pick both set the place type back to «Alle»', async ({ page }) => {
+    await page.goto('/?type=by')
+    await expect(markers(page)).toHaveCount(8)
+    await panel(page).getByRole('button', { name: 'Nullstill' }).click()
+    await expect(page).toHaveURL(/\/$/)
+    await expect(by(page)).not.toBeChecked()
+
+    await page.goto('/?type=by')
+    await expect(markers(page)).toHaveCount(8)
+    await page.getByRole('button', { name: 'Pudderdag' }).click()
+    await expect(page).toHaveURL(/\/\?nysno=10&vind=8&temp=-2$/)
+    await expect(by(page)).not.toBeChecked()
+  })
+
+  test('the place type filter has no serious or critical WCAG 2.1 AA violations, idle or active', async ({ page }) => {
+    await page.goto('/')
+    await expect(markers(page)).toHaveCount(24)
+    await expectNoBlockingViolations(page)
+    await page.goto('/?type=skisted,by')
+    await expect(markers(page)).toHaveCount(16)
+    await expectNoBlockingViolations(page)
+  })
+})
+
+test.describe('the place type filter at 375px', () => {
+  test.use({ viewport: MOBIL })
+
+  test('each checkbox is at least 44px tall, the chip shows on the closed sheet, and nothing scrolls sideways', async ({ page }) => {
+    for (const width of [320, 375]) {
+      await page.setViewportSize({ width, height: MOBIL.height })
+      await page.goto('/')
+      await expect(markers(page)).toHaveCount(24)
+      await page.addStyleTag({ content: BRED_FONT })
+
+      await filterKnapp(page).click()
+      for (const boks of [skisted(page), fjelltopp(page), by(page)]) {
+        const etikett = page.locator('label.filter-stedstype').filter({ has: boks })
+        await etikett.scrollIntoViewIfNeeded()
+        expect((await box(etikett)).height).toBeGreaterThanOrEqual(44)
+      }
+      await nysno(page).fill('2')
+      await skisted(page).check()
+      await fjelltopp(page).check()
+      await expectNoSidewaysScroll(page)
+      await filterKnapp(page).click()
+      const chips = page.getByRole('list', { name: 'Aktive krav' }).getByRole('listitem')
+      await expect(chips).toHaveText(['Nysnø minst 2 cm', 'Stedstype skisted, fjelltopp'])
+      await expectNoSidewaysScroll(page)
+    }
+  })
+
+  test('«Bruk forslaget» on the closed sheet drops the place type and leaves focus on «Filter»', async ({ page }) => {
+    await page.goto('/?nysno=1&type=by')
+    await expect(markers(page)).toHaveCount(0)
+    await expect(skisted(page)).toBeHidden()
+    await expect(banner(page).getByRole('paragraph')).toHaveText('Ingen treff. Prøv uten stedstypekravet.')
+    await brukForslaget(page).click()
+    await expect(page).toHaveURL(/\/\?nysno=1$/)
+    await expect(markers(page)).toHaveCount(11)
+    await expect(page.getByRole('list', { name: 'Aktive krav' }).getByRole('listitem')).toHaveText(['Nysnø minst 1 cm'])
+    // The checkboxes are hidden in the closed sheet, so focus goes to «Filter».
+    await expect(filterKnapp(page)).toBeFocused()
+  })
+
+  test('the open sheet with the place type filter has no serious or critical WCAG 2.1 AA violations', async ({ page }) => {
+    await page.goto('/?type=fjelltopp')
+    await expect(markers(page)).toHaveCount(8)
+    await filterKnapp(page).click()
+    await expect(fjelltopp(page)).toBeChecked()
+    await expectNoBlockingViolations(page)
+  })
+})

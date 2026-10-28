@@ -118,7 +118,7 @@ describe('FilterPanel', () => {
   })
 
   it('shows active requirements as chips, their values in words and «Nullstill»', () => {
-    const html = render({ minNysnoCm: 2, maksVindMs: null, maksTemperaturC: 0, maksSkydekkeDagslys: null, maksAvstandKm: null })
+    const html = render({ minNysnoCm: 2, maksVindMs: null, maksTemperaturC: 0, maksSkydekkeDagslys: null, maksAvstandKm: null, stedstyper: null })
     expect(html).toContain(
       '<ul class="filter-chips" aria-label="Aktive krav"><li class="filter-chip">Nysnø minst 2 cm</li><li class="filter-chip">Temperatur høyst 0 °C</li></ul>',
     )
@@ -126,6 +126,44 @@ describe('FilterPanel', () => {
     expect(html).toMatch(/id="filter-maksVindMs"[^>]*aria-valuetext="Alle"/)
     // One «Nullstill» on the closed sheet and one in the panel; CSS shows only one at a time.
     expect(html.match(/>Nullstill<\/button>/g)).toHaveLength(2)
+  })
+})
+
+// Story 3.7 (FR-24, decided 2026-10-27, Sena): three checkboxes after the sliders, none ticked by default.
+describe('FilterPanel place type', () => {
+  it('has a «Stedstype» group of three unticked checkboxes after the sliders, and no «Nullstill»', () => {
+    const html = render(STANDARD_FILTER)
+    expect(html).toContain(
+      '<fieldset class="filter-felt filter-stedstyper" aria-describedby="filter-stedstyper-hint"><legend>Stedstype</legend>' +
+        '<p id="filter-stedstyper-hint" class="filter-hint">Ingen avkrysset viser alle stedstyper.</p>',
+    )
+    for (const [type, navn] of [
+      ['skisted', 'Skisted'],
+      ['fjelltopp', 'Fjelltopp'],
+      ['by', 'By'],
+    ]) {
+      expect(html).toContain(`<label class="filter-stedstype"><input id="filter-stedstyper-${type}" type="checkbox"/>${navn}</label>`)
+    }
+    expect(html.indexOf('filter-maksAvstandKm')).toBeLessThan(html.indexOf('filter-stedstyper'))
+    expect(html).not.toContain('Nullstill')
+  })
+
+  it('ticks the chosen types, shows them as a chip, and offers «Nullstill»', () => {
+    const html = render({ ...STANDARD_FILTER, stedstyper: ['skisted', 'by'] })
+    expect(html).toContain('<input id="filter-stedstyper-skisted" type="checkbox" checked=""/>')
+    expect(html).toContain('<input id="filter-stedstyper-fjelltopp" type="checkbox"/>')
+    expect(html).toContain('<input id="filter-stedstyper-by" type="checkbox" checked=""/>')
+    expect(html).toContain('<ul class="filter-chips" aria-label="Aktive krav"><li class="filter-chip">Stedstype skisted, by</li></ul>')
+    expect(html.match(/>Nullstill<\/button>/g)).toHaveLength(2)
+  })
+
+  it('puts the place type chip after the slider chips', () => {
+    const html = render({ ...STANDARD_FILTER, minNysnoCm: 2, stedstyper: ['fjelltopp'] })
+    expect(html).toContain('<li class="filter-chip">Nysnø minst 2 cm</li><li class="filter-chip">Stedstype fjelltopp</li></ul>')
+  })
+
+  it('words the suggestion to drop it as «Prøv uten stedstypekravet.»', () => {
+    expect(forslagTekst({ krav: 'stedstyper', verdi: null, antall: 5 })).toBe('Prøv uten stedstypekravet.')
   })
 })
 
@@ -168,7 +206,7 @@ describe('the distance slider (Story 3.6)', () => {
       )
       // Exactly one button, and it is gone again once the requirement goes back to «Alle».
       expect(html.match(/Hele Norge/g)).toHaveLength(1)
-      expect(render({ ...STANDARD_FILTER, maksAvstandKm: null })).not.toContain('Hele Norge')
+      expect(render({ ...STANDARD_FILTER, maksAvstandKm: null, stedstyper: null })).not.toContain('Hele Norge')
     })
   })
 })
@@ -181,6 +219,7 @@ describe('Hurtigvalgene', () => {
     maksTemperaturC: -2,
     maksSkydekkeDagslys: null,
     maksAvstandKm: null,
+    stedstyper: null,
   }
   const SOL_ETTER_SNOFALL: FilterParams = {
     minNysnoCm: 5,
@@ -188,6 +227,7 @@ describe('Hurtigvalgene', () => {
     maksTemperaturC: null,
     maksSkydekkeDagslys: 30,
     maksAvstandKm: null,
+    stedstyper: null,
   }
 
   it('shows both as unpressed buttons, each with its fixed combination described underneath', () => {
@@ -215,5 +255,8 @@ describe('Hurtigvalgene', () => {
     // Moving one slider away from «Pudderdag» un-presses its chip.
     const justert: FilterParams = { ...PUDDERDAG, maksVindMs: 7 }
     expect(render(justert)).toMatch(/id="hurtigvalg-0" class="filter-hurtigvalg-chip" aria-pressed="false"/)
+
+    // Story 3.7: a ticked place type is part of the combination too, so it un-presses the chip as well.
+    expect(render({ ...PUDDERDAG, stedstyper: ['by'] })).toMatch(/id="hurtigvalg-0" class="filter-hurtigvalg-chip" aria-pressed="false"/)
   })
 })
