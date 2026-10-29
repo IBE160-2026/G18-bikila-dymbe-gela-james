@@ -15,3 +15,7 @@
 - [ ] 2026-10-28 [milepaeler-og-aktivitetsliste](995-2026-10-28-19-05-00-milepaeler-og-aktivitetsliste.md) — sjekk at diagrammene i milepæler og aktivitetsliste vises riktig på GitHub
 - [x] 2026-10-28 [milepaeler-og-aktivitetsliste](995-2026-10-28-19-05-00-milepaeler-og-aktivitetsliste.md) — Story 3.8: synlig kopi-PR av Senas grein, løs konflikten i tre dokumentfiler, review (løst 2026-10-28: Aksel åpnet #71, Joseph godkjente, merget)
 - [ ] 2026-10-28 [moetereferat-og-demo](994-2026-10-28-20-30-00-moetereferat-og-demo.md) — be faglærer endre Pages-kilden til «GitHub Actions» og slå på grenbeskyttelse innen 2026-11-04
+- [ ] 2026-10-29 [story-1-6-hold-tjenesten-oppe](993-2026-10-29-11-45-07-story-1-6-hold-tjenesten-oppe.md) — sjekk at E2E er grønn i CI (Ubuntu) før merge av 1.6-PR-en
+- [ ] 2026-10-29 [story-1-6-hold-tjenesten-oppe](993-2026-10-29-11-45-07-story-1-6-hold-tjenesten-oppe.md) — AD-2 («one attempt») via `bmad-architecture` og fargene til `banner-stale-data` i DESIGN.md via `bmad-ux`, begge kopier
+- [ ] 2026-10-29 [story-1-6-hold-tjenesten-oppe](993-2026-10-29-11-45-07-story-1-6-hold-tjenesten-oppe.md) — vurder tidsbudsjett for trege 5xx-svar i `fetch.ts` når 1.11 går
+- [ ] 2026-10-29 [story-1-6-hold-tjenesten-oppe](993-2026-10-29-11-45-07-story-1-6-hold-tjenesten-oppe.md) — datakvalitetspanelet viser antall utdaterte og fjernede steder (utsatt fra 2.3)
