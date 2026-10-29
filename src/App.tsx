@@ -1,6 +1,8 @@
 import DemoBanner from './components/DemoBanner'
+import GamleDataBanner from './components/GamleDataBanner'
 import Toppnavigasjon from './components/Toppnavigasjon'
 import { useSteder, type StederResult } from './hooks/useSteder'
+import { now } from './lib/clock'
 import { useRoute, type Route } from './lib/router'
 import IkkeFunnet from './pages/IkkeFunnet'
 import SlikBeregnerViSnowScore from './pages/SlikBeregnerViSnowScore'
@@ -49,6 +51,10 @@ export function AppView({ result, route }: { result: StederResult | null; route:
       <header className="app-header">
         <Toppnavigasjon route={route} />
       </header>
+      {/* Story 1.6: an old data file is flagged on the pages that show its places, not on the explanation. */}
+      {result?.status === 'ok' && (route.name === 'utforsk' || route.name === 'sted') && (
+        <GamleDataBanner generert={result.data.generert} naa={now(result.data)} vis={result.gamleData} />
+      )}
       {result?.status === 'ok' && result.data.mode === 'demo' && <DemoBanner />}
       <main className="app">
         {/* Rendered from the first paint, also while loading, so a screen reader hears the message when it

@@ -1,7 +1,9 @@
 // AD-2 stage, live source: fetches one MET Locationforecast and one NVE seNorge `fsw` response per
 // place in the catalog and puts them in `ctx.raw`, in the same shape as sources/fixtures.ts.
-// One attempt per place and source (retries are Story 1.6) and no state between runs. A failed call
-// leaves the response missing with a reason, which validate.ts records; nothing is repaired (AD-11).
+// A call that fails with a network error, 429 or 5xx is tried again a fixed number of times with a
+// growing wait (Story 1.6), each attempt through the source's call-rate gate; a timeout or another 4xx
+// is not. No state is kept between runs. A call that still fails leaves the response missing with a
+// reason, which validate.ts records; nothing is repaired (AD-11).
 import type { CatalogEntry } from '../../shared/contracts/catalog'
 import type { Avvisning } from '../../shared/contracts/published'
 import type { RawResponses, RunContext } from '../../shared/contracts/run'
@@ -17,6 +19,10 @@ export const DEFAULT_CONCURRENCY = 5
  */
 export const DEFAULT_MIN_INTERVAL_MS = 100
 export const DEFAULT_TIMEOUT_MS = 20_000
+/** Attempts per call, the first included, when a source is temporarily unavailable. */
+export const DEFAULT_ATTEMPTS = 3
+/** The wait before the second attempt; it doubles before each one after that (1 s, then 2 s). */
+export const DEFAULT_RETRY_BASE_MS = 1000
 /** Days of NVE history before the reference date, so the last daily value is always in the period. */
 export const NVE_DAYS_BACK = 6
 
@@ -78,15 +84,18 @@ export function startGate(intervalMs: number, sleep: Sleep = sleepFor, now: () =
   }
 }
 
-type Outcome = { body: unknown } | { error: string }
+type Outcome = { body: unknown } | { error: string; retryable: boolean }
 
 const shorten = (text: string) => {
   const flat = text.replace(/\s+/g, ' ').trim()
   return flat.length > MAX_BODY_IN_REASON ? `${flat.slice(0, MAX_BODY_IN_REASON)} …` : flat
 }
 
+/** AbortSignal.timeout rejects with a TimeoutError; used both for the reason and to skip retries. */
+const isTimeout = (error: unknown) => error instanceof Error && error.name === 'TimeoutError'
+
 function describeError(error: unknown, timeoutMs: number): string {
-  if (error instanceof Error && error.name === 'TimeoutError') return `Tidsavbrudd etter ${timeoutMs / 1000} s`
+  if (isTimeout(error)) return `Tidsavbrudd etter ${timeoutMs / 1000} s`
   if (error instanceof Error) {
     // Node's fetch reports "fetch failed" and puts the real cause (DNS, refused, reset) in `cause`.
     const cause = error.cause instanceof Error ? `: ${error.cause.message}` : ''
@@ -95,7 +104,11 @@ function describeError(error: unknown, timeoutMs: number): string {
   return `Nettverksfeil: ${String(error)}`
 }
 
-/** One GET, one attempt. Never throws: any failure becomes a reason. */
+/**
+ * One GET, one attempt. Never throws: any failure becomes a reason. Network errors, 429 and 5xx may
+ * pass on a new attempt. A timeout is not retried: 300 places × 3 × 20 s would run into the next
+ * hourly job, and a source that does not answer in 20 s is down, not unstable.
+ */
 async function getOnce(url: string, fetchFn: FetchFn, timeoutMs: number): Promise<Outcome> {
   try {
     // The signal also covers reading the body, so a stalled body times out too.
@@ -107,15 +120,42 @@ async function getOnce(url: string, fetchFn: FetchFn, timeoutMs: number): Promis
     if (!response.ok) {
       // NVE explains a missing grid cell ("No cell exists") in the body of its HTTP 400.
       const body = shorten(text)
-      return { error: body ? `HTTP ${response.status}: ${body}` : `HTTP ${response.status}` }
+      const retryable = response.status === 429 || response.status >= 500
+      return { error: body ? `HTTP ${response.status}: ${body}` : `HTTP ${response.status}`, retryable }
     }
     try {
       return { body: JSON.parse(text) }
     } catch {
-      return { error: 'Svaret er ikke JSON' }
+      return { error: 'Svaret er ikke JSON', retryable: false }
     }
   } catch (error) {
-    return { error: describeError(error, timeoutMs) }
+    return { error: describeError(error, timeoutMs), retryable: !isTimeout(error) }
+  }
+}
+
+interface RetryOptions {
+  fetchFn: FetchFn
+  timeoutMs: number
+  attempts: number
+  retryBaseMs: number
+  sleep: Sleep
+  /** The source's call-rate gate, awaited before every attempt. */
+  gate: () => Promise<void>
+}
+
+/** A GET with up to `attempts` tries, waiting retryBaseMs × 2^(n−1) before try n + 1. Never throws. */
+async function getWithRetries(url: string, { fetchFn, timeoutMs, attempts, retryBaseMs, sleep, gate }: RetryOptions): Promise<Outcome> {
+  const maxAttempts = Math.max(1, attempts)
+  let tried = 0
+  for (;;) {
+    if (tried > 0) await sleep(retryBaseMs * 2 ** (tried - 1))
+    await gate()
+    const outcome = await getOnce(url, fetchFn, timeoutMs)
+    tried++
+    if (!('error' in outcome)) return outcome
+    if (!outcome.retryable || tried >= maxAttempts) {
+      return tried > 1 ? { ...outcome, error: `${outcome.error} (etter ${tried} forsøk)` } : outcome
+    }
   }
 }
 
@@ -125,6 +165,12 @@ export interface FetchOptions {
   /** Minimum time between two call starts per source; 0 turns the limit off (tests only). */
   minIntervalMs?: number
   timeoutMs?: number
+  /** Attempts per call, the first included; 1 turns retries off. */
+  attempts?: number
+  /** The wait before the second attempt; it doubles for each attempt after that. */
+  retryBaseMs?: number
+  /** Waits between attempts; injected so tests record the waits instead of sleeping. */
+  sleep?: Sleep
 }
 
 /** The source stage in live mode: fills `raw` with one MET and one NVE response per place. */
@@ -135,21 +181,19 @@ export async function fetchAll(
     concurrency = DEFAULT_CONCURRENCY,
     minIntervalMs = DEFAULT_MIN_INTERVAL_MS,
     timeoutMs = DEFAULT_TIMEOUT_MS,
+    attempts = DEFAULT_ATTEMPTS,
+    retryBaseMs = DEFAULT_RETRY_BASE_MS,
+    sleep = sleepFor,
   }: FetchOptions,
 ): Promise<RunContext> {
   const referenceMs = Date.parse(ctx.referenceTime)
   // Each source has its own limits, so a slow source does not hold back the other.
+  const retry = { fetchFn, timeoutMs, attempts, retryBaseMs, sleep }
   const metGate = startGate(minIntervalMs)
   const nveGate = startGate(minIntervalMs)
   const [met, nve] = await Promise.all([
-    mapLimit(ctx.catalog, concurrency, async (sted) => {
-      await metGate()
-      return getOnce(metUrl(sted), fetchFn, timeoutMs)
-    }),
-    mapLimit(ctx.catalog, concurrency, async (sted) => {
-      await nveGate()
-      return getOnce(nveUrl(sted, referenceMs), fetchFn, timeoutMs)
-    }),
+    mapLimit(ctx.catalog, concurrency, (sted) => getWithRetries(metUrl(sted), { ...retry, gate: metGate })),
+    mapLimit(ctx.catalog, concurrency, (sted) => getWithRetries(nveUrl(sted, referenceMs), { ...retry, gate: nveGate })),
   ])
   const raw: RawResponses[] = ctx.catalog.map((sted, i) => {
     const feil: Partial<Record<Avvisning['kilde'], string>> = {}

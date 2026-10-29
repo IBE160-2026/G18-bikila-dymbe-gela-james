@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { FJERNES_ETTER_MS, UTDATERT_ETTER_MS, dataAlderMs, ferskhet } from './freshness'
+import { FJERNES_ETTER_MS, GAMLE_DATA_ETTER_MS, UTDATERT_ETTER_MS, dataAlderMs, erGamleData, ferskhet } from './freshness'
 
 const NOW = new Date('2026-10-07T20:30:29Z')
 /** The source time that makes the data exactly `ageMs` old at NOW. */
@@ -38,5 +38,25 @@ describe('ferskhet', () => {
 
   it('gives unknown age when the source time is missing', () => {
     expect(ferskhet(null, NOW)).toBe('ukjent')
+  })
+})
+
+describe('erGamleData', () => {
+  it('uses 90 min as the limit', () => {
+    expect(GAMLE_DATA_ETTER_MS).toBe(90 * 60_000)
+  })
+
+  it.each([
+    ['just published', 0, false],
+    ['exactly 90 min', GAMLE_DATA_ETTER_MS, false],
+    ['90 min + 1 ms', GAMLE_DATA_ETTER_MS + 1, true],
+    ['two hours', 2 * 3_600_000, true],
+    ['published slightly ahead of "now" (clock skew)', -60_000, false],
+  ] as const)('%s', (_, ageMs, expected) => {
+    expect(erGamleData(aged(ageMs), NOW)).toBe(expected)
+  })
+
+  it('shows no banner when the time cannot be read', () => {
+    expect(erGamleData('ikke en dato', NOW)).toBe(false)
   })
 })

@@ -1,6 +1,16 @@
 import { describe, expect, it } from 'vitest'
 import { wgs84ToUtm33 } from '../../shared/geo'
-import { DEFAULT_MIN_INTERVAL_MS, fetchAll, metUrl, nveUrl, startGate, USER_AGENT, type FetchFn } from './fetch'
+import {
+  DEFAULT_ATTEMPTS,
+  DEFAULT_MIN_INTERVAL_MS,
+  DEFAULT_RETRY_BASE_MS,
+  fetchAll,
+  metUrl,
+  nveUrl,
+  startGate,
+  USER_AGENT,
+  type FetchFn,
+} from './fetch'
 import { score } from './score'
 import { catalogEntry, metResponse, nveResponse, rawContext, REFERENCE_TIME, snowyDay } from './testing'
 import { validate } from './validate'
@@ -30,6 +40,12 @@ function defaultAnswer(url: string): Response {
 
 /** Places with the given ids and no responses yet, as run.ts hands them to fetch.ts. */
 const contextFor = (ids: string[]) => rawContext(ids.map((id) => ({ id })))
+
+/** A sleep that records each wait between attempts and returns at once. */
+function recordingSleep() {
+  const slept: number[] = []
+  return { slept, sleep: async (ms: number) => void slept.push(ms) }
+}
 
 describe('URL builders', () => {
   const sted = { ...catalogEntry('a'), lat: 61.6363, lon: 8.3125, hoyde: 2469 }
@@ -72,7 +88,7 @@ describe('fetchAll', () => {
     expect(USER_AGENT).toMatch(/SnowFinder.*IBE160 G18/)
   })
 
-  it('turns network errors, 5xx and 429 into a missing MET response with the reason, one attempt each', async () => {
+  it('tries network errors, 5xx and 429 three times, waiting 1 s and then 2 s, before reporting the reason', async () => {
     const { fetchFn, calls } = fakeFetch((url) => {
       if (!isMet(url)) return json(nveResponse())
       if (url.includes(`lat=${catalogEntry('a').lat}&`)) {
@@ -81,24 +97,84 @@ describe('fetchAll', () => {
       if (url.includes(`lat=${catalogEntry('b').lat}&`)) return new Response('<html>Bad gateway</html>', { status: 502 })
       return new Response('', { status: 429 })
     })
-    const ctx = await fetchAll(contextFor(['a', 'b', 'c']), { fetchFn, minIntervalMs: 0 })
+    const { slept, sleep } = recordingSleep()
+    const ctx = await fetchAll(contextFor(['a', 'b', 'c']), { fetchFn, minIntervalMs: 0, sleep })
 
+    expect(DEFAULT_ATTEMPTS).toBe(3)
+    expect(DEFAULT_RETRY_BASE_MS).toBe(1000)
     expect(ctx.raw.map((r) => r.feil)).toEqual([
-      { met: 'Nettverksfeil: fetch failed: ECONNRESET' },
-      { met: 'HTTP 502: <html>Bad gateway</html>' },
-      { met: 'HTTP 429' },
+      { met: 'Nettverksfeil: fetch failed: ECONNRESET (etter 3 forsøk)' },
+      { met: 'HTTP 502: <html>Bad gateway</html> (etter 3 forsøk)' },
+      { met: 'HTTP 429 (etter 3 forsøk)' },
     ])
     expect(ctx.raw.every((r) => r.met === undefined && r.nve !== undefined)).toBe(true)
-    // No retries in v1 (Story 1.6).
-    expect(calls).toHaveLength(6)
+    // Three attempts per MET call, one per NVE call; two waits per failed place.
+    expect(calls.filter((c) => isMet(c.url))).toHaveLength(9)
+    expect(calls.filter((c) => !isMet(c.url))).toHaveLength(3)
+    expect([...slept].sort((a, b) => a - b)).toEqual([1000, 1000, 1000, 2000, 2000, 2000])
 
     const validated = validate(ctx)
     expect(validated.avviste).toEqual([
-      { stedId: 'a', kilde: 'met', arsak: 'Nettverksfeil: fetch failed: ECONNRESET' },
-      { stedId: 'b', kilde: 'met', arsak: 'HTTP 502: <html>Bad gateway</html>' },
-      { stedId: 'c', kilde: 'met', arsak: 'HTTP 429' },
+      { stedId: 'a', kilde: 'met', arsak: 'Nettverksfeil: fetch failed: ECONNRESET (etter 3 forsøk)' },
+      { stedId: 'b', kilde: 'met', arsak: 'HTTP 502: <html>Bad gateway</html> (etter 3 forsøk)' },
+      { stedId: 'c', kilde: 'met', arsak: 'HTTP 429 (etter 3 forsøk)' },
     ])
     expect(validated.validated.every((v) => v.met === null && v.nve !== null)).toBe(true)
+  })
+
+  it('uses the answer when a brief failure passes on the next attempt, with no rejection', async () => {
+    let metCalls = 0
+    const { fetchFn } = fakeFetch((url) => {
+      if (!isMet(url)) return json(nveResponse())
+      return ++metCalls === 1 ? new Response('', { status: 503 }) : json(metResponse(snowyDay()))
+    })
+    const { slept, sleep } = recordingSleep()
+    const ctx = await fetchAll(contextFor(['a']), { fetchFn, minIntervalMs: 0, sleep })
+
+    expect(metCalls).toBe(2)
+    expect(slept).toEqual([1000])
+    expect(ctx.raw[0].met).toEqual(metResponse(snowyDay()))
+    expect(ctx.raw[0].feil).toBeUndefined()
+    expect(validate(ctx).avviste).toEqual([])
+  })
+
+  it.each([500, 503])('tries HTTP %i three times', async (status) => {
+    const { fetchFn, calls } = fakeFetch((url) => (isMet(url) ? new Response('', { status }) : json(nveResponse())))
+    const { slept, sleep } = recordingSleep()
+    const ctx = await fetchAll(contextFor(['a']), { fetchFn, minIntervalMs: 0, sleep })
+
+    expect(calls.filter((c) => isMet(c.url))).toHaveLength(3)
+    expect(slept).toEqual([1000, 2000])
+    expect(ctx.raw[0].feil).toEqual({ met: `HTTP ${status} (etter 3 forsøk)` })
+  })
+
+  it('stops at a timeout after a retryable failure, and says how many attempts were made', async () => {
+    let metCalls = 0
+    const { fetchFn, calls } = fakeFetch((url, init) => {
+      if (!isMet(url)) return json(nveResponse())
+      if (++metCalls === 1) return new Response('', { status: 503 })
+      // Like the real fetch, the fake only stops when the signal aborts.
+      return new Promise((_resolve, reject) => init.signal?.addEventListener('abort', () => reject(init.signal?.reason)))
+    })
+    const { slept, sleep } = recordingSleep()
+    const ctx = await fetchAll(contextFor(['a']), { fetchFn, minIntervalMs: 0, timeoutMs: 10, sleep })
+
+    expect(calls.filter((c) => isMet(c.url))).toHaveLength(2)
+    expect(slept).toEqual([1000])
+    expect(ctx.raw[0].feil).toEqual({ met: 'Tidsavbrudd etter 0.01 s (etter 2 forsøk)' })
+  })
+
+  it.each([
+    ['NVE «no cell» (HTTP 400)', 400],
+    ['HTTP 404', 404],
+  ])('tries %s only once, since a new attempt will not help', async (_name, status) => {
+    const { fetchFn, calls } = fakeFetch((url) => (isMet(url) ? json(metResponse(snowyDay())) : new Response('', { status })))
+    const { slept, sleep } = recordingSleep()
+    const ctx = await fetchAll(contextFor(['a']), { fetchFn, minIntervalMs: 0, sleep })
+
+    expect(calls).toHaveLength(2)
+    expect(slept).toEqual([])
+    expect(ctx.raw[0].feil).toEqual({ nve: `HTTP ${status}` })
   })
 
   it('reports NVE «no cell» (HTTP 400) for a place at sea, and the place keeps its MET data', async () => {
@@ -111,12 +187,16 @@ describe('fetchAll', () => {
     expect(ctx.steder[0].snowScore.kind).toBe('score')
   })
 
-  it('gives up on a call after the timeout', async () => {
+  it('gives up on a call after the timeout, without a new attempt', async () => {
     // Like the real fetch, the fake only stops when the signal aborts.
-    const hang: FetchFn = (_url, init) =>
-      new Promise((_resolve, reject) => init.signal?.addEventListener('abort', () => reject(init.signal?.reason)))
-    const ctx = await fetchAll(contextFor(['a']), { fetchFn: hang, minIntervalMs: 0, timeoutMs: 10 })
+    const { fetchFn: hang, calls } = fakeFetch(
+      (_url, init) => new Promise((_resolve, reject) => init.signal?.addEventListener('abort', () => reject(init.signal?.reason))),
+    )
+    const { slept, sleep } = recordingSleep()
+    const ctx = await fetchAll(contextFor(['a']), { fetchFn: hang, minIntervalMs: 0, timeoutMs: 10, sleep })
     expect(ctx.raw[0].feil).toEqual({ met: 'Tidsavbrudd etter 0.01 s', nve: 'Tidsavbrudd etter 0.01 s' })
+    expect(calls).toHaveLength(2)
+    expect(slept).toEqual([])
     expect(validate(ctx).avviste.map((a) => a.kilde)).toEqual(['met', 'nve'])
   })
 
@@ -220,6 +300,22 @@ describe('fetchAll call rate', () => {
     expect(DEFAULT_MIN_INTERVAL_MS).toBe(100)
     // Two intervals: 200 ms, less the slack.
     expect(metStarts[2] - metStarts[0]).toBeGreaterThanOrEqual(150)
+  })
+
+  it('sends every new attempt through the gate, so retries never exceed the call rate', async () => {
+    const metStarts: number[] = []
+    const { fetchFn } = fakeFetch((url) => {
+      if (!isMet(url)) return defaultAnswer(url)
+      metStarts.push(performance.now())
+      return new Response('', { status: 503 })
+    })
+    // No wait between attempts, so only the gate spaces them out.
+    const { sleep } = recordingSleep()
+    await fetchAll(contextFor(['a', 'b']), { fetchFn, minIntervalMs: 20, sleep })
+
+    expect(metStarts).toHaveLength(6)
+    // Five intervals: 100 ms, less the slack.
+    expect(metStarts[5] - metStarts[0]).toBeGreaterThanOrEqual(75)
   })
 
   it('spreads the calls to each source out, even with free concurrency slots', async () => {

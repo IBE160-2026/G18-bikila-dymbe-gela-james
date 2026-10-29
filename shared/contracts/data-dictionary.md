@@ -11,10 +11,11 @@ Felles regler:
   kilde og årsak. Det rettes aldri automatisk.
 - Ukjente felt i kildesvarene ignoreres, fordi MET og NVE legger til felt uten ny versjon. Alle felt
   vi leser, er påkrevde og sjekkes mot gyldig område.
-- `npm run data` henter svarene live (`scripts/pipeline/fetch.ts`, krever nett): ett kall per sted og
-  kilde, høyst 5 samtidige kall per kilde, 20 s tidsavbrudd og ingen nye forsøk. Et kall som feiler
+- `npm run data` henter svarene live (`scripts/pipeline/fetch.ts`, krever nett): ett svar per sted og
+  kilde, høyst 5 samtidige kall per kilde, 20 s tidsavbrudd, og inntil tre forsøk (1 s og så 2 s pause) når kallet feiler med nettverksfeil,
+  HTTP 429 eller 5xx; tidsavbrudd og andre HTTP-feil prøves ikke på nytt. Et kall som feiler
   (nettverksfeil, tidsavbrudd, HTTP-feil eller svar som ikke er JSON), gir ikke noe svar, og årsaken
-  står i kjøringsrapporten, for eksempel `HTTP 503` eller `Tidsavbrudd etter 20 s`. Kjøringen skriver
+  står i kjøringsrapporten, for eksempel `HTTP 503 (etter 3 forsøk)` eller `Tidsavbrudd etter 20 s`. Kjøringen skriver
   `public/data/latest.json` når minst 95 % av stedene har gyldig MET-svar, ellers står forrige fil urørt.
 
 ## MET Locationforecast 2.0 compact (`met.ts`)
@@ -67,7 +68,7 @@ Skrives av `scripts/pipeline/publish.ts` til `public/data/demo.json` (demo) elle
 | `mode` | – | `"demo"` eller `"live"` | Brukes bare til demobanneret. |
 | `referenceTime` | ISO 8601 UTC | | Kjøringens «nå». I demo: nyeste `updated_at` blant MET-fixturene som består skjemaet. |
 | `runId` | – | ikke tom | `"demo"` i demo. |
-| `generert` | ISO 8601 UTC | | Når fila ble laget. I demo lik `referenceTime`. |
+| `generert` | ISO 8601 UTC | | Når fila ble laget. I demo lik `referenceTime`. Er den mer enn 90 min før appens «nå», viser Utforsk og stedssiden banneret «Viser siste kjente data». |
 | `report` | – | `RunReport` | Rapporten for kjøringen som laget fila. |
 | `steder[]` | – | `Sted` | Ett per sted i katalogen, sortert som katalogen. |
 

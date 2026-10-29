@@ -13,7 +13,7 @@ const demo = PublishedData.parse(
 )
 
 function ok(data: PublishedData): StederResult {
-  return { status: 'ok', data, source: 'latest', utdatert: new Set(), fjernet: new Set() }
+  return { status: 'ok', data, source: 'latest', utdatert: new Set(), fjernet: new Set(), gamleData: false }
 }
 
 const live = PublishedData.parse({

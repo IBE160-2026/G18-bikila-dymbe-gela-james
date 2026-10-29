@@ -1,5 +1,5 @@
 import { useSyncExternalStore } from 'react'
-import { ferskhet } from '../../shared/freshness'
+import { erGamleData, ferskhet } from '../../shared/freshness'
 import { now } from '../lib/clock'
 import { LOAD_ERROR_MESSAGE, loadPublishedData, type DataSource, type LoadResult } from '../lib/data/loadPublishedData'
 import type { PublishedData } from '../../shared/contracts/published'
@@ -22,6 +22,8 @@ export type StederResult =
       utdatert: ReadonlySet<string>
       /** Places older than 12 h, removed so the place page can say why instead of "not found". */
       fjernet: ReadonlySet<string>
+      /** The whole file was published more than 90 min ago; Utforsk and the place page show a banner. */
+      gamleData: boolean
     }
   | { status: 'error'; message: string }
 
@@ -40,7 +42,8 @@ export function medFerskhet(result: LoadResult): StederResult {
     if (alder === 'for-gammel') fjernet.add(sted.id)
     return alder !== 'for-gammel'
   })
-  return { ...result, data: { ...result.data, steder }, utdatert, fjernet }
+  const gamleData = erGamleData(result.data.generert, naa)
+  return { ...result, data: { ...result.data, steder }, utdatert, fjernet, gamleData }
 }
 
 function sammeSett(a: ReadonlySet<string>, b: ReadonlySet<string>): boolean {
@@ -49,15 +52,15 @@ function sammeSett(a: ReadonlySet<string>, b: ReadonlySet<string>): boolean {
 
 /**
  * The age limits again for a page that stays open. Returns `previous` itself when no place changed
- * status, and keeps its `data` when only «Utdatert» changed, so the map is not rebuilt (and its
- * zoom reset) every minute.
+ * status and the banner did not change, and keeps its `data` when only «Utdatert» or the banner
+ * changed, so the map is not rebuilt (and its zoom reset) every minute.
  */
 export function oppdaterFerskhet(previous: StederResult, raw: LoadResult): StederResult {
   const next = medFerskhet(raw)
   if (previous.status !== 'ok' || next.status !== 'ok') return next
-  const sammeFjernet = sammeSett(previous.fjernet, next.fjernet)
-  if (sammeFjernet && sammeSett(previous.utdatert, next.utdatert)) return previous
-  return sammeFjernet ? { ...previous, utdatert: next.utdatert } : next
+  if (!sammeSett(previous.fjernet, next.fjernet)) return next
+  if (sammeSett(previous.utdatert, next.utdatert) && previous.gamleData === next.gamleData) return previous
+  return { ...previous, utdatert: next.utdatert, gamleData: next.gamleData }
 }
 
 /** Only live data ages while the page is open; demo time stands still (AD-10). */
