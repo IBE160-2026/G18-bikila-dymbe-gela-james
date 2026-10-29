@@ -72,6 +72,7 @@
 - source_spec: `spec-3-1-filtrer-nysno-vind-temperatur.md`
   summary: Oppdater EXPERIENCE.md (begge kopier) via `bmad-ux`: bunn-arket med filteret åpnes med knappen «Filter», ikke ved å dra det opp. Lukket viser det knappen, de aktive kravene som chips og «Nullstill». DESIGN.md sier også at filter og kart deler skjermen 50/50 på desktop; appen har et fast venstre sidepanel (18rem), som spec-en ber om.
   evidence: Aksels beslutning 2026-10-22 i Story 3.1: en knapp virker med tastatur og skjermleser og er stabil å teste. EXPERIENCE.md (Responsive & Platform og UJ-1 steg 2) beskriver fortsatt et ark som «kan dras opp».
+  resolved: Steg 8c (2026-10-28). EXPERIENCE.md og DESIGN.md (begge kopier) beskriver knappen «Filter» og sidepanelet på 18rem.
 - source_spec: `spec-3-1-filtrer-nysno-vind-temperatur.md`
   summary: Filteret nullstilles når brukeren åpner en stedsside og går tilbake, fordi tilstanden ligger i `Utforsk`, som avmonteres. Story 3.2 flytter filteret inn i URL-en og skal ha en E2E-test for kart → sted → Tilbake med filteret i behold.
   evidence: Gjennomgangen av 3.1 (Blind Hunter, Edge Case Hunter). `useState` i `src/pages/Utforsk.tsx`; `App.tsx` rendrer `Sted` i stedet for `Utforsk` på `/sted/:id`.
@@ -105,6 +106,12 @@
   summary: Beskriv `skivindu` og `skivinduUtenDagslys` i AD-12 (arkitekturen, begge kopier, på engelsk, via `bmad-architecture`), og kortets tekster i UX-dokumentene via `bmad-ux`: «Fant ikke noe skivindu de neste 48 timene.», «Bare N sammenhengende dagslystimer/timer», «etter snøfallet», og at kortet alltid vises.
   evidence: Gjennomgangen av 4.2 (Blind Hunter). Feltene står i `shared/contracts/data-dictionary.md`, men ikke i `SnowFinder-Arkitektur.md` eller `SnowFinder-EXPERIENCE.md`.
   resolved: PR #74 (2026-10-28). Arkitekturen (AD-2, AD-12) og EXPERIENCE.md/DESIGN.md (begge kopier) er oppdatert via `bmad-architecture` og `bmad-ux` så de stemmer med koden.
+- source_spec: `project-phase-folders/2-Planleggingsfasen/SnowFinder-EXPERIENCE.md` (steg 8c)
+  summary: Vurder en tegnforklaring for fargeskalaen på kartet (Lite, Middels, Godt, Svært godt). I dag forklares fargene bare i verktøytipset.
+  evidence: Wireframene i steg 8c (2026-10-28) viste at kartet ikke har tegnforklaring, selv om EXPERIENCE.md la opp til at farge aldri står alene. Brukertesten (oppgave 1) kan vise om det trengs. Krever en story med `bmad-build`.
+- source_spec: `project-phase-folders/2-Planleggingsfasen/SnowFinder-EXPERIENCE.md` (steg 8c)
+  summary: Vurder å vise stedstypen (skisted, fjelltopp, by) på stedssiden, nå som den kan filtreres på (Story 3.7).
+  evidence: Wireframene i steg 8c (2026-10-28) viste at stedssiden bare viser navnet og høyden. Krever en story med `bmad-build`.
 - source_spec: `project-workspace/implementation-artifacts/spec-1-6-hold-tjenesten-oppe.md`
   summary: Oppdater AD-2 i arkitekturen (begge kopier, på engelsk, via `bmad-architecture`): linje 110 sier «v1 makes one attempt per location», men `fetch.ts` prøver nå et kall inntil tre ganger (1 s og så 2 s pause, gjennom kildens kallport) ved nettverksfeil, 429 og 5xx, og aldri ved tidsavbrudd eller andre 4xx. Oppdater også `banner-stale-data` i DESIGN.md (begge kopier, via `bmad-ux`): `warning`-bakgrunn med `ink-primary`-tekst gir 2,92:1, under WCAG AA, så banneret bruker `surface-raised`-bakgrunn, tykk venstrekant i `warning` og `ink-primary`-tekst (16,6:1). Teksten er «Viser siste kjente data fra kl. HH:MM», med dato foran når fila er fra en annen dag, og grensen er 90 min regnet fra `generert`.
   evidence: Story 1.6, beslutningen om bannerets farger (2026-10-29) i spec-en. `SnowFinder-Arkitektur.md` linje 110 og `SnowFinder-DESIGN.md` stemmer ikke lenger med koden.

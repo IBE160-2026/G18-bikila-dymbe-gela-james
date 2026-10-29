@@ -15,6 +15,16 @@ på møtet. Oppdater statusen når et steg er ferdig.
 
 ## Hvor er vi nå?
 
+**28. oktober (kveld): Steg 8c ferdig, en uke før forslaget.**
+
+- Aksel kjørte steg 8c med Sally (`bmad-ux`). Wireframes for Utforsk, stedssiden og
+  forklaringssiden på mobil og desktop ligger i [wireframes/](../2-Planleggingsfasen/wireframes/).
+- Kursets skjermkrav er koblet til skjermer som finnes: profil og innsjekking til stedssiden, sosial
+  feed til listevisningen og arrangementer til beste skivindu. Ingen nye funksjoner og ingen avvik.
+- Brukertestplanen har fem oppgaver, SUS-skjema og mål fra PRD-en (SM-2, SM-3, SM-4), pluss SUS ≥ 68
+  og 80 % fullført. Se «Brukertestplan» i [EXPERIENCE.md](../2-Planleggingsfasen/SnowFinder-EXPERIENCE.md).
+- Neste: rekruttere minst fem testpersoner (Joseph og Aksel, forslag 11. november).
+
 **28. oktober (møte): arbeidet fram til kodefrys er fordelt.**
 
 - Aksel bygger 1.11 (timesjobb og publisering), 1.6 (robusthet ved nedetid) og 4.2 (beste
@@ -158,8 +168,8 @@ gantt
     Sprintplan (steg 8)                           : done, 2026-09-27, 2026-10-03
     Faglærers tilbakemelding, forenkling (8b, 8d) : done, 2026-10-03, 2026-10-07
     F2 Planleggingen ferdig                       : milestone, done, 2026-10-07, 0d
-    Wireframes, skjermkrav, brukertestplan (8c)   : active, 2026-10-28, 2026-11-04
-    F3 Steg 8c ferdig                             : milestone, 2026-11-04, 0d
+    Wireframes, skjermkrav, brukertestplan (8c)   : done, 2026-10-28, 2026-10-28
+    F3 Steg 8c ferdig                             : milestone, done, 2026-10-28, 0d
 
     section 3 Gjennomføring
     Sprint 1 skjelett, SnowScore, Epic 2          : done, 2026-10-03, 2026-10-09
@@ -196,7 +206,8 @@ gantt
 | 2026-10-22 | Revisjonens feil rettet (PR #43–#47), filteret startet (PR #48) | Gjennomføring | ✅ |
 | 2026-10-27 | Story 3.1–3.6 ferdige (PR #48–#64) | Gjennomføring | ✅ |
 | 2026-10-28 | M4 Filteret ferdig: 3.7 (PR #66) og 3.8 (PR #71, frist var 2026-11-01) | Gjennomføring | ✅ |
-| 2026-11-04 | F3 Wireframes, skjermkrav og brukertestplan (steg 8c), og valg av reserve for 1.11 | Planlegging | 🔄 forslag |
+| 2026-10-28 | F3 Wireframes, skjermkrav og brukertestplan (steg 8c), frist var 2026-11-04 | Planlegging | ✅ |
+| 2026-11-04 | Valg av reserve for 1.11 | Gjennomføring | ⬜ forslag |
 | 2026-11-11 | M1 Timesjobb og publisering (1.11) og M5 kodefrys: robusthet (1.6) og beste skivindu (4.2) | Gjennomføring | ⬜ forslag |
 | 2026-11-16 | F4 Brukertest med fem personer | Gjennomføring | ⬜ forslag |
 | 2026-11-20 | Kritiske funn fra brukertesten rettet | Gjennomføring | ⬜ forslag |
@@ -219,7 +230,7 @@ Vi bruker BMad Method med fem agenter. Hvert steg bygger på det forrige.
 | 7 | Epics og stories | John (produktleder) | [Epics og stories](../2-Planleggingsfasen/SnowFinder-Epics-og-Stories.md) | Joseph | 2026-09-27 | ✅ Ferdig |
 | 8 | Sprintplanlegging | bmad-sprint-planning | [Sprintplan](../2-Planleggingsfasen/sprintplan.md) og [sprint-status.yaml](../../project-workspace/implementation-artifacts/sprint-status.yaml) | Aksel | 2026-09-27 | ✅ Ferdig |
 | 8b | Innarbeide faglærers tilbakemelding og forenkle (to endringsrunder) | `bmad-correct-course`, John, Winston | [Endringsforslag](../../project-workspace/planning-artifacts/), oppdatert brief, PRD v3 og arkitektur v4 | Joseph | 2026-10-07 | ✅ Ferdig |
-| 8c | Wireframes, kursets skjermkrav (uten pålogging, droppet 2026-10-09) og brukertestplan | Sally (UX-designer) | Oppdatert EXPERIENCE.md og wireframes | Joseph og Aksel | 2026-11-04 (forslag) | ⬜ Neste |
+| 8c | Wireframes, kursets skjermkrav (uten pålogging, droppet 2026-10-09) og brukertestplan | Sally (UX-designer) | Oppdatert EXPERIENCE.md og wireframes | Joseph og Aksel | 2026-10-28 | ✅ Ferdig ([wireframes](../2-Planleggingsfasen/wireframes/), skjermkrav og brukertestplan i EXPERIENCE.md) |
 | 8d | Oppdatere epics, stories og sprintplan etter forenklingen | John og `bmad-sprint-planning` | Epics og stories, sprintplan, `sprint-status.yaml` | Aksel | 2026-10-07 | ✅ Ferdig (epics v3, sprintplan og `sprint-status.yaml`) |
 | 9 | Bygge appen, én story om gangen | Amelia (utvikler) | Kode, tester, PR-er. Story 1.1 ferdig (PR #10). Story 1.2 ferdig (PR #18). Story 1.4 ferdig (PR #20). Story 1.10 ferdig (PR #22). Story 1.3 ferdig (PR #23). Story 1.5 ferdig (PR #24). Story 1.7 ferdig (PR #25). Story 1.8 ferdig (PR #27), 1.7b markører etter zoom (PR #28). Story 1.9 ferdig (PR #30), fullført med 1.9b og 1.9c (alder i åpen fane, tom tilstand, trykkmål, felles datalagring). Story 2.1 forklaringssiden «Slik beregner vi SnowScore» ferdig (PR #33). Story 2.2 regneeksempelet ferdig (PR #34). Story 2.3 datakilder, begrensninger og datakvalitet ferdig (PR #35). Story 2.4 kalkulatoren «Prøv selv» ferdig (PR #36), så hele Epic 2 er bygget. Retrospektiv for Epic 2 ferdig (PR #37, accepted-with-open-items, 11 tiltak). Tiltak A1–A5 og A11 ferdige (PR #38). Rød E2E på GitHub rettet (PR #39), dokumentene oppdatert etter revisjonen (PR #40). Revisjonens tre feil i dataprogrammet rettet (PR #43–#45). Tiltak A8 (toppnavigasjonen) og A7 (delt kortstil og `Formel`) fra retrospektiven ferdige (PR #46–#47). Story 3.1 filter på nysnø, vind og temperatur ferdig (PR #48). Story 3.2 filteret i nettadressen ferdig (PR #49), fullført med 3.2b: stedssidens adresse bærer søket (PR #50). Tre åpne punkter avgjort (PR #51). Story 3.3 antall treff og forslag ved null treff ferdig (PR #52), så Må ha i Epic 3 er ferdig. Story 3.5 filter på skydekke i dagslys ferdig (PR #53), før 3.4 fordi hurtigvalget trenger det. Story 3.4 hurtigvalg ferdig (PR #57). Story 3.6 filter på avstand, med knappen «Hele Norge», bygget men revertert (PR #58 merget uten godkjenning, reversert i PR #61), og merget på nytt (PR #63). Story 3.4 og 3.6 satt til `done` (PR #64 og denne). Story 3.7 filter på stedstype ferdig (PR #66). Story 3.8 nysnø siste 24 timer ferdig (bygget av Sena, synlig PR åpnet av Aksel), så hele Epic 3 er bygget. Story 1.6 nye forsøk i dataprogrammet og banner for gamle data ferdig (bygget av Joseph, 2026-10-29). | Aksel (sprint 1 og 4) | 2026-11-11 (forslag) | 🔄 Pågår |
 | 10 | Brukertest, sluttrapport og demo | Hele gruppen | [Avslutningsfasen](../4-Avslutningsfasen/) | Joseph og Aksel | 2026-11-25 | ⬜ |

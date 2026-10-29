@@ -20,7 +20,7 @@ fører fram til dem står i [aktivitetslisten](../3-Gjennomføringsfasen/aktivit
 |---|---|---|---|
 | F1 | Produktbrief ferdig (steg 1) | [Oppstartsfasen](../1-Oppstartsfasen/) | 2026-09-22, nådd |
 | F2 | Planleggingen ferdig etter faglærers tilbakemelding: PRD v3, arkitektur v4, UX, epics og sprintplan (steg 2–8d) | Planleggingsfasen | 2026-10-07, nådd (PR #8–#21) |
-| F3 | Wireframes, kursets skjermkrav og brukertestplan (steg 8c) | Planleggingsfasen | 2026-11-04, forslag |
+| F3 | Wireframes, kursets skjermkrav og brukertestplan (steg 8c) | Planleggingsfasen | 2026-10-28, nådd. Forslaget var 2026-11-04 |
 | F4 | Brukertest med minst fem personer | [Gjennomføringsfasen](../3-Gjennomføringsfasen/) | 2026-11-16, forslag |
 | F5 | Sluttrapport og presentasjon klare | [Avslutningsfasen](../4-Avslutningsfasen/) | 2026-11-23, forslag |
 
