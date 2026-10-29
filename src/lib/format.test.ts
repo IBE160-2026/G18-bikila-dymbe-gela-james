@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { delpoeng, medEnhet, norskTid, tidsrom, utdatertTekst } from './format'
+import { delpoeng, gamleDataTekst, medEnhet, norskTid, tidsrom, utdatertTekst } from './format'
 
 describe('medEnhet', () => {
   it('formats in Norwegian with one decimal, and shows a dash for missing data', () => {
@@ -54,5 +54,26 @@ describe('tidsrom', () => {
 
   it('shows a dash for an invalid time', () => {
     expect(tidsrom('ikke en tid', 4)).toBe('–')
+  })
+})
+
+describe('gamleDataTekst', () => {
+  it('gives only the Norwegian clock time when the file is from today', () => {
+    // 18:30 UTC is 20:30 in Norway in October (summer time).
+    expect(gamleDataTekst('2026-10-07T18:30:00Z', new Date('2026-10-07T20:31:00Z'))).toBe('Viser siste kjente data fra kl. 20:30')
+  })
+
+  it('adds the date when the file is from another day in Norway, also across UTC midnight', () => {
+    expect(gamleDataTekst('2026-10-06T08:05:00Z', new Date('2026-10-07T12:00:00Z'))).toBe(
+      'Viser siste kjente data fra 6. oktober kl. 10:05',
+    )
+    // 21:30 UTC on 7 Oct is 23:30 in Norway; 22:30 UTC is already 8 Oct there.
+    expect(gamleDataTekst('2026-10-07T21:30:00Z', new Date('2026-10-07T22:30:00Z'))).toBe(
+      'Viser siste kjente data fra 7. oktober kl. 23:30',
+    )
+  })
+
+  it('leaves out the time when generert cannot be read', () => {
+    expect(gamleDataTekst('ikke en dato', new Date('2026-10-07T12:00:00Z'))).toBe('Viser siste kjente data')
   })
 })

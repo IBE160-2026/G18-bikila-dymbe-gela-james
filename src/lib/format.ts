@@ -73,3 +73,20 @@ export function tidsrom(startIso: string, timer: number): string {
 export function utdatertTekst(kildeTidspunkt: string | null): string {
   return `Utdatert · data fra ${norskTid(kildeTidspunkt)}`
 }
+
+const klokkeFormat = new Intl.DateTimeFormat('nb-NO', { timeZone: 'Europe/Oslo', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' })
+const datoFormat = new Intl.DateTimeFormat('nb-NO', { timeZone: 'Europe/Oslo', day: 'numeric', month: 'long' })
+/** YYYY-MM-DD in Norwegian local time, only to tell whether two instants fall on the same day. */
+const dagFormat = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Oslo' })
+
+/**
+ * Story 1.6 (UX-DR10): the banner for an old data file, «Viser siste kjente data fra kl. 14:05».
+ * When the file is from another day than now, the date is added: «… fra 7. oktober kl. 22:30».
+ */
+export function gamleDataTekst(generert: string, naa: Date): string {
+  const ms = Date.parse(generert)
+  if (!Number.isFinite(ms)) return 'Viser siste kjente data'
+  const klokke = `kl. ${klokkeFormat.format(ms)}`
+  const sammeDag = Number.isFinite(naa.getTime()) && dagFormat.format(ms) === dagFormat.format(naa)
+  return `Viser siste kjente data fra ${sammeDag ? klokke : `${datoFormat.format(ms)} ${klokke}`}`
+}

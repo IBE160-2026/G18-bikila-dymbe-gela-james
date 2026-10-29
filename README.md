@@ -107,6 +107,9 @@ regner det ut med `shared/skivindu.ts`, og reglene står i fasittabellen `tests/
 I mørketid velges vinduet blant alle timer, og kortet sier «Mørketid – vindu vist uten dagslys».
 Data eldre enn 3 timer merkes «Utdatert», og steder med data eldre enn
 12 timer vises ikke i kartet, listen eller på stedssiden (i demo regnes alderen mot demodatasettets egen «nå»).
+Er hele datafila publisert for mer enn 90 minutter siden, står «Viser siste kjente data fra kl. HH:MM» øverst på Utforsk og stedssiden.
+Demodataene viser aldri banneret, men en `public/data/latest.json` fra `npm run data` som er mer enn
+90 minutter gammel, gjør det.
 Er alle stedene for gamle, for eksempel fordi `latest.json` fra `npm run data` er mer enn 12 timer
 gammel, viser forsiden «Ingen ferske data». Kjør `npm run data` på nytt, eller slett
 `public/data/latest.json` for å gå tilbake til demodataene.
@@ -160,7 +163,7 @@ npm run data   # hent MET- og NVE-data for alle stedene i data/catalog.json (kre
 
 Dataprogrammet henter værprognosen fra MET og nysnø siste døgn fra NVE for hvert sted, sjekker svarene
 og regner ut SnowScore. Det sender høyst 10 kall i sekundet til hver kilde, slik MET-vilkårene krever,
-så for rundt 300 steder tar hentingen minst et halvt minutt. Når minst 95 % av stedene har fått en poengsum, skrives `public/data/latest.json`,
+så for rundt 300 steder tar hentingen minst et halvt minutt. Et kall som feiler med nettverksfeil, HTTP 429 eller 5xx, prøves inntil tre ganger, med 1 s og så 2 s pause. Når minst 95 % av stedene har fått en poengsum, skrives `public/data/latest.json`,
 og `npm run dev` viser da live-data uten demobanner. Fila blir liggende til neste vellykkede kjøring,
 så dataene kan være gamle; slett den for å gå tilbake til demodataene.
 Under 95 % står forrige fil urørt, og kommandoen avslutter med feilkode 1. Kvalitetsrapporten (hvor

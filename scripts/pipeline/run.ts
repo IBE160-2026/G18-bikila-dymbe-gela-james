@@ -81,6 +81,8 @@ export interface LiveOptions {
   concurrency?: number
   minIntervalMs?: number
   timeoutMs?: number
+  /** The wait before a call's second attempt (fetch.ts); tests set 0 so retries do not slow them. */
+  retryBaseMs?: number
   log?: (line: string) => void
 }
 
@@ -105,6 +107,7 @@ export async function runLive({
   concurrency,
   minIntervalMs,
   timeoutMs,
+  retryBaseMs,
   log = console.log,
 }: LiveOptions = {}): Promise<RunReport> {
   // AD-10: in live, the reference time is the wall clock when the run started.
@@ -114,7 +117,7 @@ export async function runLive({
   try {
     ctx = { ...ctx, catalog: await loadCatalog(catalogPath) }
     log(`Henter MET og NVE for ${ctx.catalog.length} steder (runId ${ctx.runId}) ...`)
-    ctx = await fetchAll(ctx, { fetchFn, concurrency, minIntervalMs, timeoutMs })
+    ctx = await fetchAll(ctx, { fetchFn, concurrency, minIntervalMs, timeoutMs, retryBaseMs })
     ctx = validate(ctx)
     ctx = score(ctx)
     ctx = await publish(ctx, { outPath, now: clock() })

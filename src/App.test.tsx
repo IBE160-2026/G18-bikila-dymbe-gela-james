@@ -98,6 +98,32 @@ describe('AppView', () => {
     }
   })
 
+  // Story 1.6: generert two hours before now (the demo file's referenceTime); 18:30 UTC is 20:30 in Norway.
+  const gammel = medFerskhet({ status: 'ok', data: { ...demo, generert: '2026-10-07T18:30:29Z' }, source: 'demo' })
+  const GAMMEL_BANNER = '<div class="banner-stale-data">Viser siste kjente data fra kl. 20:30</div>'
+  // The status region stays mounted while empty, so filling it in on an open tab is announced.
+  const TOM_REGION = '<div role="status"></div>'
+
+  it('shows the old-data banner in its status region above the content on Utforsk and the place page, which work as before', () => {
+    for (const route of [UTFORSK, LISTE, sted('gaustatoppen')]) {
+      const html = render(gammel, route)
+      expect(html).toContain(`<div role="status">${GAMMEL_BANNER}</div>`)
+      expect(html.indexOf(GAMMEL_BANNER)).toBeLessThan(html.indexOf('<main'))
+      // Everything else is exactly as without the banner, where the region is there but empty.
+      const fersk = render(demoResult, route)
+      expect(fersk).toContain(TOM_REGION)
+      expect(html.replace(GAMMEL_BANNER, '')).toBe(fersk)
+    }
+  })
+
+  it('has no old-data banner or region on the explanation page or while loading, and an empty region for a fresh file', () => {
+    expect(render(gammel, { name: 'forklaring' })).not.toContain('banner-stale-data')
+    expect(render(gammel, { name: 'forklaring' })).not.toContain(TOM_REGION)
+    expect(render(demoResult)).not.toContain('banner-stale-data')
+    expect(render(null)).not.toContain('banner-stale-data')
+    expect(render(null)).not.toContain(TOM_REGION)
+  })
+
   it.each(['kart', 'liste'] as const)('explains an empty %s when every place is older than 12 h', (visning) => {
     vi.useFakeTimers({ now: Date.parse(demo.referenceTime) + 2 * FJERNES_ETTER_MS })
     try {

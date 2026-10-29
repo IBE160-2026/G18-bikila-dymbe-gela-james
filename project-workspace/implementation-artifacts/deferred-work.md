@@ -112,3 +112,9 @@
 - source_spec: `project-phase-folders/2-Planleggingsfasen/SnowFinder-EXPERIENCE.md` (steg 8c)
   summary: Vurder å vise stedstypen (skisted, fjelltopp, by) på stedssiden, nå som den kan filtreres på (Story 3.7).
   evidence: Wireframene i steg 8c (2026-10-28) viste at stedssiden bare viser navnet og høyden. Krever en story med `bmad-build`.
+- source_spec: `project-workspace/implementation-artifacts/spec-1-6-hold-tjenesten-oppe.md`
+  summary: Oppdater AD-2 i arkitekturen (begge kopier, på engelsk, via `bmad-architecture`): linje 110 sier «v1 makes one attempt per location», men `fetch.ts` prøver nå et kall inntil tre ganger (1 s og så 2 s pause, gjennom kildens kallport) ved nettverksfeil, 429 og 5xx, og aldri ved tidsavbrudd eller andre 4xx. Oppdater også `banner-stale-data` i DESIGN.md (begge kopier, via `bmad-ux`): `warning`-bakgrunn med `ink-primary`-tekst gir 2,92:1, under WCAG AA, så banneret bruker `surface-raised`-bakgrunn, tykk venstrekant i `warning` og `ink-primary`-tekst (16,6:1). Teksten er «Viser siste kjente data fra kl. HH:MM», med dato foran når fila er fra en annen dag, og grensen er 90 min regnet fra `generert`.
+  evidence: Story 1.6, beslutningen om bannerets farger (2026-10-29) i spec-en. `SnowFinder-Arkitektur.md` linje 110 og `SnowFinder-DESIGN.md` stemmer ikke lenger med koden.
+- source_spec: `project-workspace/implementation-artifacts/spec-1-6-hold-tjenesten-oppe.md`
+  summary: Vurder et tidsbudsjett per kall eller per kjøring i `scripts/pipeline/fetch.ts`, så trege 5xx- eller 429-svar like under tidsavbruddet på 20 s ikke gir tre forsøk hver og en kjøring på rundt en time, som kolliderer med neste timesjobb (Story 1.11).
+  evidence: maybe-false, ville vært medium. Gjennomgangen av 1.6 (Blind Hunter, Edge Case Hunter). Tidsavbrudd prøves ikke på nytt av nettopp denne grunnen, men et 5xx-svar etter 19 s gjør det. Avgjøres når 1.11 går: se på `varighetMs` i kjøringsrapportene fra en periode der MET er ustabil.

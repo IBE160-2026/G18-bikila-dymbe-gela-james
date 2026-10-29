@@ -10,8 +10,8 @@ import { catalogEntry, metResponse, nveResponse, REFERENCE_TIME, snowyDay } from
 
 const HOUR_MS = 3_600_000
 const silent = () => {}
-/** The call rate is tested in fetch.test.ts; here it would only make the runs slow. */
-const noRateLimit = { minIntervalMs: 0 }
+/** The call rate and the waits between attempts are tested in fetch.test.ts; here they would only make the runs slow. */
+const noRateLimit = { minIntervalMs: 0, retryBaseMs: 0 }
 
 let dir: string
 
@@ -156,7 +156,7 @@ describe('runLive', () => {
     const report = await runLive({ ...noRateLimit, catalogPath, outPath, fetchFn: metFailsFor(['sted-3']), clock: clock(), log: silent })
 
     expect(report).toMatchObject({ publisert: true, andelGyldige: 0.95, avvistePerKilde: { met: 1, nve: 0 } })
-    expect(report.avviste).toEqual([{ stedId: 'sted-3', kilde: 'met', arsak: 'HTTP 503' }])
+    expect(report.avviste).toEqual([{ stedId: 'sted-3', kilde: 'met', arsak: 'HTTP 503 (etter 3 forsøk)' }])
     // The failed place counts as rejected, not as incomplete hours.
     expect(report.antallUfullstendige).toBe(0)
 
@@ -223,6 +223,28 @@ describe('runLive', () => {
     expect(report.avviste).toContainEqual({ stedId: 'sted-0', kilde: 'nve', arsak: 'HTTP 400: {"Error":"No cell exists"}' })
     const data = PublishedData.parse(JSON.parse(await readFile(outPath, 'utf8')))
     expect(data.steder.every((s) => s.nveNysnoSisteDognMm === null && s.snowScore.kind === 'score')).toBe(true)
+  })
+
+  it('leaves the previous file byte-identical when MET is down for the whole run, after retrying every call', async () => {
+    const catalogPath = await writeCatalog(ids(4))
+    const outPath = join(dir, 'latest.json')
+    const previous = await readFile(DEMO_OUT_PATH)
+    await writeFile(outPath, previous)
+    let metCalls = 0
+    const metDown: FetchFn = async (url, init) => {
+      if (!url.startsWith('https://api.met.no/')) return valid(url, init)
+      metCalls++
+      return new Response('', { status: 503 })
+    }
+    const lines: string[] = []
+    const report = await runLive({ ...noRateLimit, catalogPath, outPath, fetchFn: metDown, clock: clock(), log: (l) => lines.push(l) })
+
+    expect(metCalls).toBe(4 * 3)
+    expect(report).toMatchObject({ publisert: false, andelGyldige: 0, avvistePerKilde: { met: 4, nve: 0 } })
+    expect(report.avviste).toContainEqual({ stedId: 'sted-0', kilde: 'met', arsak: 'HTTP 503 (etter 3 forsøk)' })
+    expect((await readFile(outPath)).equals(previous)).toBe(true)
+    expect((await readdir(dir)).sort()).toEqual(['catalog.json', 'latest.json'])
+    expect(lines.join('\n')).toContain('"publisert": false')
   })
 
   it('gives every run its own run ID, even with the same start time', () => {

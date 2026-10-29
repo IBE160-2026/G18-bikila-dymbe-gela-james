@@ -197,6 +197,18 @@ describe('medFerskhet', () => {
     }
   })
 
+  it('flags old data when the file was published more than 90 min before now, measured from generert', () => {
+    const medGenerert = (generert: string) => {
+      const result = loaded([sted('fersk', REFERENCE)])
+      if (result.status !== 'ok') throw new Error('expected ok')
+      return medFerskhet({ ...result, data: { ...result.data, generert } })
+    }
+    // In demo, now is referenceTime; the committed demo file has generert equal to it.
+    expect(medGenerert(REFERENCE)).toMatchObject({ gamleData: false })
+    expect(medGenerert(aged(90 * 60_000))).toMatchObject({ gamleData: false })
+    expect(medGenerert(aged(90 * 60_000 + 1))).toMatchObject({ gamleData: true })
+  })
+
   it('passes an error through unchanged', () => {
     const error: LoadResult = { status: 'error', message: 'x' }
     expect(medFerskhet(error)).toBe(error)
@@ -243,6 +255,27 @@ describe('oppdaterFerskhet', () => {
     expect([...later.fjernet]).toEqual(['b'])
     if (first.status !== 'ok') throw new Error('expected ok')
     expect(later.data).not.toBe(first.data)
+  })
+
+  it('shows the banner once the file passes 90 min, keeping the same data so the map is not rebuilt', () => {
+    vi.useFakeTimers({ now: LOADED_AT })
+    // Published an hour before the page was loaded, with a place that stays fresh for two more hours.
+    const one = raw([sted('a', '2026-10-08T11:00:00Z')])
+    if (one.status !== 'ok') throw new Error('expected ok')
+    const published: LoadResult = { ...one, data: { ...one.data, generert: '2026-10-08T11:00:00Z' } }
+    const first = medFerskhet(published)
+    if (first.status !== 'ok') throw new Error('expected ok')
+    expect(first.gamleData).toBe(false)
+
+    vi.setSystemTime(LOADED_AT + 30 * 60_000)
+    expect(oppdaterFerskhet(first, published)).toBe(first)
+
+    vi.setSystemTime(LOADED_AT + 30 * 60_000 + 1)
+    const later = oppdaterFerskhet(first, published)
+    if (later.status !== 'ok') throw new Error('expected ok')
+    expect(later.gamleData).toBe(true)
+    expect(later.data).toBe(first.data)
+    expect([...later.utdatert]).toEqual([])
   })
 
   it('passes a load error through', () => {

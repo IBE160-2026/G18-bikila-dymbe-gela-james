@@ -4,97 +4,74 @@
 
 ## Goal
 
-Brukeren skal kunne åpne SnowFinder og se ferske SnowScore-data for norske steder, enten som et fargelagt Norgeskart eller som en likeverdig, tilgjengelig liste, og åpne et sted for full detalj. Epicen er kjernen alle andre epics bygger på: stedskatalog, dataprogram (henting → validering → SnowScore → atomisk publisering av én JSON-fil), demodata for rent klon, planlagt kjøring hver time, og de tre lesende flatene (kart, liste, stedsside). Det finnes ingen database og ingen Supabase. Appen er statiske filer som bare leser den publiserte datafilen.
+Brukeren skal kunne åpne SnowFinder og se ferske SnowScore-data for norske steder, enten som et fargelagt Norgeskart eller som en likeverdig, tilgjengelig liste, og åpne et sted for full detalj. Epicen er kjernen alle andre epics bygger på: stedskatalog, dataprogram (henting → validering → SnowScore → atomisk publisering av én JSON-fil), demodata for rent klon, planlagt kjøring hver time, og de tre lesende flatene (kart, liste, stedsside). Det finnes ingen database. Appen er statiske filer som bare leser den publiserte datafilen. Gjenstående arbeid er timesjobben (1.11). Robusthet når en datakilde er nede (1.6, Bør ha) er bygget i `spec-1-6-hold-tjenesten-oppe.md`.
 
 ## Stories
 
 - Story 1.1: Prosjekt-skaffolding og CI-skjelett (ferdig)
 - Story 1.2: Bygg stedskatalogen (ferdig)
-- Story 1.3: Hent og valider værdata hver time
-- Story 1.4: Bygg den delte SnowScore-modulen (ferdig, i review)
-- Story 1.10: Kjør SnowFinder lokalt med demodata
-- Story 1.5: Beregn og publiser SnowScore i dataprogrammet
-- Story 1.11: Kjør dataprogrammet hver time og publiser appen
-- Story 1.7: Se Norgeskartet med fargelagte steder
-- Story 1.8: Bruk tilgjengelig listevisning i stedet for kart
-- Story 1.9: Åpne en stedsside med full poengsum
-- Story 1.6: Hold tjenesten oppe når en datakilde er nede (Bør ha)
+- Story 1.3: Hent og valider værdata hver time (ferdig)
+- Story 1.4: Bygg den delte SnowScore-modulen (ferdig)
+- Story 1.10: Kjør SnowFinder lokalt med demodata (ferdig)
+- Story 1.5: Beregn og publiser SnowScore i dataprogrammet (ferdig)
+- Story 1.11: Kjør dataprogrammet hver time og publiser appen (backlog)
+- Story 1.7: Se Norgeskartet med fargelagte steder (ferdig)
+- Story 1.8: Bruk tilgjengelig listevisning i stedet for kart (ferdig)
+- Story 1.9: Åpne en stedsside med full poengsum (ferdig)
+- Story 1.6: Hold tjenesten oppe når en datakilde er nede (Bør ha; se `sprint-status.yaml` for status)
 
 Byggerekkefølgen er rekkefølgen over. Alle unntatt 1.6 er Må ha.
 
 ## Requirements & Constraints
 
-- **Henting:** MET og NVE hentes én gang per sted per kjøring, med identifiserende User-Agent og begrenset samtidighet, uten nøkler og uten tilstand mellom kjøringer (ingen `If-Modified-Since`/`Expires`). En avbrutt kjøring publiserer ingenting.
-- **Validering:** Hvert svar valideres mot et strengt Zod-skjema. Ugyldige svar avvises, rettes aldri automatisk og registreres i kvalitetsrapporten (sted, kilde, årsak). Skjemaene dokumenteres som dataordbok (felt, enhet, gyldig område, kilde), og kontraktstester kjører mot opptatte ekte svar.
-- **SnowScore:** Mangler mer enn 10 % av timene, blir resultatet «ufullstendige data», aldri en tallverdi. Slike steder teller ikke som gyldige mot terskelen (endret 2026-10-22).
-- **Publisering:** Skjer bare når minst 95 % av stedene har poengsum (endret 2026-10-22; før talte bare avviste eller manglende svar). Ellers står forrige fil urørt. Fila skrives atomisk (midlertidig navn, så rename). Et sted som feilet i en kjøring som likevel publiseres, vises som «ufullstendige data». Fila bærer aldri verdier fra en tidligere kjøring.
-- **Sporbarhet og kvalitetsrapport:** Hver stedspost har kjørings-ID og kildens tidsstempel. Hver kjøring, også en mislykket, gir én rapport: start, varighet, antall steder, andel gyldige, avviste per kilde, antall ufullstendige, og om den ble publisert og ellers hvorfor ikke. For en publisert kjøring ligger rapporten i datafila. Ellers havner den i jobbloggen og som workflow-artifact, og kjøringen blir rød i Actions.
-- **Dataalder:** Normalt under 90 min. Eldre enn 3 t merkes «utdatert». Eldre enn 12 t fjernes helt fra kart, liste og stedsside. Grensene testes deterministisk mot demo-nå.
-- **Demomodus:** `npm ci && npm run dev` på et rent klon, uten nøkler og nettverk, viser et merket demodatasett (ca. 20–30 steder). Det har minst ett sted med «ufullstendige data» og ett utdatert. Regenerering gir byte-lik fil. Produksjon viser aldri demodata.
+- **Robusthet ved nedetid:**
+  - *Siste gyldige data (Må ha, allerede levert av 1.5):* feiler MET for mer enn 5 % av stedene, publiseres ingen ny fil, og appen viser forrige gyldige fil – aldri en tom eller delvis. Et sted som feilet i en kjøring som likevel publiseres, vises som «ufullstendige data». Fila bærer aldri verdier fra en tidligere kjøring.
+  - NVE er tilleggsdata: inngår ikke i SnowScore og teller ikke mot terskelen. Feiler NVE, publiseres fila likevel med tomt NVE-felt («–»), og avvisningene står i kvalitetsrapporten.
+  - *Nye forsøk (Bør ha, 1.6):* et feilende kall prøves på nytt et fast antall ganger med økende ventetid. Ingen kretsbryter, ingen tilstand mellom kjøringer, ingen varslingskanal.
+  - Nedetid verifiseres ved å simulere at MET eller NVE er utilgjengelig i test.
+- **Dataalder:** normalt under 90 min. Over 90 min vises banneret for gamle data. Eldre enn 3 t merkes «utdatert». Eldre enn 12 t fjernes helt fra kart, liste og stedsside. Grensene testes deterministisk mot demo-nå.
+- **Henting:** én gang per sted per kjøring, identifiserende User-Agent, begrenset samtidighet og høyst ett kall per 100 ms per kilde (MET krever avtale over 20 kall/s). Nye forsøk må holde seg innenfor dette. Ingen nøkler, ingen `If-Modified-Since`.
+- **Validering:** strenge Zod-skjemaer. Ugyldige svar avvises, rettes aldri, og registreres i kvalitetsrapporten (sted, kilde, årsak).
+- **Publisering:** atomisk (midlertidig navn, så rename), bare når minst 95 % av stedene har poengsum. «Ufullstendige data» (>10 % manglende timer) teller ikke som gyldig.
+- **Kvalitetsrapport:** hver kjøring, også mislykket, gir én rapport. Publisert: i datafila. Ellers: jobbloggen, workflow-artifact og rød kjøring i Actions.
+- **Demomodus:** `npm ci && npm run dev` uten nøkler og nett viser merket demodata, med minst ett ufullstendig og ett utdatert sted. Regenerering gir byte-lik fil. Produksjon viser aldri demodata.
 - **Ytelse:** Kartet er interaktivt (pan/zoom) innen 3 s på en representativ mobil over 4G.
-- **Tilgjengelighet:** WCAG 2.1 AA på alt unntatt selve kartlaget. Listen er det fullverdige AA-alternativet. Liste og stedsside skal ha null kritiske brudd i en automatisert axe/Playwright-test i CI.
-- **Sikkerhet og personvern:** Ingen skrivbare endepunkter, ingen hemmeligheter, ingen konto. Appen sender ingenting.
+- **Tilgjengelighet:** WCAG 2.1 AA på alt unntatt kartlaget. Listen er det fullverdige AA-alternativet. Liste og stedsside har null kritiske axe-brudd i CI.
 - **Testing:** En E2E-røyktest i demomodus dekker kart → stedsside (Epic 3 utvider den med filter). Egenskapstestene for SnowScore bruker minst 1000 inndata.
+- **Sikkerhet:** ingen skrivbare endepunkter, hemmeligheter eller kontoer. Appen sender ingenting.
 
 ## Technical Decisions
 
-- **To paradigmer:**
-  - `scripts/pipeline/` er pipes-and-filters. `run.ts` er eneste inngang: den lager kjørings-ID, kaller stegene og skriver kjøringsrapporten i `finally`. Stegene er `fetch.ts`, `validate.ts`, `score.ts` og `publish.ts`. De er idempotente og sender data videre bare via den typede `RunContext` (`shared/contracts/run.ts`), uten mellomfiler. Programmet kjøres med `tsx`.
-  - `src/` er en tynn, lagdelt klient: pages → components → hooks → `lib/data`.
-- **Delt domenelogikk i `shared/`:** `snowscore.ts`, `filter.ts`, `freshness.ts` og `contracts/`. `snowscore.ts` finnes allerede: `computeSnowScore(hours)` gir `{kind:'score',…}` eller `{kind:'incomplete',missingShare}`. `zod` er eneste tredjepartsimport i `shared/`. Ingenting kopieres andre steder, og `src/lib/snowscore.ts` bare re-eksporterer.
-- **Kontrakter:** `PublishedData`, `Sted`, `RunReport` og `Catalog` (finnes) er Zod-skjemaer med camelCase-felt i `shared/contracts/`. `publish.ts` validerer mot `PublishedData` før skriving, og `src/lib/data/` parser med samme skjema ved lasting.
-- **Datafiler, med én skriver hver:**
-  - `data/catalog.json` (300 steder) skrives bare av `scripts/build-catalog/`. Dataprogrammet leser den uten å endre den.
-  - `public/data/demo.json` er committet og lages av `npm run data:demo` fra `tests/contract/fixtures/`, med en egen liten demokatalog.
-  - `public/data/latest.json` lages av `npm run data` og er gitignored.
-- **Ingen modusbryter i appen:** `src/lib/data/` laster `latest.json` og faller tilbake til `demo.json`. Fila har `mode: "demo" | "live"`, som bare brukes til demobanneret. Ingen miljøvariabel styrer atferd.
-- **Én klokke:** `src/lib/clock.ts` er eneste kilde til «nå». Den gir fila sin `referenceTime` i demo og veggklokka i live. Lint forbyr `Date.now()` og argumentløs `new Date()` andre steder. I demo er `referenceTime` det nyeste tidsstempelet i fixturene, kjørings-ID-en er fast og varigheten er 0.
-- **Kart og liste er én rute:** `Utforsk.tsx` leser `visning=kart|liste` (standard `kart`) og velger `KartVisning` eller `ListeVisning`. Begge bruker samme `useSteder()`-hook, og ingen annen komponent laster stedsdata selv. Stedssiden ligger på `/sted/:id`.
-- **Design-tokens:** én kilde i `src/lib/theme.ts`, speilet i `src/styles/tokens.css` og holdt i takt av `theme.test.ts`. Leaflet-markørfarger importeres fra `theme.ts`. Ingen hardkodede hex- eller px-verdier for noe DESIGN.md navngir.
-- **CI og drift:**
-  - `ci.yml`: lint, typecheck, enhets-, egenskaps-, kontrakts- og fasittester, build.
-  - `e2e.yml`: Playwright mot `vite preview` i demomodus.
-  - `data.yml`: kjører hver time, ved push til `main` og manuelt, med `concurrency` uten avbrudd.
-  - Actions er på, men Pages er det ikke. Reserven er å publisere `latest.json` til grenen `data` (`permissions: contents: write`) og lese den fra `raw.githubusercontent.com`. Produksjonsbygget feiler hvis `latest.json` ikke ble laget.
-- **Konvensjoner:**
-  - Tidsstempler lagres i UTC (ISO 8601) og vises i norsk lokaltid bare i UI-et.
-  - Kommentarer forklarer bare *hvorfor*, gjerne med AD-referanse.
-  - Avhengigheter låses eksakt: zod 4.6.5, tsx 4.23.13, fast-check 4.10.1, Leaflet 1.9.4, Playwright 1.63.0.
-  - Tester ligger ved siden av koden (`*.test.ts`). E2E ligger i `tests/e2e/`, kontraktstester i `tests/contract/` og fasittabeller i `tests/golden/`.
-- **Nye forsøk (1.6, Bør ha)** ligger inne i `fetch.ts`: et fast antall forsøk med økende ventetid, uten tilstand og uten kretsbryter.
+- **Dataprogrammet** (`scripts/pipeline/`) er pipes-and-filters: `run.ts` er eneste inngang, lager kjørings-ID og skriver rapporten i `finally`. Stegene `fetch.ts`, `validate.ts`, `score.ts`, `publish.ts` er idempotente og deler data bare via typet `RunContext` (`shared/contracts/run.ts`). Kjøres med `tsx`.
+- **Nye forsøk ligger inne i `fetch.ts`**, uten tilstand mellom kjøringer. Kretsbryter, `api_incidents` og aktiv varsling er fjernet for godt.
+- **Klienten** (`src/`) er tynn og lagdelt: pages → components → hooks → `lib/data`. `Utforsk.tsx` er én rute for kart og liste (`visning=kart|liste`) med én `useSteder()`-hook. Stedssiden er `/sted/:id`.
+- **Delt logikk i `shared/`:** `snowscore.ts`, `filter.ts`, `freshness.ts` (alder = nå − kildens tidsstempel; 3 t utdatert, 12 t skjult) og `contracts/` (`PublishedData`, `Sted`, `RunReport`, `Catalog`, camelCase). `zod` er eneste tredjepartsimport der. Logikk kopieres ikke til `src/`.
+- **Én klokke:** `src/lib/clock.ts` er eneste kilde til «nå» (fila sin `referenceTime` i demo, veggklokka i live). Lint forbyr `Date.now()` og argumentløs `new Date()` andre steder. Alderssjekk for banneret må gå via klokka og `shared/freshness.ts`.
+- **Datafiler, én skriver hver:** `data/catalog.json` (`scripts/build-catalog/`), `public/data/demo.json` (committet, `npm run data:demo`), `public/data/latest.json` (gitignored, `npm run data`). `src/lib/data/` laster `latest.json` og faller tilbake til `demo.json`. `mode: "demo" | "live"` brukes bare til demobanneret. Ingen miljøvariabel styrer atferd.
+- **Design-tokens:** én kilde i `src/lib/theme.ts`, speilet i `src/styles/tokens.css`, holdt i takt av `theme.test.ts`. Leaflet-markørfarger importeres fra `theme.ts`. Ingen hardkodede hex/px for navngitte tokens.
+- **CI og drift:** `ci.yml` (lint, typecheck, tester, build), `e2e.yml` (Playwright i demomodus), `data.yml` (hver time, `concurrency` uten avbrudd). Uten Pages publiseres `latest.json` til grenen `data`.
+- **Konvensjoner:** UTC ISO 8601 lagret, norsk lokaltid bare i UI. Kommentarer forklarer *hvorfor*. Eksakte versjoner. Tester ved siden av koden; E2E i `tests/e2e/`, kontraktstester i `tests/contract/`, fasittabeller i `tests/golden/`.
 
 ## UX & Interaction Patterns
 
 - **IA:** Fast toppnavigasjon («SnowFinder» · «Slik beregner vi SnowScore»), som blir ☰ på mobil. Kart/liste-vekslingen ligger alltid rett under navigasjonen. Visningen er del av URL-en.
-- **SnowScore-skala:** 4 trinn, `snowscore-0`..`snowscore-3` (grått → sterkt blått), og bare til SnowScore. Score vises aldri bare som farge, men alltid som tall og tekstetikett («82 · Svært godt») i badge, tooltip og listerad. Sirkelformen er reservert for score.
-- **Kartmarkør:** sirkel med hvit kant og tykkere aksentkant når stedet er valgt. Hover viser navn og score i en tooltip, og klikk åpner stedssiden. Markører klynges bare ved svært lav zoom.
-- **Listerad:** et kort med stedsnavn, score-badge og nysnø/vind/temp i `numeric` (`tnum`). Betjenes med Tab/Enter. Sortering på score/avstand/navn skjer med `<select>` eller knapperad, aldri dra-og-slipp. Hele raden er klikkmålet, ikke badgen.
-- **Stedsside:** score i `display`, delpoeng A/B/C, temperatur, nysnø, vind, skydekke, høyde og kildetidsstempel. Én kolonne på mobil, to på desktop. Siden lenker til forklaringssiden.
-- **Tilstander:**
-  - Lasting vises som skjelett i `surface-sunken`, aldri bare en spinner.
-  - «Utdatert» er en liten `meta`-tekst med tidsstempel.
-  - Over 12 t gamle steder fjernes helt.
-  - «Ufullstendige data» vises som tekst i stedet for badge, aldri som 0.
-- **Bannere:**
-  - Demobanneret «Demodata – ikke ekte prognoser» vises på alle flater under navigasjonen når `mode: "demo"`. Det er nøytralt (`surface-sunken`, tynn `ink-secondary`-kant), kan ikke lukkes, blokkerer ingenting og lenker til README.
-  - `banner-stale-data` (1.6) har warning-bakgrunn og ink-primary-tekst. Det vises når de nyeste dataene er over 90 min gamle: «Viser siste kjente data fra kl. XX:XX».
-- **Tone:** rolig og presis, lover aldri snø. Skriv «Prognose — oppdatert for 42 min siden», ikke «Garantert pudder!».
-- **Tilgjengelighetsgulv:**
-  - synlig fokusring i `accent`;
-  - trykkmål på minst 44 px;
-  - kontrast ≥ 4,5:1, så det mørkeste score-trinnet får hvit tekst;
-  - `prefers-reduced-motion` respekteres;
-  - ett brytpunkt ved ~768 px.
+- **Kartmarkør:** sirkel med hvit kant og tykkere aksentkant når stedet er valgt. Hover viser navn og score i en tooltip, og klikk åpner stedssiden.
+- **Listerad:** kort med stedsnavn, score-badge og nysnø/vind/temp i `numeric` (`tnum`). Betjenes med Tab/Enter. Sortering med `<select>` eller knapperad, aldri dra-og-slipp. Hele raden er klikkmålet.
+- **Stedsside:** score i `display`, delpoeng A/B/C, temperatur, nysnø, vind, skydekke, høyde og kildetidsstempel. Én kolonne på mobil, to på desktop. Lenker til forklaringssiden.
+- **`banner-stale-data`** (bygget i 1.6; avvik fra DESIGN.md, se `deferred-work.md`):
+  - Full bredde øverst på Utforsk og stedssiden, ikke på forklaringssiden. `surface-raised`-bakgrunn, 4 px venstrekant i `warning` og `ink-primary`-tekst (16,6:1). DESIGN.md sin `warning`-bakgrunn med `ink-primary` gir bare 2,92:1, under WCAG AA.
+  - Utløses når datafila (`generert`) er over 90 min gammel, ikke av en kretsbryter.
+  - Tekst: «Viser siste kjente data fra kl. XX:XX» (norsk lokaltid, med dato når fila er fra en annen dag). Ingen årsak, fordi appen bare ser siste publiserte fil.
+  - Blokkerer ikke resten av siden og kan ikke lukkes.
+- **Demobanneret** er bevisst nøytralt (`surface-sunken`, tynn `ink-secondary`-kant) så det ikke forveksles med banneret for gamle data. `warning` er semantisk reservert for «siste kjente data»; `danger` brukes til utdaterte/fjernede data.
+- **Tilstander:** lasting som skjelett i `surface-sunken`; «Utdatert» som liten `meta`-tekst med tidsstempel; «Ufullstendige data» som tekst, aldri 0 eller badge; steder over 12 t fjernes.
+- **Score:** alltid tall + tekstetikett, 4-trinns `snowscore-0..3` reservert for SnowScore.
+- **Tone:** rolig og presis, lover aldri snø.
+- **Tilgjengelighetsgulv:** synlig fokusring i `accent`, trykkmål ≥ 44 px, kontrast ≥ 4,5:1, `prefers-reduced-motion`, ett brytpunkt ved ~768 px.
 
 ## Cross-Story Dependencies
 
-- **1.10** kommer rett etter 1.4. Den bygger den delen av dataprogrammet den trenger (`run.ts`, `score.ts`, `publish.ts` mot fixtures), og i tillegg `src/lib/data/`, `clock.ts` og demobanneret. Den fjerner også de tomme mappene `supabase/` og `src/lib/supabase/` fra 1.1, og legger kopisjekken for planleggingsdokumentene inn i `ci.yml`.
-- **1.3 og 1.5** kobler de ekte kildene inn i samme program. 1.5 trenger validerte data fra 1.3 og modulen fra 1.4.
-- **1.11** trenger 1.5.
-- **1.7, 1.8 og 1.9** trenger en datafil fra 1.5 eller demodata fra 1.10, og må virke i demomodus.
-- **1.9** innfører aldersgrensene i `shared/freshness.ts`, som også gjelder kart og liste.
-- **1.6** kommer etter 1.7 og 1.9, fordi banneret skal ligge på Utforsk og stedssiden.
-- **Andre epics:**
-  - Epic 2 er forklaringssiden, som hver SnowScore-visning her lenker til. Datakvalitetspanelet der leser `RunReport` fra datafila.
-  - Epic 3 legger filter (`shared/filter.ts`, URL-parametere) på `useSteder()` og `Utforsk`, og utvider E2E-testen med filter.
-  - Epic 4 (skivindu) utvider `Sted.tsx` og `score.ts` med `skivinduUtenDagslys`.
+- **1.6** bygger på 1.3 (`fetch.ts`), 1.5 (siste gyldige fil, terskel) og 1.7/1.9 (Utforsk og stedssiden, `shared/freshness.ts`, `clock.ts`).
+- **Utsatte funn knyttet til 1.6:** at datakvalitetspanelet (Epic 2) skal si hvor mange steder som er utdatert eller fjernet, er fortsatt åpent. Ny beregning av alderen mens siden står åpen ble løst i 1.9b (sjekk hvert minutt i live), og banneret bruker samme sjekk. Les `deferred-work.md` før bygging.
+- **1.11** trenger 1.5. Banneret blir først reelt i drift når timesjobben går.
+- **Andre epics:** Epic 2 (forklaringsside, datakvalitetspanel leser `RunReport`), Epic 3 (filter på `useSteder()`/`Utforsk`), Epic 4 (skivindu i `Sted.tsx` og `score.ts`).
