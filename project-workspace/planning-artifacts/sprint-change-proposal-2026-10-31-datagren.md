@@ -4,7 +4,7 @@
 **Utløst av:** Aksels valg i Story 1.11 (2026-10-31): appen skal lese reserven selv
 **Modus:** batch
 **Omfang:** Minor. Koden er bygget i Story 1.11, og bare dokumenter endres her.
-**Godkjent:** Aksel (2026-10-31)
+**Godkjent:** Aksel (2026-10-31). **Erstattes av** `sprint-change-proposal-2026-10-31-ekte-data-som-standard.md` hvis det forslaget godkjennes.
 
 ## 1. Problem
 
