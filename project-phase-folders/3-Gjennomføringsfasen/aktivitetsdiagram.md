@@ -58,7 +58,7 @@ flowchart TD
     d2 -- "Nei" --> e1
     d3 --> e1["Sluttrapport, retrospektiv<br/>og presentasjon i 4-Avslutningsfasen"]
     e1 --> f5["F5: sluttrapport klar<br/>forslag 2026-11-23"]
-    f5 --> e2["Generalprøve 2026-11-24: npm ci og<br/>npm run dev etter README på en ren maskin"]
+    f5 --> e2["Generalprøve 2026-11-24: npm ci, npm run dev:demo<br/>og npm run dev etter README på en ren maskin"]
     e2 --> e3{"Virker alt uten nøkler?"}
     e3 -- "Nei" --> e4["Rett README eller koden"] --> e2
     e3 -- "Ja" --> slutt(["M6: levering og demo<br/>2026-11-25, vedtatt"])
@@ -198,7 +198,7 @@ flowchart LR
 | P8 | Brukertest med minst fem personer | Gjennomføring | P6, P7 | Joseph og Aksel | 2026-11-16, forslag (F4) |
 | P9 | Rettinger etter brukertesten (bare kritiske funn) | Gjennomføring | P8 | Fordeles etter testen | 2026-11-20, forslag |
 | P10 | Sluttrapport, retrospektiv og presentasjon | Avslutning | P8 | Hele gruppa | 2026-11-23, forslag (F5) |
-| P11 | Generalprøve: `npm ci && npm run dev` etter README på en ren maskin | Avslutning | P9, P10 | Joseph og Aksel | 2026-11-24, forslag |
+| P11 | Generalprøve: `npm ci`, så `npm run dev:demo` og `npm run dev`, etter README på en ren maskin | Avslutning | P9, P10 | Joseph og Aksel | 2026-11-24, forslag |
 | P12 | Levering og demo | Avslutning | P11 | Hele gruppa | 2026-11-25, vedtatt (M6) |
 
 Diagrammene og listen oppdateres når arbeidsflyten endres, for eksempel når et spor er ferdig, når

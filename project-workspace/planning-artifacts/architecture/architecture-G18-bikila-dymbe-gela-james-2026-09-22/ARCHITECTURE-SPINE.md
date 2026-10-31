@@ -213,11 +213,13 @@ flowchart LR
     same file shape (AD-12).
   - **Files.** The demo file `public/data/demo.json` is committed. Live output goes to
     `public/data/latest.json`, which is gitignored locally and published by the scheduled job.
-    `src/lib/data/` loads `latest.json` and falls back to `demo.json` when it is absent, which is
-    the case on a clean clone. *(v5, 2026-10-31)* While Pages is off, the scheduled job publishes
-    `latest.json` to the branch `data`. Under `npm run dev` only, the app reads that file between
-    the two, when it is under 12 h old and at least one place survives the age limit. Every problem
-    with it gives `demo.json`.
+    *(v6, 2026-10-31, replaces the v5 fallback)* `src/lib/data/` loads one file, chosen at build time
+    by Vite's mode: `demo.json` with `--mode demo`, otherwise `latest.json`. There is no fallback
+    between them, so a normal build can never show demo data. The scheduled job always publishes
+    `latest.json` to the branch `data`, and to Pages as well when Pages is on. `npm run data:hent`
+    copies it to `public/data/latest.json` before `dev` and `build`, only when it is newer than the
+    local file; a failed download leaves the local file alone. Without a file the app says so and
+    names `npm run dev:demo`. The app itself never reads a remote address.
   - **Production never shows demo data.** The site build in `data.yml` fails if the run did
     not produce `latest.json`, so the previous deployment stays live. Every deploy, including
     deploys triggered by code changes, goes through `data.yml` and runs the data program first.
@@ -225,9 +227,8 @@ flowchart LR
     `referenceTime` is the newest fixture timestamp, its run ID is fixed, and its duration is
     0. Regenerating it gives a byte-identical file.
   - **One mode flag.** The file carries `mode: "demo" | "live"`, and the app reads it only to
-    show the demo banner. No environment variable switches behaviour. Vite's build mode
-    (`import.meta.env.DEV`) decides only whether the branch `data` is read, so the production build
-    and E2E never read it.
+    show the demo banner. No environment variable switches behaviour. *(v6)* Vite's `--mode demo`
+    decides at build time which file is loaded; nothing decides it at run time.
   - **One clock.** `src/lib/clock.ts` is the only source of "now" in `src/`: it returns the
     file's `referenceTime` in demo mode and the wall clock in live mode. No other file calls
     `Date.now()` or `new Date()` without arguments, and lint enforces that.
@@ -298,7 +299,7 @@ flowchart LR
 | File | Writer (only one) | Read by app? | Kept | MoSCoW |
 | --- | --- | --- | --- | --- |
 | `data/catalog.json` | `scripts/build-catalog/` (by hand, AD-5) | via the data file | versioned in git | Must |
-| `public/data/demo.json` | `scripts/pipeline/publish.ts` via `npm run data:demo` | yes, as fallback | versioned in git | Must |
+| `public/data/demo.json` | `scripts/pipeline/publish.ts` via `npm run data:demo` | yes, with `--mode demo` | versioned in git | Must |
 | `public/data/latest.json` | `scripts/pipeline/publish.ts` via `npm run data` | yes | replaced each run; not committed | Must |
 
 ## Consistency Conventions
@@ -341,7 +342,7 @@ flowchart TB
     RUN -- "reads" --> MET["MET Locationforecast"]
     RUN -- "reads" --> NVE["NVE seNorge"]
     RUN -- "build + deploy<br/>(only if ≥95 % valid)" --> PAGES
-    DEV["Developer / examiner<br/>npm ci && npm run dev"] --> LOCAL["local app<br/>demo.json, or latest.json<br/>after npm run data"]
+    DEV["Developer / examiner<br/>npm ci && npm run dev"] --> LOCAL["local app<br/>latest.json from npm run data:hent,<br/>demo.json with npm run dev:demo"]
 ```
 
 ```text
@@ -355,7 +356,7 @@ flowchart TB
     hooks/
       useSteder.ts              #   the single data hook (AD-8)
     lib/
-      data/                     # loads latest.json, falls back to demo.json (AD-10)
+      data/                     # loads latest.json, or demo.json with --mode demo (AD-10)
       clock.ts                  # the only "now" (AD-10)
       snowscore.ts              # re-exports shared/snowscore.ts for the calculator (AD-6)
       theme.ts                  # DESIGN.md tokens (AD-9)
@@ -380,12 +381,13 @@ flowchart TB
 
 | Where | How | Data | Needs |
 | --- | --- | --- | --- |
-| Examiner / first run | `npm ci && npm run dev` | `demo.json` (committed), or the branch `data` when it has a file under 12 h old | Node 24 or 26+ |
+| Examiner, fixed data | `npm ci && npm run dev:demo` | `demo.json` (committed) | Node 24 or 26+ |
+| Real data, default | `npm ci && npm run dev`, or `npm run build && npm run preview` | `latest.json`, downloaded first by `npm run data:hent` from the branch `data` | Internet access, no keys |
 | Live data locally | `npm run data`, then `npm run dev` | `latest.json` | Internet access, no keys |
 | Regenerate demo data | `npm run data:demo` | rewrites `demo.json` from fixtures | — |
-| CI `ci.yml` (every PR) | lint, typecheck, unit/property/contract/golden tests, build | demo | — |
-| CI `e2e.yml` (every PR) | `vite build` + `vite preview` as Playwright `webServer` | demo | Playwright browsers |
-| `data.yml` (hourly, on push to `main`, and manual) | `npm run data`, build, then deploy to Pages when Pages is set to GitHub Actions, otherwise publish `latest.json` to the branch `data`; only if `latest.json` was produced | live | Actions enabled in the repo |
+| CI `ci.yml` (every PR) | lint, typecheck, unit/property/contract/golden tests, `npm run build:demo` | demo | — |
+| CI `e2e.yml` (every PR) | `vite build --mode demo` + `vite preview` as Playwright `webServer` | demo | Playwright browsers |
+| `data.yml` (hourly, on push to `main`, and manual) | `npm run data`, build, always publish `latest.json` to the branch `data`, and deploy to Pages when Pages is set to GitHub Actions; only if `latest.json` was produced. Each target is read back and its `runId` compared | live | Actions enabled in the repo |
 
 Story 1.1 created empty `supabase/` and `src/lib/supabase/` folders. Story 1.10 removes them
 and adds `src/lib/data/`.

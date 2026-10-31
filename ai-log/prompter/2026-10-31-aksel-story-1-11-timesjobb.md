@@ -30,3 +30,27 @@
 
 **Svar (kort):** Valget i prompt 3 var i strid med FR-30, så PRD, epics og arkitektur måtte endres.
 **Hva vi gjorde med det:** Lagt inn i begge kopier av PRD og arkitektur, og i epics, i samme PR.
+
+### 5 (etter rundebordet)
+> kan du få agentene til å snakke sammen for å finne feil og evt komme med forbedringer slik at dette blir topp
+
+**Svar (kort):** Rundebordet (`bmad-party-mode`) leste koden og fant at testplanen krever demodata, mens `npm run dev` i PR #78 kan vise ekte data. Det var Claudes feil: det første endringsforslaget sa at UX ikke ble berørt.
+**Hva vi gjorde med det:** Aksel fikk to alternativer: beholde lesingen med en ny testkommando, eller egen kommando.
+
+### 6
+> Jeg velger alternativ B, men med følgende presiseringer: npm run dev skal vise ekte værdata som standard. Demodata skal bare brukes når demomodus aktiveres eksplisitt. npm run data:hent skal oppdatere værdata uten at brukeren må gjøre dette manuelt i den publiserte appen. npm run build && npm run preview og npm run dev skal bruke samme datagrunnlag ved normal drift. Generalprøven 12. november skal gjennomføres med et fast, dokumentert testdatasett for å sikre reproducerbare resultater. FR-30, AD-10, testplanen og arkitekturdokumentasjonen skal oppdateres slik at de samsvarer. Ingen endringer skal merges før relevante tester er bestått. Viktig: Prioriter også GitHub Actions og GitHub Pages. Publisering må verifiseres ved å kontrollere at den faktiske nettsiden oppdateres, ikke bare at workflowen viser grønn status. La rundebordet oppdatere endringsforslaget og presentere konsekvensene før implementering. En ekstra anbefaling: Ikke la Claude Code gjennomføre alle foreslåtte endringer automatisk. Be først om en konkret implementeringsplan, og godkjenn endringene stegvis. Da reduserer dere risikoen for å ødelegge funksjonalitet som allerede fungerer, særlig så tett opp mot generalprøven 12. november.
+
+**Svar (kort):** Claude påpekte at dette ikke er alternativ B, men en ny løsning, at planen har brukertest 12. november og generalprøve 24. november, og at standardkommandoen nå avhenger av timesjobben. Nytt endringsforslag med åtte steg.
+**Hva vi gjorde med det:** Godkjent (prompt 7 og 8). Claude foreslo at `data:hent` kjører automatisk, og at appen bare leser én lokal fil.
+
+### 7
+> ja fortsett med valgene
+
+**Svar (kort):** Steg 0: PR #78 satt til utkast, og endringsforslaget committet.
+**Hva vi gjorde med det:** Meldinger til Joseph og Bård skrevet for Aksel å sende.
+
+### 8
+> ja
+
+**Svar (kort):** Steg 1: FR-30, SM-14, AD-10, epics, testplan, generalprøve og README oppdatert. Koden er ikke endret ennå.
+**Hva vi gjorde med det:** README beskriver kommandoer som bygges i steg 2, så PR #78 står som utkast til da.

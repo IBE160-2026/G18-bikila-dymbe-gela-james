@@ -53,7 +53,7 @@ Fra 28. oktober er det fire uker igjen til levering. Fristene er satt slik at hv
   `fix`-PR-er med review. Resten skrives inn i sluttrapporten som videre arbeid.
 - **16.–23. november: sluttrapport og presentasjon (F5).** Starter mens rettingene pågår, fordi
   det meste av innholdet allerede finnes i fremdriftsplanen, KI-loggen og retrospektivene.
-- **24. november: generalprøve.** `npm ci && npm run dev` etter README på en ren maskin.
+- **24. november: generalprøve.** `npm ci && npm run dev:demo` med det faste testdatasettet, og `npm ci && npm run dev` med ekte data, etter README på en ren maskin.
 - **25. november: levering og demo (M6).**
 
 Hvor langt vi har kommet på hver milepæl, står i

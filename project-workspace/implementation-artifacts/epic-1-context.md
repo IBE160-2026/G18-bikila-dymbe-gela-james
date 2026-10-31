@@ -14,7 +14,7 @@ Brukeren skal kunne åpne SnowFinder og se ferske SnowScore-data for norske sted
 - Story 1.4: Bygg den delte SnowScore-modulen (ferdig)
 - Story 1.10: Kjør SnowFinder lokalt med demodata (ferdig)
 - Story 1.5: Beregn og publiser SnowScore i dataprogrammet (ferdig)
-- Story 1.11: Kjør dataprogrammet hver time og publiser appen (ferdig)
+- Story 1.11: Kjør dataprogrammet hver time og publiser appen (pågår, endres etter AD-10 v6)
 - Story 1.7: Se Norgeskartet med fargelagte steder (ferdig)
 - Story 1.8: Bruk tilgjengelig listevisning i stedet for kart (ferdig)
 - Story 1.9: Åpne en stedsside med full poengsum (ferdig)
@@ -47,7 +47,7 @@ Byggerekkefølgen er rekkefølgen over. Alle unntatt 1.6 er Må ha.
 - **Klienten** (`src/`) er tynn og lagdelt: pages → components → hooks → `lib/data`. `Utforsk.tsx` er én rute for kart og liste (`visning=kart|liste`) med én `useSteder()`-hook. Stedssiden er `/sted/:id`.
 - **Delt logikk i `shared/`:** `snowscore.ts`, `filter.ts`, `freshness.ts` (alder = nå − kildens tidsstempel; 3 t utdatert, 12 t skjult) og `contracts/` (`PublishedData`, `Sted`, `RunReport`, `Catalog`, camelCase). `zod` er eneste tredjepartsimport der. Logikk kopieres ikke til `src/`.
 - **Én klokke:** `src/lib/clock.ts` er eneste kilde til «nå» (fila sin `referenceTime` i demo, veggklokka i live). Lint forbyr `Date.now()` og argumentløs `new Date()` andre steder. Alderssjekk for banneret må gå via klokka og `shared/freshness.ts`.
-- **Datafiler, én skriver hver:** `data/catalog.json` (`scripts/build-catalog/`), `public/data/demo.json` (committet, `npm run data:demo`), `public/data/latest.json` (gitignored, `npm run data`). `src/lib/data/` laster `latest.json` og faller tilbake til `demo.json`. Bare under `npm run dev` (`import.meta.env.DEV`) leses `latest.json` på grenen `data` mellom de to, med 5 s tidsavbrudd og grense på 12 t, og enhver feil der gir demodata. `mode: "demo" | "live"` brukes bare til demobanneret. Ingen miljøvariabel styrer atferd.
+- **Datafiler, én skriver hver:** `data/catalog.json` (`scripts/build-catalog/`), `public/data/demo.json` (committet, `npm run data:demo`), `public/data/latest.json` (gitignored, `npm run data`). `src/lib/data/` laster bare én fil, valgt ved bygging: `demo.json` med `--mode demo`, ellers `latest.json`, uten reserve mellom dem. `npm run data:hent` kopierer fila fra grenen `data` før `dev` og `build` (AD-10 v6). `mode: "demo" | "live"` brukes bare til demobanneret. Ingen miljøvariabel styrer atferd.
 - **Design-tokens:** én kilde i `src/lib/theme.ts`, speilet i `src/styles/tokens.css`, holdt i takt av `theme.test.ts`. Leaflet-markørfarger importeres fra `theme.ts`. Ingen hardkodede hex/px for navngitte tokens.
 - **CI og drift:**
   - `ci.yml`: lint, typecheck, enhets-, egenskaps-, kontrakts- og fasittester, build.
