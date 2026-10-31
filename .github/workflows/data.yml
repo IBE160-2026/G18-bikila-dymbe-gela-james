@@ -1,0 +1,160 @@
+name: Data
+
+on:
+  schedule:
+    # Off the full hour: GitHub often delays jobs at :00, and the 90 min limit of the stale data banner
+    # leaves only 30 min of slack.
+    - cron: '17 * * * *'
+  push:
+    branches: [main]
+  workflow_dispatch:
+  # A change to this file is tried for real in its PR; only runs on main publish anything.
+  pull_request:
+    paths:
+      - .github/workflows/data.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  # One fixed group: a PR run and the hourly run must not call MET at the same time (10 calls/s).
+  group: data
+  cancel-in-progress: false
+
+jobs:
+  data:
+    runs-on: ubuntu-latest
+    # Covers the worst case of about 35 min, and stays under the hour between scheduled runs.
+    timeout-minutes: 50
+    permissions:
+      contents: read
+      pages: read # the check of how Pages is set up
+    outputs:
+      publish: ${{ steps.target.outputs.publish }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+
+      # Exit 1 when under 95 % are valid or the run crashed. The quality report is only in the log then.
+      # The limit also bounds slow 5xx answers: stopping here turns the run red, while reaching
+      # timeout-minutes is reported as cancelled.
+      - name: Run the data program
+        shell: bash
+        run: |
+          set -o pipefail
+          timeout 45m npm run data 2>&1 | tee data-run.log
+
+      # AD-10: production fails without latest.json and never ships demo.json. Pages answers an unknown
+      # path with 404.html, so a copy of index.html makes direct links to /sted/<id> work.
+      - name: Build the app for the Pages subfolder
+        run: |
+          if [ ! -f public/data/latest.json ]; then
+            echo "::error::Dataprogrammet laget ikke public/data/latest.json."
+            exit 1
+          fi
+          npm run build -- --base="/${GITHUB_REPOSITORY#*/}/"
+          cp dist/index.html dist/404.html
+          rm dist/data/demo.json
+
+      - name: Check the build
+        run: |
+          test -f dist/404.html
+          test -f dist/data/latest.json
+          test ! -e dist/data/demo.json
+          grep -q "/${GITHUB_REPOSITORY#*/}/assets/" dist/404.html
+
+      # Decided in every run, so the job works both before and after Pages is switched to GitHub Actions.
+      # Only a 404 means that Pages is off; any other API error is red, so nothing is published by mistake.
+      # The check also runs on PRs, so a problem with the API or the token shows up before it reaches main.
+      - name: Choose where to publish
+        id: target
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if build_type=$(gh api "repos/$GITHUB_REPOSITORY/pages" --jq .build_type 2>pages-error.log); then
+            :
+          elif grep -q 'HTTP 404' pages-error.log; then
+            build_type=none
+          else
+            cat pages-error.log >&2
+            exit 1
+          fi
+          if [ "$build_type" = workflow ]; then
+            publish=pages
+          else
+            publish=branch
+          fi
+          if [ "$GITHUB_REF" != refs/heads/main ]; then
+            echo "Ikke main, så ingenting publiseres. På main ville kjøringen brukt: $publish (Pages: $build_type)."
+            exit 0
+          fi
+          if [ "$publish" = branch ]; then
+            echo "::warning::Pages står ikke på «GitHub Actions» ($build_type), så reserven brukes: latest.json til grenen data."
+          fi
+          echo "publish=$publish" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/upload-pages-artifact@v5
+        if: steps.target.outputs.publish == 'pages'
+        with:
+          path: dist
+
+      - uses: actions/upload-artifact@v7
+        if: steps.target.outputs.publish == 'branch'
+        with:
+          name: data-branch-file
+          path: public/data/latest.json
+          retention-days: 1
+
+      # Also after the timeout, which GitHub reports as cancelled and not as failed.
+      - uses: actions/upload-artifact@v7
+        if: failure() || cancelled()
+        with:
+          name: data-run-log
+          path: data-run.log
+          retention-days: 7
+
+  # The only job that can write to the repo, and it runs no project code.
+  branch:
+    needs: data
+    if: needs.data.outputs.publish == 'branch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v8
+        with:
+          name: data-branch-file
+          path: data-branch-file
+      # One parentless commit, force pushed, so the branch gets no history that grows.
+      - name: Publish latest.json to the branch data
+        env:
+          GIT_AUTHOR_NAME: github-actions[bot]
+          GIT_AUTHOR_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
+          GIT_COMMITTER_NAME: github-actions[bot]
+          GIT_COMMITTER_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
+        run: |
+          blob=$(git hash-object -w data-branch-file/latest.json)
+          tree=$(printf '100644 blob %s\tlatest.json\n' "$blob" | git mktree)
+          commit=$(git commit-tree "$tree" -m "chore: oppdater latest.json fra kjøring $GITHUB_RUN_ID")
+          git push --force origin "$commit:refs/heads/data"
+
+  pages:
+    needs: data
+    if: needs.data.outputs.publish == 'pages'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5

@@ -129,9 +129,14 @@ export async function runLive({
   return ctx.report as RunReport
 }
 
-async function main(argv: string[]): Promise<void> {
+export interface Runs {
+  demo: () => Promise<RunReport>
+  live: () => Promise<RunReport>
+}
+
+export async function main(argv: string[], runs: Runs = { demo: runDemo, live: runLive }): Promise<void> {
   // A run that did not publish (crash, or under MIN_SCORED_SHARE) fails, so the hourly job turns red.
-  const report = argv.includes('--demo') ? await runDemo() : await runLive()
+  const report = argv.includes('--demo') ? await runs.demo() : await runs.live()
   if (!report.publisert) process.exitCode = 1
 }
 

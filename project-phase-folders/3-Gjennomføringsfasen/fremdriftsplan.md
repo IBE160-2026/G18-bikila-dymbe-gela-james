@@ -3,7 +3,7 @@
 Oversikt over hvordan vi går fram, steg for steg, så alle kan følge med selv om de ikke var
 på møtet. Oppdater statusen når et steg er ferdig.
 
-**Sist oppdatert:** 2026-10-28
+**Sist oppdatert:** 2026-10-31
 
 ## Slik holder du deg oppdatert
 
@@ -14,6 +14,21 @@ på møtet. Oppdater statusen når et steg er ferdig.
 4. Se promptene fra siste økt i [`ai-log/prompter/`](../../ai-log/prompter/).
 
 ## Hvor er vi nå?
+
+**31. oktober: Story 1.11 er bygget, så alle v1-stories er ferdige. Igjen står brukertesten, rettinger, sluttrapporten og generalprøven.**
+
+- Aksel bygde 1.11 med `bmad-build`. `data.yml` kjører dataprogrammet én gang i timen og velger selv i
+  hver kjøring: står Pages på «GitHub Actions», publiseres appen der, og ellers legges `latest.json` på
+  grenen `data`.
+- **Pages og grenbeskyttelse er ikke bekreftet.** Faglærer skal ha endret dem, men 31. oktober viste
+  API-et `has_pages: false`, nettstedet ga 404, og `main` var ikke beskyttet. Gruppa må be faglærer se
+  på det igjen. Til da brukes reserven.
+- **Endret krav:** Aksel valgte at appen leser grenen `data` selv under `npm run dev`. Et rent klon med
+  nett kan derfor vise ekte data, og ellers demodata. FR-30 og AD-10 er endret
+  ([endringsforslaget](../../project-workspace/planning-artifacts/sprint-change-proposal-2026-10-31-datagren.md)).
+- **Review av PR #77 (1.6) i etterkant:** ingenting må reverteres, men fire funn og noen testhull bør
+  rettes i en egen `fix`-PR ([kommentaren](https://github.com/IBE160-2026/G18-bikila-dymbe-gela-james/pull/77#issuecomment-6546891809)).
+- Neste: review av 1.11, kjøre `data.yml` for hånd rett etter merge, og rekruttere minst fem testpersoner.
 
 **28. oktober (kveld): Steg 8c ferdig, en uke før forslaget.**
 
@@ -92,7 +107,7 @@ på møtet. Oppdater statusen når et steg er ferdig.
 **23. oktober: Epic 1 (kjernen) og Epic 2 (forklaringssiden) er bygget, og Må ha i Epic 3 (filter) er ferdig.**
 
 - **Epic 1:** Story 1.1–1.5 og 1.7–1.10 er ferdige: stedskatalog, værdata, SnowScore, kart, liste,
-  stedsside og demodata. Story 1.6 (Bør ha), nye forsøk og banner for gamle data, er bygget av Joseph etter avtale med Aksel (2026-10-29). Igjen står 1.11 (timesjobb og publisering).
+  stedsside og demodata. Story 1.6 (Bør ha), nye forsøk og banner for gamle data, er bygget av Joseph etter avtale med Aksel (2026-10-29). Story 1.11 (timesjobb og publisering) er bygget 2026-10-31, se øverst.
 - **Epic 2:** Story 2.1–2.4 er ferdige (PR #33–#36): forklaringssiden «Slik beregner vi SnowScore» med
   regneeksempel, datakilder, datakvalitet og kalkulatoren «Prøv selv». Retrospektiven (PR #37) og
   tiltakene fra den (PR #38) er merget.
@@ -180,8 +195,8 @@ gantt
     Sprint 3 filter (3.1-3.8)                     : done, 2026-10-22, 2026-10-28
     M4 Filter ferdig                              : milestone, done, 2026-10-28, 0d
     Retrospektiv Epic 3 (valgfri)                 : 2026-11-02, 2026-11-03
-    Sprint 4 robusthet (1.6) og skivindu (4.2)    : 2026-11-02, 2026-11-11
-    Story 1.11 timesjobb (reserve fra 04.11)      : 2026-11-02, 2026-11-11
+    Sprint 4 robusthet (1.6) og skivindu (4.2)    : done, 2026-10-28, 2026-10-29
+    Story 1.11 timesjobb og publisering           : 2026-10-31, 2026-11-11
     M1 og M5 pipeline i drift og kodefrys         : milestone, 2026-11-11, 0d
     Brukertest med fem personer                   : 2026-11-12, 2026-11-16
     F4 Brukertest ferdig                          : milestone, 2026-11-16, 0d
@@ -207,7 +222,8 @@ gantt
 | 2026-10-27 | Story 3.1–3.6 ferdige (PR #48–#64) | Gjennomføring | ✅ |
 | 2026-10-28 | M4 Filteret ferdig: 3.7 (PR #66) og 3.8 (PR #71, frist var 2026-11-01) | Gjennomføring | ✅ |
 | 2026-10-28 | F3 Wireframes, skjermkrav og brukertestplan (steg 8c), frist var 2026-11-04 | Planlegging | ✅ |
-| 2026-11-04 | Valg av reserve for 1.11 | Gjennomføring | ⬜ forslag |
+| 2026-10-29 | Story 4.2 (PR #74, 28. oktober) og 1.6 (PR #77) ferdige | Gjennomføring | ✅ |
+| 2026-10-31 | Story 1.11 bygget. Jobben velger Pages eller reserven selv i hver kjøring, så valget 4. november trengs ikke | Gjennomføring | 🔄 venter på review |
 | 2026-11-11 | M1 Timesjobb og publisering (1.11) og M5 kodefrys: robusthet (1.6) og beste skivindu (4.2) | Gjennomføring | ⬜ forslag |
 | 2026-11-16 | F4 Brukertest med fem personer | Gjennomføring | ⬜ forslag |
 | 2026-11-20 | Kritiske funn fra brukertesten rettet | Gjennomføring | ⬜ forslag |
@@ -232,7 +248,7 @@ Vi bruker BMad Method med fem agenter. Hvert steg bygger på det forrige.
 | 8b | Innarbeide faglærers tilbakemelding og forenkle (to endringsrunder) | `bmad-correct-course`, John, Winston | [Endringsforslag](../../project-workspace/planning-artifacts/), oppdatert brief, PRD v3 og arkitektur v4 | Joseph | 2026-10-07 | ✅ Ferdig |
 | 8c | Wireframes, kursets skjermkrav (uten pålogging, droppet 2026-10-09) og brukertestplan | Sally (UX-designer) | Oppdatert EXPERIENCE.md og wireframes | Joseph og Aksel | 2026-10-28 | ✅ Ferdig ([wireframes](../2-Planleggingsfasen/wireframes/), skjermkrav og brukertestplan i EXPERIENCE.md) |
 | 8d | Oppdatere epics, stories og sprintplan etter forenklingen | John og `bmad-sprint-planning` | Epics og stories, sprintplan, `sprint-status.yaml` | Aksel | 2026-10-07 | ✅ Ferdig (epics v3, sprintplan og `sprint-status.yaml`) |
-| 9 | Bygge appen, én story om gangen | Amelia (utvikler) | Kode, tester, PR-er. Story 1.1 ferdig (PR #10). Story 1.2 ferdig (PR #18). Story 1.4 ferdig (PR #20). Story 1.10 ferdig (PR #22). Story 1.3 ferdig (PR #23). Story 1.5 ferdig (PR #24). Story 1.7 ferdig (PR #25). Story 1.8 ferdig (PR #27), 1.7b markører etter zoom (PR #28). Story 1.9 ferdig (PR #30), fullført med 1.9b og 1.9c (alder i åpen fane, tom tilstand, trykkmål, felles datalagring). Story 2.1 forklaringssiden «Slik beregner vi SnowScore» ferdig (PR #33). Story 2.2 regneeksempelet ferdig (PR #34). Story 2.3 datakilder, begrensninger og datakvalitet ferdig (PR #35). Story 2.4 kalkulatoren «Prøv selv» ferdig (PR #36), så hele Epic 2 er bygget. Retrospektiv for Epic 2 ferdig (PR #37, accepted-with-open-items, 11 tiltak). Tiltak A1–A5 og A11 ferdige (PR #38). Rød E2E på GitHub rettet (PR #39), dokumentene oppdatert etter revisjonen (PR #40). Revisjonens tre feil i dataprogrammet rettet (PR #43–#45). Tiltak A8 (toppnavigasjonen) og A7 (delt kortstil og `Formel`) fra retrospektiven ferdige (PR #46–#47). Story 3.1 filter på nysnø, vind og temperatur ferdig (PR #48). Story 3.2 filteret i nettadressen ferdig (PR #49), fullført med 3.2b: stedssidens adresse bærer søket (PR #50). Tre åpne punkter avgjort (PR #51). Story 3.3 antall treff og forslag ved null treff ferdig (PR #52), så Må ha i Epic 3 er ferdig. Story 3.5 filter på skydekke i dagslys ferdig (PR #53), før 3.4 fordi hurtigvalget trenger det. Story 3.4 hurtigvalg ferdig (PR #57). Story 3.6 filter på avstand, med knappen «Hele Norge», bygget men revertert (PR #58 merget uten godkjenning, reversert i PR #61), og merget på nytt (PR #63). Story 3.4 og 3.6 satt til `done` (PR #64 og denne). Story 3.7 filter på stedstype ferdig (PR #66). Story 3.8 nysnø siste 24 timer ferdig (bygget av Sena, synlig PR åpnet av Aksel), så hele Epic 3 er bygget. Story 1.6 nye forsøk i dataprogrammet og banner for gamle data ferdig (bygget av Joseph, 2026-10-29). | Aksel (sprint 1 og 4) | 2026-11-11 (forslag) | 🔄 Pågår |
+| 9 | Bygge appen, én story om gangen | Amelia (utvikler) | Kode, tester, PR-er. Story 1.1 ferdig (PR #10). Story 1.2 ferdig (PR #18). Story 1.4 ferdig (PR #20). Story 1.10 ferdig (PR #22). Story 1.3 ferdig (PR #23). Story 1.5 ferdig (PR #24). Story 1.7 ferdig (PR #25). Story 1.8 ferdig (PR #27), 1.7b markører etter zoom (PR #28). Story 1.9 ferdig (PR #30), fullført med 1.9b og 1.9c (alder i åpen fane, tom tilstand, trykkmål, felles datalagring). Story 2.1 forklaringssiden «Slik beregner vi SnowScore» ferdig (PR #33). Story 2.2 regneeksempelet ferdig (PR #34). Story 2.3 datakilder, begrensninger og datakvalitet ferdig (PR #35). Story 2.4 kalkulatoren «Prøv selv» ferdig (PR #36), så hele Epic 2 er bygget. Retrospektiv for Epic 2 ferdig (PR #37, accepted-with-open-items, 11 tiltak). Tiltak A1–A5 og A11 ferdige (PR #38). Rød E2E på GitHub rettet (PR #39), dokumentene oppdatert etter revisjonen (PR #40). Revisjonens tre feil i dataprogrammet rettet (PR #43–#45). Tiltak A8 (toppnavigasjonen) og A7 (delt kortstil og `Formel`) fra retrospektiven ferdige (PR #46–#47). Story 3.1 filter på nysnø, vind og temperatur ferdig (PR #48). Story 3.2 filteret i nettadressen ferdig (PR #49), fullført med 3.2b: stedssidens adresse bærer søket (PR #50). Tre åpne punkter avgjort (PR #51). Story 3.3 antall treff og forslag ved null treff ferdig (PR #52), så Må ha i Epic 3 er ferdig. Story 3.5 filter på skydekke i dagslys ferdig (PR #53), før 3.4 fordi hurtigvalget trenger det. Story 3.4 hurtigvalg ferdig (PR #57). Story 3.6 filter på avstand, med knappen «Hele Norge», bygget men revertert (PR #58 merget uten godkjenning, reversert i PR #61), og merget på nytt (PR #63). Story 3.4 og 3.6 satt til `done` (PR #64 og denne). Story 3.7 filter på stedstype ferdig (PR #66). Story 3.8 nysnø siste 24 timer ferdig (bygget av Sena, synlig PR åpnet av Aksel), så hele Epic 3 er bygget. Story 4.2 beste skivindu ferdig (PR #74). Story 1.6 nye forsøk i dataprogrammet og banner for gamle data ferdig (bygget av Joseph, 2026-10-29, PR #77). Story 1.11 timesjobb og publisering ferdig (bygget av Aksel, 2026-10-31), så alle v1-stories er bygget. | Aksel (sprint 1 og 4) | 2026-11-11 (forslag) | 🔄 Pågår |
 | 10 | Brukertest, sluttrapport og demo | Hele gruppen | [Avslutningsfasen](../4-Avslutningsfasen/) | Joseph og Aksel | 2026-11-25 | ⬜ |
 
 Steg 1 og 2 ble gjort før gruppen bestemte seg for denne rekkefølgen. Derfor kommer

@@ -214,7 +214,10 @@ flowchart LR
   - **Files.** The demo file `public/data/demo.json` is committed. Live output goes to
     `public/data/latest.json`, which is gitignored locally and published by the scheduled job.
     `src/lib/data/` loads `latest.json` and falls back to `demo.json` when it is absent, which is
-    the case on a clean clone.
+    the case on a clean clone. *(v5, 2026-10-31)* While Pages is off, the scheduled job publishes
+    `latest.json` to the branch `data`. Under `npm run dev` only, the app reads that file between
+    the two, when it is under 12 h old and at least one place survives the age limit. Every problem
+    with it gives `demo.json`.
   - **Production never shows demo data.** The site build in `data.yml` fails if the run did
     not produce `latest.json`, so the previous deployment stays live. Every deploy, including
     deploys triggered by code changes, goes through `data.yml` and runs the data program first.
@@ -222,7 +225,9 @@ flowchart LR
     `referenceTime` is the newest fixture timestamp, its run ID is fixed, and its duration is
     0. Regenerating it gives a byte-identical file.
   - **One mode flag.** The file carries `mode: "demo" | "live"`, and the app reads it only to
-    show the demo banner. No environment variable switches behaviour.
+    show the demo banner. No environment variable switches behaviour. Vite's build mode
+    (`import.meta.env.DEV`) decides only whether the branch `data` is read, so the production build
+    and E2E never read it.
   - **One clock.** `src/lib/clock.ts` is the only source of "now" in `src/`: it returns the
     file's `referenceTime` in demo mode and the wall clock in live mode. No other file calls
     `Date.now()` or `new Date()` without arguments, and lint enforces that.
@@ -375,12 +380,12 @@ flowchart TB
 
 | Where | How | Data | Needs |
 | --- | --- | --- | --- |
-| Examiner / first run | `npm ci && npm run dev` | `demo.json` (committed) | Node 24 or 26+ |
+| Examiner / first run | `npm ci && npm run dev` | `demo.json` (committed), or the branch `data` when it has a file under 12 h old | Node 24 or 26+ |
 | Live data locally | `npm run data`, then `npm run dev` | `latest.json` | Internet access, no keys |
 | Regenerate demo data | `npm run data:demo` | rewrites `demo.json` from fixtures | — |
 | CI `ci.yml` (every PR) | lint, typecheck, unit/property/contract/golden tests, build | demo | — |
 | CI `e2e.yml` (every PR) | `vite build` + `vite preview` as Playwright `webServer` | demo | Playwright browsers |
-| `data.yml` (hourly, on push to `main`, and manual) | `npm run data`, build, deploy to Pages only if `latest.json` was produced | live | Actions and Pages enabled in the repo |
+| `data.yml` (hourly, on push to `main`, and manual) | `npm run data`, build, then deploy to Pages when Pages is set to GitHub Actions, otherwise publish `latest.json` to the branch `data`; only if `latest.json` was produced | live | Actions enabled in the repo |
 
 Story 1.1 created empty `supabase/` and `src/lib/supabase/` folders. Story 1.10 removes them
 and adds `src/lib/data/`.

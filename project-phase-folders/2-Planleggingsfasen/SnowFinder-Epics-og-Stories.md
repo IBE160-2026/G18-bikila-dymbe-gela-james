@@ -334,6 +334,9 @@ mot demo-nå)
 `src/lib/clock.ts` er eneste kilde til «nå» (lint forbyr `Date.now()` andre steder)
 **And** de tomme mappene `supabase/` og `src/lib/supabase/` fra Story 1.1 er fjernet
 
+`[v5, 2026-10-31: Story 1.11 legger til grenen `data` mellom de to, bare under `npm run dev`. Uten
+nett, eller ved enhver feil, vises fortsatt demodatasettet.]`
+
 `[v3: Ny story fra endringsrunde 1, plassert rett etter 1.4. Bygges sammen med den delen av
 dataprogrammet den trenger (`run.ts`, `score.ts`, `publish.ts` mot fixtures). Story 1.3 og 1.5
 kobler senere på de ekte kildene.]`
@@ -379,8 +382,9 @@ So that kartet viser ferske prognoser uten at noen kjører noe for hånd. Realis
 **Then** kjøres `npm run data`, appen bygges med den nye `latest.json`, og resultatet
 publiseres til GitHub Pages
 **And** er Pages ikke slått på, publiserer jobben i stedet bare `latest.json` til grenen
-`data` (`permissions: contents: write`), og `src/lib/data/` kan lese den fra
-`raw.githubusercontent.com`. Da får en lokalt kjørt app ferske data hver time uten hosting
+`data` (`permissions: contents: write`), og `src/lib/data/` leser den fra
+`raw.githubusercontent.com` under `npm run dev`, når fila er under 12 timer gammel. Da får en
+lokalt kjørt app ferske data hver time uten hosting. Enhver feil gir demodata
 **And** jobben bruker en `concurrency`-gruppe uten avbrudd, så bare én kjøring går om gangen
 **And** produksjonsbygget feiler hvis kjøringen ikke ga `latest.json`, slik at forrige
 publisering blir stående og produksjon aldri viser demodata (AD-10)

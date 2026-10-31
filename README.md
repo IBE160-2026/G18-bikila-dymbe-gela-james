@@ -112,7 +112,8 @@ Demodataene viser aldri banneret, men en `public/data/latest.json` fra `npm run 
 90 minutter gammel, gjør det.
 Er alle stedene for gamle, for eksempel fordi `latest.json` fra `npm run data` er mer enn 12 timer
 gammel, viser forsiden «Ingen ferske data». Kjør `npm run data` på nytt, eller slett
-`public/data/latest.json` for å gå tilbake til demodataene.
+`public/data/latest.json`, så viser `npm run dev` de ferske dataene fra grenen `data` eller
+demodataene (se [Demomodus](#demomodus)).
 
 ### Slik beregner vi SnowScore
 
@@ -140,10 +141,22 @@ enhetstestene og trenger verken nettleser eller nett.
 
 ### Demomodus
 
-Et rent klon trenger verken nøkler eller nett. `npm run dev` viser da demodataene i
-`public/data/demo.json`, med banneret «Demodata – ikke ekte prognoser». Appen laster
-`public/data/latest.json` hvis den finnes, og ellers `demo.json`. `latest.json` lages av
-`npm run data` (se under), og committes ikke.
+Et rent klon trenger verken nøkler eller nett. Uten nett viser `npm run dev` demodataene i
+`public/data/demo.json`, med banneret «Demodata – ikke ekte prognoser». Med nett kan det vise ekte data
+i stedet. Under `npm run dev` prøver appen disse i rekkefølge:
+
+1. `public/data/latest.json`, hvis den finnes. Den lages av `npm run data` (se under), og committes ikke.
+2. `latest.json` på grenen `data` på GitHub, hvis den er under 12 timer gammel. Fila hentes med et
+   tidsavbrudd på 5 sekunder, og ethvert problem med den gir demodata.
+3. `public/data/demo.json`.
+
+Produksjonsbygget leser aldri grenen `data`. Vil du se demodataene selv om du har nett, kjører du:
+
+```sh
+npm run build && npm run preview   # krever at public/data/latest.json ikke finnes
+```
+
+Det virker bare lokalt: bygget som publiseres av timesjobben, inneholder aldri `demo.json`.
 
 Demodataene er 24 steder med ekte, innspilte MET- og NVE-svar fra `tests/contract/fixtures/`. Ett
 sted har ufullstendige data, og ett har kildedata som er eldre enn 3 timer og merkes «Utdatert».
@@ -165,10 +178,32 @@ Dataprogrammet henter værprognosen fra MET og nysnø siste døgn fra NVE for hv
 og regner ut SnowScore. Det sender høyst 10 kall i sekundet til hver kilde, slik MET-vilkårene krever,
 så for rundt 300 steder tar hentingen minst et halvt minutt. Et kall som feiler med nettverksfeil, HTTP 429 eller 5xx, prøves inntil tre ganger, med 1 s og så 2 s pause. Når minst 95 % av stedene har fått en poengsum, skrives `public/data/latest.json`,
 og `npm run dev` viser da live-data uten demobanner. Fila blir liggende til neste vellykkede kjøring,
-så dataene kan være gamle; slett den for å gå tilbake til demodataene.
+så dataene kan være gamle; slett den for å gå tilbake til grenen `data` eller demodataene.
 Under 95 % står forrige fil urørt, og kommandoen avslutter med feilkode 1. Kvalitetsrapporten (hvor
 mange steder som har gyldige data, og hvilke svar som ble avvist og hvorfor) ligger i datafila, eller
 skrives ut når kjøringen ikke ble publisert.
+
+### Timesjobben og publisering
+
+`.github/workflows/data.yml` kjører `npm run data` én gang i timen, 17 minutter over hel time, ved push til
+`main` og når den startes for hånd. Den trenger ingen nøkler. Hver kjøring på `main` spør GitHub hvordan Pages
+er satt opp, og velger så en av to veier:
+
+- **Pages står på «GitHub Actions»:** appen bygges med den nye `latest.json` og publiseres til
+  <https://ibe160-2026.github.io/G18-bikila-dymbe-gela-james/>. Bygget inneholder ikke `demo.json`, og
+  `404.html` er en kopi av `index.html`, så direkte lenker til `/sted/<id>` virker. Innstillingen må settes av
+  en administrator for repoet.
+- **Pages er av eller står på «Deploy from branch»:** bare `latest.json` publiseres, til rota av grenen `data`.
+  Grenen har alltid ett commit, så den får ingen historikk som vokser. Kjøringen gir en advarsel om at
+  reserven er brukt.
+
+Når Pages er slått på, oppdateres ikke grenen `data` lenger, så et rent klon viser demodata etter 12 timer.
+GitHub slår av planlagte kjøringer etter 60 dager uten aktivitet i repoet.
+
+Får under 95 % av stedene en poengsum, krasjer dataprogrammet, eller mangler `latest.json` etter kjøringen,
+publiseres ingenting: forrige publisering står, kjøringen blir rød, og loggen med kvalitetsrapporten
+ligger som artifact (`data-run-log`) på kjøringen. En PR som endrer `data.yml`, henter og bygger uten å
+publisere.
 
 Feltene i datafila og kildesvarene er beskrevet i
 [`shared/contracts/data-dictionary.md`](shared/contracts/data-dictionary.md).

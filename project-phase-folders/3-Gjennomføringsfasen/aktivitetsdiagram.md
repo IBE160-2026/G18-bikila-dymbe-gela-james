@@ -8,16 +8,16 @@ og [tidslinjen](fremdriftsplan.md#tidslinje). Fristene merket «forslag» er ikk
 
 ## Arbeidsflyt fram til levering
 
-Tre spor går parallelt: storyene som gjenstår, Story 1.11 (som venter på faglærer) og steg 8c
-med brukertestplanen. Når alle tre er ferdige og koden er fryst, går vi videre til brukertest,
-rettinger, sluttrapport og levering.
+Tre spor går parallelt: storyene som gjenstår, Story 1.11 og steg 8c med brukertestplanen. Per
+2026-10-31 er alle storyene og steg 8c bygget, og 1.11 venter på review. Når koden er fryst, går vi
+videre til brukertest, rettinger, sluttrapport og levering.
 
 ```mermaid
 flowchart TD
     start(["Start 2026-10-28"]) --> fork1{{"Tre spor parallelt"}}
 
     %% Spor A: storyene som gjenstår
-    fork1 --> a1["Velg neste story i sprintplan.md:<br/>1.6<br/>(1.11 venter på faglærer)"]
+    fork1 --> a1["Velg neste story i sprintplan.md"]
     a1 --> a2["Bygg med bmad-build på greinen<br/>story/nr-kort-navn"]
     a2 --> a3["Kjør lint, typecheck, test, build<br/>og test:e2e lokalt"]
     a3 --> a4["Sett storyen til done i sprint-status.yaml,<br/>oppdater fremdriftsplan og tidslinje,<br/>logg KI-økten i ai-log"]
@@ -35,13 +35,12 @@ flowchart TD
     a12 -- "Nei" --> m4["M5 kodefrys<br/>forslag 2026-11-11"]
 
     %% Spor B: Story 1.11
-    fork1 --> b1{"Har faglærer satt GitHub Pages<br/>til GitHub Actions?"}
-    b1 -- "Ja" --> b2["Bygg Story 1.11:<br/>timesjobb og publisering"]
-    b1 -- "Nei" --> b3{"Er det etter<br/>2026-11-04?"}
-    b3 -- "Nei" --> b4["Purr på faglærer"] --> b1
-    b3 -- "Ja" --> b5["Bruk reserven i Story 1.11:<br/>publiser datafila til grenen data"]
-    b5 --> b2
-    b2 --> m1["M1: pipeline i drift<br/>forslag 2026-11-11"]
+    fork1 --> b2["Bygg Story 1.11:<br/>timesjobb og publisering"]
+    b2 --> b1{"Står GitHub Pages på<br/>GitHub Actions? Sjekkes i hver kjøring"}
+    b1 -- "Ja" --> b6["Publiser appen til Pages"]
+    b1 -- "Nei" --> b5["Reserven:<br/>publiser datafila til grenen data"]
+    b6 --> m1["M1: pipeline i drift<br/>forslag 2026-11-11"]
+    b5 --> m1
 
     %% Spor C: UX og brukertestplan
     fork1 --> c1["Steg 8c med bmad-ux:<br/>wireframes og kursets skjermkrav"]
@@ -140,8 +139,7 @@ flowchart LR
     classDef ferdig fill:#d7f0dd,stroke:#2e7d32,color:#1b1b1b
     classDef gjenstar fill:#fff1c7,stroke:#b26a00,color:#1b1b1b
     classDef ikkev1 fill:#ececec,stroke:#9e9e9e,color:#555555,stroke-dasharray:4 3
-    class s1_1,s1_2,s1_3,s1_4,s1_5,s1_7,s1_8,s1_9,s1_10,s2_1,s2_2,s2_3,s2_4,s3_1,s3_2,s3_3,s3_4,s3_5,s3_6,s3_7,s3_8 ferdig
-    class s1_6,s1_11,s4_2 gjenstar
+    class s1_1,s1_2,s1_3,s1_4,s1_5,s1_6,s1_7,s1_8,s1_9,s1_10,s1_11,s2_1,s2_2,s2_3,s2_4,s3_1,s3_2,s3_3,s3_4,s3_5,s3_6,s3_7,s3_8,s4_2 ferdig
     class s4_1,s4_3,s4_4,s5_1,s5_2 ikkev1
 ```
 
@@ -159,8 +157,8 @@ flowchart LR
 | 1.7 | Se Norgeskartet med fargelagte steder (med 1.7b) | Må ha | 1.10 | 2 | Aksel | 2026-10-08 (PR #25, #28) |
 | 1.8 | Bruk tilgjengelig listevisning i stedet for kart | Må ha | 1.10 | 2 | Aksel | 2026-10-08 (PR #27) |
 | 1.9 | Åpne en stedsside med full poengsum (med 1.9b og 1.9c) | Må ha | 1.7, 1.8 | 2 | Aksel | 2026-10-08 (PR #30–#32) |
-| 1.11 | Kjør dataprogrammet hver time og publiser appen | Må ha | 1.5, GitHub Pages fra faglærer (ellers reserven) | 2, flyttet til 4 | Aksel | 2026-11-11, forslag |
-| 1.6 | Hold tjenesten oppe når en datakilde er nede | Bør ha | 1.9 | 4 | Aksel | 2026-11-11, forslag |
+| 1.11 | Kjør dataprogrammet hver time og publiser appen | Må ha | 1.5, GitHub Pages fra faglærer (ellers reserven) | 2, flyttet til 4 | Aksel | 2026-10-31 (bygget, venter på review) |
+| 1.6 | Hold tjenesten oppe når en datakilde er nede | Bør ha | 1.9 | 4 | Joseph | 2026-10-29 (PR #77, review i etterkant) |
 | **Epic 2** | **Forstå og stole på SnowScore** | | | | | |
 | 2.1 | Les kort fortalt og steg for steg | Må ha | 1.4 | 1 | Aksel | 2026-10-09 (PR #33) |
 | 2.2 | Se det utledede regneeksempelet | Må ha | 2.1 | 1 | Aksel | 2026-10-09 (PR #34) |
@@ -178,8 +176,7 @@ flowchart LR
 | 3.8 | Filtrer på nysnø siste 24 timer | Bør ha | 3.1, 1.3 | 3 | Sena | 2026-10-28 (PR #71) |
 | – | Retrospektiv for Epic 3 (valgfri) | – | 3.1–3.8 | 4 | Fordeles på møtet | 2026-11-03, forslag |
 | **Epic 4** | **Få mer ut av et sted jeg følger med på** | | | | | |
-| 4.2 | Se beste skivindu på stedssiden | Bør ha | 1.9 | 4 | Aksel | 2026-11-11, forslag |
-| 4.2 | Se beste skivindu på stedssiden | Bør ha | 1.9 | 4 | Aksel | 2026-10-28 (bygget, venter på review) |
+| 4.2 | Se beste skivindu på stedssiden | Bør ha | 1.9 | 4 | Aksel | 2026-10-28 (PR #74) |
 | 4.1 | Gjør SnowFinder installerbar som PWA | Ikke i v1 | – | – | – | – |
 | 4.3 | Registrer et snøvarsel uten konto | Ikke i v1 | – | – | – | – |
 | 4.4 | Motta og meld deg av et snøvarsel | Ikke i v1 | 4.3 | – | – | – |

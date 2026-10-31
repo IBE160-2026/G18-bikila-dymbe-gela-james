@@ -26,12 +26,14 @@
 - source_spec: `project-workspace/implementation-artifacts/spec-1-10-kjor-snowfinder-lokalt-med-demodata.md`
   summary: Test exit-koden til dataprogrammet (ikke publisert → 1, manglende --demo → 2) når Story 1.11 lar CI avhenge av den.
   evidence: Story 1.10-gjennomgang (Verification Gap). `main` i scripts/pipeline/run.ts er ikke eksportert, og alle tester kaller runDemo direkte.
+  resolved: Story 1.11 (2026-10-31). `main` er eksportert med injiserbare kjøringer, og `run.test.ts` tester exit-koden. Exit 2 finnes ikke lenger (se punktet fra Story 1.3).
 - source_spec: `project-workspace/implementation-artifacts/spec-1-10-kjor-snowfinder-lokalt-med-demodata.md`
   summary: Test at ESLint-regelen mot Date.now()/new Date() i src/ faktisk slår til (ESLint Node-API i Vitest).
   evidence: Story 1.10-gjennomgang (Verification Gap). I dag går lint grønt også hvis selektoren er feil, fordi ingen kode i src/ leser klokka.
 - source_spec: `spec-1-3-hent-og-valider-vaerdata-hver-time.md`
   summary: Test exit-koden til `main()` i scripts/pipeline/run.ts med de nye reglene (demo ikke publisert → 1; live krasjet eller under 95 % gyldige → 1; uten `--demo` kjøres live, exit 2 finnes ikke lenger).
   evidence: Story 1.3-gjennomgang (Verification Gap, Blind Hunter). `main` er ikke eksportert, og ingen test dekker rutingen eller exit-koden. Erstatter forutsetningen om exit 2 i punktet fra Story 1.10.
+  resolved: Story 1.11 (2026-10-31). `run.test.ts` tester rutingen og exit-koden for demo og live. At krasj gir `publisert: false`, testes i `runLive`-testen for manglende katalog.
 - source_spec: `spec-1-3-hent-og-valider-vaerdata-hver-time.md`
   summary: Sjekk om NVE-perioden bør regnes etter norsk dato i stedet for UTC (nveUrl i scripts/pipeline/fetch.ts).
   evidence: maybe-false, ville vært medium. Mellom 00 og 02 norsk tid slutter perioden på forrige norske dato. Avgjøres ved å hente NVE-svar like etter midnatt og se om `latestNveValue` da velger en eldre dag.
@@ -39,6 +41,7 @@
 - source_spec: `spec-1-7-se-norgeskartet.md`
   summary: Lag en SPA-reserve for GitHub Pages (en `404.html` som er kopi av `index.html`, eller en omdirigering) slik at direkte lenker og oppfrisking på `/sted/:id` virker, i Story 1.11.
   evidence: Story 1.7-gjennomgang (Blind Hunter, Edge Case Hunter). `vite preview` og dev-serveren faller tilbake til index.html, men GitHub Pages gir sin egen 404 for ukjente stier.
+  resolved: Story 1.11 (2026-10-31). `data.yml` kopierer `index.html` til `404.html` i bygget for Pages.
 - source_spec: `spec-1-8-listevisning.md`
   summary: Legg sorteringsvalget i listen inn i URL-en (f.eks. `?visning=liste&sortering=navn`) sammen med filterparametrene i Epic 3 (FR-21), så valget overlever Tilbake og delte lenker.
   evidence: Story 1.8-gjennomgang (alle tre lag). Sorteringen ligger i `useState` i ListeVisning og går tilbake til score når komponenten lastes på nytt.
@@ -118,3 +121,9 @@
 - source_spec: `project-workspace/implementation-artifacts/spec-1-6-hold-tjenesten-oppe.md`
   summary: Vurder et tidsbudsjett per kall eller per kjøring i `scripts/pipeline/fetch.ts`, så trege 5xx- eller 429-svar like under tidsavbruddet på 20 s ikke gir tre forsøk hver og en kjøring på rundt en time, som kolliderer med neste timesjobb (Story 1.11).
   evidence: maybe-false, ville vært medium. Gjennomgangen av 1.6 (Blind Hunter, Edge Case Hunter). Tidsavbrudd prøves ikke på nytt av nettopp denne grunnen, men et 5xx-svar etter 19 s gjør det. Avgjøres når 1.11 går: se på `varighetMs` i kjøringsrapportene fra en periode der MET er ustabil.
+- source_spec: `project-workspace/implementation-artifacts/spec-1-11-timesjobb-og-publisering.md`
+  summary: Kjør `data.yml` for hånd rett etter merge og se at reserven virker. Framtving én rød kjøring og se at `data-run-log` har kvalitetsrapporten. Prøv Pages-veien og en direkte lenke til `/sted/<id>` første gang etter at Pages står på «GitHub Actions».
+  evidence: Gjennomgangen av 1.11 (Verification Gap). Disse veiene krever ekte tilstand på GitHub og kan ikke kjøres på en PR uten å publisere. Per 2026-10-31 viser API-et `has_pages: false`.
+- source_spec: `project-workspace/implementation-artifacts/spec-1-11-timesjobb-og-publisering.md`
+  summary: Før den varige grenen `data` og `data.yml` inn i `AGENTS.md` via `bmad-project-context`, så regelen om å slette greiner etter merge ikke treffer `data`.
+  evidence: Gjennomgangen av 1.11 (Blind Hunter). `AGENTS.md` sier «én grein per oppgave» og «slett greinen etter merge», og nevner bare CI og E2E som kjørende workflows.

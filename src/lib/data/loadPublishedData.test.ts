@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { LOAD_ERROR_MESSAGE, loadPublishedData, type FetchFn } from './loadPublishedData'
+import { DATAGREN_URL, LOAD_ERROR_MESSAGE, loadPublishedData, type FetchFn } from './loadPublishedData'
 
 const demoText = readFileSync(new URL('../../../public/data/demo.json', import.meta.url), 'utf8')
 const demo = JSON.parse(demoText)
@@ -144,5 +144,145 @@ describe('loadPublishedData', () => {
 
   it('gives an error when no data file exists', async () => {
     expect(await loadPublishedData(fakeFetch({}))).toEqual({ status: 'error', message: LOAD_ERROR_MESSAGE })
+  })
+
+  describe('the branch data, under npm run dev', () => {
+    const NOW = new Date('2026-10-31T12:00:00Z')
+    const HOUR_MS = 3_600_000
+    const load = (fetchFn: FetchFn) => loadPublishedData(fetchFn, '/', DATAGREN_URL)
+    // What raw.githubusercontent.com answers.
+    const plain = (body: unknown) =>
+      new Response(typeof body === 'string' ? body : JSON.stringify(body), {
+        status: 200,
+        headers: { 'content-type': 'text/plain; charset=utf-8' },
+      })
+    const isoAgo = (ageMs: number) => new Date(NOW.getTime() - ageMs).toISOString()
+    const withSourceTime = (time: (index: number) => string) =>
+      live.steder.map((sted: Record<string, unknown>, index: number) => ({ ...sted, kildeTidspunkt: time(index) }))
+    const aged = (ageMs: number) => ({ ...live, generert: isoAgo(ageMs), steder: withSourceTime(() => isoAgo(HOUR_MS)) })
+    const fresh = aged(HOUR_MS)
+    const withDemo = (branch: () => Response) => fakeFetch({ [DATAGREN_URL]: branch, '/data/demo.json': () => json(demo) })
+
+    beforeEach(() => {
+      vi.useFakeTimers({ toFake: ['Date', 'setTimeout', 'clearTimeout'], now: NOW })
+    })
+    afterEach(() => {
+      vi.useRealTimers()
+    })
+
+    it('does not read the branch when a local latest.json exists', async () => {
+      const fetchFn = fakeFetch({ '/data/latest.json': () => json(live), [DATAGREN_URL]: () => plain(fresh) })
+      expect(await load(fetchFn)).toMatchObject({ status: 'ok', source: 'latest' })
+      expect(fetchFn.calls).toEqual(['/data/latest.json'])
+    })
+
+    it('does not read the branch when the local latest.json is broken, and still gives an error', async () => {
+      const fetchFn = fakeFetch({ '/data/latest.json': () => json({ ...live, steder: [{ id: 'x' }] }), [DATAGREN_URL]: () => plain(fresh) })
+      expect(await load(fetchFn)).toEqual({ status: 'error', message: LOAD_ERROR_MESSAGE })
+      expect(fetchFn.calls).toEqual(['/data/latest.json'])
+    })
+
+    it('uses a fresh text/plain file instead of the demo data', async () => {
+      const fetchFn = withDemo(() => plain(fresh))
+      expect(await load(fetchFn)).toMatchObject({ status: 'ok', source: 'datagren', data: { mode: 'live' } })
+      expect(fetchFn.calls).toEqual(['/data/latest.json', DATAGREN_URL])
+      expect(console.error).not.toHaveBeenCalled()
+    })
+
+    it('gives a file from the branch the defaults for newer fields, like latest.json', async () => {
+      const steder = fresh.steder.map((sted: Record<string, unknown>) => {
+        const kopi = { ...sted }
+        delete kopi.skivindu
+        return kopi
+      })
+      const result = await load(withDemo(() => plain({ ...fresh, steder })))
+      expect(result).toMatchObject({ status: 'ok', source: 'datagren' })
+      if (result.status === 'ok') expect(result.data.steder.every((s) => s.skivindu === null)).toBe(true)
+    })
+
+    it('gives demo data, without logging, when the branch has no file', async () => {
+      expect(await load(withDemo(notFound))).toMatchObject({ status: 'ok', source: 'demo', data: { mode: 'demo' } })
+      expect(console.error).not.toHaveBeenCalled()
+    })
+
+    it('gives demo data and logs when the call is rejected (no network)', async () => {
+      const fetchFn: FetchFn = async (url) => {
+        if (url === DATAGREN_URL) throw new TypeError('Failed to fetch')
+        return url === '/data/demo.json' ? json(demo) : notFound()
+      }
+      expect(await load(fetchFn)).toMatchObject({ status: 'ok', source: 'demo' })
+      expect(console.error).toHaveBeenCalledOnce()
+    })
+
+    it('gives demo data and logs when the answer never starts within 5 s', async () => {
+      const fetchFn: FetchFn = (url, init) => {
+        if (url !== DATAGREN_URL) return Promise.resolve(url === '/data/demo.json' ? json(demo) : notFound())
+        return new Promise((_resolve, reject) => {
+          init?.signal?.addEventListener('abort', () => reject(new DOMException('Aborted', 'AbortError')))
+        })
+      }
+      const result = load(fetchFn)
+      await vi.advanceTimersByTimeAsync(4_999)
+      let settled = false
+      void result.then(() => (settled = true))
+      await Promise.resolve()
+      expect(settled).toBe(false)
+      await vi.advanceTimersByTimeAsync(1)
+      expect(await result).toMatchObject({ status: 'ok', source: 'demo' })
+      expect(console.error).toHaveBeenCalledOnce()
+    })
+
+    it('gives demo data and logs when the body stops arriving before 5 s', async () => {
+      const fetchFn: FetchFn = async (url, init) => {
+        if (url !== DATAGREN_URL) return url === '/data/demo.json' ? json(demo) : notFound()
+        const body = new ReadableStream({
+          start(controller) {
+            init?.signal?.addEventListener('abort', () => controller.error(new DOMException('Aborted', 'AbortError')))
+          },
+        })
+        return new Response(body, { status: 200 })
+      }
+      const result = load(fetchFn)
+      await vi.advanceTimersByTimeAsync(5_000)
+      expect(await result).toMatchObject({ status: 'ok', source: 'demo' })
+      expect(console.error).toHaveBeenCalledOnce()
+    })
+
+    it.each([
+      ['not JSON', () => plain('{"mode": "live",')],
+      ['another HTTP error', () => new Response('Bad gateway', { status: 502 })],
+      ['the wrong schema', () => plain({ ...fresh, steder: [{ id: 'x' }] })],
+    ])('gives demo data and logs on %s', async (_name, branch) => {
+      expect(await load(withDemo(branch))).toMatchObject({ status: 'ok', source: 'demo' })
+      expect(console.error).toHaveBeenCalledOnce()
+    })
+
+    it('gives demo data, without logging, for a file over 12 h old', async () => {
+      const result = await load(withDemo(() => plain(aged(12 * HOUR_MS + 1000))))
+      expect(result).toMatchObject({ status: 'ok', source: 'demo' })
+      expect(console.error).not.toHaveBeenCalled()
+    })
+
+    it('still uses a file that is exactly 12 h old', async () => {
+      expect(await load(withDemo(() => plain(aged(12 * HOUR_MS))))).toMatchObject({ status: 'ok', source: 'datagren' })
+    })
+
+    it('gives demo data, without logging, for a new file where every place is over 12 h old', async () => {
+      const steder = withSourceTime(() => isoAgo(12 * HOUR_MS + 1000))
+      const result = await load(withDemo(() => plain({ ...fresh, steder })))
+      expect(result).toMatchObject({ status: 'ok', source: 'demo' })
+      expect(console.error).not.toHaveBeenCalled()
+    })
+
+    it('uses a new file when only one place is under 12 h old', async () => {
+      const steder = withSourceTime((index) => isoAgo(index === 0 ? HOUR_MS : 12 * HOUR_MS + 1000))
+      expect(await load(withDemo(() => plain({ ...fresh, steder })))).toMatchObject({ status: 'ok', source: 'datagren' })
+    })
+
+    it('does not read the branch without the address (production build and E2E)', async () => {
+      const fetchFn = withDemo(() => plain(fresh))
+      expect(await loadPublishedData(fetchFn)).toMatchObject({ status: 'ok', source: 'demo' })
+      expect(fetchFn.calls).toEqual(['/data/latest.json', '/data/demo.json'])
+    })
   })
 })

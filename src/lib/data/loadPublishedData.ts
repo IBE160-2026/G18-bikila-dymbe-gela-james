@@ -1,10 +1,18 @@
 import { PublishedData } from '../../../shared/contracts/published'
+import { dataAlderMs, ferskhet, FJERNES_ETTER_MS } from '../../../shared/freshness'
+import { now } from '../clock'
 
 // AD-1/AD-10: the app's only way to get data. Loads latest.json and falls back to demo.json only when
 // latest.json does not exist (a clean clone). A latest.json that exists but is broken is an error,
 // never a reason to show demo data instead. AD-12: parsed with the schema publish.ts validated against.
+// Story 1.11: under `npm run dev` the file the hourly job publishes to the branch `data` comes between
+// them. It is optional, so every problem with it gives demo data, never the error page.
 
-export type DataSource = 'latest' | 'demo'
+export type DataSource = 'latest' | 'datagren' | 'demo'
+
+/** The fallback of the hourly job (.github/workflows/data.yml). */
+export const DATAGREN_URL = 'https://raw.githubusercontent.com/IBE160-2026/G18-bikila-dymbe-gela-james/data/latest.json'
+const DATAGREN_TIMEOUT_MS = 5_000
 
 export type LoadResult =
   | { status: 'ok'; data: PublishedData; source: DataSource }
@@ -57,12 +65,53 @@ function medNyereFelt(body: unknown): unknown {
   return { ...body, steder }
 }
 
+/**
+ * The file on the branch `data`, or null when it should not be used. raw.githubusercontent.com answers
+ * text/plain, so the content type says nothing here, unlike in tryFetch. A file older than the limit
+ * for removing places, or with no place left after that limit, gives null: a clean clone long after
+ * the last run should show the demo, not «Ingen ferske data».
+ */
+async function readDatagren(fetchFn: FetchFn, url: string): Promise<PublishedData | null> {
+  const timeout = new AbortController()
+  const timer = setTimeout(() => timeout.abort(), DATAGREN_TIMEOUT_MS)
+  try {
+    const response = await fetchFn(url, { cache: 'no-cache', signal: timeout.signal })
+    if (response.status === 404) return null
+    if (!response.ok) {
+      console.error(`${url} svarte HTTP ${response.status}`)
+      return null
+    }
+    const parsed = PublishedData.safeParse(medNyereFelt(await response.json()))
+    if (!parsed.success) {
+      console.error(`${url} følger ikke PublishedData`, parsed.error.issues)
+      return null
+    }
+    const naa = now(parsed.data)
+    const alder = dataAlderMs(parsed.data.generert, naa)
+    const harSteder = parsed.data.steder.some((s) => ferskhet(s.kildeTidspunkt, naa) !== 'for-gammel')
+    return alder !== null && alder <= FJERNES_ETTER_MS && harSteder ? parsed.data : null
+  } catch (error) {
+    console.error(`${url} kunne ikke leses: ${String(error)}`)
+    return null
+  } finally {
+    clearTimeout(timer)
+  }
+}
+
 export const LOAD_ERROR_MESSAGE = 'Klarte ikke å lese stedsdataene. Prøv å laste siden på nytt senere.'
 
-export async function loadPublishedData(fetchFn: FetchFn = (url, init) => fetch(url, init), baseUrl = '/'): Promise<LoadResult> {
-  const sources: DataSource[] = ['latest', 'demo']
+export async function loadPublishedData(
+  fetchFn: FetchFn = (url, init) => fetch(url, init),
+  baseUrl = '/',
+  datagrenUrl?: string,
+): Promise<LoadResult> {
+  const sources = ['latest', 'demo'] as const
   for (const source of sources) {
     const url = `${baseUrl}data/${source}.json`
+    if (source === 'demo' && datagrenUrl !== undefined) {
+      const data = await readDatagren(fetchFn, datagrenUrl)
+      if (data !== null) return { status: 'ok', data, source: 'datagren' }
+    }
     const attempt = await tryFetch(fetchFn, url)
     if (attempt.kind === 'missing') continue
     if (attempt.kind === 'unreadable') {

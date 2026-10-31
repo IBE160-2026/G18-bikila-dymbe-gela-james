@@ -1,7 +1,7 @@
 ---
 title: SnowFinder
 created: 2026-09-27
-updated: 2026-10-07
+updated: 2026-10-31
 status: draft
 ---
 
@@ -520,7 +520,10 @@ kan prøves og testes uavhengig av drift.
 #### FR-30: Lokal demomodus med ferdige data *(Må ha)*
 
 En utenforstående kan klone repoet og starte SnowFinder med `npm ci && npm run dev`. Det
-krever ikke nøkler eller nettverkskall til MET og NVE. Appen viser da et demodatasett.
+krever ikke nøkler eller nettverkskall til MET og NVE. Uten nett viser appen da et demodatasett.
+*(endret v5, 2026-10-31)* Med nett kan `npm run dev` i stedet vise ekte data fra grenen `data`, hvis
+timesjobben har lagt en fil der som er under 12 timer gammel. Enhver feil ved lesingen gir
+demodatasettet.
 
 **Konsekvenser (testbare):**
 - **Samme program, to kilder (v3):** `npm run data:demo` kjører dataprogrammet på de lagrede
@@ -546,7 +549,8 @@ krever ikke nøkler eller nettverkskall til MET og NVE. Appen viser da et demoda
 - **Tydelig merket:** demomodus vises i grensesnittet («Demodata – ikke ekte prognoser»).
 - **Testet i CI:** en E2E-røyktest kjører kart → filter → stedsside i demomodus.
 - **README** beskriver to kjøremåter:
-  - demodata, som anbefales for sensor;
+  - demodata, som anbefales for sensor; *(endret v5)* med nett vises de med
+    `npm run build && npm run preview`;
   - ferske, ekte data med `npm run data`, som bare krever nettilgang.
 
 #### FR-31: Vurdering av SnowScore mot målte forhold *(Ikke i v1 fra v3)*
@@ -750,7 +754,8 @@ ID-ene er beholdt fra v1.
   måles fra Actions-historikken (tidspunkt for vellykkede kjøringer) over minst én uke med den
   planlagte jobben i gang. Validerer NFR-3.
 - **SM-14 (Kjørbarhet, ny i v2):** Et gruppemedlem som ikke har satt opp prosjektet før, starter
-  appen i demomodus fra et rent klon kun etter README, på under 10 minutter og uten hjelp.
+  appen fra et rent klon kun etter README, i demomodus eller *(v5)* med ekte data fra grenen
+  `data`, på under 10 minutter og uten hjelp.
   Det gjøres første gang senest rett etter Story 1.10, og deretter før hver innlevering. Hvert
   steg som mangler eller er uklart, noteres og rettes. Validerer FR-30.
 
