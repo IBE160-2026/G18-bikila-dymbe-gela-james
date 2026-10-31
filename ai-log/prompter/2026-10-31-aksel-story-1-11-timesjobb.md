@@ -66,3 +66,14 @@
 
 **Svar (kort):** Appen laster nå bare én fil, og `npm run data:hent` kjører før `dev` og `build`. Tre gjennomgangslag: 5 funn rettet, 3 utsatt, og resten avvist. Se spec-ens vurderingslogg.
 **Hva vi gjorde med det:** Prøvd i Chromium: `npm run dev` viser meldingen om manglende data, siden grenen `data` ikke finnes ennå, og `npm run dev:demo` viser 24 steder med demobanner.
+### 11
+> ja
+
+**Svar (kort):** Steg 3 startet. Spec-en `spec-1-11c-e2e-mot-demomodus.md` avviker fra planen: rutene for `latest.json` fjernes, og E2E får et eget bygg i normal modus.
+**Hva vi gjorde med det:** Aksel svarte «Godkjenn og bygg».
+
+### 12
+> puch inn i git etterpå
+
+**Svar (kort):** Tre gjennomgangslag: 4 funn rettet, 1 utsatt (`AGENTS.md`), og resten avvist. Normal-bygget kjører nå selve `npm run build`, for ellers kunne feil modus nådd produksjon med alt grønt. Commit og push til `story/1-11-timesjobb-og-publisering`.
+**Hva vi gjorde med det:** 657 enhetstester og 127 E2E-tester grønne lokalt, og tre mutasjoner gir rødt.
