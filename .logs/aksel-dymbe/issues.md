@@ -14,3 +14,10 @@
 - [ ] 2026-10-28 [steg-8c](997-2026-10-28-22-46-40-steg-8c-wireframes-skjermkrav-brukertest.md) — Faglærer har ikke bekreftet at pålogging droppes
 - [ ] 2026-10-28 [steg-8c](997-2026-10-28-22-46-40-steg-8c-wireframes-skjermkrav-brukertest.md) — Vurder tegnforklaring på kartet og stedstype på stedssiden (deferred-work.md)
 - [ ] 2026-10-28 [steg-8c](997-2026-10-28-22-46-40-steg-8c-wireframes-skjermkrav-brukertest.md) — Sett UX-dokumentene til final etter brukertesten
+- [ ] 2026-10-31 [review-pr77-og-story-1-11](996-2026-10-31-20-27-02-review-pr77-og-story-1-11.md) — Faglærer må se på Pages og grenbeskyttelse igjen: API-et viste at ingen av dem var aktive 2026-10-31
+- [ ] 2026-10-31 [review-pr77-og-story-1-11](996-2026-10-31-20-27-02-review-pr77-og-story-1-11.md) — Joseph bes ta funnene fra review av PR #77 i en egen fix-PR
+- [ ] 2026-10-31 [review-pr77-og-story-1-11](996-2026-10-31-20-27-02-review-pr77-og-story-1-11.md) — Story 1.6 er ikke prøvd for hånd i nettleseren
+- [ ] 2026-10-31 [review-pr77-og-story-1-11](996-2026-10-31-20-27-02-review-pr77-og-story-1-11.md) — Kjør data.yml for hånd etter merge av 1.11, og sjekk npm run dev på et rent klon mot grenen data
+- [ ] 2026-10-31 [review-pr77-og-story-1-11](996-2026-10-31-20-27-02-review-pr77-og-story-1-11.md) — Framtving én rød kjøring av data.yml og se at data-run-log har kvalitetsrapporten
+- [ ] 2026-10-31 [review-pr77-og-story-1-11](996-2026-10-31-20-27-02-review-pr77-og-story-1-11.md) — Prøv Pages-veien og en direkte lenke til /sted/<id> første gang Pages står på GitHub Actions
+- [ ] 2026-10-31 [review-pr77-og-story-1-11](996-2026-10-31-20-27-02-review-pr77-og-story-1-11.md) — Før grenen data og data.yml inn i AGENTS.md via bmad-project-context
