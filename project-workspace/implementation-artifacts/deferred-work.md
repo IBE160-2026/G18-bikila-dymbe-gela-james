@@ -127,3 +127,4 @@
 - source_spec: `project-workspace/implementation-artifacts/spec-1-11-timesjobb-og-publisering.md`
   summary: Før den varige grenen `data` og `data.yml` inn i `AGENTS.md` via `bmad-project-context`, så regelen om å slette greiner etter merge ikke treffer `data`.
   evidence: Gjennomgangen av 1.11 (Blind Hunter). `AGENTS.md` sier «én grein per oppgave» og «slett greinen etter merge», og nevner bare CI og E2E som kjørende workflows.
+  resolved: 2026-10-31, godkjent av Aksel. `AGENTS.md` nevner nå grenen `data` og `data.yml`.
