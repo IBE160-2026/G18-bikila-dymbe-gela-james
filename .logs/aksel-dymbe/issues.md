@@ -21,5 +21,5 @@
 - [ ] 2026-10-31 [review-pr77-og-story-1-11](996-2026-10-31-20-27-02-review-pr77-og-story-1-11.md) — Framtving én rød kjøring av data.yml og se at data-run-log har kvalitetsrapporten
 - [ ] 2026-10-31 [review-pr77-og-story-1-11](996-2026-10-31-20-27-02-review-pr77-og-story-1-11.md) — Prøv Pages-veien og en direkte lenke til /sted/<id> første gang Pages står på GitHub Actions
 - [ ] 2026-10-31 [review-pr77-og-story-1-11](996-2026-10-31-20-27-02-review-pr77-og-story-1-11.md) — Før grenen data og data.yml inn i AGENTS.md via bmad-project-context
-- [ ] 2026-11-01 [story-1-11c-e2e-mot-demomodus](995-2026-11-01-00-16-06-story-1-11c-e2e-mot-demomodus.md) — CI og E2E på Ubuntu er ikke vist grønne for 1.11c (gh pr checks 78 --watch)
+- [x] 2026-11-01 [story-1-11c-e2e-mot-demomodus](995-2026-11-01-00-16-06-story-1-11c-e2e-mot-demomodus.md) — CI og E2E på Ubuntu er ikke vist grønne for 1.11c (gh pr checks 78 --watch) (løst 2026-11-01)
 - [ ] 2026-11-01 [story-1-11c-e2e-mot-demomodus](995-2026-11-01-00-16-06-story-1-11c-e2e-mot-demomodus.md) — AGENTS.md sier fortsatt npm run build før commit og i CI; rett til build:demo via bmad-project-context
