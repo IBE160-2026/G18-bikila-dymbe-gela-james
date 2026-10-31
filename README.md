@@ -128,7 +128,9 @@ alltid automatisk fra prognosen.
 
 ### Røyktest i nettleser (E2E)
 
-Playwright-testene i `tests/e2e/` bygger appen, starter `npm run preview` og sjekker kart → stedsside
+Playwright-testene i `tests/e2e/` bygger appen to ganger: i demomodus for de fleste testene, og i normal
+modus for `tests/e2e/normalmodus.spec.ts`, som viser at normal modus aldri leser `demo.json`. Portene 4173 og
+4174 må være ledige. Testene sjekker kart → stedsside
 → tilbake, listevisningen med tastatur, filteret (ved 1280 og 375 px), stedssiden, forklaringssiden (også ved 320 og 375 px), den tomme
 tilstanden og en axe-sjekk av tilgjengeligheten i Chromium på demodataene.
 De henter ingenting fra nett. Nettleseren lastes ned én gang:
@@ -149,7 +151,7 @@ Demomodus må velges, og trenger verken nøkler eller nett. Den viser `public/da
 
 ```sh
 npm run dev:demo                        # utviklingsserveren med demodata
-npm run build:demo && npm run preview   # produksjonsbygg med demodata, slik CI, E2E og brukertesten kjører
+npm run build:demo && npm run preview   # produksjonsbygg med demodata, slik CI, brukertesten og de fleste E2E-testene kjører
 ```
 
 Bygget som publiseres av timesjobben, inneholder aldri `demo.json`.
@@ -227,7 +229,7 @@ Skriptet i `scripts/build-catalog/` henter skisteder fra OpenStreetMap og slår 
 
 - Push direkte til `main` avvises. Lag en grein og en pull request.
 - Har du endringer som ikke er committet, stoppes pushen, slik at sjekkene tester det du faktisk pusher.
-- `lint`, `typecheck`, `test` og `build` kjøres, og pushen stoppes hvis én av dem feiler.
+- `lint`, `typecheck`, `test` og `build:demo` kjøres, og pushen stoppes hvis én av dem feiler.
 
 Klonet du repoet før hooken kom, slår du den på med `npm run prepare`. Sjekk at den er aktiv med `git config core.hooksPath`; svaret skal være `.githooks`.
 

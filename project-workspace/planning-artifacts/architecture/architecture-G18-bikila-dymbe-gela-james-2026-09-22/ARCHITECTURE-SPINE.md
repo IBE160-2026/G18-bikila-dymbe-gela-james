@@ -371,7 +371,7 @@ flowchart TB
   data/catalog.json             # ~300 locations (AD-5)
   public/data/                  # demo.json (committed), latest.json (generated)
   tests/
-    e2e/                        # Playwright smoke test on demo data (PRD SM-9)
+    e2e/                        # Playwright smoke test on demo data (PRD SM-9); normalmodus.spec.ts runs on a normal-mode build
     contract/fixtures/          # recorded MET/NVE responses (also the demo source)
     golden/                     # snowscore.json, filter.json (AD-12)
   .github/workflows/            # ci.yml, e2e.yml, data.yml (scheduled run + Pages deploy)
@@ -386,7 +386,7 @@ flowchart TB
 | Live data locally | `npm run data`, then `npm run dev` | `latest.json` | Internet access, no keys |
 | Regenerate demo data | `npm run data:demo` | rewrites `demo.json` from fixtures | — |
 | CI `ci.yml` (every PR) | lint, typecheck, unit/property/contract/golden tests, `npm run build:demo` | demo | — |
-| CI `e2e.yml` (every PR) | `vite build --mode demo` + `vite preview` as Playwright `webServer` | demo | Playwright browsers |
+| CI `e2e.yml` (every PR) | `vite build --mode demo` + `vite preview` as Playwright `webServer`, plus a second build in normal mode (`npm run build` without `prebuild`) to prove which file each mode reads | demo, normal | Playwright browsers |
 | `data.yml` (hourly, on push to `main`, and manual) | `npm run data`, build, always publish `latest.json` to the branch `data`, and deploy to Pages when Pages is set to GitHub Actions; only if `latest.json` was produced. Each target is read back and its `runId` compared | live | Actions enabled in the repo |
 
 Story 1.1 created empty `supabase/` and `src/lib/supabase/` folders. Story 1.10 removes them

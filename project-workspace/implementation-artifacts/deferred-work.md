@@ -134,3 +134,7 @@
 - source_spec: `project-workspace/implementation-artifacts/spec-1-11b-ekte-data-som-standard.md`
   summary: Sjekk på et rent klon i steg 6, fra terminalen i VS Code, at `npm run dev` henter fila fra grenen `data`, og at inngangen i `hent-data.ts` slår til også med liten stasjonsbokstav.
   evidence: maybe-false, ville vært medium. Gjennomgangen av 1.11b (Edge Case Hunter, Verification Gap). Grenen `data` finnes ikke ennå, og PowerShell normaliserer stasjonsbokstaven, så det kunne ikke prøves. Slår sjekken feil, hentes ingenting, uten logglinje.
+
+- source_spec: `project-workspace/implementation-artifacts/spec-1-11c-e2e-mot-demomodus.md`
+  summary: `AGENTS.md` linje 36 ber om `npm run build` før commit og sier at CI kjører det, og seksjon 3 sier at røyktesten kjører på demodata.
+  evidence: CI og hooken kjører nå `build:demo`, `npm run build` krever nett gjennom `prebuild`, og E2E har også et bygg i normal modus. Filen endres bare gjennom `bmad-project-context` med godkjenning fra Aksel.

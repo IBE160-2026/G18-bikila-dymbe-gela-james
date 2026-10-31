@@ -4,12 +4,11 @@ import { expect, test, type Page } from '@playwright/test'
 // Story 1.9: the place page with the full score, its basis and the data age marks, in demo mode.
 
 test.beforeEach(async ({ context }) => {
-  // Same isolation as kart.spec.ts: nothing from the network, and no leftover latest.json.
+  // Same isolation as kart.spec.ts: nothing from the network.
   await context.route('**/*', (route) => {
     const { hostname } = new URL(route.request().url())
     return hostname === 'localhost' ? route.continue() : route.abort()
   })
-  await context.route('**/data/latest.json', (route) => route.fulfill({ status: 404, body: '' }))
 })
 
 /** The value next to a label in the page's definition lists. */
