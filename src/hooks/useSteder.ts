@@ -1,7 +1,7 @@
 import { useSyncExternalStore } from 'react'
 import { erGamleData, ferskhet } from '../../shared/freshness'
 import { now } from '../lib/clock'
-import { DATAGREN_URL, LOAD_ERROR_MESSAGE, loadPublishedData, type DataSource, type LoadResult } from '../lib/data/loadPublishedData'
+import { dataKilde, LOAD_ERROR_MESSAGE, loadPublishedData, type DataSource, type LoadResult } from '../lib/data/loadPublishedData'
 import type { PublishedData } from '../../shared/contracts/published'
 
 // AD-8: the only way pages and components get place data. One store per page loads the file once and
@@ -135,9 +135,9 @@ export function createStederStore(loadFn: () => Promise<LoadResult>): StederStor
   }
 }
 
-// Story 1.11: only `npm run dev` reads the branch `data`, so the production build and E2E never do (AD-10).
+// AD-10: `--mode demo` on the command line chooses demo.json when the app is built; nothing else does.
 const store = createStederStore(() =>
-  loadPublishedData(undefined, import.meta.env.BASE_URL, import.meta.env.DEV ? DATAGREN_URL : undefined),
+  loadPublishedData(undefined, import.meta.env.BASE_URL, dataKilde(import.meta.env.MODE)),
 )
 
 /** `null` while loading, then the `ok` or `error` result, with too old places already removed. */

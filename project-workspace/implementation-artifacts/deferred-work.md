@@ -128,3 +128,9 @@
   summary: Før den varige grenen `data` og `data.yml` inn i `AGENTS.md` via `bmad-project-context`, så regelen om å slette greiner etter merge ikke treffer `data`.
   evidence: Gjennomgangen av 1.11 (Blind Hunter). `AGENTS.md` sier «én grein per oppgave» og «slett greinen etter merge», og nevner bare CI og E2E som kjørende workflows.
   resolved: 2026-10-31, godkjent av Aksel. `AGENTS.md` nevner nå grenen `data` og `data.yml`.
+- source_spec: `project-workspace/implementation-artifacts/spec-1-11b-ekte-data-som-standard.md`
+  summary: La siden «Ingen ferske data» peke til `npm run dev:demo` lokalt, så sensor ikke står fast hvis timesjobben har stoppet.
+  evidence: Gjennomgangen av 1.11b (Blind Hunter). GitHub slår av planlagte kjøringer etter 60 dager uten aktivitet, og da viser `npm run dev` denne siden. Bare README nevner demomodus i dette tilfellet.
+- source_spec: `project-workspace/implementation-artifacts/spec-1-11b-ekte-data-som-standard.md`
+  summary: Sjekk på et rent klon i steg 6, fra terminalen i VS Code, at `npm run dev` henter fila fra grenen `data`, og at inngangen i `hent-data.ts` slår til også med liten stasjonsbokstav.
+  evidence: maybe-false, ville vært medium. Gjennomgangen av 1.11b (Edge Case Hunter, Verification Gap). Grenen `data` finnes ikke ennå, og PowerShell normaliserer stasjonsbokstaven, så det kunne ikke prøves. Slår sjekken feil, hentes ingenting, uten logglinje.

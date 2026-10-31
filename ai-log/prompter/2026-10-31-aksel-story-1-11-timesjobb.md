@@ -54,3 +54,15 @@
 
 **Svar (kort):** Steg 1: FR-30, SM-14, AD-10, epics, testplan, generalprøve og README oppdatert. Koden er ikke endret ennå.
 **Hva vi gjorde med det:** README beskriver kommandoer som bygges i steg 2, så PR #78 står som utkast til da.
+
+### 9
+> ja på begge
+
+**Svar (kort):** `AGENTS.md` oppdatert med sensorregelen og grenen `data`. Steg 2 startet uten å vente på svar fra Bård.
+**Hva vi gjorde med det:** Spec-en `spec-1-11b-ekte-data-som-standard.md` ble skrevet.
+
+### 10 (valg i `bmad-build`)
+> Spørsmål: Godkjenner du spec-en for steg 2? Svar: «Godkjenn og bygg».
+
+**Svar (kort):** Appen laster nå bare én fil, og `npm run data:hent` kjører før `dev` og `build`. Tre gjennomgangslag: 5 funn rettet, 3 utsatt, og resten avvist. Se spec-ens vurderingslogg.
+**Hva vi gjorde med det:** Prøvd i Chromium: `npm run dev` viser meldingen om manglende data, siden grenen `data` ikke finnes ennå, og `npm run dev:demo` viser 24 steder med demobanner.

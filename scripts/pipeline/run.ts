@@ -17,7 +17,7 @@ export const DEMO_OUT_PATH = fileURLToPath(new URL('../../public/data/demo.json'
 /** AD-10: the demo's run ID is fixed so regenerating gives a byte-identical file. */
 export const DEMO_RUN_ID = 'demo'
 export const CATALOG_PATH = fileURLToPath(new URL('../../data/catalog.json', import.meta.url))
-/** Gitignored; the app loads it before falling back to demo.json (AD-10). */
+/** Gitignored; the file the app loads outside demo mode (AD-10). */
 export const LIVE_OUT_PATH = fileURLToPath(new URL('../../public/data/latest.json', import.meta.url))
 
 export interface DemoOptions {
