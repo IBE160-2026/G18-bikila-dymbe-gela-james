@@ -146,3 +146,7 @@
 - source_spec: `project-workspace/implementation-artifacts/spec-1-11d-publisering-med-tilbakelesing.md`
   summary: Pages-veien er uprøvd, også tilbakelesingen, delvis feil og at `page_url` slutter med skråstrek. Erstatter «se at reserven virker» i posten over.
   evidence: maybe-false, ville vært medium. API-et viser `has_pages: false`, så veien kan ikke kjøres før Pages er på. Avgjøres i steg 7 i endringsforslaget: mangler skråstreken, blir kjøringen rød med adressen i meldingen.
+
+- source_spec: `project-workspace/implementation-artifacts/spec-1-11b-ekte-data-som-standard.md`
+  summary: Løst 2026-11-01: `npm run dev` på rent klon henter fila fra grenen `data`, og `data:hent` virker med liten stasjonsbokstav (kjørt fra cmd).
+  evidence: Posten om sjekken i steg 6 er dermed lukket. Posten fra spec-1-11c om `AGENTS.md` er også lukket, med commit `4bc4e6f`.
