@@ -113,8 +113,8 @@ NFR-8: Skalerbarhet — katalog 300→1500 steder, "noen tusen" samtidige bruker
 - CI: `ci.yml` (lint/typecheck/unit/property/kontraktstester på hver PR), `e2e.yml`
   (Playwright-røyktest i demomodus) og `data.yml` (planlagt kjøring hver time + GitHub
   Pages-deploy). GitHub Actions er slått på for repoet (CI har kjørt på PR-er siden 2026-10-07).
-- Hosting: GitHub Pages `[ASSUMPTION — en administrator må slå på Pages]`. Reserve uten Pages:
-  datafila publiseres til grenen `data` og leses fra `raw.githubusercontent.com` (Story 1.11).
+- Hosting: GitHub Pages `[ASSUMPTION — en administrator må slå på Pages]`. Med eller uten Pages
+  publiseres datafila alltid til grenen `data` og hentes fra `raw.githubusercontent.com` (Story 1.11).
 
 ### UX-designkrav
 
@@ -395,7 +395,7 @@ publisering blir stående og produksjon aldri viser demodata (AD-10)
 rød i Actions-fanen (NFR-6)
 
 `[v3: Ny story fra endringsrunde 2. Actions er allerede på. Pages krever en administrator
-(faglærer); reserveløsningen over trenger verken admin eller hemmeligheter.]`
+(faglærer); publiseringen til grenen `data` trenger verken admin eller hemmeligheter.]`
 
 ### Story 1.7: Se Norgeskartet med fargelagte steder
 

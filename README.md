@@ -210,6 +210,10 @@ publiseres ingenting: forrige publisering står, kjøringen blir rød, og loggen
 ligger som artifact (`data-run-log`) på kjøringen. En PR som endrer `data.yml`, henter og bygger uten å
 publisere.
 
+Feiler selve publiseringen eller tilbakelesingen, kan den nye fila likevel være ute på én eller begge
+adressene. Loggen viser hvilken adresse det gjelder og hvilken `runId` som var forventet og funnet, og neste
+timeskjøring prøver igjen.
+
 Feltene i datafila og kildesvarene er beskrevet i
 [`shared/contracts/data-dictionary.md`](shared/contracts/data-dictionary.md).
 

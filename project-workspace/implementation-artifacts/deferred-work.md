@@ -138,3 +138,11 @@
 - source_spec: `project-workspace/implementation-artifacts/spec-1-11c-e2e-mot-demomodus.md`
   summary: `AGENTS.md` linje 36 ber om `npm run build` før commit og sier at CI kjører det, og seksjon 3 sier at røyktesten kjører på demodata.
   evidence: CI og hooken kjører nå `build:demo`, `npm run build` krever nett gjennom `prebuild`, og E2E har også et bygg i normal modus. Filen endres bare gjennom `bmad-project-context` med godkjenning fra Aksel.
+
+- source_spec: `project-workspace/implementation-artifacts/spec-1-11d-publisering-med-tilbakelesing.md`
+  summary: Skriptet i jobben `verify` i `data.yml` har ingen test som kjører i repoet.
+  evidence: Det ligger inne i workflowen og kjører ikke på PR. Lokale resultater står i spec-en, og første ekte kjøring er steg 6 i endringsforslaget.
+
+- source_spec: `project-workspace/implementation-artifacts/spec-1-11d-publisering-med-tilbakelesing.md`
+  summary: Pages-veien er uprøvd, også tilbakelesingen, delvis feil og at `page_url` slutter med skråstrek. Erstatter «se at reserven virker» i posten over.
+  evidence: maybe-false, ville vært medium. API-et viser `has_pages: false`, så veien kan ikke kjøres før Pages er på. Avgjøres i steg 7 i endringsforslaget: mangler skråstreken, blir kjøringen rød med adressen i meldingen.

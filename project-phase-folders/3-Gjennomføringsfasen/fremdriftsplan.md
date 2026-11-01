@@ -3,7 +3,7 @@
 Oversikt over hvordan vi går fram, steg for steg, så alle kan følge med selv om de ikke var
 på møtet. Oppdater statusen når et steg er ferdig.
 
-**Sist oppdatert:** 2026-10-31
+**Sist oppdatert:** 2026-11-01
 
 ## Slik holder du deg oppdatert
 
@@ -15,14 +15,20 @@ på møtet. Oppdater statusen når et steg er ferdig.
 
 ## Hvor er vi nå?
 
+**1. november: Steg 3 og 4 i endringsforslaget er bygget på PR #78, og steg 5–7 gjenstår.**
+
+- Joseph godkjente PR-en 1. november og tok den ut av utkast før steg 4 var ferdig, så Joseph må se på
+  den igjen før merge.
+
 **31. oktober: Story 1.11 er bygget, så alle v1-stories er ferdige. Igjen står brukertesten, rettinger, sluttrapporten og generalprøven.**
 
 - Aksel bygde 1.11 med `bmad-build`. `data.yml` kjører dataprogrammet én gang i timen og velger selv i
-  hver kjøring: står Pages på «GitHub Actions», publiseres appen der, og ellers legges `latest.json` på
-  grenen `data`.
+  hver kjøring: `latest.json` skrives alltid til grenen `data`, og står Pages på «GitHub Actions»,
+  publiseres appen også der. En egen jobb leser fila tilbake fra hver adresse og sammenligner `runId` med
+  kjøringen, så kjøringen blir rød hvis det publiserte ikke kom ut (endret 1. november).
 - **Pages og grenbeskyttelse er ikke bekreftet.** Faglærer skal ha endret dem, men 31. oktober viste
   API-et `has_pages: false`, nettstedet ga 404, og `main` var ikke beskyttet. Gruppa må be faglærer se
-  på det igjen. Til da brukes reserven.
+  på det igjen. Til da oppdateres bare grenen `data`, og kjøringen er grønn med en advarsel.
 - **Endret krav:** `npm run dev` skal vise ekte data som standard, og demodata vises bare med
   `npm run dev:demo`. Brukertesten bruker det faste demodatasettet. FR-30, AD-10 og testplanen er endret
   ([endringsforslaget](../../project-workspace/planning-artifacts/sprint-change-proposal-2026-10-31-ekte-data-som-standard.md)).
@@ -225,6 +231,7 @@ gantt
 | 2026-10-28 | F3 Wireframes, skjermkrav og brukertestplan (steg 8c), frist var 2026-11-04 | Planlegging | ✅ |
 | 2026-10-29 | Story 4.2 (PR #74, 28. oktober) og 1.6 (PR #77) ferdige | Gjennomføring | ✅ |
 | 2026-10-31 | Story 1.11 bygget. Jobben velger Pages eller reserven selv i hver kjøring, så valget 4. november trengs ikke | Gjennomføring | 🔄 venter på review |
+| 2026-11-01 | Story 1.11: jobben skriver alltid grenen `data`, i tillegg Pages når det står på «GitHub Actions», og leser begge tilbake (steg 3 og 4 i endringsforslaget, PR #78) | Gjennomføring | 🔄 venter på ny review |
 | 2026-11-11 | M1 Timesjobb og publisering (1.11) og M5 kodefrys: robusthet (1.6) og beste skivindu (4.2) | Gjennomføring | ⬜ forslag |
 | 2026-11-16 | F4 Brukertest med fem personer | Gjennomføring | ⬜ forslag |
 | 2026-11-20 | Kritiske funn fra brukertesten rettet | Gjennomføring | ⬜ forslag |

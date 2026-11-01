@@ -28,7 +28,7 @@ fører fram til dem står i [aktivitetslisten](../3-Gjennomføringsfasen/aktivit
 
 | # | Milepæl | Epic og sprint | Frist |
 |---|---|---|---|
-| 1 | Stedskatalog og datapipeline (MET, NVE, Kartverket, OSM) | Epic 1, sprint 1–2 | Katalog og pipeline nådd 2026-10-08 (PR #18, #23, #24). Timesjobb og publisering (1.11): bygget 2026-10-31, venter på review. Frist 2026-11-11, forslag. Jobben bruker reserven (datafila på grenen `data`) så lenge GitHub Pages ikke står på «GitHub Actions» |
+| 1 | Stedskatalog og datapipeline (MET, NVE, Kartverket, OSM) | Epic 1, sprint 1–2 | Katalog og pipeline nådd 2026-10-08 (PR #18, #23, #24). Timesjobb og publisering (1.11): bygget 2026-10-31, venter på review. Frist 2026-11-11, forslag. Jobben skriver alltid datafila til grenen `data`, og publiserer appen til GitHub Pages i tillegg når det står på «GitHub Actions» |
 | 2 | SnowScore-beregning og forklaringsside | Epic 1 (1.4) og Epic 2, sprint 1 | 2026-10-09, nådd (PR #20, #33–#36) |
 | 3 | Norgeskart og stedssider | Epic 1 (1.7–1.9), sprint 2 | 2026-10-08, nådd (PR #25–#32) |
 | 4 | Filter (nysnø, vind, sol, temperatur, avstand, stedstype, nysnø siste 24 timer) | Epic 3, sprint 3 | 2026-10-28, nådd (PR #48–#71). Forslaget var 2026-11-01 |

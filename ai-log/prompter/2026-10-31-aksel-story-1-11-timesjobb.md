@@ -77,3 +77,20 @@
 
 **Svar (kort):** Tre gjennomgangslag: 4 funn rettet, 1 utsatt (`AGENTS.md`), og resten avvist. Normal-bygget kjører nå selve `npm run build`, for ellers kunne feil modus nådd produksjon med alt grønt. Commit og push til `story/1-11-timesjobb-og-publisering`.
 **Hva vi gjorde med det:** 657 enhetstester og 127 E2E-tester grønne lokalt, og tre mutasjoner gir rødt.
+### 13
+> gi meg en status på prosjektet akkuratt nå
+
+**Svar (kort):** Claude fant at Joseph hadde godkjent PR #78 og tatt den ut av utkast før steg 4 var gjort, og ba om at den ikke ble merget ennå.
+**Hva vi gjorde med det:** Steg 4 ble neste oppgave.
+
+### 14
+> Ja godkjenn og gå videre
+
+**Svar (kort):** Spec-en `spec-1-11d-publisering-med-tilbakelesing.md`: grenen `data` skrives alltid, og en egen jobb leser tilbake og sammenligner `runId`.
+**Hva vi gjorde med det:** Aksel svarte «Godkjenn og bygg». Tre gjennomgangslag: 6 funn rettet, 2 utsatt, og resten avvist. Viktigst: kjøringen kunne bli grønn uten publisering.
+
+### 15
+> bra oppdater i git
+
+**Svar (kort):** Commit og push etter at funnene var sortert.
+**Hva vi gjorde med det:** Pushet til PR #78.
