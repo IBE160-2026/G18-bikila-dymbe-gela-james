@@ -123,3 +123,8 @@
 
 **Svar (kort):** Claude tolket det som resten av det som kan gjøres nå: denne `docs`-PR-en og sletting av story-grenen.
 **Hva vi gjorde med det:** Pushet som egen PR.
+### 21
+> (E-post fra faglærer Bård, limt inn av Aksel: alle grupperepoene er koblet til Vercel, som er eneste publiseringsløsning emnet støtter. GitHub Pages er slått av i grupperepoene. Bare én i gruppa oppretter prosjektet, på sin Hobby-konto. Endringer i `main` publiseres automatisk, PR-er får forhåndsvisning, repoet må være offentlig, og adressen skal stå i README. Alle anbefales å installere GitHub CLI.)
+
+**Svar (kort):** Claude fant at Vercel bare bygger når `main` endres, så dataene ville blitt stående, og at grenen `data` kan gi et mislykket bygg hver time. Claude foreslo en rewrite i `vercel.json` i stedet for en deploy hook med nøkkel, og sa at det må prøves på en forhåndsvisning.
+**Hva vi gjorde med det:** Aksel godkjente endringsforslaget og valgte å eie prosjektet. Claude rettet selv kommandoen for Ignored Build Step, som først ville bygget feil gren.

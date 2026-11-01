@@ -111,10 +111,10 @@ NFR-8: Skalerbarhet — katalog 300→1500 steder, "noen tusen" samtidige bruker
 - DESIGN.md-tokens har ett kildested: `src/lib/theme.ts` + `src/styles/tokens.css`, holdt i
   sync av `theme.test.ts` (AD-9).
 - CI: `ci.yml` (lint/typecheck/unit/property/kontraktstester på hver PR), `e2e.yml`
-  (Playwright-røyktest i demomodus) og `data.yml` (planlagt kjøring hver time + GitHub
-  Pages-deploy). GitHub Actions er slått på for repoet (CI har kjørt på PR-er siden 2026-10-07).
-- Hosting: GitHub Pages `[ASSUMPTION — en administrator må slå på Pages]`. Med eller uten Pages
-  publiseres datafila alltid til grenen `data` og hentes fra `raw.githubusercontent.com` (Story 1.11).
+  (Playwright-røyktest i demomodus) og `data.yml` (planlagt kjøring hver time, som
+  skriver til grenen `data`). GitHub Actions er slått på for repoet (CI har kjørt på PR-er siden 2026-10-07).
+- Hosting: Vercel, eneste publiseringsløsning emnet støtter *(endret 2026-11-01: GitHub Pages er slått av)*.
+  Datafila publiseres alltid til grenen `data`, og nettsiden henter den derfra gjennom en rewrite (Story 1.11).
 
 ### UX-designkrav
 
@@ -380,22 +380,23 @@ So that kartet viser ferske prognoser uten at noen kjører noe for hånd. Realis
 
 **Given** dataprogrammet fra Story 1.5
 **When** `.github/workflows/data.yml` kjører hver time (og ved merge til `main`)
-**Then** kjøres `npm run data`, appen bygges med den nye `latest.json`, og resultatet
-publiseres til GitHub Pages
-**And** publiserer jobben alltid `latest.json` til grenen `data` (`permissions: contents: write`),
-i tillegg til Pages når Pages er på, og `npm run data:hent` henter den fra
-`raw.githubusercontent.com` før `dev` og `build`. Da får en lokalt kjørt app ferske data uten hosting
-*(endret v6, 2026-10-31)*
-**And** leser jobben fila tilbake fra den faktiske adressen og blir rød hvis `runId` ikke stemmer, så
-grønn kjøring betyr at dataene faktisk er ute *(ny v6)*
+**Then** kjøres `npm run data`, og `latest.json` publiseres til grenen `data`
+(`permissions: contents: write`). `npm run data:hent` henter den fra `raw.githubusercontent.com` før
+`dev` og `build` *(endret v6, 2026-10-31)*
+**And** Vercel publiserer appen fra `main`, og nettadressen viser fila på grenen `data` uten nytt bygg.
+Grenen `data` bygges ikke på Vercel *(ny v7, 2026-11-01)*
+**And** en direkte lenke til `/sted/<id>` på nettadressen åpner stedssiden *(ny v7)*
+**And** leser jobben fila tilbake fra grenen og nettadressen og blir rød hvis `runId` ikke stemmer, så
+grønn kjøring betyr at dataene faktisk er ute *(ny v6, nettadressen v7)*
+**Ikke i v1:** publisering til GitHub Pages. Faglærer har slått det av i grupperepoene *(2026-11-01)*
 **And** jobben bruker en `concurrency`-gruppe uten avbrudd, så bare én kjøring går om gangen
-**And** produksjonsbygget feiler hvis kjøringen ikke ga `latest.json`, slik at forrige
-publisering blir stående og produksjon aldri viser demodata (AD-10)
+**And** en kjøring uten `latest.json` publiserer ingenting, så grenen beholder siste gyldige fil, og
+produksjon viser aldri demodata (AD-10)
 **And** en kjøring som ikke publiserer, laster opp kvalitetsrapporten som artifact og vises som
 rød i Actions-fanen (NFR-6)
 
-`[v3: Ny story fra endringsrunde 2. Actions er allerede på. Pages krever en administrator
-(faglærer); publiseringen til grenen `data` trenger verken admin eller hemmeligheter.]`
+`[v3: Ny story fra endringsrunde 2. Actions er allerede på. Publiseringen til grenen `data` trenger
+verken admin eller hemmeligheter. v7: Vercel erstatter Pages, og trenger heller ingen nøkler.]`
 
 ### Story 1.7: Se Norgeskartet med fargelagte steder
 

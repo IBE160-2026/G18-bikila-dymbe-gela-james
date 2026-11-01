@@ -53,7 +53,7 @@ Byggerekkefølgen er rekkefølgen over. Alle unntatt 1.6 er Må ha.
   - `ci.yml`: lint, typecheck, enhets-, egenskaps-, kontrakts- og fasittester, build.
   - `e2e.yml`: Playwright mot `vite preview` i demomodus.
   - `data.yml`: kjører hver time (cron `17 * * * *`), ved push til `main` og manuelt, med `concurrency` uten avbrudd.
-  - Hver kjøring på `main` publiserer alltid `latest.json` som ett force-pushet commit til grenen `data` (`permissions: contents: write`) og spør API-et om Pages. Står det på «GitHub Actions», bygges og publiseres appen i tillegg (AD-10 v6). `npm run data:hent` laster ned fila fra grenen `data` før `dev` og `build`. Produksjonsbygget feiler hvis `latest.json` ikke ble laget og inneholder aldri `demo.json`, og appen selv leser aldri en ekstern adresse.
+  - Hver kjøring på `main` publiserer alltid `latest.json` som ett force-pushet commit til grenen `data` (`permissions: contents: write`) (AD-10 v6). Vercel publiserer appen fra `main`, og nettsiden henter datafila fra grenen gjennom en rewrite (v7, Pages er slått av i emnet). `npm run data:hent` laster ned fila fra grenen `data` før `dev` og `build`. Produksjonsbygget inneholder aldri `demo.json`, og appen selv leser aldri en ekstern adresse.
 - **Konvensjoner:** UTC ISO 8601 lagret, norsk lokaltid bare i UI. Kommentarer forklarer *hvorfor*. Eksakte versjoner. Tester ved siden av koden; E2E i `tests/e2e/`, kontraktstester i `tests/contract/`, fasittabeller i `tests/golden/`.
 
 ## UX & Interaction Patterns

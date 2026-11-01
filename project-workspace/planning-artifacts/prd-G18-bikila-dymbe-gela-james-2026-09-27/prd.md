@@ -1,7 +1,7 @@
 ---
 title: SnowFinder
 created: 2026-09-27
-updated: 2026-10-31
+updated: 2026-11-01
 status: draft
 ---
 
@@ -793,9 +793,11 @@ testen kan gjennomføres så snart Må ha er ferdig.
 ## 10. Åpne spørsmål
 
 1. ~~**Push-leveranse:**~~ *Utgår i v3,* fordi snøvarsel ikke er med i v1.
-2. **Hosting:** *(v3)* GitHub Pages foreslås, fordi den planlagte jobben og CI allerede ligger i
+2. ~~**Hosting:** *(v3)* GitHub Pages foreslås, fordi den planlagte jobben og CI allerede ligger i
    GitHub Actions, og ingen ekstra konto trengs. Bekreft med gruppa. GitHub Actions og Pages må
-   slås på i repoet av en administrator.
+   slås på i repoet av en administrator.~~ *Lukket 2026-11-01:* faglærer har slått av Pages i
+   grupperepoene, og Vercel er eneste publiseringsløsning emnet støtter. Aksel eier prosjektet på sin
+   Hobby-konto. Det trengs ingen nøkler.
 3. ~~**IBE160-vurderingskriterier:**~~ *Lukket i v2.* Sensorveiledningen for del 1 og
    faglærers tilbakemelding (2026-10-06) er nå kjent og krysjekket mot §6 og §9, gjennom
    endringsrunden 2026-10-07.

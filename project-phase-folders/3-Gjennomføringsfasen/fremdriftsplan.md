@@ -15,6 +15,14 @@ på møtet. Oppdater statusen når et steg er ferdig.
 
 ## Hvor er vi nå?
 
+**1. november (kveld): Vercel erstatter GitHub Pages, så publiseringen av appen må endres.**
+
+- Faglærer har slått av Pages i grupperepoene, og Vercel er eneste publiseringsløsning emnet støtter.
+  Aksel eier prosjektet. Det trengs ingen nøkler.
+- Nettsiden skal hente datafila fra grenen `data`, så dataene er ferske uten nytt bygg. Det er ikke prøvd
+  ennå ([endringsforslaget](../../project-workspace/planning-artifacts/sprint-change-proposal-2026-11-01-vercel.md)).
+- Neste: Aksel oppretter prosjektet, og så bygges og prøves `vercel.json` og `data.yml` på en PR.
+
 **1. november: Story 1.11 er merget og kjører på `main`, men appen er ikke publisert, fordi Pages ikke er på.**
 
 - PR #78 ble merget 1. november. `data.yml` har kjørt to ganger på `main`: grenen `data` er oppdatert, og
@@ -237,7 +245,7 @@ gantt
 | 2026-10-28 | F3 Wireframes, skjermkrav og brukertestplan (steg 8c), frist var 2026-11-04 | Planlegging | ✅ |
 | 2026-10-29 | Story 4.2 (PR #74, 28. oktober) og 1.6 (PR #77) ferdige | Gjennomføring | ✅ |
 | 2026-10-31 | Story 1.11 bygget. Jobben velger Pages eller reserven selv i hver kjøring, så valget 4. november trengs ikke | Gjennomføring | 🔄 venter på review |
-| 2026-11-01 | Story 1.11: jobben skriver alltid grenen `data`, i tillegg Pages når det står på «GitHub Actions», og leser begge tilbake (steg 3–6 i endringsforslaget, PR #78 merget) | Gjennomføring | 🔄 venter på Pages (steg 7) |
+| 2026-11-01 | Story 1.11: jobben skriver alltid grenen `data` og leser den tilbake (PR #78 merget). Faglærer slo av Pages, så Vercel publiserer appen | Gjennomføring | 🔄 venter på Vercel |
 | 2026-11-11 | M1 Timesjobb og publisering (1.11) og M5 kodefrys: robusthet (1.6) og beste skivindu (4.2) | Gjennomføring | ⬜ forslag |
 | 2026-11-16 | F4 Brukertest med fem personer | Gjennomføring | ⬜ forslag |
 | 2026-11-20 | Kritiske funn fra brukertesten rettet | Gjennomføring | ⬜ forslag |
