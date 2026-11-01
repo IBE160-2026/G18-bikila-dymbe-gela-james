@@ -145,3 +145,8 @@
 
 **Svar (kort):** CLI-delen var gjort. Plugin og MCP-server ble stoppet av sikkerhetsregelen i Claude Code, fordi de endrer Claudes eget oppsett.
 **Hva vi gjorde med det:** Valget ligger hos Aksel. Publiseringen trenger dem ikke.
+### 25
+> ja
+
+**Svar (kort):** Pushet `story/1-11e-vercel` og åpnet PR #81 med Joseph som reviewer. Utkastet #80 er lukket. Forhåndsvisningen svarer med samme `runId` som grenen `data`.
+**Hva vi gjorde med det:** Aksel godkjente tre linjer i `AGENTS.md`. Merge venter på Joseph og Aksel.

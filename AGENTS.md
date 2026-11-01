@@ -11,7 +11,7 @@ Gruppeprosjekt i IBE160 ved Høgskolen i Molde: en statisk webapp som rangerer ~
 - Aldri commit eller push til `main`. Én grein per oppgave: `story/<nr>-<kort-navn>` for kode og `docs/<tema>` for dokumentasjon og planlegging. Lever som PR med grønne sjekker, og slett greinen etter merge. Grenen `data` er varig: bare `data.yml` skriver til den, og den skal aldri slettes eller committes til for hånd.
 - Logg hver vesentlig KI-økt: én rad i `ai-log/logg.md` (dato, fase, hvem, verktøy/modell, oppgave, endrede/avviste forslag, godkjent av), og promptene ordrett i `ai-log/prompter/ÅÅÅÅ-MM-DD-<navn>-<tema>.md`.
 - Svar og skriv dokumenter på norsk, også story-specs og epic-kontekst. Kode, kommentarer og navn i koden skrives på engelsk. Arkitekturen er på engelsk og redigeres på engelsk.
-- Ikke legg til database, brukerkontoer, snøvarsel/push, tilbakemeldingsskjema eller andre tjenester som krever konto eller nøkkel. De er «Ikke i v1» etter faglærers råd; et slikt ønske går til `bmad-correct-course`.
+- Ikke legg til database, brukerkontoer, snøvarsel/push, tilbakemeldingsskjema eller andre tjenester som krever konto eller nøkkel. De er «Ikke i v1» etter faglærers råd; et slikt ønske går til `bmad-correct-course`. Unntak: Vercel, som er faglærers eneste publiseringsløsning.
 - Ingen hemmeligheter eller `.env` med ekte verdier i repoet. v1 trenger ingen nøkler; MET krever bare en identifiserende User-Agent.
 - Ikke rediger `_bmad/config.toml` (installeren overskriver den). Felles overstyringer går i `_bmad/custom/config.toml`.
 - Ikke rediger `.claude/skills/`, `.agents/skills/` eller `.github/agents/` for hånd. De er installert av BMad.
@@ -21,6 +21,7 @@ Gruppeprosjekt i IBE160 ved Høgskolen i Molde: en statisk webapp som rangerer ~
 
 ## Where things are
 
+- Publisering: Vercel-prosjektet `snowfinder` eies av Aksel og publiserer fra `main`. `vercel.json` henter datafila fra grenen `data`. Lag aldri et prosjekt til for repoet.
 - Prosjektets fremdrift og stegrekkefølge står bare i `project-phase-folders/3-Gjennomføringsfasen/fremdriftsplan.md`. Lag ingen egen statusfil andre steder.
 - Datoer og arbeidsflyt: milepælene står i `project-phase-folders/2-Planleggingsfasen/milepæler.md`, tidslinjen i «Tidslinje» i `fremdriftsplan.md`, og arbeidsflyten til levering i `3-Gjennomføringsfasen/aktivitetsdiagram.md`.
 - Planleggingsdokumentene er godkjent. Steg 8c (wireframes, kursets skjermkrav og brukertestplan) er fortsatt åpent hos Sally (`bmad-ux`).
@@ -78,7 +79,7 @@ Kort og bindende. Detaljer om krav, arkitektur og design står i brief, PRD, ark
 ## 3. Kontinuerlig integrasjon
 
 - Playwright-testene i `tests/e2e/` kjører uten nett: de fleste på demodata, og `normalmodus.spec.ts` mot et eget bygg i normal modus.
-- `data.yml` kjører dataprogrammet hver time, skriver alltid til grenen `data` og til Pages når det er på, og leser hver adresse tilbake.
+- `data.yml` kjører dataprogrammet hver time, skriver alltid til grenen `data` og leser grenen og nettsiden tilbake.
 
 ## 4. Teststrategi
 

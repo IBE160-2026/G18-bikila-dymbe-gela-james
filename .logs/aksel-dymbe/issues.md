@@ -30,4 +30,4 @@
 - [x] 2026-11-01 [story-1-11c-e2e-mot-demomodus](995-2026-11-01-00-16-06-story-1-11c-e2e-mot-demomodus.md) — Steg 7: Pages på, sjekk nettsiden og direkte lenke, gjør «Pages er av» rød, og sett 1.11 til done (utgått 2026-11-01: Pages er slått av, Vercel erstatter)
 - [ ] 2026-11-01 [story-1-11c-e2e-mot-demomodus](995-2026-11-01-00-16-06-story-1-11c-e2e-mot-demomodus.md) — PR med vercel.json må merges før noen annen PR, ellers kan nettsiden miste rewriten
 - [ ] 2026-11-01 [story-1-11c-e2e-mot-demomodus](995-2026-11-01-00-16-06-story-1-11c-e2e-mot-demomodus.md) — Lesesteget mot nettsiden i verify er ikke kjørt på ekte
-- [ ] 2026-11-01 [story-1-11c-e2e-mot-demomodus](995-2026-11-01-00-16-06-story-1-11c-e2e-mot-demomodus.md) — AGENTS.md nevner fortsatt Pages; rettes via bmad-project-context
+- [x] 2026-11-01 [story-1-11c-e2e-mot-demomodus](995-2026-11-01-00-16-06-story-1-11c-e2e-mot-demomodus.md) — AGENTS.md nevner fortsatt Pages; rettes via bmad-project-context (løst 2026-11-01)
