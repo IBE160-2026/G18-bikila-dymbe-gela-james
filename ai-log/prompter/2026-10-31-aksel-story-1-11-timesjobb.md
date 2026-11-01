@@ -99,3 +99,27 @@
 
 **Svar (kort):** Fire linjer i `AGENTS.md` følger nå `build:demo`, de to E2E-byggene og `data.yml`. Ingen regler er fjernet.
 **Hva vi gjorde med det:** Pushet til PR #78.
+
+### 17
+> ja. og hvor mang esteg er det?
+
+**Svar (kort):** Åtte steg, nummerert 0–7. PR-beskrivelsen er oppdatert, og Joseph er bedt om ny review.
+**Hva vi gjorde med det:** Claude skrev en melding til Joseph for Aksel å sende.
+
+### 18
+> gå videre
+
+**Svar (kort):** PR #78 var allerede merget fra Aksels konto, uten ny review av steg 4. Claude sa fra om det og gjorde steg 6: kjøringen på `main` er grønn, `runId` stemmer, og et rent klon viser ekte data.
+**Hva vi gjorde med det:** Joseph bes se over `data.yml` i etterkant.
+
+### 19
+> kan ikke du ta timesjobben?
+
+**Svar (kort):** Claude startet `data.yml` for hånd. Den ble grønn, og adressen viste den nye fila etter omtrent tre minutter. Det beviser ikke timeplanen, så den overvåkes for seg.
+**Hva vi gjorde med det:** Godtatt.
+
+### 20
+> kjør dette
+
+**Svar (kort):** Claude tolket det som resten av det som kan gjøres nå: denne `docs`-PR-en og sletting av story-grenen.
+**Hva vi gjorde med det:** Pushet som egen PR.

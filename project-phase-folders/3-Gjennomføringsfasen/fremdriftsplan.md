@@ -15,10 +15,16 @@ på møtet. Oppdater statusen når et steg er ferdig.
 
 ## Hvor er vi nå?
 
-**1. november: Steg 3 og 4 i endringsforslaget er bygget på PR #78, og steg 5–7 gjenstår.**
+**1. november: Story 1.11 er merget og kjører på `main`, men appen er ikke publisert, fordi Pages ikke er på.**
 
-- Joseph godkjente PR-en 1. november og tok den ut av utkast før steg 4 var ferdig, så Joseph må se på
-  den igjen før merge.
+- PR #78 ble merget 1. november. `data.yml` har kjørt to ganger på `main`: grenen `data` er oppdatert, og
+  `runId` er lest tilbake fra den faktiske adressen. Et rent klon med `npm run dev` viser 300 steder med ekte
+  data uten demobanner.
+- **Merget uten ny review:** Josephs godkjenning gjelder commit `c3642e2`, før steg 4. Joseph ser over
+  `data.yml` i etterkant og skriver funnene på PR-en.
+- **Gjenstår av 1.11:** at planlagte kjøringer faktisk starter, en rød kjøring på ekte, og steg 7: Pages,
+  nettsiden og en direkte lenke. Pages er fortsatt av (`build_type: none`), så det må tas med faglærer.
+  Storyen står derfor på `in-progress`.
 
 **31. oktober: Story 1.11 er bygget, så alle v1-stories er ferdige. Igjen står brukertesten, rettinger, sluttrapporten og generalprøven.**
 
@@ -231,7 +237,7 @@ gantt
 | 2026-10-28 | F3 Wireframes, skjermkrav og brukertestplan (steg 8c), frist var 2026-11-04 | Planlegging | ✅ |
 | 2026-10-29 | Story 4.2 (PR #74, 28. oktober) og 1.6 (PR #77) ferdige | Gjennomføring | ✅ |
 | 2026-10-31 | Story 1.11 bygget. Jobben velger Pages eller reserven selv i hver kjøring, så valget 4. november trengs ikke | Gjennomføring | 🔄 venter på review |
-| 2026-11-01 | Story 1.11: jobben skriver alltid grenen `data`, i tillegg Pages når det står på «GitHub Actions», og leser begge tilbake (steg 3 og 4 i endringsforslaget, PR #78) | Gjennomføring | 🔄 venter på ny review |
+| 2026-11-01 | Story 1.11: jobben skriver alltid grenen `data`, i tillegg Pages når det står på «GitHub Actions», og leser begge tilbake (steg 3–6 i endringsforslaget, PR #78 merget) | Gjennomføring | 🔄 venter på Pages (steg 7) |
 | 2026-11-11 | M1 Timesjobb og publisering (1.11) og M5 kodefrys: robusthet (1.6) og beste skivindu (4.2) | Gjennomføring | ⬜ forslag |
 | 2026-11-16 | F4 Brukertest med fem personer | Gjennomføring | ⬜ forslag |
 | 2026-11-20 | Kritiske funn fra brukertesten rettet | Gjennomføring | ⬜ forslag |

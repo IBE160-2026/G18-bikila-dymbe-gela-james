@@ -9,7 +9,7 @@ og [tidslinjen](fremdriftsplan.md#tidslinje). Fristene merket «forslag» er ikk
 ## Arbeidsflyt fram til levering
 
 Tre spor går parallelt: storyene som gjenstår, Story 1.11 og steg 8c med brukertestplanen. Per
-2026-10-31 er alle storyene og steg 8c bygget, og 1.11 venter på review. Når koden er fryst, går vi
+2026-11-01 er alle storyene og steg 8c bygget, og 1.11 er merget, men appen er ikke publisert ennå. Når koden er fryst, går vi
 videre til brukertest, rettinger, sluttrapport og levering.
 
 ```mermaid
@@ -158,7 +158,7 @@ flowchart LR
 | 1.7 | Se Norgeskartet med fargelagte steder (med 1.7b) | Må ha | 1.10 | 2 | Aksel | 2026-10-08 (PR #25, #28) |
 | 1.8 | Bruk tilgjengelig listevisning i stedet for kart | Må ha | 1.10 | 2 | Aksel | 2026-10-08 (PR #27) |
 | 1.9 | Åpne en stedsside med full poengsum (med 1.9b og 1.9c) | Må ha | 1.7, 1.8 | 2 | Aksel | 2026-10-08 (PR #30–#32) |
-| 1.11 | Kjør dataprogrammet hver time og publiser appen | Må ha | 1.5, GitHub Pages fra faglærer (for appen, grenen `data` skrives uansett) | 2, flyttet til 4 | Aksel | 2026-10-31 (bygget, venter på review) |
+| 1.11 | Kjør dataprogrammet hver time og publiser appen | Må ha | 1.5, GitHub Pages fra faglærer (for appen, grenen `data` skrives uansett) | 2, flyttet til 4 | Aksel | 2026-11-01 (PR #78, merget, Pages gjenstår) |
 | 1.6 | Hold tjenesten oppe når en datakilde er nede | Bør ha | 1.9 | 4 | Joseph | 2026-10-29 (PR #77, review i etterkant) |
 | **Epic 2** | **Forstå og stole på SnowScore** | | | | | |
 | 2.1 | Les kort fortalt og steg for steg | Må ha | 1.4 | 1 | Aksel | 2026-10-09 (PR #33) |
