@@ -33,8 +33,8 @@ Gruppeprosjekt i IBE160 ved Høgskolen i Molde: en statisk webapp som rangerer ~
 ## Running and verifying
 
 - Node 24, eller 26 og nyere (`engines` i `package.json`). Node 25 støttes ikke av Vitest.
-- Kjør `npm run lint`, `npm run typecheck`, `npm test` og `npm run build` før hver commit. CI kjører alle fire, og `npm test` alene typesjekker ikke.
-- `npm run test:e2e` kjører i CI (`e2e.yml`), men ikke i pre-push-hooken. Kjør den lokalt før PR når du endrer UI.
+- Kjør `npm run lint`, `npm run typecheck`, `npm test` og `npm run build:demo` før hver commit. CI og pre-push-hooken kjører de samme fire, og `npm test` alene typesjekker ikke. `npm run build` henter data fra nett først (`prebuild`), så bruk den ikke som sjekk.
+- `npm run test:e2e` kjører i CI (`e2e.yml`), men ikke i pre-push-hooken. Kjør den lokalt før PR når du endrer UI. Port 4173 og 4174 må være ledige.
 - Pre-push-hooken (`.githooks/pre-push`) kjører de fire sjekkene og avviser push når sporede filer har endringer som ikke er committet. Commit eller stash først.
 - Lås avhengigheter til eksakte versjoner uten `^`, og commit `package-lock.json`. Bruk TypeScript 6.0.x, ikke 7, fordi typescript-eslint krever <6.1.
 
@@ -77,8 +77,8 @@ Kort og bindende. Detaljer om krav, arkitektur og design står i brief, PRD, ark
 
 ## 3. Kontinuerlig integrasjon
 
-- Playwright-røyktesten i `tests/e2e/` kjører på demodata.
-- `data.yml` kjører dataprogrammet hver time og publiserer til grenen `data` og Pages.
+- Playwright-testene i `tests/e2e/` kjører uten nett: de fleste på demodata, og `normalmodus.spec.ts` mot et eget bygg i normal modus.
+- `data.yml` kjører dataprogrammet hver time, skriver alltid til grenen `data` og til Pages når det er på, og leser hver adresse tilbake.
 
 ## 4. Teststrategi
 

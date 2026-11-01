@@ -94,3 +94,8 @@
 
 **Svar (kort):** Commit og push etter at funnene var sortert.
 **Hva vi gjorde med det:** Pushet til PR #78.
+### 16 (valg i `bmad-project-context`)
+> Spørsmål: Skal disse endringene skrives i AGENTS.md? Svar: «Skriv endringene».
+
+**Svar (kort):** Fire linjer i `AGENTS.md` følger nå `build:demo`, de to E2E-byggene og `data.yml`. Ingen regler er fjernet.
+**Hva vi gjorde med det:** Pushet til PR #78.
