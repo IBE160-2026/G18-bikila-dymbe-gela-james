@@ -3,7 +3,7 @@
 Oversikt over hvordan vi går fram, steg for steg, så alle kan følge med selv om de ikke var
 på møtet. Oppdater statusen når et steg er ferdig.
 
-**Sist oppdatert:** 2026-10-28
+**Sist oppdatert:** 2026-11-01
 
 ## Slik holder du deg oppdatert
 
@@ -14,6 +14,15 @@ på møtet. Oppdater statusen når et steg er ferdig.
 4. Se promptene fra siste økt i [`ai-log/prompter/`](../../ai-log/prompter/).
 
 ## Hvor er vi nå?
+
+**1. november (kort møte): PR #78 godkjent, formelen og hosting tas opp.**
+
+- Joseph godkjente PR #78 (Story 1.11), fordi Kelly og Sena fortsatt har flaggede kontoer. Aksel
+  merger den.
+- Gruppa vil at SnowFinder skal bruke den rette formelen for SnowScore, så prediksjonene blir
+  riktige. Endringer i formelen eller kravene går via `bmad-correct-course`.
+- På neste møte begynner gruppa å se på Vercel, hostingløsningen fra kunngjøringen.
+- Aksel hadde gyldig fravær. Se [referatet](møtereferater/2026-11-01-møtereferat.md).
 
 **28. oktober (kveld): Steg 8c ferdig, en uke før forslaget.**
 
