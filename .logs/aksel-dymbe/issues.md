@@ -14,3 +14,15 @@
 - [ ] 2026-10-28 [steg-8c](997-2026-10-28-22-46-40-steg-8c-wireframes-skjermkrav-brukertest.md) — Faglærer har ikke bekreftet at pålogging droppes
 - [ ] 2026-10-28 [steg-8c](997-2026-10-28-22-46-40-steg-8c-wireframes-skjermkrav-brukertest.md) — Vurder tegnforklaring på kartet og stedstype på stedssiden (deferred-work.md)
 - [ ] 2026-10-28 [steg-8c](997-2026-10-28-22-46-40-steg-8c-wireframes-skjermkrav-brukertest.md) — Sett UX-dokumentene til final etter brukertesten
+- [ ] 2026-10-31 [review-pr77-og-story-1-11](996-2026-10-31-20-27-02-review-pr77-og-story-1-11.md) — Faglærer må se på Pages og grenbeskyttelse igjen: API-et viste at ingen av dem var aktive 2026-10-31
+- [ ] 2026-10-31 [review-pr77-og-story-1-11](996-2026-10-31-20-27-02-review-pr77-og-story-1-11.md) — Joseph bes ta funnene fra review av PR #77 i en egen fix-PR
+- [ ] 2026-10-31 [review-pr77-og-story-1-11](996-2026-10-31-20-27-02-review-pr77-og-story-1-11.md) — Story 1.6 er ikke prøvd for hånd i nettleseren
+- [ ] 2026-10-31 [review-pr77-og-story-1-11](996-2026-10-31-20-27-02-review-pr77-og-story-1-11.md) — Kjør data.yml for hånd etter merge av 1.11, og sjekk npm run dev på et rent klon mot grenen data
+- [ ] 2026-10-31 [review-pr77-og-story-1-11](996-2026-10-31-20-27-02-review-pr77-og-story-1-11.md) — Framtving én rød kjøring av data.yml og se at data-run-log har kvalitetsrapporten
+- [ ] 2026-10-31 [review-pr77-og-story-1-11](996-2026-10-31-20-27-02-review-pr77-og-story-1-11.md) — Prøv Pages-veien og en direkte lenke til /sted/<id> første gang Pages står på GitHub Actions
+- [x] 2026-10-31 [review-pr77-og-story-1-11](996-2026-10-31-20-27-02-review-pr77-og-story-1-11.md) — Før grenen data og data.yml inn i AGENTS.md via bmad-project-context (løst 2026-11-01)
+- [x] 2026-11-01 [story-1-11c-e2e-mot-demomodus](995-2026-11-01-00-16-06-story-1-11c-e2e-mot-demomodus.md) — CI og E2E på Ubuntu er ikke vist grønne for 1.11c (gh pr checks 78 --watch) (løst 2026-11-01)
+- [x] 2026-11-01 [story-1-11c-e2e-mot-demomodus](995-2026-11-01-00-16-06-story-1-11c-e2e-mot-demomodus.md) — AGENTS.md sier fortsatt npm run build før commit og i CI; rett til build:demo via bmad-project-context (løst 2026-11-01)
+- [ ] 2026-11-01 [story-1-11c-e2e-mot-demomodus](995-2026-11-01-00-16-06-story-1-11c-e2e-mot-demomodus.md) — Joseph må se over PR #78 på nytt etter steg 4 før merge
+- [ ] 2026-11-01 [story-1-11c-e2e-mot-demomodus](995-2026-11-01-00-16-06-story-1-11c-e2e-mot-demomodus.md) — PR-beskrivelsen på #78 omtaler det gamle designet; oppdateres i steg 5
+- [ ] 2026-11-01 [story-1-11c-e2e-mot-demomodus](995-2026-11-01-00-16-06-story-1-11c-e2e-mot-demomodus.md) — Skriptet i verify i data.yml har ingen test i repoet (deferred-work.md)

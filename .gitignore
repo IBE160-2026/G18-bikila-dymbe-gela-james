@@ -58,7 +58,7 @@ Thumbs.db
 *.swo
 *~
 
-# Live data file written by `npm run data`; the committed demo.json is the fallback (AD-10)
+# Live data file written by `npm run data` or `npm run data:hent`; only demo mode uses the committed demo.json (AD-10)
 public/data/latest.json
 public/data/*.tmp
 data/*.tmp

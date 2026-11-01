@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs'
 import AxeBuilder from '@axe-core/playwright'
 import { expect, test, type BrowserContext } from '@playwright/test'
 
-// Story 1.9c: live data that is too old. The demo file is served as latest.json with mode "live", and the
+// Story 1.9c: live data that is too old. The demo file is served with mode "live", and the
 // browser clock is locked, so the age limits (3 h / 12 h, NFR-3) act on it as they would in production.
 
 const demo = JSON.parse(readFileSync(new URL('../../public/data/demo.json', import.meta.url), 'utf8')) as {
@@ -17,7 +17,7 @@ async function serveLive(context: BrowserContext) {
     const { hostname } = new URL(route.request().url())
     return hostname === 'localhost' ? route.continue() : route.abort()
   })
-  await context.route('**/data/latest.json', (route) =>
+  await context.route('**/data/demo.json', (route) =>
     route.fulfill({ status: 200, contentType: 'application/json', body: live }),
   )
 }

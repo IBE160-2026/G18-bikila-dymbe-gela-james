@@ -1,7 +1,7 @@
 import { useSyncExternalStore } from 'react'
 import { erGamleData, ferskhet } from '../../shared/freshness'
 import { now } from '../lib/clock'
-import { LOAD_ERROR_MESSAGE, loadPublishedData, type DataSource, type LoadResult } from '../lib/data/loadPublishedData'
+import { dataKilde, LOAD_ERROR_MESSAGE, loadPublishedData, type DataSource, type LoadResult } from '../lib/data/loadPublishedData'
 import type { PublishedData } from '../../shared/contracts/published'
 
 // AD-8: the only way pages and components get place data. One store per page loads the file once and
@@ -135,7 +135,10 @@ export function createStederStore(loadFn: () => Promise<LoadResult>): StederStor
   }
 }
 
-const store = createStederStore(() => loadPublishedData(undefined, import.meta.env.BASE_URL))
+// AD-10: `--mode demo` on the command line chooses demo.json when the app is built; nothing else does.
+const store = createStederStore(() =>
+  loadPublishedData(undefined, import.meta.env.BASE_URL, dataKilde(import.meta.env.MODE)),
+)
 
 /** `null` while loading, then the `ok` or `error` result, with too old places already removed. */
 export function useSteder(): StederResult | null {

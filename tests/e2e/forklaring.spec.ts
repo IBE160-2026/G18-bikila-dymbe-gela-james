@@ -4,12 +4,11 @@ import { expect, test, type Page } from '@playwright/test'
 // Story 2.1: «Slik beregner vi SnowScore», reached from the navigation, the list and the place page.
 
 test.beforeEach(async ({ context }) => {
-  // Same isolation as sted.spec.ts: nothing from the network, and no leftover latest.json.
+  // Same isolation as sted.spec.ts: nothing from the network.
   await context.route('**/*', (route) => {
     const { hostname } = new URL(route.request().url())
     return hostname === 'localhost' ? route.continue() : route.abort()
   })
-  await context.route('**/data/latest.json', (route) => route.fulfill({ status: 404, body: '' }))
 })
 
 const NAVN = 'Slik beregner vi SnowScore'

@@ -8,7 +8,7 @@ Gruppeprosjekt i IBE160 ved Høgskolen i Molde: en statisk webapp som rangerer ~
 ## Policy
 
 - Utfør hvert oppdrag gjennom riktig BMAD-skill, aldri ad hoc: kode og rettinger → `bmad-build`; nye eller endrede krav og omfang → `bmad-correct-course`; arkitektur → `bmad-architecture`; UX → `bmad-ux`; denne filen → `bmad-project-context`.
-- Aldri commit eller push til `main`. Én grein per oppgave: `story/<nr>-<kort-navn>` for kode og `docs/<tema>` for dokumentasjon og planlegging. Lever som PR med grønne sjekker, og slett greinen etter merge.
+- Aldri commit eller push til `main`. Én grein per oppgave: `story/<nr>-<kort-navn>` for kode og `docs/<tema>` for dokumentasjon og planlegging. Lever som PR med grønne sjekker, og slett greinen etter merge. Grenen `data` er varig: bare `data.yml` skriver til den, og den skal aldri slettes eller committes til for hånd.
 - Logg hver vesentlig KI-økt: én rad i `ai-log/logg.md` (dato, fase, hvem, verktøy/modell, oppgave, endrede/avviste forslag, godkjent av), og promptene ordrett i `ai-log/prompter/ÅÅÅÅ-MM-DD-<navn>-<tema>.md`.
 - Svar og skriv dokumenter på norsk, også story-specs og epic-kontekst. Kode, kommentarer og navn i koden skrives på engelsk. Arkitekturen er på engelsk og redigeres på engelsk.
 - Ikke legg til database, brukerkontoer, snøvarsel/push, tilbakemeldingsskjema eller andre tjenester som krever konto eller nøkkel. De er «Ikke i v1» etter faglærers råd; et slikt ønske går til `bmad-correct-course`.
@@ -33,8 +33,8 @@ Gruppeprosjekt i IBE160 ved Høgskolen i Molde: en statisk webapp som rangerer ~
 ## Running and verifying
 
 - Node 24, eller 26 og nyere (`engines` i `package.json`). Node 25 støttes ikke av Vitest.
-- Kjør `npm run lint`, `npm run typecheck`, `npm test` og `npm run build` før hver commit. CI kjører alle fire, og `npm test` alene typesjekker ikke.
-- `npm run test:e2e` kjører i CI (`e2e.yml`), men ikke i pre-push-hooken. Kjør den lokalt før PR når du endrer UI.
+- Kjør `npm run lint`, `npm run typecheck`, `npm test` og `npm run build:demo` før hver commit. CI og pre-push-hooken kjører de samme fire, og `npm test` alene typesjekker ikke. `npm run build` henter data fra nett først (`prebuild`), så bruk den ikke som sjekk.
+- `npm run test:e2e` kjører i CI (`e2e.yml`), men ikke i pre-push-hooken. Kjør den lokalt før PR når du endrer UI. Port 4173 og 4174 må være ledige.
 - Pre-push-hooken (`.githooks/pre-push`) kjører de fire sjekkene og avviser push når sporede filer har endringer som ikke er committet. Commit eller stash først.
 - Lås avhengigheter til eksakte versjoner uten `^`, og commit `package-lock.json`. Bruk TypeScript 6.0.x, ikke 7, fordi typescript-eslint krever <6.1.
 
@@ -64,7 +64,7 @@ Kort og bindende. Detaljer om krav, arkitektur og design står i brief, PRD, ark
 
 - **Hold det enkelt.** Bygg kjeden stedskatalog → data → SnowScore → kart/liste → stedsside → filter ferdig og stabil før noe annet (faglærers råd). Foreslå aldri ny infrastruktur, tjeneste eller avhengighet uten `bmad-correct-course`.
 - **Kvalitet framfor mengde.** Ingeniørnivået vises i korrekte tall og meningsfulle tester, ikke i flere deler. Brukervennlighet er hovedpunktet i UX.
-- **Sensor skal kunne kjøre alt** med `npm ci && npm run dev` etter README, uten nøkler. Oppdater README når oppsett eller kommandoer endres.
+- **Sensor skal kunne kjøre alt** med `npm ci && npm run dev:demo` etter README, uten nett og nøkler. `npm run dev` viser ekte data og krever nett. Oppdater README når oppsett eller kommandoer endres.
 - **Unngå sensors varseltegn:** én stor commit, dokumenter som beskriver noe annet enn koden, README-kommandoer som ikke virker, tester som feiler eller bare tester trivielle ting, og død kode eller rester fra forkastede KI-forsøk.
 
 ## 2. Git-strategi (GitHub Flow)
@@ -77,7 +77,8 @@ Kort og bindende. Detaljer om krav, arkitektur og design står i brief, PRD, ark
 
 ## 3. Kontinuerlig integrasjon
 
-- Playwright-røyktesten i `tests/e2e/` kjører på demodata.
+- Playwright-testene i `tests/e2e/` kjører uten nett: de fleste på demodata, og `normalmodus.spec.ts` mot et eget bygg i normal modus.
+- `data.yml` kjører dataprogrammet hver time, skriver alltid til grenen `data` og til Pages når det er på, og leser hver adresse tilbake.
 
 ## 4. Teststrategi
 

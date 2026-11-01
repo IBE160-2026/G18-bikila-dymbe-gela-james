@@ -46,7 +46,7 @@ for full produktbrief.
     `public/data/latest.json`
   - `scripts/build-catalog/` — engangsskriptet som bygger stedskatalogen `data/catalog.json` fra
     OpenStreetMap og Kartverket
-  - `public/data/demo.json` — demodataene som vises uten nett
+  - `public/data/demo.json` — demodataene som vises i demomodus (`npm run dev:demo`)
   - `tests/` — kontraktstester mot lagrede MET- og NVE-svar, fasittabeller og E2E-tester (Playwright)
   - `.github/workflows/` — CI og E2E på hver PR, og `.githooks/` — pre-push-hooken
   - Det finnes ingen database og ingen Supabase. De ble tatt ut av v1 etter faglærers råd.

@@ -18,7 +18,7 @@ if [ -n "$(git status --porcelain --untracked-files=no)" ]; then
   exit 1
 fi
 
-for check in lint typecheck test build; do
+for check in lint typecheck test build:demo; do
   echo "pre-push: npm run $check"
   if ! npm run --silent "$check"; then
     echo "pre-push: «npm run $check» feilet, pushen er stoppet. Rett feilen og prøv igjen." >&2

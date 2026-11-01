@@ -61,7 +61,7 @@ export function buildReport(ctx: RunContext, outcome: ReportOutcome): RunReport 
 }
 
 /** Writes `content` to a temporary name next to `path`, then renames it into place. */
-async function writeAtomically(path: string, content: string): Promise<void> {
+export async function writeAtomically(path: string, content: string): Promise<void> {
   await mkdir(dirname(path), { recursive: true })
   const tmpPath = `${path}.${process.pid}.tmp`
   try {

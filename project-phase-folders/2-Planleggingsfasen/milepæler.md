@@ -28,11 +28,11 @@ fører fram til dem står i [aktivitetslisten](../3-Gjennomføringsfasen/aktivit
 
 | # | Milepæl | Epic og sprint | Frist |
 |---|---|---|---|
-| 1 | Stedskatalog og datapipeline (MET, NVE, Kartverket, OSM) | Epic 1, sprint 1–2 | Katalog og pipeline nådd 2026-10-08 (PR #18, #23, #24). Timesjobb og publisering (1.11): 2026-11-11, forslag. Har ikke faglærer satt GitHub Pages til «GitHub Actions» innen 2026-11-04, brukes reserven i Story 1.11 (datafila på grenen `data`) |
+| 1 | Stedskatalog og datapipeline (MET, NVE, Kartverket, OSM) | Epic 1, sprint 1–2 | Katalog og pipeline nådd 2026-10-08 (PR #18, #23, #24). Timesjobb og publisering (1.11): bygget 2026-10-31, venter på review. Frist 2026-11-11, forslag. Jobben skriver alltid datafila til grenen `data`, og publiserer appen til GitHub Pages i tillegg når det står på «GitHub Actions» |
 | 2 | SnowScore-beregning og forklaringsside | Epic 1 (1.4) og Epic 2, sprint 1 | 2026-10-09, nådd (PR #20, #33–#36) |
 | 3 | Norgeskart og stedssider | Epic 1 (1.7–1.9), sprint 2 | 2026-10-08, nådd (PR #25–#32) |
 | 4 | Filter (nysnø, vind, sol, temperatur, avstand, stedstype, nysnø siste 24 timer) | Epic 3, sprint 3 | 2026-10-28, nådd (PR #48–#71). Forslaget var 2026-11-01 |
-| 5 | «Bør ha» ferdig og kodefrys for v1: robusthet ved nedetid (1.6) og beste skivindu (4.2). Etter dette bygges bare rettinger fra brukertesten (snøvarsel og tilbakemelding er «Ikke i v1») | 1.6 og 4.2 i sprint 4, 2.4 i sprint 1 | 2026-11-11, forslag |
+| 5 | «Bør ha» ferdig og kodefrys for v1: robusthet ved nedetid (1.6) og beste skivindu (4.2). Etter dette bygges bare rettinger fra brukertesten (snøvarsel og tilbakemelding er «Ikke i v1») | 1.6 og 4.2 i sprint 4, 2.4 i sprint 1 | Storyene er nådd: 4.2 2026-10-28 (PR #74), 1.6 2026-10-29 (PR #77). Kodefrys 2026-11-11, forslag |
 | 6 | Levering og demo | Avslutningsfasen | 2026-11-25, vedtatt ([referat 2026-10-25](../3-Gjennomføringsfasen/møtereferater/2026-10-25-møtereferat.md)) |
 
 ## Forslaget fra 2026-10-28
@@ -53,7 +53,7 @@ Fra 28. oktober er det fire uker igjen til levering. Fristene er satt slik at hv
   `fix`-PR-er med review. Resten skrives inn i sluttrapporten som videre arbeid.
 - **16.–23. november: sluttrapport og presentasjon (F5).** Starter mens rettingene pågår, fordi
   det meste av innholdet allerede finnes i fremdriftsplanen, KI-loggen og retrospektivene.
-- **24. november: generalprøve.** `npm ci && npm run dev` etter README på en ren maskin.
+- **24. november: generalprøve.** `npm ci && npm run dev:demo` med det faste testdatasettet, og `npm ci && npm run dev` med ekte data, etter README på en ren maskin.
 - **25. november: levering og demo (M6).**
 
 Hvor langt vi har kommet på hver milepæl, står i

@@ -1,0 +1,256 @@
+name: Data
+
+on:
+  schedule:
+    # Off the full hour: GitHub often delays jobs at :00, and the 90 min limit of the stale data banner
+    # leaves only 30 min of slack.
+    - cron: '17 * * * *'
+  push:
+    branches: [main]
+  workflow_dispatch:
+  # A change to this file is tried for real in its PR; only runs on main publish anything.
+  pull_request:
+    paths:
+      - .github/workflows/data.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  # One fixed group: a PR run and the hourly run must not call MET at the same time (10 calls/s).
+  group: data
+  cancel-in-progress: false
+
+jobs:
+  data:
+    runs-on: ubuntu-latest
+    # Covers the worst case of about 35 min, and this job stays under the hour between scheduled runs. The
+    # concurrency group also holds verify: the read-back normally adds a few minutes, and two failing
+    # addresses can delay the next run.
+    timeout-minutes: 50
+    permissions:
+      contents: read
+      pages: read # the check of how Pages is set up
+    outputs:
+      branch: ${{ steps.target.outputs.branch }}
+      pages: ${{ steps.target.outputs.pages }}
+      run_id: ${{ steps.target.outputs.run_id }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+
+      # Exit 1 when under 95 % are valid or the run crashed. The quality report is only in the log then.
+      # The limit also bounds slow 5xx answers: stopping here turns the run red, while reaching
+      # timeout-minutes is reported as cancelled.
+      - name: Run the data program
+        shell: bash
+        run: |
+          set -o pipefail
+          timeout 45m npm run data 2>&1 | tee data-run.log
+
+      # AD-10: production fails without latest.json and never ships demo.json. Pages answers an unknown
+      # path with 404.html, so a copy of index.html makes direct links to /sted/<id> work.
+      # --ignore-scripts skips prebuild, which could replace the file from this run with another one.
+      - name: Build the app for the Pages subfolder
+        run: |
+          if [ ! -f public/data/latest.json ]; then
+            echo "::error::Dataprogrammet laget ikke public/data/latest.json."
+            exit 1
+          fi
+          npm run build --ignore-scripts -- --base="/${GITHUB_REPOSITORY#*/}/"
+          cp dist/index.html dist/404.html
+          rm dist/data/demo.json
+
+      - name: Check the build
+        run: |
+          test -f dist/404.html
+          test -f dist/data/latest.json
+          test ! -e dist/data/demo.json
+          cmp public/data/latest.json dist/data/latest.json
+          grep -q "/${GITHUB_REPOSITORY#*/}/assets/" dist/404.html
+
+      # Decided in every run: main always writes the branch data, and also Pages once Pages is switched to
+      # GitHub Actions. Only a 404 means that Pages is off; any other API error is red, so nothing is
+      # published by mistake. The checks also run on PRs, so a problem with the API, the token or the run
+      # ID shows up before it reaches main.
+      - name: Choose where to publish
+        id: target
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if build_type=$(gh api "repos/$GITHUB_REPOSITORY/pages" --jq .build_type 2>pages-error.log); then
+            :
+          elif grep -q 'HTTP 404' pages-error.log; then
+            build_type=none
+          else
+            cat pages-error.log >&2
+            exit 1
+          fi
+          if ! run_id=$(jq -er '.runId | strings | select(length > 0)' public/data/latest.json); then
+            echo "::error::public/data/latest.json har ingen runId, så publiseringen kan ikke leses tilbake. Ingenting publiseres."
+            exit 1
+          fi
+          if [ "$build_type" = workflow ]; then
+            pages=true
+          else
+            pages=false
+          fi
+          if [ "$GITHUB_REF" != refs/heads/main ]; then
+            echo "Ikke main, så ingenting publiseres eller leses tilbake. På main ville kjøringen skrevet grenen data, og Pages: $pages (build_type: $build_type)."
+            exit 0
+          fi
+          if [ "$pages" = false ]; then
+            echo "::warning::Pages står ikke på «GitHub Actions» ($build_type), så appen publiseres ikke. Bare latest.json på grenen data oppdateres."
+          fi
+          {
+            echo "branch=true"
+            echo "pages=$pages"
+            echo "run_id=$run_id"
+          } >> "$GITHUB_OUTPUT"
+
+      - uses: actions/upload-pages-artifact@v5
+        if: steps.target.outputs.pages == 'true'
+        with:
+          path: dist
+
+      - uses: actions/upload-artifact@v7
+        if: steps.target.outputs.branch == 'true'
+        with:
+          name: data-branch-file
+          path: public/data/latest.json
+          retention-days: 1
+
+      # Also after the timeout, which GitHub reports as cancelled and not as failed.
+      - uses: actions/upload-artifact@v7
+        if: failure() || cancelled()
+        with:
+          name: data-run-log
+          path: data-run.log
+          retention-days: 7
+
+  # The only job that can write to the repo, and it runs no project code.
+  branch:
+    needs: data
+    if: needs.data.outputs.branch == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v8
+        with:
+          name: data-branch-file
+          path: data-branch-file
+      # One parentless commit, force pushed, so the branch gets no history that grows.
+      - name: Publish latest.json to the branch data
+        env:
+          GIT_AUTHOR_NAME: github-actions[bot]
+          GIT_AUTHOR_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
+          GIT_COMMITTER_NAME: github-actions[bot]
+          GIT_COMMITTER_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
+        run: |
+          blob=$(git hash-object -w data-branch-file/latest.json)
+          tree=$(printf '100644 blob %s\tlatest.json\n' "$blob" | git mktree)
+          commit=$(git commit-tree "$tree" -m "chore: oppdater latest.json fra kjøring $GITHUB_RUN_ID")
+          git push --force origin "$commit:refs/heads/data"
+
+  pages:
+    needs: data
+    if: needs.data.outputs.pages == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    outputs:
+      page_url: ${{ steps.deployment.outputs.page_url }}
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5
+
+  # Proves the publishing on the address itself: a green deploy says nothing about what is out there.
+  # A job of its own with no access and no checkout, so a failure here cannot touch what is published.
+  # The concurrency group holds for the whole run, so the next hourly run cannot replace the file during
+  # the read-back.
+  verify:
+    needs: [data, branch, pages]
+    if: ${{ !cancelled() && needs.data.result == 'success' && github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions: {}
+    env:
+      EXPECTED_RUN_ID: ${{ needs.data.outputs.run_id }}
+      # raw.githubusercontent.com answers max-age=300 and Pages usually max-age=600, so the limit has to
+      # survive a full cache period.
+      READBACK_LIMIT_SECONDS: 720
+      READBACK_INTERVAL_SECONDS: 20
+    steps:
+      - name: Read back from the branch data
+        if: ${{ !cancelled() && needs.branch.result == 'success' }}
+        env:
+          URL: https://raw.githubusercontent.com/${{ github.repository }}/data/latest.json
+        run: &read-back |
+          deadline=$((SECONDS + READBACK_LIMIT_SECONDS))
+          response=$(mktemp)
+          while true; do
+            status=$(curl --silent --location --max-time 30 --output "$response" --write-out 'HTTP %{http_code}' "$URL") || status="ikke noe svar"
+            if [ "$status" != "HTTP 200" ]; then
+              found="ingen ($status)"
+            elif ! found=$(jq -er '.runId' "$response" 2>/dev/null); then
+              found="ingen (ikke JSON, eller uten runId)"
+            fi
+            if [ "$found" = "$EXPECTED_RUN_ID" ]; then
+              echo "$URL har runId $found fra denne kjøringen."
+              exit 0
+            fi
+            if [ "$SECONDS" -ge "$deadline" ]; then
+              echo "::error::$URL har ikke fila fra denne kjøringen innen $READBACK_LIMIT_SECONDS s. Forventet runId $EXPECTED_RUN_ID, fant $found."
+              exit 1
+            fi
+            echo "$URL: forventet runId $EXPECTED_RUN_ID, fant $found. Prøver igjen om $READBACK_INTERVAL_SECONDS s."
+            sleep "$READBACK_INTERVAL_SECONDS"
+          done
+
+      # Also when the read-back above failed, so the log shows the state of both addresses.
+      - name: Read back from Pages
+        if: ${{ !cancelled() && needs.pages.result == 'success' }}
+        env:
+          URL: ${{ needs.pages.outputs.page_url }}data/latest.json
+        run: *read-back
+
+      # A publishing job that was skipped or timed out reads nothing back, so without this step the run
+      # could be green with nothing out.
+      - name: Check that everything was published
+        if: ${{ !cancelled() }}
+        env:
+          DATA_BRANCH: ${{ needs.data.outputs.branch }}
+          DATA_PAGES: ${{ needs.data.outputs.pages }}
+          BRANCH_RESULT: ${{ needs.branch.result }}
+          PAGES_RESULT: ${{ needs.pages.result }}
+        run: |
+          failed=0
+          if [ "$DATA_BRANCH" != true ]; then
+            echo "::error::Jobben data valgte ikke grenen data (branch: «$DATA_BRANCH»), men alle kjøringer på main skal skrive den."
+            failed=1
+          fi
+          if [ "$BRANCH_RESULT" != success ]; then
+            echo "::error::Publiseringen til grenen data ble ikke fullført (resultat: $BRANCH_RESULT)."
+            failed=1
+          fi
+          if [ "$DATA_PAGES" != true ] && [ "$DATA_PAGES" != false ]; then
+            echo "::error::Jobben data valgte verken med eller uten Pages (pages: «$DATA_PAGES»)."
+            failed=1
+          fi
+          if [ "$DATA_PAGES" = true ] && [ "$PAGES_RESULT" != success ]; then
+            echo "::error::Publiseringen til Pages ble ikke fullført (resultat: $PAGES_RESULT)."
+            failed=1
+          fi
+          exit "$failed"

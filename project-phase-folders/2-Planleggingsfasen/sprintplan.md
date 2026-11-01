@@ -14,7 +14,7 @@ bygges, men disse punktene er kjent:
 | # | Funn | Hva vi gjør |
 |---|---|---|
 | 1 | UX-dokumentene (EXPERIENCE.md og DESIGN.md) var ikke oppdatert etter forenklingen. | Løst: Sally (`bmad-ux`) oppdaterte dem i PR #21. |
-| 2 | Story 1.11 publiserer til GitHub Pages, og Pages kan bare slås på av en administrator (faglærer). GitHub Actions er allerede på, og CI kjører på PR-er. | Be faglærer slå på Pages. Reserve: jobben publiserer bare datafila til grenen `data`, og appen leser den derfra (står i Story 1.11). |
+| 2 | Story 1.11 publiserer til GitHub Pages, og Pages kan bare slås på av en administrator (faglærer). GitHub Actions er allerede på, og CI kjører på PR-er. | Be faglærer slå på Pages. Jobben publiserer alltid datafila til grenen `data`, og `npm run data:hent` henter den derfra (står i Story 1.11). |
 | 3 | Story 1.6 krever `banner-stale-data` på Utforsk og stedssiden, som først bygges i 1.7 og 1.9. | 1.6 bygges etter 1.9. Den er nå Bør ha. |
 | 4 | NFR-8 (skalerbarhet) har ingen story. | Allerede flagget i PRD §10. Ingen endring. |
 
@@ -49,7 +49,7 @@ Status for hver story står i [fremdriftsplanen](../3-Gjennomføringsfasen/fremd
 ## Dette må gruppa sette opp før sprint 2
 
 - [x] GitHub Actions er på (CI kjører på PR-er)
-- [ ] Be faglærer slå på GitHub Pages (Settings → Pages → Source: GitHub Actions). Ellers brukes reserven i Story 1.11
+- [ ] Be faglærer slå på GitHub Pages (Settings → Pages → Source: GitHub Actions). Ellers oppdateres bare grenen `data` i Story 1.11
 - [x] Sally (`bmad-ux`) oppdaterer UX-dokumentene etter forenklingen (PR #21)
 
 ## Arbeidsflyt per story

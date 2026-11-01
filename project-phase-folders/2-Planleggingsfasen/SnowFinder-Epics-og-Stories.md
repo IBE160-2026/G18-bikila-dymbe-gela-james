@@ -113,8 +113,8 @@ NFR-8: Skalerbarhet — katalog 300→1500 steder, "noen tusen" samtidige bruker
 - CI: `ci.yml` (lint/typecheck/unit/property/kontraktstester på hver PR), `e2e.yml`
   (Playwright-røyktest i demomodus) og `data.yml` (planlagt kjøring hver time + GitHub
   Pages-deploy). GitHub Actions er slått på for repoet (CI har kjørt på PR-er siden 2026-10-07).
-- Hosting: GitHub Pages `[ASSUMPTION — en administrator må slå på Pages]`. Reserve uten Pages:
-  datafila publiseres til grenen `data` og leses fra `raw.githubusercontent.com` (Story 1.11).
+- Hosting: GitHub Pages `[ASSUMPTION — en administrator må slå på Pages]`. Med eller uten Pages
+  publiseres datafila alltid til grenen `data` og hentes fra `raw.githubusercontent.com` (Story 1.11).
 
 ### UX-designkrav
 
@@ -334,6 +334,10 @@ mot demo-nå)
 `src/lib/clock.ts` er eneste kilde til «nå» (lint forbyr `Date.now()` andre steder)
 **And** de tomme mappene `supabase/` og `src/lib/supabase/` fra Story 1.1 er fjernet
 
+`[v6, 2026-10-31: Demodatasettet vises nå bare med `npm run dev:demo`, som fortsatt virker uten
+nøkler og nett. `npm run dev` viser ekte data, og det finnes ingen reserve til demodata. Kriteriene over
+beskriver storyen slik den ble bygget.]`
+
 `[v3: Ny story fra endringsrunde 1, plassert rett etter 1.4. Bygges sammen med den delen av
 dataprogrammet den trenger (`run.ts`, `score.ts`, `publish.ts` mot fixtures). Story 1.3 og 1.5
 kobler senere på de ekte kildene.]`
@@ -378,9 +382,12 @@ So that kartet viser ferske prognoser uten at noen kjører noe for hånd. Realis
 **When** `.github/workflows/data.yml` kjører hver time (og ved merge til `main`)
 **Then** kjøres `npm run data`, appen bygges med den nye `latest.json`, og resultatet
 publiseres til GitHub Pages
-**And** er Pages ikke slått på, publiserer jobben i stedet bare `latest.json` til grenen
-`data` (`permissions: contents: write`), og `src/lib/data/` kan lese den fra
-`raw.githubusercontent.com`. Da får en lokalt kjørt app ferske data hver time uten hosting
+**And** publiserer jobben alltid `latest.json` til grenen `data` (`permissions: contents: write`),
+i tillegg til Pages når Pages er på, og `npm run data:hent` henter den fra
+`raw.githubusercontent.com` før `dev` og `build`. Da får en lokalt kjørt app ferske data uten hosting
+*(endret v6, 2026-10-31)*
+**And** leser jobben fila tilbake fra den faktiske adressen og blir rød hvis `runId` ikke stemmer, så
+grønn kjøring betyr at dataene faktisk er ute *(ny v6)*
 **And** jobben bruker en `concurrency`-gruppe uten avbrudd, så bare én kjøring går om gangen
 **And** produksjonsbygget feiler hvis kjøringen ikke ga `latest.json`, slik at forrige
 publisering blir stående og produksjon aldri viser demodata (AD-10)
@@ -388,7 +395,7 @@ publisering blir stående og produksjon aldri viser demodata (AD-10)
 rød i Actions-fanen (NFR-6)
 
 `[v3: Ny story fra endringsrunde 2. Actions er allerede på. Pages krever en administrator
-(faglærer); reserveløsningen over trenger verken admin eller hemmeligheter.]`
+(faglærer); publiseringen til grenen `data` trenger verken admin eller hemmeligheter.]`
 
 ### Story 1.7: Se Norgeskartet med fargelagte steder
 
