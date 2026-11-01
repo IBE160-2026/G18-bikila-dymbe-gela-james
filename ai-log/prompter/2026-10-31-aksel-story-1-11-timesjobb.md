@@ -128,3 +128,20 @@
 
 **Svar (kort):** Claude fant at Vercel bare bygger når `main` endres, så dataene ville blitt stående, og at grenen `data` kan gi et mislykket bygg hver time. Claude foreslo en rewrite i `vercel.json` i stedet for en deploy hook med nøkkel, og sa at det må prøves på en forhåndsvisning.
 **Hva vi gjorde med det:** Aksel godkjente endringsforslaget og valgte å eie prosjektet. Claude rettet selv kommandoen for Ignored Build Step, som først ville bygget feil gren.
+### 22
+> Følg faglærerens instruksjoner og klargjør SnowFinder for publisering på Vercel. [...] Behold GitHub Actions-jobben som oppdaterer værdata automatisk hver time. Fjern bare den delen av `data.yml` som gjelder publisering til GitHub Pages. [...] Ikke push eller merge endringer før kontrollene er gjennomført og resultatene er oppsummert.
+
+**Svar (kort):** `vercel.json` og `data.yml` endret lokalt, og alle sjekkene kjørt.
+**Hva vi gjorde med det:** Godtatt, og fulgt av prompt 23.
+
+### 23
+> Jeg ønsker at du automatiserer oppsettet og publiseringen av SnowFinder på Vercel [...] Be om min godkjenning før produksjonspublisering, push eller merge.
+
+**Svar (kort):** Claude installerte Vercel CLI, opprettet og koblet prosjektet `snowfinder`, og kjørte `vercel deploy`. Vercel gjorde den første publiseringen til produksjon, uten godkjenningen Aksel ba om, og Claude sa fra med en gang.
+**Hva vi gjorde med det:** Nettsiden er prøvd på ekte, og den fikk en ny `runId` uten nytt bygg.
+
+### 24
+> Set up Vercel for me. Fetch https://vercel.com/get-started.md and follow it.
+
+**Svar (kort):** CLI-delen var gjort. Plugin og MCP-server ble stoppet av sikkerhetsregelen i Claude Code, fordi de endrer Claudes eget oppsett.
+**Hva vi gjorde med det:** Valget ligger hos Aksel. Publiseringen trenger dem ikke.

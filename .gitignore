@@ -62,3 +62,4 @@ Thumbs.db
 public/data/latest.json
 public/data/*.tmp
 data/*.tmp
+.vercel

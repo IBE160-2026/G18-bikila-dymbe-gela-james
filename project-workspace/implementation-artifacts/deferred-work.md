@@ -150,3 +150,15 @@
 - source_spec: `project-workspace/implementation-artifacts/spec-1-11b-ekte-data-som-standard.md`
   summary: Løst 2026-11-01: `npm run dev` på rent klon henter fila fra grenen `data`, og `data:hent` virker med liten stasjonsbokstav (kjørt fra cmd).
   evidence: Posten om sjekken i steg 6 er dermed lukket. Posten fra spec-1-11c om `AGENTS.md` er også lukket, med commit `4bc4e6f`.
+
+- source_spec: `project-workspace/implementation-artifacts/spec-1-11e-vercel.md`
+  summary: Alle besøk på nettsiden går til `raw.githubusercontent.com`, siden Vercel svarte `MISS` to ganger, så en kort CDN-cache bør vurderes.
+  evidence: Målt med curl 2026-11-01. Lite trafikk i emnet gjør det lite sannsynlig med rate-begrensning, men brukertesten bør følges.
+
+- source_spec: `project-workspace/implementation-artifacts/spec-1-11e-vercel.md`
+  summary: Posten om Pages-veien er utgått, siden Pages er slått av i emnet. Tilbakelesingen fra nettsiden og en rød kjøring må i stedet prøves på `main`.
+  evidence: Lesesteget mot nettsiden kjører bare på `main`.
+
+- source_spec: `project-workspace/implementation-artifacts/spec-1-11e-vercel.md`
+  summary: Filer i `/assets/` caches ikke, og CI kjører ikke byggekommandoen fra `vercel.json`.
+  evidence: Målt `max-age=0` på nettsiden. Vurderes sammen med NFR-2.

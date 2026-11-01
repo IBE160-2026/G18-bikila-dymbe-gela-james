@@ -19,9 +19,12 @@ på møtet. Oppdater statusen når et steg er ferdig.
 
 - Faglærer har slått av Pages i grupperepoene, og Vercel er eneste publiseringsløsning emnet støtter.
   Aksel eier prosjektet. Det trengs ingen nøkler.
-- Nettsiden skal hente datafila fra grenen `data`, så dataene er ferske uten nytt bygg. Det er ikke prøvd
-  ennå ([endringsforslaget](../../project-workspace/planning-artifacts/sprint-change-proposal-2026-11-01-vercel.md)).
-- Neste: Aksel oppretter prosjektet, og så bygges og prøves `vercel.json` og `data.yml` på en PR.
+- Nettsiden <https://snowfinder-seven.vercel.app> henter datafila fra grenen `data`, så dataene er ferske uten
+  nytt bygg. En kjøring av `data.yml` nådde nettsiden uten nytt bygg
+  ([endringsforslaget](../../project-workspace/planning-artifacts/sprint-change-proposal-2026-11-01-vercel.md)).
+- Den første publiseringen ble lagt ut fra Aksels maskin, fordi Vercel gjør den første til produksjon. Til PR-en er
+  merget, har `main` ingen `vercel.json`, så ingen annen PR må merges først.
+- Neste: review og merge av `vercel.json` og `data.yml`, og at planlagte kjøringer faktisk starter.
 
 **1. november: Story 1.11 er merget og kjører på `main`, men appen er ikke publisert, fordi Pages ikke er på.**
 

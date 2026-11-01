@@ -18,6 +18,8 @@ Meteorologisk institutt.
 
 Krever Node 24, eller Node 26 eller nyere (Node 25 støttes ikke).
 
+**Nettsiden:** <https://snowfinder-seven.vercel.app>
+
 **For sensor:** `npm ci && npm run dev:demo` virker alltid, uten nett og nøkler, og viser det samme hver
 gang. `npm ci && npm run dev` viser ekte værdata og krever nett.
 
@@ -190,29 +192,31 @@ skrives ut når kjøringen ikke ble publisert.
 ### Timesjobben og publisering
 
 `.github/workflows/data.yml` kjører `npm run data` én gang i timen, 17 minutter over hel time, ved push til
-`main` og når den startes for hånd. Den trenger ingen nøkler. Hver kjøring på `main` publiserer slik:
+`main` og når den startes for hånd. Den trenger ingen nøkler. Hver kjøring på `main` legger `latest.json` i
+rota på grenen `data`. Grenen har alltid ett commit, så den får ingen historikk som vokser. Herfra henter
+`npm run data:hent` fila.
 
-- **Alltid til grenen `data`:** `latest.json` legges i rota. Grenen har alltid ett commit, så den får ingen
-  historikk som vokser. Herfra henter `npm run data:hent` fila.
-- **Også til Pages, når Pages står på «GitHub Actions»:** appen bygges med den nye `latest.json` og publiseres
-  til <https://ibe160-2026.github.io/G18-bikila-dymbe-gela-james/>. Bygget inneholder ikke `demo.json`, og
-  `404.html` er en kopi av `index.html`, så direkte lenker til `/sted/<id>` virker. Innstillingen må settes av
-  en administrator for repoet.
+Etter publisering leser jobben fila tilbake fra grenen og nettsiden og sammenligner kjørings-ID-en. Stemmer den
+ikke, blir kjøringen rød, så grønn betyr at dataene faktisk er ute.
 
-Etter publisering leser jobben fila tilbake fra den faktiske adressen og sammenligner kjørings-ID-en. Stemmer
-den ikke, blir kjøringen rød, så grønn betyr at dataene faktisk er ute.
+**Nettsiden** publiseres av Vercel fra `main`, og PR-er får en egen forhåndsvisning. `vercel.json` bygger appen
+uten datafiler og sender `/data/latest.json` videre til fila på grenen `data`, så hver timeskjøring når
+nettsiden uten nytt bygg. GitHub kan holde fila i opptil fem minutter. Direkte lenker til `/sted/<id>` går til
+`index.html`. Vercel trenger ingen nøkler, og prosjektet ligger på kontoen til Aksel. Under **Settings → Git →
+Ignored Build Step** står `[ "$VERCEL_GIT_COMMIT_REF" = "data" ]`, så grenen `data` ikke bygges hver time. GitHub
+Pages er slått av i emnet.
 
-GitHub slår av planlagte kjøringer etter 60 dager uten aktivitet i repoet. Da viser `npm run dev` etter hvert
-«Ingen ferske data», mens `npm run dev:demo` fortsatt virker.
+GitHub slår av planlagte kjøringer etter 60 dager uten aktivitet i repoet. Da viser nettsiden og `npm run dev`
+etter hvert «Ingen ferske data», mens `npm run dev:demo` fortsatt virker. Slå på jobben igjen under Actions, og
+start den for hånd.
 
 Får under 95 % av stedene en poengsum, krasjer dataprogrammet, eller mangler `latest.json` etter kjøringen,
-publiseres ingenting: forrige publisering står, kjøringen blir rød, og loggen med kvalitetsrapporten
-ligger som artifact (`data-run-log`) på kjøringen. En PR som endrer `data.yml`, henter og bygger uten å
+publiseres ingenting: forrige fil står, også på nettsiden, kjøringen blir rød, og loggen med kvalitetsrapporten
+ligger som artifact (`data-run-log`) på kjøringen. En PR som endrer `data.yml`, henter og sjekker uten å
 publisere.
 
-Feiler selve publiseringen eller tilbakelesingen, kan den nye fila likevel være ute på én eller begge
-adressene. Loggen viser hvilken adresse det gjelder og hvilken `runId` som var forventet og funnet, og neste
-timeskjøring prøver igjen.
+Feiler tilbakelesingen, kan den nye fila likevel være ute. Loggen viser hvilken `runId` som var forventet og
+funnet, og neste timeskjøring prøver igjen.
 
 Feltene i datafila og kildesvarene er beskrevet i
 [`shared/contracts/data-dictionary.md`](shared/contracts/data-dictionary.md).
