@@ -230,9 +230,10 @@ Navnene er de samme som i Komponentmønstre i EXPERIENCE.md, som beskriver atfer
 - **Listerad** *(destinasjonskort, endret 2026-11-02)* — `{colors.surface-raised}` kort
   (`{components.location-card}`). Øverst stedsnavn (`heading`) til venstre og score-badge til høyre.
   Under står faste felt: etikett i `meta` og `{colors.ink-secondary}`, verdien under i `numeric`. Hele
-  kortet er lenken, og kanten blir `{colors.accent}` ved hover. Én kolonne under 768 px. Fra 768 px
-  et rutenett med kolonner på minst 240 px, så to til tre kort står side om side etter plassen, med
-  `{spacing.3}` mellom. *(Før: navn, badge og tre nøkkeltall på én linje.)*
+  kortet er lenken, og kanten blir `{colors.accent}` ved hover. Feltene står nederst i kortet. Én kolonne
+  under 768 px. Fra 768 px et rutenett med kolonner på minst 240 px, så to til tre kort står side om
+  side når listen har plass (med filterpanelet ved siden av fra rundt 1024 px), med `{spacing.3}` mellom.
+  *(Før: navn, badge og tre nøkkeltall på én linje.)*
 - **Sorteringsvalg** — Etiketten «Sorter etter» og en ordinær `<select>`, minst `{spacing.7}` høy,
   med `{colors.ink-secondary}`-kant, `{rounded.sm}` og `{colors.surface-raised}` bakgrunn.
   Statusteksten under (for eksempel avslått posisjon) står i `meta` og `{colors.ink-secondary}`.

@@ -338,14 +338,18 @@ describe('AppView', () => {
     const html = render(demoResult, LISTE)
     // Visually hidden separators, so a screen reader does not run the row's parts together.
     const s = '<span class="visually-hidden">, </span>'
+    // Story 1.8b: each fixed field is a label and a value, with a space between for a screen reader.
+    const felt = (etikett: string, verdi: string, forste = false) =>
+      `<span class="liste-felt">${forste ? '' : s}<span class="liste-felt-etikett">${etikett}</span> ` +
+      `<span class="liste-felt-verdi">${verdi}</span></span>`
     expect(html).toContain(
       `<a href="/sted/gaustatoppen?visning=liste" class="liste-rad"><span class="liste-navn">Gaustatoppen</span>${s}` +
         `<span class="score-badge score-badge--2">58 · Godt</span>${s}` +
-        `<span class="liste-detaljer"><span>Nysnø 10 cm</span><span>${s}Vind 12 m/s</span><span>${s}Temp −6,4 °C</span></span></a>`,
+        `<span class="liste-detaljer">${felt('Nysnø', '10 cm', true)}${felt('Vind', '12 m/s')}${felt('Temp', '−6,4 °C')}</span></a>`,
     )
     expect(html).toContain(
       `<span class="liste-navn">Trondheim</span>${s}<span class="score-incomplete">Ufullstendige data</span>${s}` +
-        `<span class="liste-detaljer"><span>Nysnø –</span><span>${s}Vind 5,1 m/s</span><span>${s}Temp –</span></span>`,
+        `<span class="liste-detaljer">${felt('Nysnø', '–', true)}${felt('Vind', '5,1 m/s')}${felt('Temp', '–')}</span>`,
     )
   })
 
