@@ -38,3 +38,9 @@ Vedlegg: `SnowFinder_logo.svg` og to skjermbilder av toppen av Utforsk og filter
 
 ### 5
 > puch etterpå
+
+### 6
+> Test sliderne i Firefox og Safari før endelig godkjenning av PR #82. GitHub-beskrivelsen oppgir at dette foreløpig er utsatt, og høyre-til-venstre-oppsettet kan oppføre seg forskjellig mellom nettlesere.
+
+**Svar (kort):** Claude installerte Firefox og WebKit for Playwright og kjørte en midlertidig test av alle fem sliderne. Firefox var riktig. I WebKit gjorde pil høyre «høyst»-kravene løsere, og det ble rettet med `onKeyDown`. Etterpå besto 14 av 14 tester i begge nettleserne.
+**Hva vi gjorde med det:** Rettingen er lagt i PR #82, og push venter på Aksels godkjenning.

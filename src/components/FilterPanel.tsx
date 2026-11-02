@@ -193,7 +193,7 @@ function Filterfelt({ krav, verdi, onEndre, hint, hintErStatus, ekstraKnapp }: F
   const vist = verdi ?? standard
   // Story 2.1b: every slider starts at «Alle» on the left and gets stricter to the right. A «høyst» slider
   // is mirrored with dir="rtl", so its value stays the real number for the address, aria-valuenow and the
-  // tests, and the right arrow key still makes the requirement stricter.
+  // tests. The right arrow key makes the requirement stricter in every browser (onKeyDown below).
   const speilet = krav !== 'minNysnoCm'
   const andel = ((vist - min) / (max - min)) * 100
   // The accent part of the track is the range the requirement lets through, from the thumb to the right on
@@ -226,6 +226,20 @@ function Filterfelt({ krav, verdi, onEndre, hint, hintErStatus, ekstraKnapp }: F
           const ny = Number(event.target.value)
           onEndre(ny === standard ? null : ny)
         }}
+        // WebKit (Safari) moves a dir="rtl" range by its number, not by what the user sees, so there the
+        // right arrow key would loosen a «høyst» requirement. The slider moves itself on Left and Right, so
+        // every browser goes the way the thumb looks: Right is one step stricter (a lower number). Up, Down,
+        // Home, End and Page keys follow the number, as before.
+        onKeyDown={
+          speilet
+            ? (event) => {
+                if (event.key !== 'ArrowRight' && event.key !== 'ArrowLeft') return
+                event.preventDefault()
+                const ny = Math.min(max, Math.max(min, vist + (event.key === 'ArrowRight' ? -steg : steg)))
+                if (ny !== vist) onEndre(ny === standard ? null : ny)
+              }
+            : undefined
+        }
       />
       {hint && (
         <p id={hintId} className="filter-hint" role={hintErStatus ? 'status' : undefined}>

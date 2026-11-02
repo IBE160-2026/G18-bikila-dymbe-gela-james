@@ -39,6 +39,12 @@ context: ['project-phase-folders/2-Planleggingsfasen/SnowFinder-EXPERIENCE.md', 
   - `filter.spec.ts`: peker, piltaster på vind og temperatur.
   - `forklaring.spec.ts`: én lenke på PC med logoen lastet, og lenken ved Kart/Liste på 375 px.
 
+- **Firefox og WebKit (2026-11-02, før godkjenningen av PR #82):** en midlertidig Playwright-test, som ikke er committet, kjørte alle fem sliderne i Firefox og WebKit (Safari-motoren) på 1280 px. Den sjekket musklikk i hver ende, piltastene, det fylte sporet og at lenken står én gang på 1280 og 375 px.
+  - **Firefox:** alt var riktig.
+  - **WebKit:** musklikk var riktig, men pil høyre økte tallet på de speilede sliderne, så «høyst»-kravet ble løsere.
+  - **Rettingen:** `FilterPanel.tsx` håndterer pil venstre og pil høyre selv på de fire speilede sliderne. Pil høyre gir ett steg lavere tall, altså strengere, i alle nettlesere. Pil opp og ned, Home, End og Page-tastene følger tallet som før.
+  - **Etter rettingen:** 14 av 14 tester i Firefox og WebKit, og skjermbildene viser «Alle» til venstre og fylt spor fra tommelen mot høyre i begge.
+
 ## Review Triage Log
 
 Gjennomgang med Blind Hunter (11 funn).
@@ -49,7 +55,7 @@ Gjennomgang med Blind Hunter (11 funn).
 | 2 | Testnavnet lover mer enn testen sjekker, og mobil er ikke testet | low | patch | Nytt navn og egen test på 375 px. |
 | 3 | Memloggen sier «høyre/opp» | low | patch | Ny memlogg-oppføring retter det. |
 | 4 | Ingen test av opp og ned, og bare vind er testet | low | patch | Pil opp og temperatur er lagt til i E2E. |
-| 5 | `dir="rtl"` er bare prøvd i Chromium | maybe-false | defer | `deferred-work.md`: prøves i Firefox og Safari i brukertesten. |
+| 5 | `dir="rtl"` er bare prøvd i Chromium | medium | patch | Prøvd i Firefox og WebKit på Aksels ønske, før godkjenning. WebKit (Safari) flyttet en speilet slider etter tallet, så pil høyre gjorde kravet løsere. Rettet med `onKeyDown` (se Implementation Notes). |
 | 6 | Spec-en er ufullstendig | low | patch | Notater, logg og status `done` er lagt til. |
 | 7 | Storyen mangler i epic-fila, og nøkkelen stemmer ikke med spec-en | low | patch | Story 2.1b står i epic-fila, og nøkkelen er `2-1b-toppnav-og-slidere`. |
 | 8 | Fremdriftsplanen kaller storyen ferdig før review | low | patch | Rettet til «bygget, venter på review». |
