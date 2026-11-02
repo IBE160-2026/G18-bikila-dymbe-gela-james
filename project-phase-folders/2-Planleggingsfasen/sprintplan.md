@@ -40,6 +40,9 @@ sprint 2. Kvalitetspanelet i 2.3 viser demodataenes rapport til 1.5 er ferdig.
 **Avvik i sprint 3 (2026-10-23):** Story 3.5 (sol) ble bygget før 3.4 (hurtigvalg), fordi
 hurtigvalget «Sol etter snøfall» trenger solfilteret.
 
+**Avvik (2026-11-02):** Story 2.1b (logo, én forklaringslenke og slidere som starter til venstre) ble lagt
+til etter Aksels ønske og bygget mens 1.11 ventet på målingen. Den justerer UX for 2.1 og Epic 3.
+
 **Ikke i v1 (v3):** Story 4.1 (PWA), 4.3 og 4.4 (snøvarsel) og hele Epic 5 (tilbakemelding).
 De står i `sprint-status.yaml` med kommentaren «Ikke i v1» og bygges ikke.
 

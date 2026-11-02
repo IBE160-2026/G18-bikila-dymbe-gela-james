@@ -191,10 +191,16 @@ function Filterfelt({ krav, verdi, onEndre, hint, hintErStatus, ekstraKnapp }: F
   const tekst = verdiTekst(krav, verdi)
   const hintId = `${id}-hint`
   const vist = verdi ?? standard
-  // The accent part of the track is the range the requirement lets through: above the thumb for
-  // «minst», below it for «høyst». «Alle» fills the whole track.
-  const tommel = ((vist - min) / (max - min)) * 100
-  const fylt = krav === 'minNysnoCm' ? { '--fra': `${tommel}%`, '--til': '100%' } : { '--fra': '0%', '--til': `${tommel}%` }
+  // Story 2.1b: every slider starts at «Alle» on the left and gets stricter to the right. A «høyst» slider
+  // is mirrored with dir="rtl", so its value stays the real number for the address, aria-valuenow and the
+  // tests, and the right arrow key still makes the requirement stricter.
+  const speilet = krav !== 'minNysnoCm'
+  const andel = ((vist - min) / (max - min)) * 100
+  // The accent part of the track is the range the requirement lets through, from the thumb to the right on
+  // every slider. «Alle» fills the whole track. The gradient does not follow dir, so it uses the thumb's
+  // position from the left.
+  const tommel = speilet ? 100 - andel : andel
+  const fylt = { '--fra': `${tommel}%`, '--til': '100%' }
   return (
     <div className="filter-felt">
       <div className="filter-felt-topp">
@@ -211,6 +217,7 @@ function Filterfelt({ krav, verdi, onEndre, hint, hintErStatus, ekstraKnapp }: F
         min={min}
         max={max}
         step={steg}
+        dir={speilet ? 'rtl' : undefined}
         value={vist}
         aria-valuetext={tekst}
         aria-describedby={hint ? hintId : undefined}

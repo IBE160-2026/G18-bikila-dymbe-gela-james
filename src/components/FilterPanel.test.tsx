@@ -103,6 +103,21 @@ describe('FilterPanel', () => {
     expect(html).not.toContain('filter-chips')
   })
 
+  it('starts every slider at «Alle» on the left, mirroring the four «høyst» ones and keeping their values (Story 2.1b)', () => {
+    const html = render(STANDARD_FILTER)
+    expect(html).not.toMatch(/id="filter-minNysnoCm"[^>]*dir=/)
+    for (const krav of ['maksVindMs', 'maksTemperaturC', 'maksSkydekkeDagslys', 'maksAvstandKm']) {
+      expect(html).toMatch(new RegExp(`id="filter-${krav}"[^>]*dir="rtl"`))
+    }
+    // «Alle» fills the whole track on all five.
+    expect(html.match(/style="--fra:0%;--til:100%"/g)).toHaveLength(5)
+
+    // An active requirement fills from the thumb to the right: 8 of 0–25 m/s, mirrored, is 68 % from the left.
+    const vind = render({ ...STANDARD_FILTER, maksVindMs: 8, minNysnoCm: 10 })
+    expect(vind).toMatch(/id="filter-maksVindMs"[^>]*dir="rtl"[^>]*style="--fra:68%;--til:100%" value="8"/)
+    expect(vind).toMatch(/id="filter-minNysnoCm"[^>]*style="--fra:33\.3+%;--til:100%" value="10"/)
+  })
+
   it('explains under the cloud cover slider why places without daylight are hidden (Story 3.5)', () => {
     const html = render(STANDARD_FILTER)
     expect(html).toMatch(/id="filter-maksSkydekkeDagslys"[^>]*aria-describedby="filter-maksSkydekkeDagslys-hint"/)

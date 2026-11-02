@@ -172,3 +172,7 @@
 - source_spec: `project-workspace/implementation-artifacts/spec-1-11f-paalitelig-timesjobb.md`
   summary: Banneret kan fortsatt komme når GitHub dropper fire forsøk på rad. En garanti krever en tjeneste med nøkkel, og det er utenfor v1. Posten om lange kjøringer (Story 1.6, tidsbudsjett per kall) gjelder nå hvert 10. minutt, ikke neste time.
   evidence: Natten 1.–2. november startet bare 2 av 14 planlagte kjøringer. Avgjøres med et døgn med målinger på nettsiden etter merge.
+
+- source_spec: `project-workspace/implementation-artifacts/spec-2-1b-toppnav-og-slidere.md`
+  summary: De speilede sliderne (`dir="rtl"`) er bare prøvd i Chromium. Prøv peker, piltaster og fylt spor i Firefox og Safari i brukertesten.
+  evidence: maybe-false, ville vært medium. Playwright kjører bare Chromium i dette prosjektet. Begge nettleserne støtter `dir="rtl"` på range, men det er ikke sett her.
