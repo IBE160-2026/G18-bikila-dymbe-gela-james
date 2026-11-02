@@ -1,7 +1,7 @@
 ---
 title: SnowFinder
 created: 2026-09-27
-updated: 2026-10-31
+updated: 2026-11-01
 status: draft
 ---
 
@@ -177,8 +177,12 @@ jobben er en GitHub Actions-jobb.
 - Forespørsler bruker identifiserende User-Agent og begrenset samtidighet. *(v3)* Hvert sted
   hentes én gang per time, i takt med hvor ofte MET oppdaterer prognosen. Kjøringen lagrer ingen
   tilstand mellom timene, så `If-Modified-Since`/`Expires` brukes ikke.
+- *(2026-11-02)* GitHub dropper mange planlagte kjøringer, så jobben startes hvert 10. minutt og
+  henter bare når siste publisering på grenen `data` er minst 50 minutter gammel. Tidspunktet for den
+  publiseringen er det eneste den leser fra forrige kjøring.
 - Én kjøring henter alle ~300 steder, med begrenset samtidighet. En avbrutt kjøring publiserer
-  ingenting (FR-5) og kjøres på nytt ved neste time.
+  ingenting (FR-5) og kjøres på nytt ved neste forsøk, som kommer etter høyst 10 minutter fordi fila
+  da fortsatt er gammel *(endret 2026-11-02)*.
 - *(v4, 2026-10-22)* Hver kilde får høyst 10 kall i sekundet: to kall til samme kilde starter
   minst 100 ms fra hverandre. MET krever en egen avtale over 20 kall i sekundet, og et blokkert
   dataprogram ville gitt en tjeneste uten data. Hentingen tar da minst 30 sekunder per kilde
@@ -793,9 +797,11 @@ testen kan gjennomføres så snart Må ha er ferdig.
 ## 10. Åpne spørsmål
 
 1. ~~**Push-leveranse:**~~ *Utgår i v3,* fordi snøvarsel ikke er med i v1.
-2. **Hosting:** *(v3)* GitHub Pages foreslås, fordi den planlagte jobben og CI allerede ligger i
+2. ~~**Hosting:** *(v3)* GitHub Pages foreslås, fordi den planlagte jobben og CI allerede ligger i
    GitHub Actions, og ingen ekstra konto trengs. Bekreft med gruppa. GitHub Actions og Pages må
-   slås på i repoet av en administrator.
+   slås på i repoet av en administrator.~~ *Lukket 2026-11-01:* faglærer har slått av Pages i
+   grupperepoene, og Vercel er eneste publiseringsløsning emnet støtter. Aksel eier prosjektet på sin
+   Hobby-konto. Det trengs ingen nøkler.
 3. ~~**IBE160-vurderingskriterier:**~~ *Lukket i v2.* Sensorveiledningen for del 1 og
    faglærers tilbakemelding (2026-10-06) er nå kjent og krysjekket mot §6 og §9, gjennom
    endringsrunden 2026-10-07.

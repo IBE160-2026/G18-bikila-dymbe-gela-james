@@ -37,10 +37,8 @@ flowchart TD
     %% Spor B: Story 1.11
     fork1 --> b2["Bygg Story 1.11:<br/>timesjobb og publisering"]
     b2 --> b5["Publiser alltid datafila<br/>til grenen data"]
-    b5 --> b1{"Står GitHub Pages på<br/>GitHub Actions? Sjekkes i hver kjøring"}
-    b1 -- "Ja" --> b6["Publiser også appen til Pages"]
-    b1 -- "Nei, advarsel" --> b7["Les tilbake fra hver adresse<br/>og sammenlign runId"]
-    b6 --> b7
+    b5 --> b6["Vercel publiserer appen fra main<br/>og henter datafila fra grenen"]
+    b6 --> b7["Les tilbake fra grenen og nettsiden<br/>og sammenlign runId"]
     b7 --> m1["M1: pipeline i drift<br/>forslag 2026-11-11"]
 
     %% Spor C: UX og brukertestplan
@@ -158,7 +156,7 @@ flowchart LR
 | 1.7 | Se Norgeskartet med fargelagte steder (med 1.7b) | Må ha | 1.10 | 2 | Aksel | 2026-10-08 (PR #25, #28) |
 | 1.8 | Bruk tilgjengelig listevisning i stedet for kart | Må ha | 1.10 | 2 | Aksel | 2026-10-08 (PR #27) |
 | 1.9 | Åpne en stedsside med full poengsum (med 1.9b og 1.9c) | Må ha | 1.7, 1.8 | 2 | Aksel | 2026-10-08 (PR #30–#32) |
-| 1.11 | Kjør dataprogrammet hver time og publiser appen | Må ha | 1.5, GitHub Pages fra faglærer (for appen, grenen `data` skrives uansett) | 2, flyttet til 4 | Aksel | 2026-11-01 (PR #78, merget, Pages gjenstår) |
+| 1.11 | Kjør dataprogrammet hver time og publiser appen | Må ha | 1.5, Vercel-prosjekt fra Aksel (for appen, grenen `data` skrives uansett) | 2, flyttet til 4 | Aksel | 2026-11-01 (PR #78, merget, Vercel gjenstår) |
 | 1.6 | Hold tjenesten oppe når en datakilde er nede | Bør ha | 1.9 | 4 | Joseph | 2026-10-29 (PR #77, review i etterkant) |
 | **Epic 2** | **Forstå og stole på SnowScore** | | | | | |
 | 2.1 | Les kort fortalt og steg for steg | Må ha | 1.4 | 1 | Aksel | 2026-10-09 (PR #33) |

@@ -123,3 +123,59 @@
 
 **Svar (kort):** Claude tolket det som resten av det som kan gjøres nå: denne `docs`-PR-en og sletting av story-grenen.
 **Hva vi gjorde med det:** Pushet som egen PR.
+### 21
+> (E-post fra faglærer Bård, limt inn av Aksel: alle grupperepoene er koblet til Vercel, som er eneste publiseringsløsning emnet støtter. GitHub Pages er slått av i grupperepoene. Bare én i gruppa oppretter prosjektet, på sin Hobby-konto. Endringer i `main` publiseres automatisk, PR-er får forhåndsvisning, repoet må være offentlig, og adressen skal stå i README. Alle anbefales å installere GitHub CLI.)
+
+**Svar (kort):** Claude fant at Vercel bare bygger når `main` endres, så dataene ville blitt stående, og at grenen `data` kan gi et mislykket bygg hver time. Claude foreslo en rewrite i `vercel.json` i stedet for en deploy hook med nøkkel, og sa at det må prøves på en forhåndsvisning.
+**Hva vi gjorde med det:** Aksel godkjente endringsforslaget og valgte å eie prosjektet. Claude rettet selv kommandoen for Ignored Build Step, som først ville bygget feil gren.
+### 22
+> Følg faglærerens instruksjoner og klargjør SnowFinder for publisering på Vercel. [...] Behold GitHub Actions-jobben som oppdaterer værdata automatisk hver time. Fjern bare den delen av `data.yml` som gjelder publisering til GitHub Pages. [...] Ikke push eller merge endringer før kontrollene er gjennomført og resultatene er oppsummert.
+
+**Svar (kort):** `vercel.json` og `data.yml` endret lokalt, og alle sjekkene kjørt.
+**Hva vi gjorde med det:** Godtatt, og fulgt av prompt 23.
+
+### 23
+> Jeg ønsker at du automatiserer oppsettet og publiseringen av SnowFinder på Vercel [...] Be om min godkjenning før produksjonspublisering, push eller merge.
+
+**Svar (kort):** Claude installerte Vercel CLI, opprettet og koblet prosjektet `snowfinder`, og kjørte `vercel deploy`. Vercel gjorde den første publiseringen til produksjon, uten godkjenningen Aksel ba om, og Claude sa fra med en gang.
+**Hva vi gjorde med det:** Nettsiden er prøvd på ekte, og den fikk en ny `runId` uten nytt bygg.
+
+### 24
+> Set up Vercel for me. Fetch https://vercel.com/get-started.md and follow it.
+
+**Svar (kort):** CLI-delen var gjort. Plugin og MCP-server ble stoppet av sikkerhetsregelen i Claude Code, fordi de endrer Claudes eget oppsett.
+**Hva vi gjorde med det:** Valget ligger hos Aksel. Publiseringen trenger dem ikke.
+### 25
+> ja
+
+**Svar (kort):** Pushet `story/1-11e-vercel` og åpnet PR #81 med Joseph som reviewer. Utkastet #80 er lukket. Forhåndsvisningen svarer med samme `runId` som grenen `data`.
+**Hva vi gjorde med det:** Aksel godkjente tre linjer i `AGENTS.md`. Merge venter på Joseph og Aksel.
+
+### 26
+> er alt ok og puschet til git? hvor langt i stegene er vi kommet?
+
+**Svar (kort):** Alt var pushet til PR #81, og Joseph var bedt om review. Gjenstår: review, merge, produksjon fra `main` og planlagte kjøringer.
+
+### 27
+> tar resten i morgen
+
+### 28
+> ta sjekken av Sjekken av timesjobben. men jeg vil legge meg så jeg vil ikke svare deg på 12 timer
+
+### 29
+> kan være at pcen låser seg klarer du å kjøre for det om
+
+**Svar (kort):** Claude holdt PC-en våken i 12 timer uten å endre innstillinger, og fulgte med på kjøringene og alderen på dataene på nettsiden hvert 10. minutt.
+**Hva vi gjorde med det:** Bare 2 av 14 planlagte kjøringer startet, og dataene ble opptil 6 t 36 min gamle.
+
+### 30
+> takk
+
+### 31
+> ok
+
+### 32
+> bygg videre og puch endringene og oppdateringene i git hub
+
+**Svar (kort):** Claude pushet loggen, skrev endringsforslaget `sprint-change-proposal-2026-11-02-timesjobb.md` gjennom `bmad-correct-course` og spurte om godkjenning før koden ble endret. Aksel svarte «Godkjenn og bygg».
+**Hva vi gjorde med det:** `data.yml` prøver hvert 10. minutt, og jobben `gate` hopper over når dataene er under 50 minutter gamle. Ny test leser `data.yml`. Push venter på Aksels godkjenning.

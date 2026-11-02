@@ -2,9 +2,11 @@ name: Data
 
 on:
   schedule:
-    # Off the full hour: GitHub often delays jobs at :00, and the 90 min limit of the stale data banner
-    # leaves only 30 min of slack.
-    - cron: '17 * * * *'
+    # GitHub drops many scheduled runs (only 2 of 14 hourly ones started on 2026-11-02), so the schedule
+    # tries every 10 min, off the full hour. The gate job lets a run fetch only when the published file is
+    # 50 min old, so MET is still asked about once an hour, and four tries start between 50 and 90 min, the
+    # limit of the stale data banner.
+    - cron: '5,15,25,35,45,55 * * * *'
   push:
     branches: [main]
   workflow_dispatch:
@@ -17,23 +19,64 @@ permissions:
   contents: read
 
 concurrency:
-  # One fixed group: a PR run and the hourly run must not call MET at the same time (10 calls/s).
+  # One fixed group: a PR run and a scheduled run must not call MET at the same time (10 calls/s).
   group: data
   cancel-in-progress: false
 
 jobs:
-  data:
+  # Ends a scheduled run early when the data is fresh. Push, manual and PR runs always fetch, and so does a
+  # scheduled run when the age cannot be read: a fault here must never stop the updates.
+  gate:
     runs-on: ubuntu-latest
-    # Covers the worst case of about 35 min, and this job stays under the hour between scheduled runs. The
-    # concurrency group also holds verify: the read-back normally adds a few minutes, and two failing
-    # addresses can delay the next run.
+    timeout-minutes: 5
+    # Read only, and no checkout. The age is the time of the one commit on the branch data, read through
+    # the API: raw.githubusercontent.com caches for 5 min, so a try queued behind a run could see the old
+    # file and fetch again.
+    permissions:
+      contents: read
+    outputs:
+      run: ${{ steps.age.outputs.run }}
+    steps:
+      - name: Check the age of the published data
+        id: age
+        env:
+          URL: ${{ github.api_url }}/repos/${{ github.repository }}/commits/data
+          GH_TOKEN: ${{ github.token }}
+          EVENT: ${{ github.event_name }}
+          SKIP_YOUNGER_THAN_MINUTES: 50
+        run: |
+          if [ "$EVENT" != schedule ]; then
+            echo "Startet av $EVENT, så dataprogrammet kjører."
+            echo "run=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if published=$(curl --silent --fail --max-time 30 -H "Authorization: Bearer $GH_TOKEN" "$URL" |
+            jq -er '.commit.committer.date | strings') &&
+            published_seconds=$(date -u -d "$published" +%s 2>/dev/null); then
+            age=$(( ($(date -u +%s) - published_seconds) / 60 ))
+            if [ "$age" -ge 0 ] && [ "$age" -lt "$SKIP_YOUNGER_THAN_MINUTES" ]; then
+              echo "Dataene på grenen data er $age min gamle (publisert $published), under $SKIP_YOUNGER_THAN_MINUTES min. Ingen henting nå."
+              echo "run=false" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            echo "Dataene på grenen data er $age min gamle (publisert $published), så dataprogrammet kjører."
+          else
+            echo "::warning::Fant ikke alderen på grenen data, så dataprogrammet kjører."
+          fi
+          echo "run=true" >> "$GITHUB_OUTPUT"
+
+  data:
+    needs: gate
+    if: needs.gate.outputs.run == 'true'
+    runs-on: ubuntu-latest
+    # Covers the worst case of about 35 min. Scheduled tries that come meanwhile wait in the concurrency
+    # group, and the gate then finds fresh data. The group also holds verify: the read-back normally adds a
+    # few minutes.
     timeout-minutes: 50
     permissions:
       contents: read
-      pages: read # the check of how Pages is set up
     outputs:
       branch: ${{ steps.target.outputs.branch }}
-      pages: ${{ steps.target.outputs.pages }}
       run_id: ${{ steps.target.outputs.run_id }}
     steps:
       - uses: actions/checkout@v4
@@ -52,70 +95,27 @@ jobs:
           set -o pipefail
           timeout 45m npm run data 2>&1 | tee data-run.log
 
-      # AD-10: production fails without latest.json and never ships demo.json. Pages answers an unknown
-      # path with 404.html, so a copy of index.html makes direct links to /sted/<id> work.
-      # --ignore-scripts skips prebuild, which could replace the file from this run with another one.
-      - name: Build the app for the Pages subfolder
+      # AD-10: a run without latest.json publishes nothing, so the branch keeps the last valid file. The
+      # check also runs on PRs, so a problem with the run ID shows up before it reaches main.
+      - name: Check the file and choose whether to publish
+        id: target
         run: |
           if [ ! -f public/data/latest.json ]; then
             echo "::error::Dataprogrammet laget ikke public/data/latest.json."
-            exit 1
-          fi
-          npm run build --ignore-scripts -- --base="/${GITHUB_REPOSITORY#*/}/"
-          cp dist/index.html dist/404.html
-          rm dist/data/demo.json
-
-      - name: Check the build
-        run: |
-          test -f dist/404.html
-          test -f dist/data/latest.json
-          test ! -e dist/data/demo.json
-          cmp public/data/latest.json dist/data/latest.json
-          grep -q "/${GITHUB_REPOSITORY#*/}/assets/" dist/404.html
-
-      # Decided in every run: main always writes the branch data, and also Pages once Pages is switched to
-      # GitHub Actions. Only a 404 means that Pages is off; any other API error is red, so nothing is
-      # published by mistake. The checks also run on PRs, so a problem with the API, the token or the run
-      # ID shows up before it reaches main.
-      - name: Choose where to publish
-        id: target
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          if build_type=$(gh api "repos/$GITHUB_REPOSITORY/pages" --jq .build_type 2>pages-error.log); then
-            :
-          elif grep -q 'HTTP 404' pages-error.log; then
-            build_type=none
-          else
-            cat pages-error.log >&2
             exit 1
           fi
           if ! run_id=$(jq -er '.runId | strings | select(length > 0)' public/data/latest.json); then
             echo "::error::public/data/latest.json har ingen runId, så publiseringen kan ikke leses tilbake. Ingenting publiseres."
             exit 1
           fi
-          if [ "$build_type" = workflow ]; then
-            pages=true
-          else
-            pages=false
-          fi
           if [ "$GITHUB_REF" != refs/heads/main ]; then
-            echo "Ikke main, så ingenting publiseres eller leses tilbake. På main ville kjøringen skrevet grenen data, og Pages: $pages (build_type: $build_type)."
+            echo "Ikke main, så ingenting publiseres eller leses tilbake."
             exit 0
-          fi
-          if [ "$pages" = false ]; then
-            echo "::warning::Pages står ikke på «GitHub Actions» ($build_type), så appen publiseres ikke. Bare latest.json på grenen data oppdateres."
           fi
           {
             echo "branch=true"
-            echo "pages=$pages"
             echo "run_id=$run_id"
           } >> "$GITHUB_OUTPUT"
-
-      - uses: actions/upload-pages-artifact@v5
-        if: steps.target.outputs.pages == 'true'
-        with:
-          path: dist
 
       - uses: actions/upload-artifact@v7
         if: steps.target.outputs.branch == 'true'
@@ -159,36 +159,19 @@ jobs:
           commit=$(git commit-tree "$tree" -m "chore: oppdater latest.json fra kjøring $GITHUB_RUN_ID")
           git push --force origin "$commit:refs/heads/data"
 
-  pages:
-    needs: data
-    if: needs.data.outputs.pages == 'true'
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    outputs:
-      page_url: ${{ steps.deployment.outputs.page_url }}
-    permissions:
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - id: deployment
-        uses: actions/deploy-pages@v5
-
   # Proves the publishing on the address itself: a green deploy says nothing about what is out there.
   # A job of its own with no access and no checkout, so a failure here cannot touch what is published.
-  # The concurrency group holds for the whole run, so the next hourly run cannot replace the file during
+  # The concurrency group holds for the whole run, so the next scheduled run cannot replace the file during
   # the read-back.
   verify:
-    needs: [data, branch, pages]
+    needs: [data, branch]
     if: ${{ !cancelled() && needs.data.result == 'success' && github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     permissions: {}
     env:
       EXPECTED_RUN_ID: ${{ needs.data.outputs.run_id }}
-      # raw.githubusercontent.com answers max-age=300 and Pages usually max-age=600, so the limit has to
+      # raw.githubusercontent.com answers max-age=300, and the site reads through it, so the limit has to
       # survive a full cache period.
       READBACK_LIMIT_SECONDS: 720
       READBACK_INTERVAL_SECONDS: 20
@@ -219,11 +202,11 @@ jobs:
             sleep "$READBACK_INTERVAL_SECONDS"
           done
 
-      # Also when the read-back above failed, so the log shows the state of both addresses.
-      - name: Read back from Pages
-        if: ${{ !cancelled() && needs.pages.result == 'success' }}
+      # The address users open: the rewrite in vercel.json must reach the file with the right content type.
+      - name: Read back from the site
+        if: ${{ !cancelled() && needs.branch.result == 'success' }}
         env:
-          URL: ${{ needs.pages.outputs.page_url }}data/latest.json
+          URL: https://snowfinder-seven.vercel.app/data/latest.json
         run: *read-back
 
       # A publishing job that was skipped or timed out reads nothing back, so without this step the run
@@ -232,9 +215,7 @@ jobs:
         if: ${{ !cancelled() }}
         env:
           DATA_BRANCH: ${{ needs.data.outputs.branch }}
-          DATA_PAGES: ${{ needs.data.outputs.pages }}
           BRANCH_RESULT: ${{ needs.branch.result }}
-          PAGES_RESULT: ${{ needs.pages.result }}
         run: |
           failed=0
           if [ "$DATA_BRANCH" != true ]; then
@@ -243,14 +224,6 @@ jobs:
           fi
           if [ "$BRANCH_RESULT" != success ]; then
             echo "::error::Publiseringen til grenen data ble ikke fullført (resultat: $BRANCH_RESULT)."
-            failed=1
-          fi
-          if [ "$DATA_PAGES" != true ] && [ "$DATA_PAGES" != false ]; then
-            echo "::error::Jobben data valgte verken med eller uten Pages (pages: «$DATA_PAGES»)."
-            failed=1
-          fi
-          if [ "$DATA_PAGES" = true ] && [ "$PAGES_RESULT" != success ]; then
-            echo "::error::Publiseringen til Pages ble ikke fullført (resultat: $PAGES_RESULT)."
             failed=1
           fi
           exit "$failed"

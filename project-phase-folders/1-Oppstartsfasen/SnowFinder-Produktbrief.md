@@ -216,7 +216,7 @@ flowchart LR
 | Data | Én JSON-datafil med kvalitetsrapport, ingen database |
 | Tid og sol | date-fns-tz og SunCalc |
 | Testing | Vitest, fast-check og Playwright |
-| Automatisering og publisering | GitHub Actions (CI og planlagt jobb) og GitHub Pages |
+| Automatisering og publisering | GitHub Actions (CI og planlagt jobb) og Vercel *(endret 2026-11-01: GitHub Pages er slått av i emnet)* |
 
 ## Privacy
 

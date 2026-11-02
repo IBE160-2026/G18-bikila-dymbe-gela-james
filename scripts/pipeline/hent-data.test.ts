@@ -7,6 +7,7 @@ import type { FetchFn } from './fetch'
 import { HENT_TIMEOUT_MS, HENT_URL, hentData } from './hent-data'
 
 const demoText = await readFile(new URL('../../public/data/demo.json', import.meta.url), 'utf8')
+const vercelText = await readFile(new URL('../../vercel.json', import.meta.url), 'utf8')
 const demo = JSON.parse(demoText)
 const live = (generert: string) => ({
   ...demo,
@@ -199,5 +200,32 @@ describe('hentData', () => {
     outPath = join(dir, 'fil', 'latest.json')
     await expect(hent(answers(() => plain(live(NYERE))))).resolves.toBeUndefined()
     expect(lines[0]).toContain('Klarte ikke å hente værdata')
+  })
+})
+
+describe('vercel.json', () => {
+  const config = JSON.parse(vercelText) as {
+    buildCommand: string
+    rewrites: { source: string; destination: string }[]
+    headers: { source: string; headers: { key: string; value: string }[] }[]
+  }
+
+  it('sends the data file to the same address npm run data:hent reads, so the site and dev agree', () => {
+    expect(config.rewrites).toContainEqual({ source: '/data/latest.json', destination: HENT_URL })
+  })
+
+  it('overrides text/plain from GitHub, since the app counts anything but JSON as a missing file', () => {
+    const data = config.headers.find(({ source }) => source === '/data/latest.json')
+    expect(data?.headers.find(({ key }) => key === 'Content-Type')?.value).toContain('json')
+  })
+
+  it('sends direct links to the app, but not the assets or the data files', () => {
+    expect(config.rewrites).toContainEqual({ source: '/((?!assets/|data/).*)', destination: '/index.html' })
+  })
+
+  it('builds without prebuild and without data files, which would go before the rewrite', () => {
+    expect(config.buildCommand).toContain('--ignore-scripts')
+    expect(config.buildCommand).toContain('dist/data/latest.json')
+    expect(config.buildCommand).toContain('dist/data/demo.json')
   })
 })

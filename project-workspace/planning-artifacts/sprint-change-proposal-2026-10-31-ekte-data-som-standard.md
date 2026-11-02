@@ -73,7 +73,7 @@ Hvert steg er én commit på PR #78 og stopper for godkjenning fra Aksel.
 | 4 | `data.yml`: alltid `data`, verifisering av `runId` | `data.yml` grønn på PR-en, som ikke publiserer |
 | 5 | Review fra Joseph, merge når alt er grønt | `gh pr checks --watch` og godkjenning |
 | 6 | Kjør for hånd på `main`, og sjekk grenen `data` på ekte. Sjekk rent klon med `npm run dev` | `runId` stemmer, og `generert` endrer seg etter en time |
-| 7 | Pages når faglærer har slått det på: nettsiden, direkte lenke, og at tidspunktet endrer seg. Gjør «Pages er av» rød | Nettsiden oppdateres |
+| 7 | *Erstattet 2026-11-01 av `sprint-change-proposal-2026-11-01-vercel.md`, fordi Pages er slått av i emnet.* Pages når faglærer har slått det på: nettsiden, direkte lenke, og at tidspunktet endrer seg. Gjør «Pages er av» rød | Nettsiden oppdateres |
 
 ## 5. Valg tatt 2026-10-31
 
