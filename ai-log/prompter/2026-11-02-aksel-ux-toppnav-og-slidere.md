@@ -44,3 +44,22 @@ Vedlegg: `SnowFinder_logo.svg` og to skjermbilder av toppen av Utforsk og filter
 
 **Svar (kort):** Claude installerte Firefox og WebKit for Playwright og kjørte en midlertidig test av alle fem sliderne. Firefox var riktig. I WebKit gjorde pil høyre «høyst»-kravene løsere, og det ble rettet med `onKeyDown`. Etterpå besto 14 av 14 tester i begge nettleserne.
 **Hva vi gjorde med det:** Rettingen er lagt i PR #82, og push venter på Aksels godkjenning.
+
+### 7
+> godkjent
+
+### 8
+> Godkjent! Du kan pushe commit `fab8c85` til PR #82.
+>
+> Jeg ønsker også at du legger inn en permanent regresjonstest som kontrollerer at pil høyre gjør filterkravet strengere og pil venstre gjør det mindre strengt, for alle de fire speilede sliderne.
+>
+> Testen skal kunne kjøres i Chromium, Firefox og WebKit. Vurder en effektiv CI-løsning der de relevante testene kjøres i alle tre nettlesere, uten å kjøre hele E2E-suiten tre ganger.
+>
+> Kjør relevante tester etter endringene og oppdater PR-beskrivelsen med testresultatene.
+>
+> Behold testen på ekte Safari/iPhone som et eget punkt til brukertesten.
+>
+> Joseph må gjennomgå og godkjenne den oppdaterte PR-en. Ikke merge til `main` uten min eksplisitte godkjenning, og ikke start neste UX-steg ennå.
+
+**Svar (kort):** Claude pushet `fab8c85` og la til `tests/e2e/slidere.spec.ts`, prosjektene `firefox` og `webkit`, skriptet `test:e2e:nettlesere` og en egen CI-jobb, `nettlesere`, som kjører ved siden av `e2e`. Med rettingen slått av feilet testen 4 av 4 i WebKit.
+**Hva vi gjorde med det:** Ekte Safari på Mac og iPhone står som eget punkt i brukertesten.

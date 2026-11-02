@@ -228,8 +228,8 @@ function Filterfelt({ krav, verdi, onEndre, hint, hintErStatus, ekstraKnapp }: F
         }}
         // WebKit (Safari) moves a dir="rtl" range by its number, not by what the user sees, so there the
         // right arrow key would loosen a «høyst» requirement. The slider moves itself on Left and Right, so
-        // every browser goes the way the thumb looks: Right is one step stricter (a lower number). Up, Down,
-        // Home, End and Page keys follow the number, as before.
+        // Chromium, Firefox and WebKit all go the way the thumb looks: Right is one step stricter (a lower
+        // number). Up, Down, Home and End follow the number (tests/e2e/slidere.spec.ts, all three engines).
         onKeyDown={
           speilet
             ? (event) => {

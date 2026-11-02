@@ -286,6 +286,11 @@ oppgavene med tenk-høyt. Testlederen hjelper bare når deltakeren står fast i 
 noterer da oppgaven som «med hjelp». Til slutt SUS-skjemaet og to åpne spørsmål: «Hva var
 vanskeligst?» og «Hva ville fått deg til å bruke SnowFinder før en skitur?»
 
+**Ekte Safari** *(2026-11-02, Story 2.1b)*. Minst én deltaker bruker Safari på iPhone og én Safari på Mac,
+hvis noen har det. Etter oppgavene sjekker testlederen filtersliderne der: alle fem står på «Alle» til
+venstre, å dra mot høyre gjør kravet strengere, og på Mac gjør pil høyre det samme. Slidertesten kjører
+i WebKit i CI, men ikke i ekte Safari.
+
 | # | Oppgave | Måler | Mål |
 |---|---|---|---|
 | 1 | «Finn et skisted med minst 10 cm nysnø og vind høyst 10 m/s, og åpne det.» Riktig svar: Trysil (12,6 cm nysnø, vind 9,5 m/s, skisted). | Tid, og om den fullføres uten hjelp | SM-2: minst 4 av 5 på under 2 minutter uten hjelp |

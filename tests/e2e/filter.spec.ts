@@ -82,27 +82,7 @@ test.describe('at 1280px', () => {
     await page.keyboard.press('ArrowRight')
     await expect(nysno(page)).toHaveAttribute('aria-valuetext', 'minst 2 cm')
     await expect(markers(page)).toHaveCount(8)
-    // Story 2.1b: the «høyst» sliders also start at «Alle» on the left and get stricter to the right, with
-    // the pointer and with the right arrow key.
-    const vindBox = await box(vind(page))
-    await vind(page).click({ position: { x: vindBox.width - 2, y: vindBox.height / 2 } })
-    await expect(vind(page)).toHaveAttribute('aria-valuetext', 'høyst 0 m/s')
-    await vind(page).click({ position: { x: 2, y: vindBox.height / 2 } })
-    await expect(vind(page)).toHaveAttribute('aria-valuetext', 'Alle')
-    await page.keyboard.press('ArrowRight')
-    await expect(vind(page)).toHaveAttribute('aria-valuetext', 'høyst 24 m/s')
-    await page.keyboard.press('ArrowLeft')
-    await expect(vind(page)).toHaveAttribute('aria-valuetext', 'Alle')
-    // Up follows the number, as a screen reader expects: at «Alle» (the highest wind) it goes no further.
-    await page.keyboard.press('ArrowUp')
-    await expect(vind(page)).toHaveAttribute('aria-valuetext', 'Alle')
-    // Temperature has a negative minimum and is mirrored the same way.
-    await temperatur(page).focus()
-    await page.keyboard.press('ArrowRight')
-    await expect(temperatur(page)).toHaveAttribute('aria-valuetext', 'høyst 9 °C')
-    await page.keyboard.press('ArrowUp')
-    await expect(temperatur(page)).toHaveAttribute('aria-valuetext', 'Alle')
-    await expect(markers(page)).toHaveCount(8)
+    // Story 2.1b: the direction of all five sliders, in Chromium, Firefox and WebKit, is in slidere.spec.ts.
     await temperatur(page).fill('0')
     await expect(temperatur(page)).toHaveAttribute('aria-valuetext', 'høyst 0 °C')
     await expect(markers(page)).toHaveCount(6)
