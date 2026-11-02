@@ -162,3 +162,13 @@
 - source_spec: `project-workspace/implementation-artifacts/spec-1-11e-vercel.md`
   summary: Filer i `/assets/` caches ikke, og CI kjører ikke byggekommandoen fra `vercel.json`.
   evidence: Målt `max-age=0` på nettsiden. Vurderes sammen med NFR-2.
+
+- source_spec: `project-workspace/implementation-artifacts/spec-1-11f-paalitelig-timesjobb.md`
+  summary: Skriptet i `gate` i `data.yml` har ingen test i repoet, på samme måte som skriptet i `verify`. Flytt begge til egne skript som kan kjøres med faste tidspunkt og svar.
+  evidence: Prøvd for hånd mot GitHub-API-et 2026-11-02 med gamle data, ferske data og en gren som ikke finnes. Testen i `data-workflow.test.ts` leser bare teksten.
+- source_spec: `project-workspace/implementation-artifacts/spec-1-11f-paalitelig-timesjobb.md`
+  summary: En push-, PR- eller manuell kjøring som venter i `concurrency`-gruppen bak en pågående kjøring, kan bli erstattet av et planlagt forsøk, som så hopper over hentingen når dataene er ferske. Vurder egen gruppe eller en merknad i README hvis det skjer.
+  evidence: maybe-false, ville vært medium. GitHub beholder bare én ventende kjøring per gruppe. En vanlig kjøring tar rundt et halvt minutt, så vinduet er kort. Avgjøres ved å se om push-kjøringen etter merge av PR #81 blir «cancelled».
+- source_spec: `project-workspace/implementation-artifacts/spec-1-11f-paalitelig-timesjobb.md`
+  summary: Banneret kan fortsatt komme når GitHub dropper fire forsøk på rad. En garanti krever en tjeneste med nøkkel, og det er utenfor v1. Posten om lange kjøringer (Story 1.6, tidsbudsjett per kall) gjelder nå hvert 10. minutt, ikke neste time.
+  evidence: Natten 1.–2. november startet bare 2 av 14 planlagte kjøringer. Avgjøres med et døgn med målinger på nettsiden etter merge.

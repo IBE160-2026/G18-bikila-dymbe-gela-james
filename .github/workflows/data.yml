@@ -2,9 +2,11 @@ name: Data
 
 on:
   schedule:
-    # Off the full hour: GitHub often delays jobs at :00, and the 90 min limit of the stale data banner
-    # leaves only 30 min of slack.
-    - cron: '17 * * * *'
+    # GitHub drops many scheduled runs (only 2 of 14 hourly ones started on 2026-11-02), so the schedule
+    # tries every 10 min, off the full hour. The gate job lets a run fetch only when the published file is
+    # 50 min old, so MET is still asked about once an hour, and four tries start between 50 and 90 min, the
+    # limit of the stale data banner.
+    - cron: '5,15,25,35,45,55 * * * *'
   push:
     branches: [main]
   workflow_dispatch:
@@ -17,15 +19,59 @@ permissions:
   contents: read
 
 concurrency:
-  # One fixed group: a PR run and the hourly run must not call MET at the same time (10 calls/s).
+  # One fixed group: a PR run and a scheduled run must not call MET at the same time (10 calls/s).
   group: data
   cancel-in-progress: false
 
 jobs:
-  data:
+  # Ends a scheduled run early when the data is fresh. Push, manual and PR runs always fetch, and so does a
+  # scheduled run when the age cannot be read: a fault here must never stop the updates.
+  gate:
     runs-on: ubuntu-latest
-    # Covers the worst case of about 35 min, and this job stays under the hour between scheduled runs. The
-    # concurrency group also holds verify: the read-back normally adds a few minutes.
+    timeout-minutes: 5
+    # Read only, and no checkout. The age is the time of the one commit on the branch data, read through
+    # the API: raw.githubusercontent.com caches for 5 min, so a try queued behind a run could see the old
+    # file and fetch again.
+    permissions:
+      contents: read
+    outputs:
+      run: ${{ steps.age.outputs.run }}
+    steps:
+      - name: Check the age of the published data
+        id: age
+        env:
+          URL: ${{ github.api_url }}/repos/${{ github.repository }}/commits/data
+          GH_TOKEN: ${{ github.token }}
+          EVENT: ${{ github.event_name }}
+          SKIP_YOUNGER_THAN_MINUTES: 50
+        run: |
+          if [ "$EVENT" != schedule ]; then
+            echo "Startet av $EVENT, så dataprogrammet kjører."
+            echo "run=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if published=$(curl --silent --fail --max-time 30 -H "Authorization: Bearer $GH_TOKEN" "$URL" |
+            jq -er '.commit.committer.date | strings') &&
+            published_seconds=$(date -u -d "$published" +%s 2>/dev/null); then
+            age=$(( ($(date -u +%s) - published_seconds) / 60 ))
+            if [ "$age" -ge 0 ] && [ "$age" -lt "$SKIP_YOUNGER_THAN_MINUTES" ]; then
+              echo "Dataene på grenen data er $age min gamle (publisert $published), under $SKIP_YOUNGER_THAN_MINUTES min. Ingen henting nå."
+              echo "run=false" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            echo "Dataene på grenen data er $age min gamle (publisert $published), så dataprogrammet kjører."
+          else
+            echo "::warning::Fant ikke alderen på grenen data, så dataprogrammet kjører."
+          fi
+          echo "run=true" >> "$GITHUB_OUTPUT"
+
+  data:
+    needs: gate
+    if: needs.gate.outputs.run == 'true'
+    runs-on: ubuntu-latest
+    # Covers the worst case of about 35 min. Scheduled tries that come meanwhile wait in the concurrency
+    # group, and the gate then finds fresh data. The group also holds verify: the read-back normally adds a
+    # few minutes.
     timeout-minutes: 50
     permissions:
       contents: read
@@ -115,7 +161,7 @@ jobs:
 
   # Proves the publishing on the address itself: a green deploy says nothing about what is out there.
   # A job of its own with no access and no checkout, so a failure here cannot touch what is published.
-  # The concurrency group holds for the whole run, so the next hourly run cannot replace the file during
+  # The concurrency group holds for the whole run, so the next scheduled run cannot replace the file during
   # the read-back.
   verify:
     needs: [data, branch]

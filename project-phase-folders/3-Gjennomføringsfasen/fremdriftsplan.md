@@ -3,7 +3,7 @@
 Oversikt over hvordan vi går fram, steg for steg, så alle kan følge med selv om de ikke var
 på møtet. Oppdater statusen når et steg er ferdig.
 
-**Sist oppdatert:** 2026-11-01
+**Sist oppdatert:** 2026-11-02
 
 ## Slik holder du deg oppdatert
 
@@ -14,6 +14,14 @@ på møtet. Oppdater statusen når et steg er ferdig.
 4. Se promptene fra siste økt i [`ai-log/prompter/`](../../ai-log/prompter/).
 
 ## Hvor er vi nå?
+
+**2. november: timesjobben startet bare 2 av 14 ganger i natt, så den prøver nå hvert 10. minutt.**
+
+- Kjøringene som startet, nådde nettsiden uten nytt bygg, men dataene ble opptil 6 t 36 min gamle, og banneret
+  sto det meste av natten ([endringsforslaget](../../project-workspace/planning-artifacts/sprint-change-proposal-2026-11-02-timesjobb.md)).
+- I PR #81: `data.yml` prøver hvert 10. minutt, og jobben `gate` hopper over når dataene er under 50 minutter
+  gamle, så MET fortsatt spørres omtrent én gang i timen.
+- Neste: review og merge av PR #81, og et døgn med målinger på nettsiden. Story 1.11 står på `in-progress` til da.
 
 **1. november (kveld): Vercel erstatter GitHub Pages, så publiseringen av appen må endres.**
 

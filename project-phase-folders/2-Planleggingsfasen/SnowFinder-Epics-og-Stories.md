@@ -390,6 +390,10 @@ Grenen `data` bygges ikke på Vercel *(ny v7, 2026-11-01)*
 grønn kjøring betyr at dataene faktisk er ute *(ny v6, nettadressen v7)*
 **Ikke i v1:** publisering til GitHub Pages. Faglærer har slått det av i grupperepoene *(2026-11-01)*
 **And** jobben bruker en `concurrency`-gruppe uten avbrudd, så bare én kjøring går om gangen
+**And** timeplanen starter jobben hvert 10. minutt, og en planlagt kjøring hopper over hentingen når
+siste publisering på grenen `data` er yngre enn 50 minutter, så GitHubs droppede kjøringer ikke gir
+timer gamle data, og MET fortsatt spørres omtrent én gang i timen. Kan ikke alderen leses, kjører
+jobben som vanlig *(ny 2026-11-02)*
 **And** en kjøring uten `latest.json` publiserer ingenting, så grenen beholder siste gyldige fil, og
 produksjon viser aldri demodata (AD-10)
 **And** en kjøring som ikke publiserer, laster opp kvalitetsrapporten som artifact og vises som

@@ -191,10 +191,13 @@ skrives ut når kjøringen ikke ble publisert.
 
 ### Timesjobben og publisering
 
-`.github/workflows/data.yml` kjører `npm run data` én gang i timen, 17 minutter over hel time, ved push til
-`main` og når den startes for hånd. Den trenger ingen nøkler. Hver kjøring på `main` legger `latest.json` i
-rota på grenen `data`. Grenen har alltid ett commit, så den får ingen historikk som vokser. Herfra henter
-`npm run data:hent` fila.
+`.github/workflows/data.yml` kjører `npm run data` omtrent én gang i timen, ved push til `main` og når den
+startes for hånd. GitHub hopper over mange planlagte kjøringer, så timeplanen prøver hvert 10. minutt, og den
+første jobben, `gate`, stopper en planlagt kjøring når siste commit på grenen `data` er under 50 minutter
+gammel. Loggen til `gate` viser alderen. Actions-fanen får derfor rundt 144 kjøringer i døgnet, og de fleste
+har `data`, `branch` og `verify` som skipped. Jobben trenger ingen nøkler. Hver kjøring som henter, legger
+`latest.json` i rota på grenen `data`. Grenen har alltid ett commit, så den får ingen historikk som
+vokser. Herfra henter `npm run data:hent` fila.
 
 Etter publisering leser jobben fila tilbake fra grenen og nettsiden og sammenligner kjørings-ID-en. Stemmer den
 ikke, blir kjøringen rød, så grønn betyr at dataene faktisk er ute.
@@ -216,7 +219,7 @@ ligger som artifact (`data-run-log`) på kjøringen. En PR som endrer `data.yml`
 publisere.
 
 Feiler tilbakelesingen, kan den nye fila likevel være ute. Loggen viser hvilken `runId` som var forventet og
-funnet, og neste timeskjøring prøver igjen.
+funnet, og neste forsøk prøver igjen når dataene er over 50 minutter gamle.
 
 Feltene i datafila og kildesvarene er beskrevet i
 [`shared/contracts/data-dictionary.md`](shared/contracts/data-dictionary.md).

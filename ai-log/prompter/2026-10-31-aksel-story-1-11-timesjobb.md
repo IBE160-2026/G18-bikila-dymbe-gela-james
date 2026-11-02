@@ -150,3 +150,32 @@
 
 **Svar (kort):** Pushet `story/1-11e-vercel` og åpnet PR #81 med Joseph som reviewer. Utkastet #80 er lukket. Forhåndsvisningen svarer med samme `runId` som grenen `data`.
 **Hva vi gjorde med det:** Aksel godkjente tre linjer i `AGENTS.md`. Merge venter på Joseph og Aksel.
+
+### 26
+> er alt ok og puschet til git? hvor langt i stegene er vi kommet?
+
+**Svar (kort):** Alt var pushet til PR #81, og Joseph var bedt om review. Gjenstår: review, merge, produksjon fra `main` og planlagte kjøringer.
+
+### 27
+> tar resten i morgen
+
+### 28
+> ta sjekken av Sjekken av timesjobben. men jeg vil legge meg så jeg vil ikke svare deg på 12 timer
+
+### 29
+> kan være at pcen låser seg klarer du å kjøre for det om
+
+**Svar (kort):** Claude holdt PC-en våken i 12 timer uten å endre innstillinger, og fulgte med på kjøringene og alderen på dataene på nettsiden hvert 10. minutt.
+**Hva vi gjorde med det:** Bare 2 av 14 planlagte kjøringer startet, og dataene ble opptil 6 t 36 min gamle.
+
+### 30
+> takk
+
+### 31
+> ok
+
+### 32
+> bygg videre og puch endringene og oppdateringene i git hub
+
+**Svar (kort):** Claude pushet loggen, skrev endringsforslaget `sprint-change-proposal-2026-11-02-timesjobb.md` gjennom `bmad-correct-course` og spurte om godkjenning før koden ble endret. Aksel svarte «Godkjenn og bygg».
+**Hva vi gjorde med det:** `data.yml` prøver hvert 10. minutt, og jobben `gate` hopper over når dataene er under 50 minutter gamle. Ny test leser `data.yml`. Push venter på Aksels godkjenning.
