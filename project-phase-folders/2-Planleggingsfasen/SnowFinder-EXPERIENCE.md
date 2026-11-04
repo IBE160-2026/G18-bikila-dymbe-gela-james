@@ -31,7 +31,7 @@ Appen leser én publisert datafil og skriver ingenting. Demodatasettet vises bar
 |---|---|---|
 | Utforsk (kart) | `/` (standard) | Norgeskart fargelagt etter SnowScore, primær inngang |
 | Utforsk (liste) | `/` med `visning=liste`, eller «Vis som liste»-lenke fra kartet | Samme steder/filter som kartet, tastaturnavigerbar liste — fullverdig alternativ, ikke en degradert reserve (PRD FR-13) |
-| Stedsside | Trykk på kartmarkør, listerad, eller direkte delt lenke `/sted/:id` | Stedsnavnet som overskrift, SnowScore med delpoeng, «Grunnlag» (rådata, høyde og dataalder) og beste skivindu. «Tilbake» nederst går tilbake til søket. Stedstypen vises ikke. |
+| Stedsside | Trykk på kartmarkør, listerad, søkeforslag eller direkte delt lenke `/sted/:id` | Stedsnavnet som overskrift, SnowScore med delpoeng, «Grunnlag» (rådata, høyde og dataalder) og beste skivindu. «Tilbake» nederst går tilbake til søket. Stedstypen vises ikke. |
 | Slik beregner vi SnowScore | Toppnavigasjon, eller lenke fra ethvert score-badge | Forklaring, regneeksempel, datakilder og begrensninger, datakvalitet for siste kjøring, «prøv selv»-kalkulator (Bør ha) |
 
 *(v2: Flaten «Tilbakemelding» er Ikke i v1.)*
@@ -73,6 +73,7 @@ Atferd. Visuelle spesifikasjoner ligger i `SnowFinder-DESIGN.md.Components`.
 |---|---|---|
 | Toppnavigasjon | Alle flater, øverst | SnowFinder-logoen står til venstre for «SnowFinder» og er pynt for skjermlesere (`alt=""`), siden lenketeksten sier navnet *(2026-11-02)*. «SnowFinder» (til kartet) og «Slik beregner vi SnowScore». Under 768 px ligger lenken bak knappen ☰ (`aria-label="Meny"`, `aria-expanded`), og menyen lukkes når brukeren går til en annen side. Gjeldende side har `aria-current="page"` og vises med fet skrift og understrek, ikke bare farge. |
 | Kart \| Liste-veksling | Utforsk, rett under navigasjonen | To lenker, «Kart» og «Liste», ikke en bryter som bare finnes i JavaScript: valget står i URL-en (`visning=liste`), så Tilbake og delte lenker beholder det. Den valgte har `aria-current="page"`. Begge lenkene beholder filter og sortering. Lenken «Slik beregner vi SnowScore» står på samme linje, men bare under 768 px, der toppnavigasjonens lenke ligger bak ☰. Fra 768 px vises bare toppnavigasjonens lenke, så den aldri står to ganger *(endret 2026-11-02)*. |
+| Søkefelt *(Story 3.9)* | Utforsk, mellom Kart \| Liste-vekslingen og kartet eller listen, på alle bredder | Etiketten «Søk etter sted» er synlig over feltet. Forslag vises fra første tegn, høyst 8, i en liste rett under feltet. Hvert forslag viser stedsnavnet og score-badge, eller statusen som tekst («Oppfyller ikke filteret», «Ufullstendige data»). Steder med for gamle data er fjernet og finnes ikke i søket. Når alle steder er fjernet («Ingen ferske data»), vises heller ikke søkefeltet. Pil opp og ned flytter markeringen, Enter åpner stedssiden, og Escape lukker listen (andre trykk tømmer feltet). Et klikk utenfor lukker listen. Søketeksten står ikke i adressen og endrer aldri filteret eller trefftallet. Antallet forslag annonseres med `aria-live="polite"`. Feltet ligger aldri i bunn-arket. |
 | Kartmarkør | Utforsk (kart) | Klikk/trykk åpner stedsside. Hover (desktop) viser stedsnavn + score i tooltip. *(v3, 2026-10-08)* Ingen klynging: markørene er små på landsnivå og vokser når brukeren zoomer inn (mål i DESIGN.md `{components.map-marker}`), så ingen sted forsvinner inn i en klynge. |
 | Listerad | Utforsk (liste) | Hele raden er én lenke: Tab-navigerbar, Enter åpner stedsside. Stedsnavn, score-badge og nøkkeltall (nysnø, vind, temperatur). |
 | Sorteringsvalg | Utforsk (liste), over radene | En ordinær `<select>` med etiketten «Sorter etter» og valgene «Score», «Avstand» og «Navn», aldri en museavhengig dra-og-slipp. «Score» og «Navn» står i URL-en. «Avstand» ber om posisjonen først når brukeren velger det, og posisjonen blir bare i minnet (se Tilstandsmønstre, avslått posisjon). |
@@ -101,6 +102,7 @@ Atferd. Visuelle spesifikasjoner ligger i `SnowFinder-DESIGN.md.Components`.
 | Laster (kaldstart) | Alle flater | Kart og liste: et skjelett i `{colors.surface-sunken}` med samme form som kartet eller listen, så siden ikke hopper når dataene kommer. Stedssiden: et enkelt skjelett. Skjermleseren hører «Laster stedsdata» (`role="status"`). Ingen spinner-only-skjerm. Forklaringssiden vises med en gang; bare datakvalitetspanelet venter og sier «Henter kvalitetsrapporten for siste kjøring …». |
 | Datafilen lar seg ikke laste | Kart/liste/stedsside | «Klarte ikke å lese stedsdataene. Prøv å laste siden på nytt senere.» (`role="alert"`). Forklaringssiden vises likevel, og datakvalitetspanelet sier «Kvalitetsrapporten kunne ikke lastes. Last inn siden på nytt for å prøve igjen.» Lar kartbiblioteket seg ikke laste, står «Kartet kunne ikke lastes. Last siden på nytt.» i stedet for kartet. |
 | Null treff | Kart/liste | Teksten over kartet eller listen sier hvilket krav som kan lempes: «Ingen treff. Prøv vind høyst 8 m/s.» Knappen «Bruk forslaget» setter verdien med ett trykk og flytter fokus til glideren for det kravet, og «Nullstill» står ved siden av. Hjelper det ikke å endre ett krav: «Det hjelper ikke å endre bare ett krav. Prøv «Nullstill».» Aldri en tom flate uten handling. Se [wireframe-utforsk](wireframes/wireframe-utforsk-2026-10-28.excalidraw), ramme 5. |
+| Ingen søketreff | Søkefeltet | «Fant ingen steder som heter «…». SnowFinder dekker N steder i Norge.» i forslagslisten. Filteret, kartet og listen er uendret. |
 | Utdatert data (3–12 t) | Stedsside, kort, liste | Liten `meta`-tekst «Utdatert» + tidsstempel, ingen blokkering av visning. |
 | Data for gammel (>12 t) | Kart/liste/stedsside | Stedet vises ikke i det hele tatt (fjernet fra resultater, jf. NFR-3) — ikke vist gråtonet, faktisk fjernet, så brukeren aldri handler på for gammel info. Åpnes en delt lenke `/sted/:id` til et slikt sted, sier stedssiden «Dataene for dette stedet er for gamle til å vises» med lenken «Gå til kartet». |
 | Alle steder fjernet | Utforsk | Er alle stedene for gamle, vises overskriften «Ingen ferske data», teksten «Ingen steder har ferske nok data akkurat nå. Last inn siden på nytt for å hente de nyeste dataene.» og knappen «Last inn på nytt». Kart \| Liste-vekslingen og filteret vises ikke, siden det ikke er noe å vise. |
@@ -225,6 +227,15 @@ får hun høre at listen beholder rekkefølgen den hadde.
 
 Feil-gren: Har hun ikke nett, og finnes det ingen hentet datafil, sier `npm run dev` fra og viser
 kommandoen for demomodus. Demomodus virker alltid.
+
+### Flyt 5 — Mari sjekker ett bestemt sted (realiserer UJ-4) *(2026-11-04)*
+
+1. Mari åpner SnowFinder på mobil. Kartet lastes.
+2. Hun skriver «beito» i søkefeltet over kartet. Forslaget «Beitostølen» vises med score-badge.
+3. Hun trykker forslaget, og stedssiden åpnes.
+
+Feil-gren: Filteret skjuler Beitostølen → forslaget står likevel, merket «Oppfyller ikke
+filteret». Hun kan åpne stedssiden eller nullstille filteret.
 
 ## Wireframes *(steg 8c, 2026-10-28)*
 
