@@ -33,5 +33,8 @@
 - [x] 2026-11-01 [story-1-11c-e2e-mot-demomodus](995-2026-11-01-00-16-06-story-1-11c-e2e-mot-demomodus.md) — AGENTS.md nevner fortsatt Pages; rettes via bmad-project-context (løst 2026-11-01)
 - [ ] 2026-11-02 [story-1-11c-e2e-mot-demomodus](995-2026-11-01-00-16-06-story-1-11c-e2e-mot-demomodus.md) — Bare 2 av 14 planlagte kjøringer startet natt til 2. november; timesoppdateringen må gjøres pålitelig via bmad-correct-course (bygget i 1.11f 2026-11-02, må måles et døgn etter merge)
 - [ ] 2026-11-02 [story-2-1b-toppnav-og-slidere](994-2026-11-02-21-00-52-story-2-1b-toppnav-og-slidere.md) — Prøv de speilede sliderne i Firefox og Safari i brukertesten (Firefox og WebKit gjort 2026-11-02, ekte Safari på Mac og iPhone gjenstår)
-- [ ] 2026-11-02 [story-2-1b-toppnav-og-slidere](994-2026-11-02-21-00-52-story-2-1b-toppnav-og-slidere.md) — PR for 2.1b trenger review fra et gruppemedlem før merge
+- [x] 2026-11-02 [story-2-1b-toppnav-og-slidere](994-2026-11-02-21-00-52-story-2-1b-toppnav-og-slidere.md) — PR for 2.1b trenger review fra et gruppemedlem før merge (løst 2026-11-04: PR #82 er merget)
 - [ ] 2026-11-02 [story-2-1b-toppnav-og-slidere](994-2026-11-02-21-00-52-story-2-1b-toppnav-og-slidere.md) — Før npm run test:e2e:nettlesere og CI-jobben nettlesere inn i AGENTS.md via bmad-project-context
+- [ ] 2026-11-04 [sok-pa-stedsnavn](993-2026-11-04-22-43-41-sok-pa-stedsnavn.md) — Gruppa bekrefter «til beslutning»-punktene i PRD/SRS v2: søk som Må ha, valg av dag ikke i v1, skala som arkitekturforsikring
+- [ ] 2026-11-04 [sok-pa-stedsnavn](993-2026-11-04-22-43-41-sok-pa-stedsnavn.md) — Story 3.9 trenger review fra et gruppemedlem før merge
+- [ ] 2026-11-04 [sok-pa-stedsnavn](993-2026-11-04-22-43-41-sok-pa-stedsnavn.md) — Fargeforklaring for kartet (SRS-F-15 i v2) trenger eget endringsforslag
