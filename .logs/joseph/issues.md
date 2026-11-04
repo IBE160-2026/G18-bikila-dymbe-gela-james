@@ -20,6 +20,7 @@
 - [ ] 2026-10-29 [story-1-6-hold-tjenesten-oppe](993-2026-10-29-11-45-07-story-1-6-hold-tjenesten-oppe.md) — vurder tidsbudsjett for trege 5xx-svar i `fetch.ts` når 1.11 går
 - [ ] 2026-10-29 [story-1-6-hold-tjenesten-oppe](993-2026-10-29-11-45-07-story-1-6-hold-tjenesten-oppe.md) — datakvalitetspanelet viser antall utdaterte og fjernede steder (utsatt fra 2.3)
 - [ ] 2026-11-01 [moetereferat-2026-11-01](992-2026-11-01-14-30-02-moetereferat-2026-11-01.md) — avklar «den rette formelen» for SnowScore, og ta endringer via `bmad-correct-course`
-- [ ] 2026-11-01 [moetereferat-2026-11-01](992-2026-11-01-14-30-02-moetereferat-2026-11-01.md) — se på Vercel som hosting på neste møte (bytte fra Pages går via `bmad-correct-course`)
+- [x] 2026-11-01 [moetereferat-2026-11-01](992-2026-11-01-14-30-02-moetereferat-2026-11-01.md) — se på Vercel som hosting på neste møte (bytte fra Pages går via `bmad-correct-course`) (løst 2026-11-04: Vercel tatt i bruk i PR #81)
 - [ ] 2026-11-01 [moetereferat-2026-11-01](992-2026-11-01-14-30-02-moetereferat-2026-11-01.md) — fix-PR for funnene fra reviewen av 1.6, etter at #78 er merget
 - [ ] 2026-11-01 [moetereferat-2026-11-01](992-2026-11-01-14-30-02-moetereferat-2026-11-01.md) — orienter Aksel om beslutningene fra møtet
+- [ ] 2026-11-04 [moetereferat-2026-11-01](992-2026-11-01-14-30-02-moetereferat-2026-11-01.md) — legg merknad i referatet 2026-11-01 om at Vercel ble tatt i bruk samme kveld (PR #81)
