@@ -1,10 +1,16 @@
-import { PublishedData } from '../../../shared/contracts/published'
+import { medNyereFelt, PublishedData } from '../../../shared/contracts/published'
 
-// AD-1/AD-10: the app's only way to get data. Loads latest.json and falls back to demo.json only when
-// latest.json does not exist (a clean clone). A latest.json that exists but is broken is an error,
-// never a reason to show demo data instead. AD-12: parsed with the schema publish.ts validated against.
+// AD-1/AD-10: the app's only way to get data. It loads one local file, chosen when the app is built:
+// demo.json with `--mode demo`, otherwise latest.json. It never reads the other file and never an
+// external address, so a missing or broken latest.json gives a message, never demo data.
+// AD-12: parsed with the schema publish.ts validated against.
 
 export type DataSource = 'latest' | 'demo'
+
+/** The file for Vite's mode. `--mode demo` on the command line is the only way to get demo data. */
+export function dataKilde(mode: string): DataSource {
+  return mode === 'demo' ? 'demo' : 'latest'
+}
 
 export type LoadResult =
   | { status: 'ok'; data: PublishedData; source: DataSource }
@@ -20,7 +26,7 @@ async function tryFetch(fetchFn: FetchFn, url: string): Promise<Attempt> {
     // latest.json changes every hour, so always revalidate instead of using a cached copy.
     response = await fetchFn(url, { cache: 'no-cache' })
   } catch (error) {
-    // A failed request is not proof that the file is absent; never fall back to demo data on it.
+    // A failed request is not proof that the file is absent, so it is an error, not a missing file.
     return { kind: 'unreadable', reason: `${url} kunne ikke hentes: ${String(error)}` }
   }
   if (response.status === 404) return { kind: 'missing' }
@@ -36,45 +42,25 @@ async function tryFetch(fetchFn: FetchFn, url: string): Promise<Attempt> {
   }
 }
 
-/** Fields added after the first published files, with the value an older file gets for them. */
-const NYERE_FELT = {
-  // Story 3.5
-  skydekkeDagslys: null,
-  // Story 4.2
-  skivindu: null,
-  skivinduUtenDagslys: false,
-}
-
-/**
- * Stories 3.5 and 4.2: a latest.json written before a field existed gets its default, so the app keeps
- * working until the next pipeline run. Read side only; publish.ts still requires the fields.
- */
-function medNyereFelt(body: unknown): unknown {
-  if (typeof body !== 'object' || body === null || !('steder' in body) || !Array.isArray(body.steder)) return body
-  const steder: unknown[] = body.steder.map((sted: unknown) =>
-    typeof sted === 'object' && sted !== null ? { ...NYERE_FELT, ...sted } : sted,
-  )
-  return { ...body, steder }
-}
-
 export const LOAD_ERROR_MESSAGE = 'Klarte ikke å lese stedsdataene. Prøv å laste siden på nytt senere.'
+export const INGEN_DATAFIL_MESSAGE = 'Fant ingen værdata. Sjekk nettet og start på nytt, eller kjør npm run dev:demo.'
 
-export async function loadPublishedData(fetchFn: FetchFn = (url, init) => fetch(url, init), baseUrl = '/'): Promise<LoadResult> {
-  const sources: DataSource[] = ['latest', 'demo']
-  for (const source of sources) {
-    const url = `${baseUrl}data/${source}.json`
-    const attempt = await tryFetch(fetchFn, url)
-    if (attempt.kind === 'missing') continue
-    if (attempt.kind === 'unreadable') {
-      console.error(attempt.reason)
-      return { status: 'error', message: LOAD_ERROR_MESSAGE }
-    }
-    const parsed = PublishedData.safeParse(medNyereFelt(attempt.body))
-    if (!parsed.success) {
-      console.error(`${url} følger ikke PublishedData`, parsed.error.issues)
-      return { status: 'error', message: LOAD_ERROR_MESSAGE }
-    }
-    return { status: 'ok', data: parsed.data, source }
+export async function loadPublishedData(
+  fetchFn: FetchFn = (url, init) => fetch(url, init),
+  baseUrl = '/',
+  source: DataSource = 'latest',
+): Promise<LoadResult> {
+  const url = `${baseUrl}data/${source}.json`
+  const attempt = await tryFetch(fetchFn, url)
+  if (attempt.kind === 'missing') return { status: 'error', message: INGEN_DATAFIL_MESSAGE }
+  if (attempt.kind === 'unreadable') {
+    console.error(attempt.reason)
+    return { status: 'error', message: LOAD_ERROR_MESSAGE }
   }
-  return { status: 'error', message: LOAD_ERROR_MESSAGE }
+  const parsed = PublishedData.safeParse(medNyereFelt(attempt.body))
+  if (!parsed.success) {
+    console.error(`${url} følger ikke PublishedData`, parsed.error.issues)
+    return { status: 'error', message: LOAD_ERROR_MESSAGE }
+  }
+  return { status: 'ok', data: parsed.data, source }
 }

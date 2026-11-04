@@ -17,7 +17,7 @@ export const DEMO_OUT_PATH = fileURLToPath(new URL('../../public/data/demo.json'
 /** AD-10: the demo's run ID is fixed so regenerating gives a byte-identical file. */
 export const DEMO_RUN_ID = 'demo'
 export const CATALOG_PATH = fileURLToPath(new URL('../../data/catalog.json', import.meta.url))
-/** Gitignored; the app loads it before falling back to demo.json (AD-10). */
+/** Gitignored; the file the app loads outside demo mode (AD-10). */
 export const LIVE_OUT_PATH = fileURLToPath(new URL('../../public/data/latest.json', import.meta.url))
 
 export interface DemoOptions {
@@ -129,9 +129,14 @@ export async function runLive({
   return ctx.report as RunReport
 }
 
-async function main(argv: string[]): Promise<void> {
+export interface Runs {
+  demo: () => Promise<RunReport>
+  live: () => Promise<RunReport>
+}
+
+export async function main(argv: string[], runs: Runs = { demo: runDemo, live: runLive }): Promise<void> {
   // A run that did not publish (crash, or under MIN_SCORED_SHARE) fails, so the hourly job turns red.
-  const report = argv.includes('--demo') ? await runDemo() : await runLive()
+  const report = argv.includes('--demo') ? await runs.demo() : await runs.live()
   if (!report.publisert) process.exitCode = 1
 }
 

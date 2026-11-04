@@ -7,7 +7,7 @@ paradigm: 'Pipes-and-Filters data program (Node) publishing one static data file
 scope: 'Repository structure and system architecture for SnowFinder v1 (IBE160, G18)'
 status: final
 created: '2026-09-22'
-updated: '2026-10-28'
+updated: '2026-11-01'
 binds: []
 sources:
   - project-phase-folders/1-Oppstartsfasen/SnowFinder-Produktbrief.md
@@ -98,7 +98,10 @@ flowchart LR
     into place, and only when at least 95 % of locations have a score. Otherwise the previous file
     stays untouched.
   - **One run at a time.** The scheduled job uses a GitHub Actions `concurrency` group without
-    cancellation.
+    cancellation. GitHub drops many scheduled runs, so the schedule fires every 10 minutes and a first
+    job, `gate`, ends a scheduled run when the last commit on the branch `data` is under 50 minutes old (read through
+    the API, which is not cached). If it
+    cannot read the age, the run goes ahead. Push, manual and PR runs always fetch. (2026-11-02)
   - **Threshold and partial failures.** The 95 % threshold counts locations with a score. A
     rejected or missing MET response, and incomplete data, both leave a location without one
     (changed 2026-10-22: incomplete locations used to count as valid, so a run of outdated
@@ -213,16 +216,24 @@ flowchart LR
     same file shape (AD-12).
   - **Files.** The demo file `public/data/demo.json` is committed. Live output goes to
     `public/data/latest.json`, which is gitignored locally and published by the scheduled job.
-    `src/lib/data/` loads `latest.json` and falls back to `demo.json` when it is absent, which is
-    the case on a clean clone.
-  - **Production never shows demo data.** The site build in `data.yml` fails if the run did
-    not produce `latest.json`, so the previous deployment stays live. Every deploy, including
-    deploys triggered by code changes, goes through `data.yml` and runs the data program first.
+    *(v6, 2026-10-31, replaces the v5 fallback)* `src/lib/data/` loads one file, chosen at build time
+    by Vite's mode: `demo.json` with `--mode demo`, otherwise `latest.json`. There is no fallback
+    between them, so a normal build can never show demo data. The scheduled job always publishes
+    `latest.json` to the branch `data`. *(v7, 2026-11-01, replaces Pages, which the course has switched
+    off)* Vercel serves the app, and `vercel.json` proxies `/data/latest.json` to that file, so the site
+    stays fresh without a rebuild. `npm run data:hent`
+    copies it to `public/data/latest.json` before `dev` and `build`, only when it is newer than the
+    local file; a failed download leaves the local file alone. Without a file the app says so and
+    names `npm run dev:demo`. The app itself never reads a remote address.
+  - **Production never shows demo data.** *(v7)* The Vercel build leaves `demo.json` and `latest.json`
+    out of `dist/`, so the site only serves the file on the branch `data`. A run with under 95 % valid
+    places publishes nothing, so the branch keeps the last valid file.
   - **Demo is deterministic.** It uses its own small catalog, fully covered by fixtures. Its
     `referenceTime` is the newest fixture timestamp, its run ID is fixed, and its duration is
     0. Regenerating it gives a byte-identical file.
   - **One mode flag.** The file carries `mode: "demo" | "live"`, and the app reads it only to
-    show the demo banner. No environment variable switches behaviour.
+    show the demo banner. No environment variable switches behaviour. *(v6)* Vite's `--mode demo`
+    decides at build time which file is loaded; nothing decides it at run time.
   - **One clock.** `src/lib/clock.ts` is the only source of "now" in `src/`: it returns the
     file's `referenceTime` in demo mode and the wall clock in live mode. No other file calls
     `Date.now()` or `new Date()` without arguments, and lint enforces that.
@@ -293,7 +304,7 @@ flowchart LR
 | File | Writer (only one) | Read by app? | Kept | MoSCoW |
 | --- | --- | --- | --- | --- |
 | `data/catalog.json` | `scripts/build-catalog/` (by hand, AD-5) | via the data file | versioned in git | Must |
-| `public/data/demo.json` | `scripts/pipeline/publish.ts` via `npm run data:demo` | yes, as fallback | versioned in git | Must |
+| `public/data/demo.json` | `scripts/pipeline/publish.ts` via `npm run data:demo` | yes, with `--mode demo` | versioned in git | Must |
 | `public/data/latest.json` | `scripts/pipeline/publish.ts` via `npm run data` | yes | replaced each run; not committed | Must |
 
 ## Consistency Conventions
@@ -325,18 +336,20 @@ exact pins and updates them deliberately.
 | Playwright | 1.63.0 |
 | date-fns-tz, SunCalc | exact versions pinned by the first story that needs them |
 | Package manager | npm, single package at the repo root |
-| CI, scheduled job and hosting | GitHub Actions and GitHub Pages *[ASSUMPTION — confirm with the group; a repository admin must enable Actions and Pages]* |
+| CI and scheduled job | GitHub Actions |
+| Hosting | *(v7, 2026-11-01)* Vercel, the only hosting the course supports. One group member owns the Hobby project; no keys are needed. GitHub Pages is switched off in the group repositories |
 
 ## Structural Seed
 
 ```mermaid
 flowchart TB
-    U["Users<br/>mobile + desktop browser"] --> PAGES["GitHub Pages<br/>static app + public/data/*.json"]
-    CRON["GitHub Actions<br/>scheduled hourly, one run at a time"] --> RUN["npm run data<br/>fetch → validate → score → publish"]
+    U["Users<br/>mobile + desktop browser"] --> VERCEL["Vercel<br/>static app, built from main"]
+    VERCEL -- "/data/latest.json<br/>rewrite" --> BRANCH["Branch data<br/>latest.json"]
+    CRON["GitHub Actions<br/>scheduled every 10 min, fetches when data is 50+ min old, one run at a time"] --> RUN["npm run data<br/>fetch → validate → score → publish"]
     RUN -- "reads" --> MET["MET Locationforecast"]
     RUN -- "reads" --> NVE["NVE seNorge"]
-    RUN -- "build + deploy<br/>(only if ≥95 % valid)" --> PAGES
-    DEV["Developer / examiner<br/>npm ci && npm run dev"] --> LOCAL["local app<br/>demo.json, or latest.json<br/>after npm run data"]
+    RUN -- "publish<br/>(only if ≥95 % valid)" --> BRANCH
+    DEV["Developer / examiner<br/>npm ci && npm run dev"] --> LOCAL["local app<br/>latest.json from npm run data:hent,<br/>demo.json with npm run dev:demo"]
 ```
 
 ```text
@@ -350,7 +363,7 @@ flowchart TB
     hooks/
       useSteder.ts              #   the single data hook (AD-8)
     lib/
-      data/                     # loads latest.json, falls back to demo.json (AD-10)
+      data/                     # loads latest.json, or demo.json with --mode demo (AD-10)
       clock.ts                  # the only "now" (AD-10)
       snowscore.ts              # re-exports shared/snowscore.ts for the calculator (AD-6)
       theme.ts                  # DESIGN.md tokens (AD-9)
@@ -365,22 +378,24 @@ flowchart TB
   data/catalog.json             # ~300 locations (AD-5)
   public/data/                  # demo.json (committed), latest.json (generated)
   tests/
-    e2e/                        # Playwright smoke test on demo data (PRD SM-9)
+    e2e/                        # Playwright smoke test on demo data (PRD SM-9); normalmodus.spec.ts runs on a normal-mode build
     contract/fixtures/          # recorded MET/NVE responses (also the demo source)
     golden/                     # snowscore.json, filter.json (AD-12)
-  .github/workflows/            # ci.yml, e2e.yml, data.yml (scheduled run + Pages deploy)
+  .github/workflows/            # ci.yml, e2e.yml, data.yml (scheduled run + branch data)
 ```
 
 ## Running Locally and Environments
 
 | Where | How | Data | Needs |
 | --- | --- | --- | --- |
-| Examiner / first run | `npm ci && npm run dev` | `demo.json` (committed) | Node 24 or 26+ |
+| Examiner, fixed data | `npm ci && npm run dev:demo` | `demo.json` (committed) | Node 24 or 26+ |
+| Real data, default | `npm ci && npm run dev`, or `npm run build && npm run preview` | `latest.json`, downloaded first by `npm run data:hent` from the branch `data` | Internet access, no keys |
 | Live data locally | `npm run data`, then `npm run dev` | `latest.json` | Internet access, no keys |
 | Regenerate demo data | `npm run data:demo` | rewrites `demo.json` from fixtures | — |
-| CI `ci.yml` (every PR) | lint, typecheck, unit/property/contract/golden tests, build | demo | — |
-| CI `e2e.yml` (every PR) | `vite build` + `vite preview` as Playwright `webServer` | demo | Playwright browsers |
-| `data.yml` (hourly, on push to `main`, and manual) | `npm run data`, build, deploy to Pages only if `latest.json` was produced | live | Actions and Pages enabled in the repo |
+| CI `ci.yml` (every PR) | lint, typecheck, unit/property/contract/golden tests, `npm run build:demo` | demo | — |
+| CI `e2e.yml` (every PR) | `vite build --mode demo` + `vite preview` as Playwright `webServer`, plus a second build in normal mode (`npm run build` without `prebuild`) to prove which file each mode reads | demo, normal | Playwright browsers |
+| `data.yml` (every 10 min with an age gate, so about hourly; on push to `main`; and manual) | `npm run data`, then publish `latest.json` to the branch `data`, only if it was produced. The branch and the site are read back and their `runId` compared | live | Actions enabled in the repo |
+| Vercel (every push to `main`, and a preview per PR) | `npm run build` without `prebuild`, and without data files in `dist/`. The branch `data` is not built | live, through the rewrite | Vercel project, no keys |
 
 Story 1.1 created empty `supabase/` and `src/lib/supabase/` folders. Story 1.10 removes them
 and adds `src/lib/data/`.

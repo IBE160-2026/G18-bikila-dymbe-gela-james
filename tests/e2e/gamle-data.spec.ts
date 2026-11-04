@@ -10,12 +10,11 @@ const BANNER = 'Viser siste kjente data fra kl. 20:30'
 test.use({ viewport: { width: 1280, height: 800 } })
 
 test.beforeEach(async ({ context }) => {
-  // Same isolation as kart.spec.ts: nothing from the network, and no leftover latest.json.
+  // Same isolation as kart.spec.ts: nothing from the network.
   await context.route('**/*', (route) => {
     const { hostname } = new URL(route.request().url())
     return hostname === 'localhost' ? route.continue() : route.abort()
   })
-  await context.route('**/data/latest.json', (route) => route.fulfill({ status: 404, body: '' }))
   // The demo file has generert equal to referenceTime (20:30:29 UTC); a copy published two hours
   // earlier is old against the demo's "now". 18:30 UTC is 20:30 in Norway in October.
   await context.route('**/data/demo.json', async (route) => {

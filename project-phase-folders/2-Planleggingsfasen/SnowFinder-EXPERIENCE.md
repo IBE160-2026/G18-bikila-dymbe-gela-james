@@ -22,8 +22,8 @@ ettertanke — brief og PRD er eksplisitte på at begge er primære bruksmåter)
 arvet (React + egen komponentsone per `SnowFinder-DESIGN.md` — arkitekturens stack har ikke låst
 shadcn/MUI/Tailwind). *(v2: Ikke installerbar som PWA i v1, siden push-varsler er tatt ut.)*
 Ingen brukerkonto noe sted — hver økt er anonym; «innlogget tilstand» finnes ikke i IA-en under.
-Appen leser én publisert datafil og skriver ingenting. Uten ferske data (rent klon) vises et
-demodatasett, tydelig merket.
+Appen leser én publisert datafil og skriver ingenting. Demodatasettet vises bare i demomodus
+(`npm run dev:demo`), tydelig merket.
 
 ## Informasjonsarkitektur
 
@@ -109,7 +109,8 @@ Atferd. Visuelle spesifikasjoner ligger i `SnowFinder-DESIGN.md.Components`.
 | Avslått posisjon | Filterpanel (avstand), sorteringsvalget | Avstandsfilteret: «Fikk ikke tilgang til posisjonen din. Avstandskravet har ingen effekt.» Sortering etter avstand: «Fikk ikke tilgang til posisjonen din. Listen er sortert etter score.» (eller rekkefølgen som står i URL-en). Mens nettleseren spør: «Henter posisjonen din …». |
 | MET-prognose mangler | Stedsside, Grunnlag-kortet | «Prognosen fra MET mangler for dette stedet.» i stedet for kilde og tidspunkt. |
 | Gamle data | Global banner | Banner-stale-data (se Komponentmønstre) øverst når de nyeste dataene er eldre enn normalt (over 90 min, NFR-3), for eksempel fordi en datakilde er nede: «Viser siste kjente data fra kl. XX:XX». Blokkerer ikke bruk av resten av siden. *(v2: utløses av dataalder, ikke av en kretsbryter.)* |
-| Demodata | Global banner | Demobanneret (se Komponentmønstre). Alder regnes mot demodatasettets egen «nå», så «Utdatert» og «fjernet» oppfører seg likt hver gang. |
+| Demodata | Global banner | Demobanneret (se Komponentmønstre). Alder regnes mot demodatasettets egen «nå», så «Utdatert» og «fjernet» oppfører seg likt hver gang. Vises bare i demomodus. |
+| Ingen datafil | Hele Utforsk | Lokalt, uten nett og uten en hentet fil: «Fant ingen værdata. Sjekk nettet og start på nytt, eller kjør `npm run dev:demo`.» Viser aldri demodata uten at de er valgt. |
 | Ufullstendige data | Stedsside, kort | Tekst «Ufullstendige data» i stedet for et score-badge — aldri en tallverdi som ser reell ut. |
 | Mørketid (skivindu) | Stedsside | «Mørketid – vindu vist uten dagslys», vinduet beregnes blant alle timer. |
 | Ingen skivindu | Stedsside | «Fant ikke noe skivindu de neste 48 timene.» når det snør hele perioden eller data mangler. Kortet blir stående. |
@@ -214,16 +215,16 @@ får hun høre at listen beholder rekkefølgen den hadde.
 
 ### Flyt 4 — Sensor åpner SnowFinder fra et rent klon (realiserer FR-30)
 
-1. Sensor kloner repoet og kjører `npm ci && npm run dev` etter README.
+1. Sensor kloner repoet og kjører `npm ci && npm run dev:demo` etter README.
 2. Utforsk åpnes med kartet og demobanneret «Demodata – ikke ekte prognoser» øverst.
 3. Hun ser ett sted merket «Ufullstendige data» og ett merket «Utdatert», slik demodatasettet er
    laget for.
 4. Hun åpner «Slik beregner vi SnowScore» og ser datakvaliteten for demokjøringen.
-5. **Klimaks:** Hun kjører `npm run data`, laster siden på nytt, og banneret er borte —
-   samme app, nå med ferske, ekte prognoser.
+5. **Klimaks:** Hun starter med `npm run dev` i stedet, og banneret er borte — samme app, nå med
+   ferske, ekte prognoser.
 
-Feil-gren: Har hun ikke nett, eller er under 95 % av stedene gyldige, publiserer `npm run data`
-ingenting. Demodataene og demobanneret blir stående.
+Feil-gren: Har hun ikke nett, og finnes det ingen hentet datafil, sier `npm run dev` fra og viser
+kommandoen for demomodus. Demomodus virker alltid.
 
 ## Wireframes *(steg 8c, 2026-10-28)*
 
@@ -271,8 +272,10 @@ som finnes, uten nye funksjoner. Koblingen står også som merknader i wireframe
 
 Denne seksjonen er ikke et byggekrav. Den er planen for å måle SM-2, SM-3 og SM-4 (PRD §9.3).
 
-Gjennomføres innen F4 (forslag 2026-11-16) av Joseph og Aksel, med appen i demomodus
-(`npm ci && npm run dev`), så alle deltakerne ser de samme dataene.
+Gjennomføres fra 2026-11-12 og innen F4 (forslag 2026-11-16) av Joseph og Aksel, med appen i demomodus
+(`npm ci && npm run build:demo && npm run preview`), så alle deltakerne ser de samme dataene.
+Testdatasettet er `public/data/demo.json` (24 steder, kjørings-ID `demo`). Det er committet, og fasiten
+i oppgavene under gjelder det. Endres fila, må fasiten sjekkes på nytt.
 
 **Deltakere.** Minst fem personer med blandet erfaring, også noen utenfor studiet, fysisk eller via
 Teams med skjermdeling. Én leder testen og én tar notater. Deltakerne samtykker muntlig til at

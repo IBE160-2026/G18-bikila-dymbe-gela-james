@@ -18,9 +18,15 @@ Meteorologisk institutt.
 
 Krever Node 24, eller Node 26 eller nyere (Node 25 støttes ikke).
 
+**Nettsiden:** <https://snowfinder-seven.vercel.app>
+
+**For sensor:** `npm ci && npm run dev:demo` virker alltid, uten nett og nøkler, og viser det samme hver
+gang. `npm ci && npm run dev` viser ekte værdata og krever nett.
+
 ```sh
 npm ci              # installer avhengighetene fra package-lock.json
-npm run dev         # start utviklingsserveren
+npm run dev         # start appen med ekte værdata (krever nett, ingen nøkler)
+npm run dev:demo    # start appen med det faste demodatasettet (uten nett og nøkler)
 npm run lint        # kjør ESLint
 npm run typecheck   # sjekk typene
 npm test            # kjør enhetstestene
@@ -110,9 +116,9 @@ Data eldre enn 3 timer merkes «Utdatert», og steder med data eldre enn
 Er hele datafila publisert for mer enn 90 minutter siden, står «Viser siste kjente data fra kl. HH:MM» øverst på Utforsk og stedssiden.
 Demodataene viser aldri banneret, men en `public/data/latest.json` fra `npm run data` som er mer enn
 90 minutter gammel, gjør det.
-Er alle stedene for gamle, for eksempel fordi `latest.json` fra `npm run data` er mer enn 12 timer
-gammel, viser forsiden «Ingen ferske data». Kjør `npm run data` på nytt, eller slett
-`public/data/latest.json` for å gå tilbake til demodataene.
+Er alle stedene for gamle, for eksempel fordi timesjobben har stoppet, viser forsiden «Ingen ferske
+data». Kjør da `npm run data` for å hente direkte fra MET og NVE, eller `npm run dev:demo` for
+demodataene (se [Demomodus](#demomodus)).
 
 ### Slik beregner vi SnowScore
 
@@ -124,7 +130,9 @@ alltid automatisk fra prognosen.
 
 ### Røyktest i nettleser (E2E)
 
-Playwright-testene i `tests/e2e/` bygger appen, starter `npm run preview` og sjekker kart → stedsside
+Playwright-testene i `tests/e2e/` bygger appen to ganger: i demomodus for de fleste testene, og i normal
+modus for `tests/e2e/normalmodus.spec.ts`, som viser at normal modus aldri leser `demo.json`. Portene 4173 og
+4174 må være ledige. Testene sjekker kart → stedsside
 → tilbake, listevisningen med tastatur, filteret (ved 1280 og 375 px), stedssiden, forklaringssiden (også ved 320 og 375 px), den tomme
 tilstanden og en axe-sjekk av tilgjengeligheten i Chromium på demodataene.
 De henter ingenting fra nett. Nettleseren lastes ned én gang:
@@ -140,10 +148,15 @@ enhetstestene og trenger verken nettleser eller nett.
 
 ### Demomodus
 
-Et rent klon trenger verken nøkler eller nett. `npm run dev` viser da demodataene i
-`public/data/demo.json`, med banneret «Demodata – ikke ekte prognoser». Appen laster
-`public/data/latest.json` hvis den finnes, og ellers `demo.json`. `latest.json` lages av
-`npm run data` (se under), og committes ikke.
+Demomodus må velges, og trenger verken nøkler eller nett. Den viser `public/data/demo.json` med banneret
+«Demodata – ikke ekte prognoser». Vanlig modus viser aldri demodata.
+
+```sh
+npm run dev:demo                        # utviklingsserveren med demodata
+npm run build:demo && npm run preview   # produksjonsbygg med demodata, slik CI, brukertesten og de fleste E2E-testene kjører
+```
+
+Bygget som publiseres av timesjobben, inneholder aldri `demo.json`.
 
 Demodataene er 24 steder med ekte, innspilte MET- og NVE-svar fra `tests/contract/fixtures/`. Ett
 sted har ufullstendige data, og ett har kildedata som er eldre enn 3 timer og merkes «Utdatert».
@@ -158,17 +171,55 @@ npm run fixtures:record  # ta opp nye MET- og NVE-svar (krever nett, se tests/co
 ### Live-data
 
 ```sh
-npm run data   # hent MET- og NVE-data for alle stedene i data/catalog.json (krever nett, ingen nøkler)
+npm run data:hent   # hent siste publiserte datafil fra grenen data (kjører automatisk før dev og build)
+npm run data        # hent MET- og NVE-data selv for alle stedene i data/catalog.json (krever nett, ingen nøkler)
 ```
+
+`npm run dev` og `npm run build && npm run preview` bruker samme datagrunnlag: `public/data/latest.json`,
+som `npm run data:hent` oppdaterer først. Den erstatter fila bare hvis den publiserte er nyere, så en fersk
+kjøring av `npm run data` blir stående. Uten nett står den lokale fila urørt. Finnes det ingen fil, sier
+appen fra og viser kommandoen for demomodus. Fila committes ikke.
 
 Dataprogrammet henter værprognosen fra MET og nysnø siste døgn fra NVE for hvert sted, sjekker svarene
 og regner ut SnowScore. Det sender høyst 10 kall i sekundet til hver kilde, slik MET-vilkårene krever,
 så for rundt 300 steder tar hentingen minst et halvt minutt. Et kall som feiler med nettverksfeil, HTTP 429 eller 5xx, prøves inntil tre ganger, med 1 s og så 2 s pause. Når minst 95 % av stedene har fått en poengsum, skrives `public/data/latest.json`,
-og `npm run dev` viser da live-data uten demobanner. Fila blir liggende til neste vellykkede kjøring,
-så dataene kan være gamle; slett den for å gå tilbake til demodataene.
+og `npm run dev` viser da live-data uten demobanner. Fila blir liggende til det finnes en nyere,
+så dataene kan være gamle.
 Under 95 % står forrige fil urørt, og kommandoen avslutter med feilkode 1. Kvalitetsrapporten (hvor
 mange steder som har gyldige data, og hvilke svar som ble avvist og hvorfor) ligger i datafila, eller
 skrives ut når kjøringen ikke ble publisert.
+
+### Timesjobben og publisering
+
+`.github/workflows/data.yml` kjører `npm run data` omtrent én gang i timen, ved push til `main` og når den
+startes for hånd. GitHub hopper over mange planlagte kjøringer, så timeplanen prøver hvert 10. minutt, og den
+første jobben, `gate`, stopper en planlagt kjøring når siste commit på grenen `data` er under 50 minutter
+gammel. Loggen til `gate` viser alderen. Actions-fanen får derfor rundt 144 kjøringer i døgnet, og de fleste
+har `data`, `branch` og `verify` som skipped. Jobben trenger ingen nøkler. Hver kjøring som henter, legger
+`latest.json` i rota på grenen `data`. Grenen har alltid ett commit, så den får ingen historikk som
+vokser. Herfra henter `npm run data:hent` fila.
+
+Etter publisering leser jobben fila tilbake fra grenen og nettsiden og sammenligner kjørings-ID-en. Stemmer den
+ikke, blir kjøringen rød, så grønn betyr at dataene faktisk er ute.
+
+**Nettsiden** publiseres av Vercel fra `main`, og PR-er får en egen forhåndsvisning. `vercel.json` bygger appen
+uten datafiler og sender `/data/latest.json` videre til fila på grenen `data`, så hver timeskjøring når
+nettsiden uten nytt bygg. GitHub kan holde fila i opptil fem minutter. Direkte lenker til `/sted/<id>` går til
+`index.html`. Vercel trenger ingen nøkler, og prosjektet ligger på kontoen til Aksel. Under **Settings → Git →
+Ignored Build Step** står `[ "$VERCEL_GIT_COMMIT_REF" = "data" ]`, så grenen `data` ikke bygges hver time. GitHub
+Pages er slått av i emnet.
+
+GitHub slår av planlagte kjøringer etter 60 dager uten aktivitet i repoet. Da viser nettsiden og `npm run dev`
+etter hvert «Ingen ferske data», mens `npm run dev:demo` fortsatt virker. Slå på jobben igjen under Actions, og
+start den for hånd.
+
+Får under 95 % av stedene en poengsum, krasjer dataprogrammet, eller mangler `latest.json` etter kjøringen,
+publiseres ingenting: forrige fil står, også på nettsiden, kjøringen blir rød, og loggen med kvalitetsrapporten
+ligger som artifact (`data-run-log`) på kjøringen. En PR som endrer `data.yml`, henter og sjekker uten å
+publisere.
+
+Feiler tilbakelesingen, kan den nye fila likevel være ute. Loggen viser hvilken `runId` som var forventet og
+funnet, og neste forsøk prøver igjen når dataene er over 50 minutter gamle.
 
 Feltene i datafila og kildesvarene er beskrevet i
 [`shared/contracts/data-dictionary.md`](shared/contracts/data-dictionary.md).
@@ -189,7 +240,7 @@ Skriptet i `scripts/build-catalog/` henter skisteder fra OpenStreetMap og slår 
 
 - Push direkte til `main` avvises. Lag en grein og en pull request.
 - Har du endringer som ikke er committet, stoppes pushen, slik at sjekkene tester det du faktisk pusher.
-- `lint`, `typecheck`, `test` og `build` kjøres, og pushen stoppes hvis én av dem feiler.
+- `lint`, `typecheck`, `test` og `build:demo` kjøres, og pushen stoppes hvis én av dem feiler.
 
 Klonet du repoet før hooken kom, slår du den på med `npm run prepare`. Sjekk at den er aktiv med `git config core.hooksPath`; svaret skal være `.githooks`.
 

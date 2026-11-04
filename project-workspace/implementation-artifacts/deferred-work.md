@@ -26,12 +26,14 @@
 - source_spec: `project-workspace/implementation-artifacts/spec-1-10-kjor-snowfinder-lokalt-med-demodata.md`
   summary: Test exit-koden til dataprogrammet (ikke publisert → 1, manglende --demo → 2) når Story 1.11 lar CI avhenge av den.
   evidence: Story 1.10-gjennomgang (Verification Gap). `main` i scripts/pipeline/run.ts er ikke eksportert, og alle tester kaller runDemo direkte.
+  resolved: Story 1.11 (2026-10-31). `main` er eksportert med injiserbare kjøringer, og `run.test.ts` tester exit-koden. Exit 2 finnes ikke lenger (se punktet fra Story 1.3).
 - source_spec: `project-workspace/implementation-artifacts/spec-1-10-kjor-snowfinder-lokalt-med-demodata.md`
   summary: Test at ESLint-regelen mot Date.now()/new Date() i src/ faktisk slår til (ESLint Node-API i Vitest).
   evidence: Story 1.10-gjennomgang (Verification Gap). I dag går lint grønt også hvis selektoren er feil, fordi ingen kode i src/ leser klokka.
 - source_spec: `spec-1-3-hent-og-valider-vaerdata-hver-time.md`
   summary: Test exit-koden til `main()` i scripts/pipeline/run.ts med de nye reglene (demo ikke publisert → 1; live krasjet eller under 95 % gyldige → 1; uten `--demo` kjøres live, exit 2 finnes ikke lenger).
   evidence: Story 1.3-gjennomgang (Verification Gap, Blind Hunter). `main` er ikke eksportert, og ingen test dekker rutingen eller exit-koden. Erstatter forutsetningen om exit 2 i punktet fra Story 1.10.
+  resolved: Story 1.11 (2026-10-31). `run.test.ts` tester rutingen og exit-koden for demo og live. At krasj gir `publisert: false`, testes i `runLive`-testen for manglende katalog.
 - source_spec: `spec-1-3-hent-og-valider-vaerdata-hver-time.md`
   summary: Sjekk om NVE-perioden bør regnes etter norsk dato i stedet for UTC (nveUrl i scripts/pipeline/fetch.ts).
   evidence: maybe-false, ville vært medium. Mellom 00 og 02 norsk tid slutter perioden på forrige norske dato. Avgjøres ved å hente NVE-svar like etter midnatt og se om `latestNveValue` da velger en eldre dag.
@@ -39,6 +41,7 @@
 - source_spec: `spec-1-7-se-norgeskartet.md`
   summary: Lag en SPA-reserve for GitHub Pages (en `404.html` som er kopi av `index.html`, eller en omdirigering) slik at direkte lenker og oppfrisking på `/sted/:id` virker, i Story 1.11.
   evidence: Story 1.7-gjennomgang (Blind Hunter, Edge Case Hunter). `vite preview` og dev-serveren faller tilbake til index.html, men GitHub Pages gir sin egen 404 for ukjente stier.
+  resolved: Story 1.11 (2026-10-31). `data.yml` kopierer `index.html` til `404.html` i bygget for Pages.
 - source_spec: `spec-1-8-listevisning.md`
   summary: Legg sorteringsvalget i listen inn i URL-en (f.eks. `?visning=liste&sortering=navn`) sammen med filterparametrene i Epic 3 (FR-21), så valget overlever Tilbake og delte lenker.
   evidence: Story 1.8-gjennomgang (alle tre lag). Sorteringen ligger i `useState` i ListeVisning og går tilbake til score når komponenten lastes på nytt.
@@ -118,3 +121,54 @@
 - source_spec: `project-workspace/implementation-artifacts/spec-1-6-hold-tjenesten-oppe.md`
   summary: Vurder et tidsbudsjett per kall eller per kjøring i `scripts/pipeline/fetch.ts`, så trege 5xx- eller 429-svar like under tidsavbruddet på 20 s ikke gir tre forsøk hver og en kjøring på rundt en time, som kolliderer med neste timesjobb (Story 1.11).
   evidence: maybe-false, ville vært medium. Gjennomgangen av 1.6 (Blind Hunter, Edge Case Hunter). Tidsavbrudd prøves ikke på nytt av nettopp denne grunnen, men et 5xx-svar etter 19 s gjør det. Avgjøres når 1.11 går: se på `varighetMs` i kjøringsrapportene fra en periode der MET er ustabil.
+- source_spec: `project-workspace/implementation-artifacts/spec-1-11-timesjobb-og-publisering.md`
+  summary: Kjør `data.yml` for hånd rett etter merge og se at reserven virker. Framtving én rød kjøring og se at `data-run-log` har kvalitetsrapporten. Prøv Pages-veien og en direkte lenke til `/sted/<id>` første gang etter at Pages står på «GitHub Actions».
+  evidence: Gjennomgangen av 1.11 (Verification Gap). Disse veiene krever ekte tilstand på GitHub og kan ikke kjøres på en PR uten å publisere. Per 2026-10-31 viser API-et `has_pages: false`.
+- source_spec: `project-workspace/implementation-artifacts/spec-1-11-timesjobb-og-publisering.md`
+  summary: Før den varige grenen `data` og `data.yml` inn i `AGENTS.md` via `bmad-project-context`, så regelen om å slette greiner etter merge ikke treffer `data`.
+  evidence: Gjennomgangen av 1.11 (Blind Hunter). `AGENTS.md` sier «én grein per oppgave» og «slett greinen etter merge», og nevner bare CI og E2E som kjørende workflows.
+  resolved: 2026-10-31, godkjent av Aksel. `AGENTS.md` nevner nå grenen `data` og `data.yml`.
+- source_spec: `project-workspace/implementation-artifacts/spec-1-11b-ekte-data-som-standard.md`
+  summary: La siden «Ingen ferske data» peke til `npm run dev:demo` lokalt, så sensor ikke står fast hvis timesjobben har stoppet.
+  evidence: Gjennomgangen av 1.11b (Blind Hunter). GitHub slår av planlagte kjøringer etter 60 dager uten aktivitet, og da viser `npm run dev` denne siden. Bare README nevner demomodus i dette tilfellet.
+- source_spec: `project-workspace/implementation-artifacts/spec-1-11b-ekte-data-som-standard.md`
+  summary: Sjekk på et rent klon i steg 6, fra terminalen i VS Code, at `npm run dev` henter fila fra grenen `data`, og at inngangen i `hent-data.ts` slår til også med liten stasjonsbokstav.
+  evidence: maybe-false, ville vært medium. Gjennomgangen av 1.11b (Edge Case Hunter, Verification Gap). Grenen `data` finnes ikke ennå, og PowerShell normaliserer stasjonsbokstaven, så det kunne ikke prøves. Slår sjekken feil, hentes ingenting, uten logglinje.
+
+- source_spec: `project-workspace/implementation-artifacts/spec-1-11c-e2e-mot-demomodus.md`
+  summary: `AGENTS.md` linje 36 ber om `npm run build` før commit og sier at CI kjører det, og seksjon 3 sier at røyktesten kjører på demodata.
+  evidence: CI og hooken kjører nå `build:demo`, `npm run build` krever nett gjennom `prebuild`, og E2E har også et bygg i normal modus. Filen endres bare gjennom `bmad-project-context` med godkjenning fra Aksel.
+
+- source_spec: `project-workspace/implementation-artifacts/spec-1-11d-publisering-med-tilbakelesing.md`
+  summary: Skriptet i jobben `verify` i `data.yml` har ingen test som kjører i repoet.
+  evidence: Det ligger inne i workflowen og kjører ikke på PR. Lokale resultater står i spec-en, og første ekte kjøring er steg 6 i endringsforslaget.
+
+- source_spec: `project-workspace/implementation-artifacts/spec-1-11d-publisering-med-tilbakelesing.md`
+  summary: Pages-veien er uprøvd, også tilbakelesingen, delvis feil og at `page_url` slutter med skråstrek. Erstatter «se at reserven virker» i posten over.
+  evidence: maybe-false, ville vært medium. API-et viser `has_pages: false`, så veien kan ikke kjøres før Pages er på. Avgjøres i steg 7 i endringsforslaget: mangler skråstreken, blir kjøringen rød med adressen i meldingen.
+
+- source_spec: `project-workspace/implementation-artifacts/spec-1-11b-ekte-data-som-standard.md`
+  summary: Løst 2026-11-01: `npm run dev` på rent klon henter fila fra grenen `data`, og `data:hent` virker med liten stasjonsbokstav (kjørt fra cmd).
+  evidence: Posten om sjekken i steg 6 er dermed lukket. Posten fra spec-1-11c om `AGENTS.md` er også lukket, med commit `4bc4e6f`.
+
+- source_spec: `project-workspace/implementation-artifacts/spec-1-11e-vercel.md`
+  summary: Alle besøk på nettsiden går til `raw.githubusercontent.com`, siden Vercel svarte `MISS` to ganger, så en kort CDN-cache bør vurderes.
+  evidence: Målt med curl 2026-11-01. Lite trafikk i emnet gjør det lite sannsynlig med rate-begrensning, men brukertesten bør følges.
+
+- source_spec: `project-workspace/implementation-artifacts/spec-1-11e-vercel.md`
+  summary: Posten om Pages-veien er utgått, siden Pages er slått av i emnet. Tilbakelesingen fra nettsiden og en rød kjøring må i stedet prøves på `main`.
+  evidence: Lesesteget mot nettsiden kjører bare på `main`.
+
+- source_spec: `project-workspace/implementation-artifacts/spec-1-11e-vercel.md`
+  summary: Filer i `/assets/` caches ikke, og CI kjører ikke byggekommandoen fra `vercel.json`.
+  evidence: Målt `max-age=0` på nettsiden. Vurderes sammen med NFR-2.
+
+- source_spec: `project-workspace/implementation-artifacts/spec-1-11f-paalitelig-timesjobb.md`
+  summary: Skriptet i `gate` i `data.yml` har ingen test i repoet, på samme måte som skriptet i `verify`. Flytt begge til egne skript som kan kjøres med faste tidspunkt og svar.
+  evidence: Prøvd for hånd mot GitHub-API-et 2026-11-02 med gamle data, ferske data og en gren som ikke finnes. Testen i `data-workflow.test.ts` leser bare teksten.
+- source_spec: `project-workspace/implementation-artifacts/spec-1-11f-paalitelig-timesjobb.md`
+  summary: En push-, PR- eller manuell kjøring som venter i `concurrency`-gruppen bak en pågående kjøring, kan bli erstattet av et planlagt forsøk, som så hopper over hentingen når dataene er ferske. Vurder egen gruppe eller en merknad i README hvis det skjer.
+  evidence: maybe-false, ville vært medium. GitHub beholder bare én ventende kjøring per gruppe. En vanlig kjøring tar rundt et halvt minutt, så vinduet er kort. Avgjøres ved å se om push-kjøringen etter merge av PR #81 blir «cancelled».
+- source_spec: `project-workspace/implementation-artifacts/spec-1-11f-paalitelig-timesjobb.md`
+  summary: Banneret kan fortsatt komme når GitHub dropper fire forsøk på rad. En garanti krever en tjeneste med nøkkel, og det er utenfor v1. Posten om lange kjøringer (Story 1.6, tidsbudsjett per kall) gjelder nå hvert 10. minutt, ikke neste time.
+  evidence: Natten 1.–2. november startet bare 2 av 14 planlagte kjøringer. Avgjøres med et døgn med målinger på nettsiden etter merge.

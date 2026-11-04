@@ -1,7 +1,7 @@
 ---
 title: SnowFinder
 created: 2026-09-27
-updated: 2026-10-07
+updated: 2026-11-01
 status: draft
 ---
 
@@ -177,8 +177,12 @@ jobben er en GitHub Actions-jobb.
 - Forespørsler bruker identifiserende User-Agent og begrenset samtidighet. *(v3)* Hvert sted
   hentes én gang per time, i takt med hvor ofte MET oppdaterer prognosen. Kjøringen lagrer ingen
   tilstand mellom timene, så `If-Modified-Since`/`Expires` brukes ikke.
+- *(2026-11-02)* GitHub dropper mange planlagte kjøringer, så jobben startes hvert 10. minutt og
+  henter bare når siste publisering på grenen `data` er minst 50 minutter gammel. Tidspunktet for den
+  publiseringen er det eneste den leser fra forrige kjøring.
 - Én kjøring henter alle ~300 steder, med begrenset samtidighet. En avbrutt kjøring publiserer
-  ingenting (FR-5) og kjøres på nytt ved neste time.
+  ingenting (FR-5) og kjøres på nytt ved neste forsøk, som kommer etter høyst 10 minutter fordi fila
+  da fortsatt er gammel *(endret 2026-11-02)*.
 - *(v4, 2026-10-22)* Hver kilde får høyst 10 kall i sekundet: to kall til samme kilde starter
   minst 100 ms fra hverandre. MET krever en egen avtale over 20 kall i sekundet, og et blokkert
   dataprogram ville gitt en tjeneste uten data. Hentingen tar da minst 30 sekunder per kilde
@@ -519,8 +523,15 @@ kan prøves og testes uavhengig av drift.
 
 #### FR-30: Lokal demomodus med ferdige data *(Må ha)*
 
-En utenforstående kan klone repoet og starte SnowFinder med `npm ci && npm run dev`. Det
-krever ikke nøkler eller nettverkskall til MET og NVE. Appen viser da et demodatasett.
+En utenforstående kan klone repoet og starte SnowFinder i demomodus med
+`npm ci && npm run dev:demo`. Det krever ikke nøkler eller nettverkskall til MET og NVE. Appen viser
+da et demodatasett.
+
+*(endret v6, 2026-10-31)* `npm run dev` uten valg viser ekte data: `npm run data:hent` kjører
+automatisk først og henter siste publiserte fil fra grenen `data`. Demodata vises bare når demomodus
+er valgt. Uten nett og uten en lokal datafil sier appen fra og viser kommandoen for demomodus. *(v5,
+samme dag, lot appen lese grenen selv og falle tilbake til demodata. Det ble forkastet fordi
+brukertesten trenger faste data, og fordi demodata ikke skal vises uten at de er valgt.)*
 
 **Konsekvenser (testbare):**
 - **Samme program, to kilder (v3):** `npm run data:demo` kjører dataprogrammet på de lagrede
@@ -546,8 +557,10 @@ krever ikke nøkler eller nettverkskall til MET og NVE. Appen viser da et demoda
 - **Tydelig merket:** demomodus vises i grensesnittet («Demodata – ikke ekte prognoser»).
 - **Testet i CI:** en E2E-røyktest kjører kart → filter → stedsside i demomodus.
 - **README** beskriver to kjøremåter:
-  - demodata, som anbefales for sensor;
-  - ferske, ekte data med `npm run data`, som bare krever nettilgang.
+  - demodata med `npm run dev:demo`, som anbefales for sensor og gir samme resultat hver gang
+    *(endret v6)*;
+  - ekte data med `npm run dev`, som bare krever nettilgang *(endret v6)*. `npm run data` henter dem
+    direkte fra MET og NVE.
 
 #### FR-31: Vurdering av SnowScore mot målte forhold *(Ikke i v1 fra v3)*
 
@@ -750,7 +763,8 @@ ID-ene er beholdt fra v1.
   måles fra Actions-historikken (tidspunkt for vellykkede kjøringer) over minst én uke med den
   planlagte jobben i gang. Validerer NFR-3.
 - **SM-14 (Kjørbarhet, ny i v2):** Et gruppemedlem som ikke har satt opp prosjektet før, starter
-  appen i demomodus fra et rent klon kun etter README, på under 10 minutter og uten hjelp.
+  appen fra et rent klon kun etter README, både i demomodus (`npm run dev:demo`) og *(v6)* med ekte
+  data (`npm run dev`), på under 10 minutter og uten hjelp.
   Det gjøres første gang senest rett etter Story 1.10, og deretter før hver innlevering. Hvert
   steg som mangler eller er uklart, noteres og rettes. Validerer FR-30.
 
@@ -783,9 +797,11 @@ testen kan gjennomføres så snart Må ha er ferdig.
 ## 10. Åpne spørsmål
 
 1. ~~**Push-leveranse:**~~ *Utgår i v3,* fordi snøvarsel ikke er med i v1.
-2. **Hosting:** *(v3)* GitHub Pages foreslås, fordi den planlagte jobben og CI allerede ligger i
+2. ~~**Hosting:** *(v3)* GitHub Pages foreslås, fordi den planlagte jobben og CI allerede ligger i
    GitHub Actions, og ingen ekstra konto trengs. Bekreft med gruppa. GitHub Actions og Pages må
-   slås på i repoet av en administrator.
+   slås på i repoet av en administrator.~~ *Lukket 2026-11-01:* faglærer har slått av Pages i
+   grupperepoene, og Vercel er eneste publiseringsløsning emnet støtter. Aksel eier prosjektet på sin
+   Hobby-konto. Det trengs ingen nøkler.
 3. ~~**IBE160-vurderingskriterier:**~~ *Lukket i v2.* Sensorveiledningen for del 1 og
    faglærers tilbakemelding (2026-10-06) er nå kjent og krysjekket mot §6 og §9, gjennom
    endringsrunden 2026-10-07.

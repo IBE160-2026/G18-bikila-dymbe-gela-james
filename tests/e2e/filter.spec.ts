@@ -7,12 +7,11 @@ import { zoomStep } from './kartZoom'
 // 768px and a bottom sheet below; map and list show the same places.
 
 test.beforeEach(async ({ context }) => {
-  // Same isolation as kart.spec.ts: nothing from the network, and no leftover latest.json.
+  // Same isolation as kart.spec.ts: nothing from the network.
   await context.route('**/*', (route) => {
     const { hostname } = new URL(route.request().url())
     return hostname === 'localhost' ? route.continue() : route.abort()
   })
-  await context.route('**/data/latest.json', (route) => route.fulfill({ status: 404, body: '' }))
 })
 
 const DESKTOP = { width: 1280, height: 800 }

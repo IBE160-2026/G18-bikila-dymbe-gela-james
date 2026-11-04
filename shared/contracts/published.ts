@@ -115,3 +115,24 @@ export const PublishedData = z.strictObject({
 })
 
 export type PublishedData = z.infer<typeof PublishedData>
+
+/** Fields added after the first published files, with the value an older file gets for them. */
+const NYERE_FELT = {
+  // Story 3.5
+  skydekkeDagslys: null,
+  // Story 4.2
+  skivindu: null,
+  skivinduUtenDagslys: false,
+}
+
+/**
+ * Stories 3.5 and 4.2: a file written before a field existed gets its default, so it stays readable
+ * until the next pipeline run. Read side only; publish.ts still requires the fields.
+ */
+export function medNyereFelt(body: unknown): unknown {
+  if (typeof body !== 'object' || body === null || !('steder' in body) || !Array.isArray(body.steder)) return body
+  const steder: unknown[] = body.steder.map((sted: unknown) =>
+    typeof sted === 'object' && sted !== null ? { ...NYERE_FELT, ...sted } : sted,
+  )
+  return { ...body, steder }
+}

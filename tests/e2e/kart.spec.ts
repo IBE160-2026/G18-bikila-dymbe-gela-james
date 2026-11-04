@@ -9,9 +9,6 @@ test.beforeEach(async ({ context }) => {
     const { hostname } = new URL(route.request().url())
     return hostname === 'localhost' ? route.continue() : route.abort()
   })
-  // A latest.json left over from `npm run data` would end up in dist/; pretend it is absent so the
-  // app falls back to demo.json, as on a clean clone.
-  await context.route('**/data/latest.json', (route) => route.fulfill({ status: 404, body: '' }))
 })
 
 const markers = 'path.kart-markor'

@@ -3,8 +3,9 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { PublishedData } from '../../shared/contracts/published'
+import type { RunReport } from '../../shared/contracts/run'
 import type { FetchFn } from './fetch'
-import { DEMO_OUT_PATH, liveRunId, runDemo, runLive } from './run'
+import { DEMO_OUT_PATH, liveRunId, main, runDemo, runLive } from './run'
 import { DEFAULT_FIXTURES_DIR } from './sources/fixtures'
 import { catalogEntry, metResponse, nveResponse, REFERENCE_TIME, snowyDay } from './testing'
 
@@ -21,6 +22,34 @@ beforeEach(async () => {
 
 afterEach(async () => {
   await rm(dir, { recursive: true, force: true })
+})
+
+describe('main', () => {
+  const exitCodeBefore = process.exitCode
+
+  afterEach(() => {
+    // Left at 1, it would fail the test run itself.
+    process.exitCode = exitCodeBefore
+  })
+
+  /** The run that must be chosen reports `publisert`; the other one fails the test if it is called. */
+  function runs(mode: 'demo' | 'live', publisert: boolean) {
+    const chosen = async () => ({ publisert }) as RunReport
+    const other = async (): Promise<RunReport> => {
+      throw new Error('wrong run')
+    }
+    return mode === 'demo' ? { demo: chosen, live: other } : { demo: other, live: chosen }
+  }
+
+  it.each([
+    { argv: ['--demo'], mode: 'demo' as const, publisert: false, exitCode: 1 },
+    { argv: ['--demo'], mode: 'demo' as const, publisert: true, exitCode: exitCodeBefore },
+    { argv: [], mode: 'live' as const, publisert: false, exitCode: 1 },
+    { argv: [], mode: 'live' as const, publisert: true, exitCode: exitCodeBefore },
+  ])('$mode with publisert $publisert sets exit code $exitCode', async ({ argv, mode, publisert, exitCode }) => {
+    await main(argv, runs(mode, publisert))
+    expect(process.exitCode).toBe(exitCode)
+  })
 })
 
 describe('runDemo', () => {

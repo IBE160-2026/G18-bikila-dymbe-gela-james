@@ -29,7 +29,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 # - Retrospective appends its action items to action_items; the status view surfaces open ones
 generated: 09-27-2026 12:00
-last_updated: 10-29-2026 12:00
+last_updated: 10-31-2026 12:00
 project: G18-bikila-dymbe-gela-james
 project_key: NOKEY
 tracking_system: file-system
@@ -42,7 +42,7 @@ development_status:
   1-4-bygg-den-delte-snowscore-modulen: done
   1-10-kjør-snowfinder-lokalt-med-demodata: done
   1-5-beregn-og-publiser-snowscore-i-dataprogrammet: done
-  1-11-kjør-dataprogrammet-hver-time-og-publiser-appen: backlog
+  1-11-kjør-dataprogrammet-hver-time-og-publiser-appen: in-progress
   1-7-se-norgeskartet-med-fargelagte-steder: done
   1-8-bruk-tilgjengelig-listevisning-i-stedet-for-kart: done
   1-9-åpne-en-stedsside-med-full-poengsum: done

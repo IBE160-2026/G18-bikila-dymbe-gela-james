@@ -3,13 +3,12 @@ import { expect, test, type BrowserContext, type Locator, type Page } from '@pla
 
 // Story 1.8: the list view as the keyboard and screen-reader alternative to the map.
 
-/** Same isolation as kart.spec.ts: nothing from the network, and no leftover latest.json. */
+/** Same isolation as kart.spec.ts: nothing from the network. */
 async function isolate(context: BrowserContext): Promise<void> {
   await context.route('**/*', (route) => {
     const { hostname } = new URL(route.request().url())
     return hostname === 'localhost' ? route.continue() : route.abort()
   })
-  await context.route('**/data/latest.json', (route) => route.fulfill({ status: 404, body: '' }))
 }
 
 test.beforeEach(({ context }) => isolate(context))

@@ -1,0 +1,27 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "vite",
+  "buildCommand": "npm run build --ignore-scripts && rm -f dist/data/latest.json dist/data/demo.json",
+  "outputDirectory": "dist",
+  "rewrites": [
+    {
+      "source": "/data/latest.json",
+      "destination": "https://raw.githubusercontent.com/IBE160-2026/G18-bikila-dymbe-gela-james/data/latest.json"
+    },
+    {
+      "source": "/((?!assets/|data/).*)",
+      "destination": "/index.html"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/data/latest.json",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ]
+    }
+  ]
+}
