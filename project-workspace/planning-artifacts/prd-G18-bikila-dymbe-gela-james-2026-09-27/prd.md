@@ -1,7 +1,7 @@
 ---
 title: SnowFinder
 created: 2026-09-27
-updated: 2026-11-01
+updated: 2026-11-04
 status: draft
 ---
 
@@ -121,6 +121,15 @@ sjekker før de bestemmer seg for hvor de skal denne helgen.
   - **Oppløsning:** Havner på samme stedsside som i UJ-1 — resten av opplevelsen er identisk.
   - **Edge case:** Realiserer WCAG 2.1 AA-kravet fra §7.4; se Marys begrunnelse i memloggen for
     hvorfor selve kartlaget er unntatt mens listevisningen må være fullt AA-kompatibel.
+
+- **UJ-4. Mari sjekker ett bestemt sted.** *(v5, 2026-11-04)*
+  - **Person + kontekst:** Mari har hytte på Beitostølen og vil bare vite hvordan forholdene er der.
+  - **Inngangstilstand:** Ingen konto. Åpner SnowFinder på mobil.
+  - **Sti:** (1) Skriver «beito» i søkefeltet over kartet. (2) Får forslag mens hun skriver.
+    (3) Velger «Beitostølen».
+  - **Klimaks:** Stedssiden åpnes direkte, uten at hun har lett på kartet.
+  - **Edge case:** Filteret hennes skjuler stedet. Søket viser det likevel, merket «Oppfyller ikke
+    filteret», så hun ser at stedet finnes.
 
 ## 3. Ordliste
 
@@ -316,7 +325,8 @@ prognose/modell, ikke en målt eller garantert verdi.
 
 **Beskrivelse:** Forsiden. To likeverdige måter å utforske katalogen på: et visuelt kart for de
 fleste, og en tastaturnavigerbar listevisning som gir identisk informasjon og funksjonalitet uten
-å kreve mus, touch eller fargesyn. Realiserer UJ-1 (kart) og UJ-3 (liste).
+å kreve mus, touch eller fargesyn. I tillegg et søkefelt for den som vet hvilket sted hen vil
+se *(v5)*. Realiserer UJ-1 (kart), UJ-3 (liste) og UJ-4 (søk).
 
 #### FR-12: Interaktivt Norgeskart *(Må ha)*
 
@@ -366,6 +376,27 @@ inn filteret med ett trykk.
 **Konsekvenser (testbare):**
 - Hvert hurtigvalg tilsvarer en dokumentert, fast kombinasjon av filterverdier (ikke en skjult
   heuristikk som er vanskelig å etterprøve).
+
+#### FR-32: Søk på stedsnavn *(Må ha, v5, 2026-11-04)*
+
+Utforsk har et søkefelt for stedsnavn i både kart- og listevisning. Søket kjører i nettleseren på
+stedene i datafila, uten søketjeneste.
+
+**Konsekvenser (testbare):**
+- Søket skiller ikke mellom store og små bokstaver, og tåler æ, ø og å skrevet som ae, o og a
+  (og omvendt).
+- Et sted er et treff når søketeksten er starten på et ord i navnet («skisenter» finner «Hemsedal
+  skisenter»). Treff der hele navnet starter med søketeksten, kommer først, deretter alfabetisk.
+- Høyst 8 forslag vises mens brukeren skriver, fra første tegn.
+- Steder som er skjult av filteret eller har ufullstendige data, vises også, med statusen som
+  tekst. Steder med data eldre enn 12 timer er fjernet (NFR-3) og finnes heller ikke i søket.
+- Et valgt treff åpner stedssiden med mus, berøring eller Enter.
+- Ved null treff står det at stedet ikke finnes, og hvor mange steder SnowFinder dekker.
+- Søketeksten påvirker ikke filteret og står ikke i adressen.
+- En fasittabell for søket kjøres som CI-blokkerende test mot den delte søkefunksjonen.
+
+*Begrunnelse:* tre av fem oppgaver i brukertesten ber deltakeren finne et bestemt sted
+(sprint-change-proposal-2026-11-04-sok.md).
 
 ### 4.4 Stedsside
 
@@ -606,7 +637,8 @@ nysnø med NVE seNorges modellerte nysnø i etterkant, for katalogens steder ove
   av datafilen, siste gyldige data ved nedetid (FR-6a) og datakvalitet per kjøring (§4.1,
   NFR-DQ1–3)
 - SnowScore-modul, forklaringsside (uten kalkulator), regneeksempel (§4.2, FR-7/8/9/11)
-- Norgeskart **og** tilgjengelig listevisning som likeverdig alternativ (§4.3)
+- Norgeskart **og** tilgjengelig listevisning som likeverdig alternativ, med søk på stedsnavn
+  (§4.3, FR-32) *(v5)*
 - Stedsside med full poengsum og rådata (§4.4, FR-16)
 - Filter for nysnø, vind og temperatur, med URL-persistens og null-treff-veiledning (§4.5,
   FR-20/21/26)

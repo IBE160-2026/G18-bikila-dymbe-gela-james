@@ -58,7 +58,7 @@ development_status:
   2-4-prøv-snowscore-kalkulatoren-selv: done
   epic-2-retrospective: done
 
-  epic-3: done
+  epic-3: in-progress  # Story 3.9 (søk) lagt til 2026-11-04
   3-1-filtrer-på-nysnø-vind-og-temperatur: done
   3-2-del-og-gjenåpne-et-filtrert-søk: done
   3-3-få-hjelp-ved-null-treff-og-se-antall-treff-live: done
@@ -67,6 +67,7 @@ development_status:
   3-6-filtrer-på-avstand: done
   3-7-filtrer-på-stedstype: done
   3-8-filtrer-på-nysnø-siste-24-timer: done
+  3-9-søk-etter-et-sted-ved-navn: backlog
   epic-3-retrospective: optional
 
   epic-4: done  # 4.1, 4.3 og 4.4 er Ikke i v1

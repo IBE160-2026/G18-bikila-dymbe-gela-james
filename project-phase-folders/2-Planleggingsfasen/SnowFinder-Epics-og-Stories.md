@@ -64,6 +64,7 @@ FR-28: Serversidevalidert, misbruksbeskyttet innsending — Ikke i v1 (v3)
 FR-29: Automatisk sletting av tilbakemelding — Ikke i v1 (v3)
 FR-30: Lokal demomodus med ferdige data (`npm ci && npm run dev` uten nøkler) — Må ha
 FR-31: Vurdering av SnowScore mot målte forhold — Ikke i v1 (v3)
+FR-32: Søk på stedsnavn (i nettleseren, shared/) — Må ha (v5, 2026-11-04)
 
 ### Ikke-funksjonelle krav
 
@@ -149,7 +150,7 @@ UX-DR16 (v3): Demobanner «Demodata – ikke ekte prognoser» når datafilen har
 
 FR-1 til FR-7, FR-12, FR-13, FR-16, FR-30: Epic 1
 FR-8 til FR-11: Epic 2
-FR-14, FR-15, FR-20 til FR-26: Epic 3
+FR-14, FR-15, FR-20 til FR-26, FR-32: Epic 3
 FR-17: Epic 4
 FR-18, FR-19, FR-27 til FR-29, FR-31: Ikke i v1 (v3). Story 4.1, 4.3, 4.4 og Epic 5 er merket deretter.
 
@@ -182,8 +183,8 @@ eller listen.
 ### Epic 3: Finn steder som oppfyller mine krav
 Brukeren kan sette presise krav (nysnø, vind, temperatur — og som utvidelse sol, avstand,
 stedstype, nysnø siste 24t) og få akkurat de stedene som oppfyller dem, med hjelp til å justere
-kravet ved null treff.
-**FRs dekket:** FR-14, FR-15, FR-20, FR-21, FR-22, FR-23, FR-24, FR-25, FR-26 (kryssreferanse).
+kravet ved null treff, og finne ett bestemt sted ved navn *(2026-11-04)*.
+**FRs dekket:** FR-14, FR-15, FR-20, FR-21, FR-22, FR-23, FR-24, FR-25, FR-26 (kryssreferanse), FR-32.
 
 ### Epic 4: Få mer ut av et sted jeg følger med på
 Brukeren kan se når det beste tidsvinduet for en skitur er (med mørketid-håndtering).
@@ -746,6 +747,51 @@ So that jeg også kan finne steder som allerede har fått snø. Bør ha. Realise
 **When** jeg velger «siste 24 t» som datagrunnlag for nysnø-filteret
 **Then** brukes NVE seNorge-verdien i stedet for MET-prognosen for det kriteriet, tydelig merket
 i grensesnittet hvilken kilde som er i bruk
+
+### Story 3.9: Søk etter et sted ved navn *(ny 2026-11-04)*
+
+**Prioritet:** Må ha
+
+As en bruker som vet hvilket sted jeg vil se,
+I want å skrive navnet i et søkefelt og få forslag,
+So that jeg kommer rett til stedssiden uten å lete på kartet. Realiserer FR-32. Realiserer UJ-4.
+Kommer fra [endringsforslaget om søk](../../project-workspace/planning-artifacts/sprint-change-proposal-2026-11-04-sok.md).
+
+**Acceptance Criteria:**
+
+**Given** Utforsk i kart- eller listevisning med publiserte data
+**When** jeg skriver «beito» i søkefeltet
+**Then** viser forslagslisten «Beitostølen» mens jeg skriver, uten at filteret, adressen eller
+trefftallet endres
+
+**Given** søketekst med en annen skrivemåte, for eksempel «tromso», «TRYSIL» eller «skisenter»
+**When** søket kjøres
+**Then** finnes de samme stedene som med riktig skrivemåte, etter reglene i FR-32, og rekkefølgen
+og grensen på 8 forslag følger fasittabellen `tests/golden/sok.json`
+
+**Given** et sted som er skjult av filteret eller har ufullstendige data
+**When** jeg søker etter det
+**Then** står det i forslagslisten med statusen som tekst («Oppfyller ikke filteret» eller
+«Ufullstendige data»)
+**And** et sted med data eldre enn 12 timer finnes ikke i søket, på samme måte som det ikke finnes
+i kart og liste (NFR-3)
+
+**Given** forslagslisten er åpen
+**When** jeg velger et forslag med mus, berøring eller piltaster og Enter
+**Then** åpnes stedssiden, med filteret og visningen i adressen som i Story 3.2b, og «Tilbake» går
+tilbake til Utforsk
+
+**Given** en søketekst uten treff
+**When** søket kjøres
+**Then** viser listen «Fant ingen steder som heter «…». SnowFinder dekker N steder i Norge.», der
+N er antall steder i datafila
+
+**And** feltet følger ARIA-mønsteret for combobox (`role="combobox"`, `aria-expanded`,
+`aria-controls`, `aria-activedescendant`). Antall forslag annonseres med `aria-live="polite"`, og
+Escape lukker listen og tømmer feltet ved andre trykk
+**And** søkefunksjonen er én ren funksjon i `shared/` (AD-6) med fasittabell (AD-4), og
+E2E-røyktesten søker opp et sted i demomodus og kjører axe på Utforsk med åpen forslagsliste
+**And** feltet ligger over kartet og listen på alle bredder, aldri inne i bunn-arket under 768 px
 
 ---
 

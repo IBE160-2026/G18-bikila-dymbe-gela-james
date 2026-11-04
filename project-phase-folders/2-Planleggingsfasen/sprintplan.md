@@ -30,7 +30,7 @@ Frister fylles inn i [milepæler](milepæler.md) når gruppa har satt datoer.
 | 1 | Prosjektet bygger, SnowScore-formelen og katalogen finnes i kode, appen kjører med demodata, og forklaringssiden er på plass | 1.1, 1.2, 1.4, 1.10, 2.1, 2.2, 2.3, 2.4 | Ingen |
 | 2 | Ekte data på kart, i liste og på stedssiden | 1.3, 1.5, 1.7, 1.8, 1.9, 1.11 | UX-dokumentene er oppdatert |
 | 3 | Filter (Må ha først, deretter Bør ha) | 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8 | Sprint 2 er ferdig |
-| 4 | Bør ha: robusthet og skivindu | 1.6, 4.2 | Sprint 3 er ferdig |
+| 4 | Bør ha: robusthet og skivindu. Må ha: søk etter sted | 1.6, 4.2, 3.9 | Sprint 3 er ferdig |
 
 Kart, liste og stedsside (1.7–1.9) kan bygges mot demodata fra 1.10 før de ekte kildene er
 koblet på i 1.3 og 1.5. Epic 2 bygges i sprint 1, fordi forklaringssiden bare trenger
@@ -44,6 +44,9 @@ hurtigvalget «Sol etter snøfall» trenger solfilteret.
 til etter Aksels ønske og bygget mens 1.11 ventet på målingen. Den justerer UX for 2.1 og Epic 3.
 **Avvik (2026-11-02):** Aksel bestilte en UX-forbedring i fem steg, før kodefrysen 11. november. Steg 1 er
 Story 1.8b (resultatlisten som destinasjonskort). Hvert steg er en egen story med egen PR.
+
+**Avvik (2026-11-04):** Story 3.9 (søk) er lagt til etter [endringsforslaget om søk](../../project-workspace/planning-artifacts/sprint-change-proposal-2026-11-04-sok.md)
+og bygges før brukertesten.
 
 **Ikke i v1 (v3):** Story 4.1 (PWA), 4.3 og 4.4 (snøvarsel) og hele Epic 5 (tilbakemelding).
 De står i `sprint-status.yaml` med kommentaren «Ikke i v1» og bygges ikke.
