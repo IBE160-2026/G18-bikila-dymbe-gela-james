@@ -207,7 +207,9 @@ Navnene er de samme som i Komponentmønstre i EXPERIENCE.md, som beskriver atfer
   under. «SnowFinder» står i `heading` og `{colors.ink-primary}`, «Slik beregner vi SnowScore» i
   `{colors.accent}`. Gjeldende side vises med `heading`-vekt og understrek, ikke bare farge. Under
   768 px ligger lenken bak knappen ☰, minst `{spacing.7}` × `{spacing.7}`, med
-  `{colors.border-hairline}`-kant og `{rounded.sm}`.
+  `{colors.border-hairline}`-kant og `{rounded.sm}`. SnowFinder-logoen (`src/assets/snowfinder-logo.svg`)
+  står til venstre for «SnowFinder», `{spacing.6}` høy med `{spacing.2}` avstand til navnet. Logoen er et
+  bilde med egne farger, ikke tokens *(2026-11-02)*.
 - **Kart | Liste-veksling** — To lenker, minst `{spacing.7}` høye, med `{rounded.sm}`. Den valgte
   har `{colors.accent}` som bakgrunn og `{colors.surface-raised}` som tekst. Den andre har
   `{colors.surface-raised}` bakgrunn, `{colors.border-hairline}`-kant og `{colors.accent}` tekst.
@@ -239,7 +241,8 @@ Navnene er de samme som i Komponentmønstre i EXPERIENCE.md, som beskriver atfer
   Statusteksten under (for eksempel avslått posisjon) står i `meta` og `{colors.ink-secondary}`.
 - **Filterpanel** — Glidere med tynt spor (`{components.filter-slider.trackHeight}`) og stort
   gripepunkt (`{components.filter-slider.thumbSize}`, langt over 44px trykkmål med padding),
-  aksentfarget fylt del. Levende tallverdi vises alltid ved siden av sliderens gripepunkt, ikke
+  aksentfarget fylt del fra gripepunktet til høyre på alle glidere, så «Alle» står til venstre med hele
+  sporet fylt *(2026-11-02)*. Levende tallverdi vises alltid ved siden av sliderens gripepunkt, ikke
   bare i et hjørne. Fra 768 px er panelet et `{colors.surface-raised}` kort med `{rounded.md}` i
   venstre kolonne, uten skygge.
 - **Filterkontroller** — Stedstype (avkrysning), Datagrunnlag for nysnø (radio), Hurtigvalg-chip og

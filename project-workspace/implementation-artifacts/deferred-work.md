@@ -172,3 +172,11 @@
 - source_spec: `project-workspace/implementation-artifacts/spec-1-11f-paalitelig-timesjobb.md`
   summary: Banneret kan fortsatt komme når GitHub dropper fire forsøk på rad. En garanti krever en tjeneste med nøkkel, og det er utenfor v1. Posten om lange kjøringer (Story 1.6, tidsbudsjett per kall) gjelder nå hvert 10. minutt, ikke neste time.
   evidence: Natten 1.–2. november startet bare 2 av 14 planlagte kjøringer. Avgjøres med et døgn med målinger på nettsiden etter merge.
+
+- source_spec: `project-workspace/implementation-artifacts/spec-2-1b-toppnav-og-slidere.md`
+  summary: De speilede sliderne (`dir="rtl"`) er bare prøvd i Chromium. Prøv peker, piltaster og fylt spor i Firefox og Safari i brukertesten. *(Delvis løst 2026-11-02: pil høyre i WebKit ble rettet med `onKeyDown`, og `tests/e2e/slidere.spec.ts` kjører nå i Chromium, Firefox og WebKit. Fortsatt åpent: ekte Safari på Mac og iPhone, med touch og VoiceOver, i brukertesten.)*
+  evidence: maybe-false, ville vært medium. Playwright kjører bare Chromium i dette prosjektet. Begge nettleserne støtter `dir="rtl"` på range, men det er ikke sett her.
+
+- source_spec: `project-workspace/implementation-artifacts/spec-2-1b-toppnav-og-slidere.md`
+  summary: Før `npm run test:e2e:nettlesere` og at E2E nå kjører i to jobber inn i «Running and verifying» i AGENTS.md, via `bmad-project-context`.
+  evidence: AGENTS.md nevner bare `npm run test:e2e`, som nå bare kjører Chromium. README er oppdatert.

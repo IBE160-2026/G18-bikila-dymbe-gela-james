@@ -537,6 +537,27 @@ stedsside)
 **And** en automatisert tilgjengelighetstest (axe/Playwright) i CI rapporterer null kritiske
 WCAG 2.1 AA-brudd på denne siden (NFR-7)
 
+### Story 2.1b: Logo, én forklaringslenke og slidere som starter til venstre *(ny 2026-11-02)*
+
+**Prioritet:** Bør ha
+
+As en bruker,
+I want en ryddig topp og filterslidere som oppfører seg likt,
+So that jeg kjenner igjen SnowFinder og forstår filteret uten å lese hver slider. Justerer UX for 2.1 og Epic 3.
+
+**Acceptance Criteria:**
+
+**Given** en hvilken som helst side
+**When** den åpnes
+**Then** står SnowFinder-logoen til venstre for «SnowFinder» i toppnavigasjonen, dekorativ for skjermlesere
+**And** på Utforsk vises lenken «Slik beregner vi SnowScore» én gang: i toppnavigasjonen fra 768 px, og
+ved Kart/Liste under 768 px, der toppnavigasjonen ligger bak ☰
+
+**Given** filterpanelet
+**When** alle krav står på «Alle»
+**Then** står alle fem sliderne helt til venstre, og kravet blir strengere mot høyre og med piltast høyre
+**And** adressen, filterlogikken og tekstene som «høyst 8 m/s» er uendret
+
 ### Story 2.2: Se det utledede regneeksempelet
 
 **Prioritet:** Må ha

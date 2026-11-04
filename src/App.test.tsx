@@ -28,6 +28,10 @@ const SEKS_I_LISTEN = {
 const statusMed = (html: string, tekst: string) =>
   [...html.matchAll(/<(\w+)[^>]*role="status"[^>]*>(.*?)<\/\1>/g)].map((match) => match[2]).filter((innhold) => innhold.includes(tekst))
 
+// Story 2.1b: the logo is decorative (alt=""), so the link's name is still «SnowFinder».
+const tittel = (current = false) =>
+  new RegExp(`<a href="/" class="app-title"${current ? ' aria-current="page"' : ''}><img src="[^"]+" alt="" class="app-logo"/>SnowFinder</a>`)
+
 function render(result: StederResult | null, route: Route = UTFORSK): string {
   return renderToStaticMarkup(<AppView result={result} route={route} />)
 }
@@ -35,10 +39,11 @@ function render(result: StederResult | null, route: Route = UTFORSK): string {
 describe('AppView', () => {
   it('shows the header, the demo banner and the map for the committed demo.json', () => {
     const html = render(demoResult)
-    expect(html).toContain('<a href="/" class="app-title" aria-current="page">SnowFinder</a>')
+    expect(html).toMatch(tittel(true))
     expect(html).toContain('<a href="/slik-beregner-vi-snowscore" class="toppnav-lenke">Slik beregner vi SnowScore</a>')
-    // Story 2.1: one link to the explanation next to the switch covers both map and list.
-    expect(html).toContain('<a href="/slik-beregner-vi-snowscore" class="forklaring-lenke">Slik beregner vi SnowScore</a>')
+    // Story 2.1: one link next to the switch covers both map and list. Story 2.1b: CSS shows it only below
+    // 768px, where the navigation's link is folded behind ☰ (tests/e2e/forklaring.spec.ts).
+    expect(html).toContain('<a href="/slik-beregner-vi-snowscore" class="forklaring-lenke utforsk-forklaring">Slik beregner vi SnowScore</a>')
     expect(html).toContain('Demodata – ikke ekte prognoser')
     expect(html).toContain('class="kart"')
     // Story 3.1: the filter panel, with nothing hidden until the user sets a requirement.
@@ -133,7 +138,7 @@ describe('AppView', () => {
       expect(html).toContain('<h2 id="tom-overskrift">Ingen ferske data</h2>')
       expect(html).toContain(`<p>${INGEN_STEDER}</p>`)
       expect(html).not.toContain('aria-label="Visning"')
-      expect(html).not.toContain('class="forklaring-lenke"')
+      expect(html).not.toContain('forklaring-lenke')
       expect(html).not.toContain('aria-label="Filter"')
       expect(html).toContain('Last inn på nytt</button>')
       expect(html).not.toContain('class="kart"')
@@ -270,7 +275,7 @@ describe('AppView', () => {
     expect(html).toContain('Fant ikke siden')
     expect(html).toContain('<a href="/">Gå til kartet</a>')
     // «SnowFinder» links to the map, which is not this page.
-    expect(html).toContain('<a href="/" class="app-title">SnowFinder</a>')
+    expect(html).toMatch(tittel())
   })
 
   it.each([
@@ -292,7 +297,7 @@ describe('AppView', () => {
     expect(html).toContain(
       '<a href="/slik-beregner-vi-snowscore" class="toppnav-lenke" aria-current="page">Slik beregner vi SnowScore</a>',
     )
-    expect(html).toContain('<a href="/" class="app-title">SnowFinder</a>')
+    expect(html).toMatch(tittel())
   })
 
   it('has a closed ☰ menu button that controls the nav links', () => {
@@ -321,7 +326,7 @@ describe('AppView', () => {
     const html = render(demoResult, LISTE)
     expect(html).toContain('<a href="/?visning=liste" class="visning-valg" aria-current="page">Liste</a>')
     // «SnowFinder» opens the map, so on the list no nav link is the current page (R9, A8).
-    expect(html).toContain('<a href="/" class="app-title">SnowFinder</a>')
+    expect(html).toMatch(tittel())
     const toppnav = /<nav class="toppnav".*?<\/nav>/.exec(html)?.[0] ?? ''
     expect(toppnav).toContain('SnowFinder')
     expect(toppnav).not.toContain('aria-current')

@@ -52,9 +52,18 @@ for (const [visning, adresse] of [
   ['map', '/'],
   ['list', '/?visning=liste'],
 ] as const) {
-  test(`the link next to the map/list switch opens the page from the ${visning}`, async ({ page }) => {
+  // Story 2.1b: from 768px only the navigation's link is shown, so Utforsk does not show it twice.
+  test(`the ${visning} shows the link once, in the navigation, and the decorative logo`, async ({ page }) => {
     await page.goto(adresse)
-    await page.locator('main').getByRole('link', { name: NAVN }).click()
+    await expect(page.getByRole('link', { name: NAVN })).toHaveCount(1)
+    await expect(page.locator('main').getByRole('link', { name: NAVN })).toHaveCount(0)
+    // The logo is decorative: it loads, and the link's name is still only «SnowFinder».
+    const logo = nav(page).locator('img.app-logo')
+    await expect(logo).toHaveAttribute('alt', '')
+    await expect(logo).toHaveJSProperty('complete', true)
+    await expect(logo).not.toHaveJSProperty('naturalWidth', 0)
+    await expect(nav(page).getByRole('link', { name: 'SnowFinder', exact: true })).toBeVisible()
+    await nav(page).getByRole('link', { name: NAVN }).click()
     await expectExplanation(page)
   })
 }
@@ -132,11 +141,31 @@ test.describe('at 375px', () => {
     expect(scrollWidth).toBeLessThanOrEqual(375)
   })
 
+  for (const [visning, adresse] of [
+    ['map', '/'],
+    ['list', '/?visning=liste'],
+  ] as const) {
+    // Story 2.1b: the navigation's link is folded behind ☰ here, so the one next to the switch is shown
+    // instead, and the explanation stays one tap away from map and list (Story 2.1, FR-8).
+    test(`the ${visning} shows the link next to the switch, and only that one`, async ({ page }) => {
+      await page.goto(adresse)
+      await expect(page.getByRole('link', { name: NAVN })).toHaveCount(1)
+      const lenke = page.locator('main').getByRole('link', { name: NAVN })
+      const box = await lenke.boundingBox()
+      expect(box?.height ?? 0).toBeGreaterThanOrEqual(44)
+      await lenke.click()
+      // The navigation's own link, which expectExplanation checks, is behind ☰ at this width.
+      await expect(page).toHaveURL(/\/slik-beregner-vi-snowscore$/)
+      await expect(page.getByRole('heading', { level: 1 })).toHaveText(NAVN)
+    })
+  }
+
   test('going Back closes an open ☰ menu', async ({ page }) => {
     await page.goto('/')
-    await page.locator('main').getByRole('link', { name: NAVN }).click()
-    await expect(page).toHaveURL(/\/slik-beregner-vi-snowscore$/)
     const knapp = nav(page).getByRole('button', { name: 'Meny' })
+    await knapp.click()
+    await nav(page).getByRole('link', { name: NAVN }).click()
+    await expect(page).toHaveURL(/\/slik-beregner-vi-snowscore$/)
     await knapp.click()
     await expect(knapp).toHaveAttribute('aria-expanded', 'true')
 

@@ -142,7 +142,17 @@ npx playwright install chromium   # last ned Chromium for Playwright (én gang)
 npm run test:e2e                  # kjør røyktesten
 ```
 
-På pull requests og ved push til `main` kjøres den av `.github/workflows/e2e.yml` på Ubuntu. Fontene der
+`tests/e2e/slidere.spec.ts` sjekker at de speilede filtersliderne starter på «Alle» til venstre, og at pil
+høyre gjør kravet strengere. Nettlesermotorene behandler speilede slidere ulikt, så den fila kjøres også i
+Firefox og WebKit (Safari-motoren). Bare den fila kjøres der, ikke hele E2E-pakken:
+
+```sh
+npx playwright install firefox webkit   # last ned Firefox og WebKit (én gang)
+npm run test:e2e:nettlesere             # slidertestene i Firefox og WebKit
+```
+
+På pull requests og ved push til `main` kjøres begge av `.github/workflows/e2e.yml` på Ubuntu, i to jobber ved
+siden av hverandre: `e2e` (Chromium) og `nettlesere` (Firefox og WebKit). Fontene der
 er bredere enn på Windows, så sjekk at E2E er grønn på GitHub, ikke bare lokalt. `npm test` kjører bare
 enhetstestene og trenger verken nettleser eller nett.
 

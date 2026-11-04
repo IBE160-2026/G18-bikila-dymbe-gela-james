@@ -482,7 +482,14 @@ select:focus-visible {
 .app-title {
   display: inline-flex;
   align-items: center;
+  gap: var(--spacing-2);
   min-height: var(--spacing-7);
+}
+
+/* Story 2.1b: the logo left of the name, DESIGN.md Toppnavigasjon. */
+.app-logo {
+  width: var(--spacing-6);
+  height: var(--spacing-6);
 }
 
 .toppnav-knapp {
@@ -553,7 +560,8 @@ select:focus-visible {
   margin-bottom: 0;
 }
 
-/* Links to the explanation page from a score: a 44px+ touch target like the other links. */
+/* Links to the explanation page from a score (the place page card, and Utforsk below 768px): a 44px+
+   touch target like the other links. */
 .forklaring-lenke {
   display: inline-flex;
   align-items: center;
@@ -562,6 +570,15 @@ select:focus-visible {
 
 .sted-kort .forklaring-lenke {
   margin-top: var(--spacing-2);
+}
+
+/* Story 2.1b, after .forklaring-lenke so it wins: from 768px the same link is visible in the top navigation, so this one is hidden there and
+   the link is never shown twice. Below 768px the navigation folds behind ☰, and this one keeps the
+   explanation one tap away from the map and the list (Story 2.1, FR-8). */
+@media (min-width: 768px) {
+  .utforsk-forklaring {
+    display: none;
+  }
 }
 
 /* Story 2.1: the explanation page, a readable column of text. */
