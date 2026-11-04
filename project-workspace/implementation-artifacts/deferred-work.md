@@ -179,7 +179,7 @@
 
 - source_spec: `project-workspace/implementation-artifacts/spec-2-1b-toppnav-og-slidere.md`
   summary: Før `npm run test:e2e:nettlesere` og at E2E nå kjører i to jobber inn i «Running and verifying» i AGENTS.md, via `bmad-project-context`.
-  evidence: AGENTS.md nevner bare `npm run test:e2e`, som nå bare kjører Chromium. README er oppdatert.
+  evidence: AGENTS.md nevner bare `npm run test:e2e`, som nå bare kjører Chromium. README er oppdatert. *(Løst 2026-11-04: «Running and verifying» i AGENTS.md nevner begge kommandoene og begge CI-jobbene.)*
 
 - source_spec: none
   summary: Fargeforklaring på kartet, med poengintervall per trinn og et skille for ufullstendige data som ikke bare bygger på farge (SRS-F-15 i PRD/SRS v2).

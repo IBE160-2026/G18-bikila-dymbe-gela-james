@@ -35,7 +35,7 @@ Gruppeprosjekt i IBE160 ved Høgskolen i Molde: en statisk webapp som rangerer ~
 
 - Node 24, eller 26 og nyere (`engines` i `package.json`). Node 25 støttes ikke av Vitest.
 - Kjør `npm run lint`, `npm run typecheck`, `npm test` og `npm run build:demo` før hver commit. CI og pre-push-hooken kjører de samme fire, og `npm test` alene typesjekker ikke. `npm run build` henter data fra nett først (`prebuild`), så bruk den ikke som sjekk.
-- `npm run test:e2e` kjører i CI (`e2e.yml`), men ikke i pre-push-hooken. Kjør den lokalt før PR når du endrer UI. Port 4173 og 4174 må være ledige.
+- `npm run test:e2e` kjører Chromium og normal modus. `npm run test:e2e:nettlesere` kjører bare `tests/e2e/slidere.spec.ts` i Firefox og WebKit, etter `npx playwright install firefox webkit` én gang. CI kjører dem i to jobber i `e2e.yml`, `e2e` og `nettlesere`, men pre-push-hooken kjører ingen av dem. Kjør `npm run test:e2e` lokalt før PR når du endrer UI, og begge når du endrer sliderne. Port 4173 og 4174 må være ledige.
 - Pre-push-hooken (`.githooks/pre-push`) kjører de fire sjekkene og avviser push når sporede filer har endringer som ikke er committet. Commit eller stash først.
 - Lås avhengigheter til eksakte versjoner uten `^`, og commit `package-lock.json`. Bruk TypeScript 6.0.x, ikke 7, fordi typescript-eslint krever <6.1.
 
