@@ -4,6 +4,7 @@ import { aktiveKrav, filtrerSteder, forslagVedNullTreff, type FilterParams } fro
 import FilterPanel, { antallTekst, fokuserFilteret, forslagTekst, Nullstill, NVE_MANGLER } from '../components/FilterPanel'
 import KartVisning from '../components/KartVisning'
 import ListeVisning from '../components/ListeVisning'
+import StedSok from '../components/StedSok'
 import Lenke from '../components/Lenke'
 import VisningVeksler from '../components/VisningVeksler'
 import { href, replace, type UrlSortering, type UtforskRoute } from '../lib/router'
@@ -77,6 +78,8 @@ export default function Utforsk({ steder, utdatert, route }: Props) {
     () => (treff.length === 0 ? forslagVedNullTreff(steder, filter, avstandPosisjon ?? undefined) : null),
     [treff, steder, filter, avstandPosisjon],
   )
+  // Story 3.9: the search reads every fresh place, before the filter, and only marks the ones it hides.
+  const treffIds = useMemo(() => new Set(treff.map(({ id }) => id)), [treff])
   const nullTreff = treff.length === 0 ? `${antallTekst(0)}. ${forslagTekst(forslag, filter.nysnoKilde)}` : null
   // Story 3.8 (review round 1, Sena 2A): over all fresh places, not the hits, since NVE missing for the
   // whole run is what the message explains. Memoised, as it walks every place.
@@ -116,6 +119,8 @@ export default function Utforsk({ steder, utdatert, route }: Props) {
               Slik beregner vi SnowScore
             </Lenke>
           </div>
+          {/* Story 3.9 (FR-32): between the switch and the map or list on every width, never in the sheet. */}
+          <StedSok steder={steder} treffIds={treffIds} route={route} />
           <div className="utforsk">
             <FilterPanel
               params={filter}

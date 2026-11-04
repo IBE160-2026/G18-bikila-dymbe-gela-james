@@ -4,7 +4,7 @@
 
 ## Goal
 
-Brukeren skal kunne sette presise krav (minimum nysnø, maks vind og en temperaturgrense, og som utvidelse sol, avstand, stedstype og nysnø siste 24 t) og bare få stedene som oppfyller alle kravene, både på kartet og i listen. Treff-antallet oppdateres mens brukeren justerer. Ved null treff foreslår appen hvilket krav som bør lempes, i stedet for å vise en tom flate. Søket ligger i nettadressen og kan deles. Epicen fullfører kjerneflyten kart → filter → stedsside (UJ-1 og UJ-3). Målet er at minst 4 av 5 testbrukere finner et sted som oppfyller et gitt krav på under 2 minutter, uten hjelp.
+Brukeren skal kunne sette presise krav (minimum nysnø, maks vind og en temperaturgrense, og som utvidelse sol, avstand, stedstype og nysnø siste 24 t) og bare få stedene som oppfyller alle kravene, både på kartet og i listen. Treff-antallet oppdateres mens brukeren justerer. Ved null treff foreslår appen hvilket krav som bør lempes, i stedet for å vise en tom flate. Søket ligger i nettadressen og kan deles. Brukeren kan også finne ett bestemt sted ved navn med et søkefelt over kart og liste (lagt til 2026-11-04, fordi tre av fem oppgaver i brukertesten ber deltakeren finne et bestemt sted). Epicen fullfører kjerneflyten kart → filter → stedsside (UJ-1 og UJ-3). Målet er at minst 4 av 5 testbrukere finner et sted som oppfyller et gitt krav på under 2 minutter, uten hjelp.
 
 ## Stories
 
@@ -16,8 +16,9 @@ Brukeren skal kunne sette presise krav (minimum nysnø, maks vind og en temperat
 - Story 3.6: Filtrer på avstand (Bør ha)
 - Story 3.7: Filtrer på stedstype (Bør ha)
 - Story 3.8: Filtrer på nysnø siste 24 timer (Bør ha)
+- Story 3.9: Søk etter et sted ved navn (Må ha, lagt til 2026-11-04)
 
-Byggerekkefølgen er rekkefølgen over. 3.1–3.3 er Må ha.
+Byggerekkefølgen er rekkefølgen over. 3.1–3.3 og 3.9 er Må ha.
 
 ## Requirements & Constraints
 
@@ -33,7 +34,8 @@ Byggerekkefølgen er rekkefølgen over. 3.1–3.3 er Må ha.
 - **Avstand (Bør ha):** Posisjonen brukes bare i nettleseren og sendes aldri noe sted. Det verifiseres med en nettverkstest som viser at ingen utgående forespørsel inneholder posisjon.
 - **Stedstype (Bør ha):** ett eller flere av skisted, fjelltopp og by.
 - **Nysnø siste 24 t (Bør ha):** NVE seNorge-verdien brukes i stedet for MET-prognosen for nysnøkriteriet, og grensesnittet viser tydelig hvilken kilde som er i bruk.
-- **Gamle data:** Steder med data eldre enn 12 timer er allerede fjernet før filteret ser dem.
+- **Gamle data:** Steder med data eldre enn 12 timer er allerede fjernet før filteret ser dem. Det gjelder også søket.
+- **Søk på stedsnavn:** skiller ikke store og små bokstaver og tåler æ, ø og å skrevet som ae, o og a (og omvendt). Et sted er treff når søketeksten er starten på et ord i navnet. Treff der hele navnet starter med teksten, kommer først, så alfabetisk, høyst 8. Steder som filteret skjuler eller som har ufullstendige data, vises med status som tekst. Søketeksten endrer aldri filteret, trefftallet eller adressen. Fasittabellen `tests/golden/sok.json` kjøres mot den delte søkefunksjonen.
 - **Tilgjengelighet:** Filteret skal oppfylle WCAG 2.1 AA fullt ut, og listen med filter er det fullverdige alternativet til kartet.
 - **Ingen ny infrastruktur:** Ingen konto, ingen lagring av brukerdata og ingen ny tjeneste. Alt skjer i nettleseren mot datafila som allerede lastes.
 
@@ -58,6 +60,8 @@ Byggerekkefølgen er rekkefølgen over. 3.1–3.3 er Må ha.
 - **Tilgjengelighetsgulv:** Trykkmål er minst 44×44 px, også for gripepunkter og chips. Kontrasten er minst 4,5:1, og fokusringen er i `accent`. `prefers-reduced-motion` stopper bunn-arkets animasjon. `accent` brukes for aktive filterverdier, og SnowScore-fargene bare der en score vises.
 - **Mikrotekst:** Tonen er rolig og presis og lover aldri snø.
 
+- **Søkefelt:** står mellom Kart | Liste-vekslingen og kartet eller listen på alle bredder, aldri i bunn-arket. ARIA-combobox med `aria-activedescendant`, piltaster, Enter og Escape (andre trykk tømmer). Antall forslag med `aria-live="polite"`. Ingen treff: «Fant ingen steder som heter «…». SnowFinder dekker N steder i Norge.»
+
 ## Cross-Story Dependencies
 
 - **3.1** lager `shared/filter.ts`, filterpanelet og fasittabellen. Alle andre stories bygger på dem.
@@ -67,4 +71,5 @@ Byggerekkefølgen er rekkefølgen over. 3.1–3.3 er Må ha.
 - **3.6** gjenbruker posisjonshentingen fra listevisningen (1.8).
 - **3.8** leser `nveNysnoSisteDognMm` fra dataprogrammet (1.3 og 1.5). Verdien kan mangle når NVE har feilet.
 - **Epic 2:** Lenken «Slik beregner vi SnowScore» ved kart/liste-veksleren i `Utforsk` må overleve den nye layouten.
+- **3.9** bruker filteret fra 3.1 for å merke steder som «Oppfyller ikke filteret», og stedslenken med filter i adressen fra 3.2b.
 - **Direkte lenker** med filter i spørrestrengen treffer `/`, så de krever ingen egen SPA-reserve.
