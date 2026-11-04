@@ -45,6 +45,7 @@ development_status:
   1-11-kjør-dataprogrammet-hver-time-og-publiser-appen: in-progress
   1-7-se-norgeskartet-med-fargelagte-steder: done
   1-8-bruk-tilgjengelig-listevisning-i-stedet-for-kart: done
+  1-8b-destinasjonskort: done
   1-9-åpne-en-stedsside-med-full-poengsum: done
   1-6-hold-tjenesten-oppe-når-en-datakilde-er-nede: done  # Bør ha (v3)
   epic-1-retrospective: optional

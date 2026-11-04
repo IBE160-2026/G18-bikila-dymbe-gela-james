@@ -24,13 +24,20 @@ const kmFormat = new Intl.NumberFormat('nb-NO', { maximumFractionDigits: 0 })
 const Skille = () => <span className="visually-hidden">, </span>
 
 /**
+ * Story 1.8b: one of the card's fixed fields. A screen reader hears «Vind 8 m/s», the eye sees the label
+ * above the value. `skjult` is read out after the value but not shown, so the distance still sounds like
+ * «12 km unna» while the card shows «Avstand» over «12 km».
+ */
+type Felt = { etikett: string; verdi: string; skjult?: string }
+
+/**
  * Story 3.8 (decided 2026-10-27, Sena): the new snow the filter compares with, so a row that meets
  * «Nysnø siste 24 t minst 5 cm» never shows a lower forecast value. NVE's mm are converted like the filter.
  */
-function nysnoTekst(sted: Sted, kilde: NysnoKilde): string {
-  if (kilde !== 'nve') return `Nysnø ${medEnhet(sted.nysnoCm, 'cm')}`
+function nysnoFelt(sted: Sted, kilde: NysnoKilde): Felt {
+  if (kilde !== 'nve') return { etikett: 'Nysnø', verdi: medEnhet(sted.nysnoCm, 'cm') }
   const cm = sted.nveNysnoSisteDognMm === null ? null : mmToCm(sted.nveNysnoSisteDognMm)
-  return `Nysnø siste 24 t ${medEnhet(cm, 'cm')}`
+  return { etikett: 'Nysnø siste 24 t', verdi: medEnhet(cm, 'cm') }
 }
 
 type Props = {
@@ -113,11 +120,12 @@ export default function ListeVisning({ steder, utdatert, sortering: urlSortering
       </p>
       <ol className="liste-rader" aria-label="Steder">
         {sortert.map((sted) => {
-          const detaljer = [
-            nysnoTekst(sted, sok.filter.nysnoKilde),
-            `Vind ${medEnhet(sted.vindMaks, 'm/s')}`,
-            `Temp ${medEnhet(sted.temperatur, '°C')}`,
-            ...(avstandFra ? [`${kmFormat.format(avstandKm(avstandFra, sted))} km unna`] : []),
+          // Story 1.8b: the same fields in the same order on every card, so the values line up for comparing.
+          const felter: Felt[] = [
+            nysnoFelt(sted, sok.filter.nysnoKilde),
+            { etikett: 'Vind', verdi: medEnhet(sted.vindMaks, 'm/s') },
+            { etikett: 'Temp', verdi: medEnhet(sted.temperatur, '°C') },
+            ...(avstandFra ? [{ etikett: 'Avstand', verdi: `${kmFormat.format(avstandKm(avstandFra, sted))} km`, skjult: ' unna' }] : []),
           ]
           return (
             <li key={sted.id}>
@@ -133,10 +141,17 @@ export default function ListeVisning({ steder, utdatert, sortering: urlSortering
                   </>
                 )}
                 <span className="liste-detaljer">
-                  {detaljer.map((tekst, i) => (
-                    <span key={tekst}>
+                  {felter.map(({ etikett, verdi, skjult }, i) => (
+                    <span key={etikett} className="liste-felt">
                       {i > 0 && <Skille />}
-                      {tekst}
+                      {/* The distance label is shown only: a screen reader heard «12 km unna» before the cards. */}
+                      <span className="liste-felt-etikett" aria-hidden={skjult ? true : undefined}>
+                        {etikett}
+                      </span>{' '}
+                      <span className="liste-felt-verdi">
+                        {verdi}
+                        {skjult && <span className="visually-hidden">{skjult}</span>}
+                      </span>
                     </span>
                   ))}
                 </span>

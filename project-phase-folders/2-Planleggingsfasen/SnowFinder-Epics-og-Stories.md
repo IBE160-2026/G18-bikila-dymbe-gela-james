@@ -445,6 +445,24 @@ dra-og-slipp)
 WCAG 2.1 AA-brudd på denne siden
 **And** listen virker i demomodus (Story 1.10)
 
+### Story 1.8b: Resultatlisten som destinasjonskort *(ny 2026-11-02)*
+
+**Prioritet:** Bør ha
+
+As en bruker,
+I want at stedene i listen står som kort med de samme tallene på samme plass,
+So that jeg raskt kan sammenligne nysnø, vind og temperatur mellom steder. Justerer listeraden fra Story 1.8.
+
+**Acceptance Criteria:**
+
+**Given** listen på Utforsk
+**When** den vises
+**Then** er hvert sted et kort som er én lenke, med navn og score-badge øverst og feltene Nysnø, Vind og
+Temp i samme rekkefølge på alle kort, og Avstand når listen er sortert etter avstand
+**And** på smale skjermer står kortene i én kolonne uten sideveis rulling, og når listen har plass til
+flere kort på minst 240 px, står de side om side med tallene på linje
+**And** det en skjermleser hører, og data, sortering og filter, er uendret
+
 ### Story 1.9: Åpne en stedsside med full poengsum
 
 **Prioritet:** Må ha

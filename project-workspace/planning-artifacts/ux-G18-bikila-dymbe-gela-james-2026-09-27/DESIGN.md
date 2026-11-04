@@ -229,9 +229,13 @@ Navnene er de samme som i Komponentmønstre i EXPERIENCE.md, som beskriver atfer
   - Steder med ufullstendige data har hvit fyll og alltid 2 px stiplet grå kant
     (`{colors.snowscore-0}`), så de aldri leses som score 0.
   - Grunnen er at 300 steder med 28 px dekket hverandre på landsnivå (manuell sjekk 2026-10-08).
-- **Listerad** — `{colors.surface-raised}` kort (`{components.location-card}`) med stedsnavn
-  (`heading`), score-badge, og tre nøkkeltall (nysnø/vind/temp) i `numeric`. Hele raden er
-  lenken; kanten blir `{colors.accent}` ved hover.
+- **Listerad** *(destinasjonskort, endret 2026-11-02)* — `{colors.surface-raised}` kort
+  (`{components.location-card}`). Øverst stedsnavn (`heading`) til venstre og score-badge til høyre.
+  Under står faste felt: etikett i `meta` og `{colors.ink-secondary}`, verdien under i `numeric`. Hele
+  kortet er lenken, og kanten blir `{colors.accent}` ved hover. Feltene står nederst i kortet. Én kolonne
+  under 768 px. Fra 768 px et rutenett med kolonner på minst 240 px, så to til tre kort står side om
+  side når listen har plass (med filterpanelet ved siden av fra rundt 1024 px), med `{spacing.3}` mellom.
+  *(Før: navn, badge og tre nøkkeltall på én linje.)*
 - **Sorteringsvalg** — Etiketten «Sorter etter» og en ordinær `<select>`, minst `{spacing.7}` høy,
   med `{colors.ink-secondary}`-kant, `{rounded.sm}` og `{colors.surface-raised}` bakgrunn.
   Statusteksten under (for eksempel avslått posisjon) står i `meta` og `{colors.ink-secondary}`.
