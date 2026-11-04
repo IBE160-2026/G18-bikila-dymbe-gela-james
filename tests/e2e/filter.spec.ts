@@ -82,6 +82,7 @@ test.describe('at 1280px', () => {
     await page.keyboard.press('ArrowRight')
     await expect(nysno(page)).toHaveAttribute('aria-valuetext', 'minst 2 cm')
     await expect(markers(page)).toHaveCount(8)
+    // Story 2.1b: the direction of all five sliders, in Chromium, Firefox and WebKit, is in slidere.spec.ts.
     await temperatur(page).fill('0')
     await expect(temperatur(page)).toHaveAttribute('aria-valuetext', 'høyst 0 °C')
     await expect(markers(page)).toHaveCount(6)

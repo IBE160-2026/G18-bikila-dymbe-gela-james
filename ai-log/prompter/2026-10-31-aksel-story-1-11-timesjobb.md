@@ -179,3 +179,22 @@
 
 **Svar (kort):** Claude pushet loggen, skrev endringsforslaget `sprint-change-proposal-2026-11-02-timesjobb.md` gjennom `bmad-correct-course` og spurte om godkjenning før koden ble endret. Aksel svarte «Godkjenn og bygg».
 **Hva vi gjorde med det:** `data.yml` prøver hvert 10. minutt, og jobben `gate` hopper over når dataene er under 50 minutter gamle. Ny test leser `data.yml`. Push venter på Aksels godkjenning.
+
+### 33
+> ja godkjenn
+
+**Svar (kort):** Claude pushet 1.11f til PR #81. Alle sjekkene ble grønne, og `gate` skrev «Startet av pull_request».
+
+### 34
+> jeg godkjenner
+
+**Svar (kort):** Claude merget ikke, fordi Josephs godkjenning gjaldt `9b1c645`, før 1.11f, og ba ham om review på nytt.
+
+### 35
+> kan du gjøre dette før han godkjenner. han bruker lang tid på å  godkjenne
+
+**Svar (kort):** Claude førte avviket inn som kommentar på PR #81 og merget. Kjøringen på `main` ble grønn med begge lesestegene, og Vercel bygde produksjon fra `465fce6`. En døgnmåling startet.
+**Hva vi gjorde med det:** Endringen for timesjobben er merget uten review fra et gruppemedlem. Joseph ser over i etterkant.
+
+### 36
+> hva gjenstår

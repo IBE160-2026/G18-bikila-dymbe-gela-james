@@ -3,8 +3,8 @@ import type { Sted } from '../../shared/contracts/published'
 import { aktiveKrav, filtrerSteder, forslagVedNullTreff, type FilterParams } from '../../shared/filter'
 import FilterPanel, { antallTekst, fokuserFilteret, forslagTekst, Nullstill, NVE_MANGLER } from '../components/FilterPanel'
 import KartVisning from '../components/KartVisning'
-import Lenke from '../components/Lenke'
 import ListeVisning from '../components/ListeVisning'
+import Lenke from '../components/Lenke'
 import VisningVeksler from '../components/VisningVeksler'
 import { href, replace, type UrlSortering, type UtforskRoute } from '../lib/router'
 import type { Posisjon } from '../lib/sortering'
@@ -108,10 +108,11 @@ export default function Utforsk({ steder, utdatert, route }: Props) {
       ) : (
         <>
           {/* Story 2.1: one link next to the switch covers both map and list. The map tooltip is hover text
-              and a list row is already a link, so the link cannot go inside either. */}
+              and a list row is already a link, so the link cannot go inside either. Story 2.1b: it shows only
+              below 768px, where the top navigation's link is folded behind ☰, so it is never shown twice. */}
           <div className="utforsk-verktoy">
             <VisningVeksler route={route} />
-            <Lenke to={{ name: 'forklaring' }} className="forklaring-lenke">
+            <Lenke to={{ name: 'forklaring' }} className="forklaring-lenke utforsk-forklaring">
               Slik beregner vi SnowScore
             </Lenke>
           </div>

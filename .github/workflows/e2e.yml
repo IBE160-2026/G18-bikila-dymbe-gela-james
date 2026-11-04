@@ -31,3 +31,24 @@ jobs:
           name: playwright-report
           path: test-results/
           retention-days: 7
+
+  # Story 2.1b: only tests/e2e/slidere.spec.ts in Firefox and WebKit (Safari's engine), next to the Chromium
+  # job, so the whole suite does not run three times and the PR waits no longer.
+  nettlesere:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps firefox webkit
+      - run: npm run test:e2e:nettlesere
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report-nettlesere
+          path: test-results/
+          retention-days: 7
