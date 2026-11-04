@@ -3,7 +3,7 @@
 Oversikt over hvordan vi går fram, steg for steg, så alle kan følge med selv om de ikke var
 på møtet. Oppdater statusen når et steg er ferdig.
 
-**Sist oppdatert:** 2026-11-02
+**Sist oppdatert:** 2026-11-04
 
 ## Slik holder du deg oppdatert
 
