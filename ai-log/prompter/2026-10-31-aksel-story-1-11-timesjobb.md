@@ -198,3 +198,51 @@
 
 ### 36
 > hva gjenstår
+
+### 37 (2026-11-03)
+> da avlsutter bjeg for idag
+
+**Svar (kort):** Claude så at dataene på nettsiden var 285 minutter gamle, og at GitHub bare hadde startet én planlagt kjøring på 11 timer etter 1.11f.
+
+### 38 (2026-11-04)
+> ja til alt. påse at  timesoppdateringen er i orden
+
+**Svar (kort):** Claude fant 7 planlagte kjøringer på omtrent 49 timer og foreslo en timer som starter neste kjøring.
+
+### 39
+> om timeren holder en maskin opptatt store deler av tiden, så bruker vi timesoppdateringen hver 4 time for å ikke bruke for mye maskinkapasitet. dette er en skoleoppgave. ønsker ikke å holder en GitHub-maskin opptatt nesten hele tidenslik at det ikke blir uvanlig bruk av Actions.
+
+**Svar (kort):** Claude viste at hver fjerde time ville kreve endret NFR-3 og bannergrense.
+
+### 40
+> hold deg til orginalen
+
+**Hva vi gjorde med det:** Planen om hver time, banner etter 90 minutter og NFR-3 står.
+
+### 41
+> gjør de justeringene i story 1.11 som oppfylle rkravene til at vi kan sette den som ferdig. men gjør også valget som krveer mist maskinkraft.
+
+**Svar (kort):** Claude foreslo et environment med wait timer, som venter uten maskin, men det krever admin, og gruppa har bare skrivetilgang.
+
+### 42
+> godkjenn men gjør en endring rundt enviroments slik at vi kan ferdigstille story 1.11. ønsker ikke å vente på faglærer. finn en vei rundt
+
+**Svar (kort):** Claude fant ingen vei rundt admin-kravet og la fram en timer som sover på en maskin nå, med overgang til wait timer senere.
+
+### 43
+> vil alt 1 ødelegge min data?
+
+**Svar (kort):** Nei. Dataprogrammet, valideringen og grenen `data` er uendret, og verste fall er at kjeden stopper.
+
+### 44
+> ja
+
+**Svar (kort):** Endringsforslaget `sprint-change-proposal-2026-11-04-timer.md` ble skrevet. Claude foreslo å beholde timeplanen hvert 10. minutt i stedet for én gang i timen, fordi droppede forsøk ikke bruker maskin.
+
+### 45
+> godkjenner. Bli også ferdig med merge og oppdater
+
+### 46
+> fullfør story/1-11g-timer. fullfør Story 1.11 er ikke ferdig. Det venter på timeren og et døgn med måling.
+
+**Svar (kort):** Claude bygde 1.11g med `bmad-build` (oneshot). Gjennomgangen ga 13 funn: 4 rettet og 9 avvist. Den viktigste rettingen er at en timer som ikke lar seg starte, gir en advarsel i stedet for en rød kjøring.

@@ -184,3 +184,7 @@
 - source_spec: none
   summary: Fargeforklaring på kartet, med poengintervall per trinn og et skille for ufullstendige data som ikke bare bygger på farge (SRS-F-15 i PRD/SRS v2).
   evidence: Skilt ut fra sprint-change-proposal-2026-11-04-sok.md 2026-11-04, slik at søket kunne bygges først. Trenger eget endringsforslag før den bygges.
+
+- source_spec: `project-workspace/implementation-artifacts/spec-1-11g-timer.md`
+  summary: Bytt sovingen i `data-timer.yml` med `environment: data-timer` med wait timer på 55 min, så ingen maskin er opptatt mens timeren venter.
+  evidence: Bare admin kan lage environments med wait timer, og i repoet er det bare `bipa` og `TesAgi-HiMolde`. Kontrollen av alderen skal stå igjen, så kjeden ikke går i løkke om wait timeren mangler (`sprint-change-proposal-2026-11-04-timer.md`).

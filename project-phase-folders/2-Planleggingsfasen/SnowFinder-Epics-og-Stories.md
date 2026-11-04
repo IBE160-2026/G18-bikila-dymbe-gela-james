@@ -395,6 +395,11 @@ grønn kjøring betyr at dataene faktisk er ute *(ny v6, nettadressen v7)*
 siste publisering på grenen `data` er yngre enn 50 minutter, så GitHubs droppede kjøringer ikke gir
 timer gamle data, og MET fortsatt spørres omtrent én gang i timen. Kan ikke alderen leses, kjører
 jobben som vanlig *(ny 2026-11-02)*
+**And** hver kjøring på `main` som har hentet data, også en avvist, starter `data-timer.yml`, som
+venter til dataene er rundt 55 minutter gamle (minst 30 minutter) og så starter `data.yml`. Den
+starter ingenting når dataene er under 50 minutter gamle, og det går bare én timer om gangen. Så
+holder dataene seg under 90 minutter selv når GitHub dropper planlagte kjøringer; timeplanen er
+reserve hvis kjeden stopper *(ny 2026-11-04)*
 **And** en kjøring uten `latest.json` publiserer ingenting, så grenen beholder siste gyldige fil, og
 produksjon viser aldri demodata (AD-10)
 **And** en kjøring som ikke publiserer, laster opp kvalitetsrapporten som artifact og vises som
