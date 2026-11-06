@@ -205,7 +205,12 @@ skrives ut når kjøringen ikke ble publisert.
 startes for hånd. GitHub hopper over mange planlagte kjøringer, så timeplanen prøver hvert 10. minutt, og den
 første jobben, `gate`, stopper en planlagt kjøring når siste commit på grenen `data` er under 50 minutter
 gammel. Loggen til `gate` viser alderen. Actions-fanen får derfor rundt 144 kjøringer i døgnet, og de fleste
-har `data`, `branch` og `verify` som skipped. Jobben trenger ingen nøkler. Hver kjøring som henter, legger
+har `data`, `branch` og `verify` som skipped. Likevel startet GitHub bare 7 av rundt 290 forsøk på 49 timer, så
+hver kjøring på `main` som har hentet, starter `.github/workflows/data-timer.yml` til slutt. Timeren venter til
+dataene er rundt 55 minutter gamle (minst 30 minutter etter en avvist kjøring) og starter så `data.yml`. Den står
+som «Data timer» i Actions-fanen og venter på en maskin hos GitHub. Bare én timer venter om gangen, og timeplanen
+starter kjeden igjen hvis den stopper. Vil dere stoppe kjeden, slå av «Data timer» under Actions. Da får jobben
+`timer` en advarsel, men kjøringen blir fortsatt grønn når dataene er publisert. Jobben trenger ingen nøkler. Hver kjøring som henter, legger
 `latest.json` i rota på grenen `data`. Grenen har alltid ett commit, så den får ingen historikk som
 vokser. Herfra henter `npm run data:hent` fila.
 
@@ -229,7 +234,7 @@ ligger som artifact (`data-run-log`) på kjøringen. En PR som endrer `data.yml`
 publisere.
 
 Feiler tilbakelesingen, kan den nye fila likevel være ute. Loggen viser hvilken `runId` som var forventet og
-funnet, og neste forsøk prøver igjen når dataene er over 50 minutter gamle.
+funnet, og timeren starter neste kjøring når dataene er rundt 55 minutter gamle.
 
 Feltene i datafila og kildesvarene er beskrevet i
 [`shared/contracts/data-dictionary.md`](shared/contracts/data-dictionary.md).

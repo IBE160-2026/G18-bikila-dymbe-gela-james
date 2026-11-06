@@ -102,6 +102,10 @@ flowchart LR
     job, `gate`, ends a scheduled run when the last commit on the branch `data` is under 50 minutes old (read through
     the API, which is not cached). If it
     cannot read the age, the run goes ahead. Push, manual and PR runs always fetch. (2026-11-02)
+    The schedule alone left 4–8 hours between runs, so every run on `main` that fetched starts
+    `data-timer.yml`, which waits until the data is about 55 minutes old (at least 30) and dispatches
+    `data.yml`. It dispatches nothing when the data is under 50 minutes old, and only one timer exists
+    at a time. The schedule stays as a fallback that restarts the chain. (2026-11-04)
   - **Threshold and partial failures.** The 95 % threshold counts locations with a score. A
     rejected or missing MET response, and incomplete data, both leave a location without one
     (changed 2026-10-22: incomplete locations used to count as valid, so a run of outdated
@@ -345,7 +349,7 @@ exact pins and updates them deliberately.
 flowchart TB
     U["Users<br/>mobile + desktop browser"] --> VERCEL["Vercel<br/>static app, built from main"]
     VERCEL -- "/data/latest.json<br/>rewrite" --> BRANCH["Branch data<br/>latest.json"]
-    CRON["GitHub Actions<br/>scheduled every 10 min, fetches when data is 50+ min old, one run at a time"] --> RUN["npm run data<br/>fetch → validate → score → publish"]
+    CRON["GitHub Actions<br/>restarted by data-timer about every hour, schedule every 10 min as fallback, one run at a time"] --> RUN["npm run data<br/>fetch → validate → score → publish"]
     RUN -- "reads" --> MET["MET Locationforecast"]
     RUN -- "reads" --> NVE["NVE seNorge"]
     RUN -- "publish<br/>(only if ≥95 % valid)" --> BRANCH
@@ -394,7 +398,8 @@ flowchart TB
 | Regenerate demo data | `npm run data:demo` | rewrites `demo.json` from fixtures | — |
 | CI `ci.yml` (every PR) | lint, typecheck, unit/property/contract/golden tests, `npm run build:demo` | demo | — |
 | CI `e2e.yml` (every PR) | `vite build --mode demo` + `vite preview` as Playwright `webServer`, plus a second build in normal mode (`npm run build` without `prebuild`) to prove which file each mode reads | demo, normal | Playwright browsers |
-| `data.yml` (every 10 min with an age gate, so about hourly; on push to `main`; and manual) | `npm run data`, then publish `latest.json` to the branch `data`, only if it was produced. The branch and the site are read back and their `runId` compared | live | Actions enabled in the repo |
+| `data.yml` (started by `data-timer.yml` about hourly; every 10 min with an age gate as fallback; on push to `main`; and manual) | `npm run data`, then publish `latest.json` to the branch `data`, only if it was produced. The branch and the site are read back and their `runId` compared | live | Actions enabled in the repo |
+| `data-timer.yml` (started by `data.yml`) | waits until the data is about 55 min old, then dispatches `data.yml` | live | Actions enabled in the repo |
 | Vercel (every push to `main`, and a preview per PR) | `npm run build` without `prebuild`, and without data files in `dist/`. The branch `data` is not built | live, through the rewrite | Vercel project, no keys |
 
 Story 1.1 created empty `supabase/` and `src/lib/supabase/` folders. Story 1.10 removes them

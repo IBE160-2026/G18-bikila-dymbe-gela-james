@@ -189,9 +189,12 @@ jobben er en GitHub Actions-jobb.
 - *(2026-11-02)* GitHub dropper mange planlagte kjøringer, så jobben startes hvert 10. minutt og
   henter bare når siste publisering på grenen `data` er minst 50 minutter gammel. Tidspunktet for den
   publiseringen er det eneste den leser fra forrige kjøring.
+- *(2026-11-04)* Timeplanen alene ga 4–8 timer mellom kjøringene, så hver kjøring som har hentet,
+  starter en timer som starter neste kjøring når dataene er rundt 55 minutter gamle. Timeplanen er
+  reserve.
 - Én kjøring henter alle ~300 steder, med begrenset samtidighet. En avbrutt kjøring publiserer
-  ingenting (FR-5) og kjøres på nytt ved neste forsøk, som kommer etter høyst 10 minutter fordi fila
-  da fortsatt er gammel *(endret 2026-11-02)*.
+  ingenting (FR-5) og prøves på nytt av timeren etter minst 30 minutter, eller ved neste planlagte
+  forsøk *(endret 2026-11-04)*.
 - *(v4, 2026-10-22)* Hver kilde får høyst 10 kall i sekundet: to kall til samme kilde starter
   minst 100 ms fra hverandre. MET krever en egen avtale over 20 kall i sekundet, og et blokkert
   dataprogram ville gitt en tjeneste uten data. Hentingen tar da minst 30 sekunder per kilde
