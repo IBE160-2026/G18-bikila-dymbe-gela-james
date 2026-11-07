@@ -1,7 +1,16 @@
 import { renderToStaticMarkup } from 'react-dom/server'
 import { describe, expect, it } from 'vitest'
-import { HURTIGVALG, STANDARD_FILTER, type FilterParams } from '../../shared/filter'
-import FilterPanel, { antallTekst, fjernKrav, fjernNavn, forslagTekst, kravTekst, verdiTekst } from './FilterPanel'
+import { FILTER_KRAV, HURTIGVALG, STANDARD_FILTER, type FilterParams } from '../../shared/filter'
+import FilterPanel, {
+  antallTekst,
+  fjernKrav,
+  fjernNavn,
+  forslagTekst,
+  kravTekst,
+  STED_KRAV,
+  VAER_KRAV,
+  verdiTekst,
+} from './FilterPanel'
 
 // Story 3.1: the panel's markup, without a browser. Behaviour at 375 and 1280 px is in tests/e2e/filter.spec.ts.
 
@@ -467,6 +476,11 @@ describe('FilterPanel, a tidier panel (Story 3.1b)', () => {
     expect(html).toContain('<p class="filter-hint" role="status"></p><button type="button" class="filter-mer-om"')
     expect(html).toContain('<p id="filter-stedstyper-hint" class="filter-hint">')
     expect(html.match(/class="filter-mer-om"/g)).toHaveLength(2)
+  })
+
+  it('puts every slider in exactly one group, «Vær» or «Sted», in FILTER_KRAV order', () => {
+    expect([...VAER_KRAV, ...STED_KRAV]).toEqual([...FILTER_KRAV])
+    expect(VAER_KRAV.filter((krav) => STED_KRAV.includes(krav))).toEqual([])
   })
 
   it('gives the distance status no «Mer om»', () => {

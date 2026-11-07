@@ -631,7 +631,7 @@ viewport-bredder
 
 As en bruker,
 I want å se samlet hvilke krav som filtrerer, og å fjerne ett krav med ett trykk,
-So that filteret er lett å lese og justere uten å lete etter slideren. Justerer UX for Epic 3 (UX-forbedring steg 2).
+So that filteret er lett å lese og justere uten å lete etter slideren. Realiserer FR-20, UX-DR4 og UX-DR12 (justert i UX-forbedring steg 2).
 
 **Acceptance Criteria:**
 

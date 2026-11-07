@@ -67,9 +67,12 @@ const HINT: Partial<Record<FilterKrav, string>> = {
 /** Story 3.1b: the hints that are explanations, not statuses, go behind «Mer om …» with these names. */
 const MER_OM: Partial<Record<FilterKrav, string>> = { maksSkydekkeDagslys: 'skydekke' }
 
-/** Story 3.1b: the panel's two groups, «Vær» and «Sted», in FILTER_KRAV order. */
-const STED_KRAV: readonly FilterKrav[] = ['maksAvstandKm']
-const VAER_KRAV: readonly FilterKrav[] = FILTER_KRAV.filter((krav) => !STED_KRAV.includes(krav))
+/**
+ * Story 3.1b: the panel's two groups, «Vær» and «Sted», in FILTER_KRAV order. Listed explicitly, so a new
+ * slider has to be placed in a group on purpose (a unit test checks that together they are FILTER_KRAV).
+ */
+export const VAER_KRAV: readonly FilterKrav[] = ['minNysnoCm', 'maksVindMs', 'maksTemperaturC', 'maksSkydekkeDagslys']
+export const STED_KRAV: readonly FilterKrav[] = ['maksAvstandKm']
 const VAER_ID = 'filter-gruppe-vaer'
 const STED_ID = 'filter-gruppe-sted'
 

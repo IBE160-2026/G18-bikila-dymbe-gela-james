@@ -2,7 +2,7 @@
 title: 'Story 3.1b: Ryddigere filter (UX-forbedring steg 2)'
 type: 'feature'
 created: '2026-11-07'
-status: 'in-progress'
+status: 'done'
 route: 'dispatch'
 review_loop_iteration: 0
 baseline_commit: '96b9b539c238c890c40e2c18b08a96687b354221'
@@ -118,6 +118,26 @@ context:
 ## Spec Change Log
 
 ## Review Triage Log
+
+Første gjennomgang (2026-11-07), med lagene Blind Hunter (B), Edge Case Hunter (E) og Verification Gap (V):
+
+| # | Lag | Funn | Vurdering | Begrunnelse | Rute |
+|---|-----|------|-----------|-------------|------|
+| 1 | V | Ingen test sjekker at overskriften «Filter» og antall treff er skjult i det åpne arket under 768 px | low | Fjernes CSS-regelen, vises «Filter» og «24 treff» to ganger, og ingen test feiler | patch |
+| 2 | B, E | Kildechipen «Datagrunnlag siste 24 t (NVE)» testes aldri med bred font, fordi `LENGSTE` har nysnø 13 | low | `aktiveChips` legger bare til kildechipen når nysnø står på «Alle» | patch |
+| 3 | B | Regelen «aldri to synlige «Aktive krav»-lister» er bare testet ved 375 px | low | Ingen test ved 768 eller 1280 px teller listene | patch |
+| 4 | B | Bare høyden på «Mer om skydekke» er målt, ikke «Mer om NVE-dataene» | low | DESIGN.md krever minst `{spacing.7}` for begge | patch |
+| 5 | B | Describe-blokken «at 375px» setter 320 og 768 px | low | Navnet stemmer ikke | patch |
+| 6 | B, E | `VAER_KRAV` er «alt som ikke er Sted», så en ny slider havner i «Vær» uten at noen har bestemt det | low | Ingen test binder gruppene til `FILTER_KRAV` | patch |
+| 7 | B | Story 3.1b i epics har merknaden inne i «So that»-setningen og ingen krav-ID-er | low | Naboene, for eksempel 3.1, siterer FR og UX-DR | patch |
+| 8 | B | Spec-en har `in-review`, mens `sprint-status.yaml` har `in-progress` | false | Arbeidsflyten setter `in-review` i spec-en ved gjennomgang og `review` i sprint-status ved presentasjon | avvist |
+| 9 | B | Akseptkriteriene i epics avviker fra spec-en | false | Epics har tre presiseringer til, og alle står i Always i spec-en, så de motsier ikke hverandre | avvist |
+| 10 | B | Ingen test av × med tastatur, og ingen av fokus etter «Nullstill» | false | × er en vanlig `<button>`. Fokus etter «Nullstill» testes allerede (`filter.spec.ts`, `toBeFocused` på nysnø) | avvist |
+| 11 | B | `fjernKrav` mister typesjekk når nøkkelen beregnes | false | Alle `FilterKrav` er `number \| null`, så `null` er alltid gyldig | avvist |
+| 12 | B, E | × på kildechipen fokuserer «Prognose» uten sjekken av `offsetParent` | false | Chipen og radioknappen står begge i panelinnholdet, så radioknappen er alltid synlig når × kan trykkes | avvist |
+| 13 | B | Code Map bruker linjenumre | avvist | Rettingen ville vært å endre spec-en | avvist |
+| 14 | B | «Senas ordlyd» er ikke forklart | avvist | Rettingen ville vært å endre spec-en. Teksten er Story 3.8, vurderingsrunde 1 | avvist |
+| 15 | E | Koden for det lukkede arket er ikke byte for byte lik, bare markupen | avvist | Rettingen ville vært å endre spec-en. Markupen er lik, og den testes | avvist |
 
 ## Verification
 

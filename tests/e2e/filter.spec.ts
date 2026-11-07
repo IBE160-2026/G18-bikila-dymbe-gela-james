@@ -1431,8 +1431,10 @@ test.describe('the new snow source without NVE at 375px', () => {
 const panelChips = (page: Page) =>
   panel(page).locator('ul.filter-chips--fjern').getByRole('listitem')
 const fjernKnapp = (page: Page, name: string) => panel(page).getByRole('button', { name, exact: true })
-// The longest chips there are: every requirement, NVE as the source, and all three place types.
+// The longest chips there are: every requirement, new snow from NVE, and all three place types. The second
+// leaves new snow at «Alle», so NVE gets its own chip, «Datagrunnlag siste 24 t (NVE)».
 const LENGSTE = '/?nysno=13&nysnokilde=nve&vind=8&temp=-11&sky=60&avstand=150&type=skisted,fjelltopp,by'
+const LENGSTE_KILDE = '/?nysnokilde=nve&vind=8&temp=-11&sky=60&avstand=150&type=skisted,fjelltopp,by'
 
 async function expectNoHeadingOrderViolations(page: Page): Promise<void> {
   const results = await new AxeBuilder({ page }).withRules(['heading-order']).analyze()
@@ -1445,6 +1447,8 @@ test.describe('a tidier filter at 1280px', () => {
   test('× removes just its own requirement and leaves focus on that slider', async ({ page }) => {
     await page.goto('/?nysno=10&vind=8')
     await expect(panel(page).getByRole('list', { name: 'Aktive krav', exact: true })).toBeVisible()
+    // The closed sheet's bar is hidden from 768px, so there is never a second visible list.
+    await expect(page.getByRole('list', { name: 'Aktive krav' })).toHaveCount(1)
     await expect(panelChips(page)).toHaveText(['Nysnø minst 10 cm', 'Vind høyst 8 m/s'])
     const fjern = fjernKnapp(page, 'Fjern nysnøkravet')
     const knappBoks = await box(fjern)
@@ -1529,6 +1533,7 @@ test.describe('a tidier filter at 1280px', () => {
 
     const merOmNve = panel(page).getByRole('button', { name: 'Mer om NVE-dataene', exact: true })
     await expect(merOmNve).toHaveAttribute('aria-expanded', 'false')
+    expect((await box(merOmNve)).height).toBeGreaterThanOrEqual(44)
     await merOmNve.click()
     await expect(merOmNve).toHaveAttribute('aria-expanded', 'true')
     await expect(page.getByText('NVEs nysnø siste døgn er modellerte verdier', { exact: false })).toBeVisible()
@@ -1556,6 +1561,12 @@ test.describe('a tidier filter at 375px', () => {
     await expect(page.locator('.filter-linje').getByRole('button', { name: 'Nullstill', exact: true })).toBeVisible()
 
     await filterKnapp(page).click()
+    // The sheet bar already shows «Filter» and the count, so the heading line's count is hidden and the
+    // heading is only there for screen readers.
+    await expect(panel(page).locator('.filter-tittel-linje .filter-antall')).toBeHidden()
+    const tittel = await box(panel(page).getByRole('heading', { level: 2, name: 'Filter', exact: true }))
+    expect(tittel.width).toBeLessThanOrEqual(1)
+    expect(tittel.height).toBeLessThanOrEqual(1)
     // One visible list of active requirements at a time.
     await expect(page.getByRole('list', { name: 'Aktive krav', exact: true })).toHaveCount(1)
     await expect(panelChips(page)).toHaveText(['Nysnø minst 10 cm', 'Vind høyst 8 m/s'])
@@ -1571,21 +1582,28 @@ test.describe('a tidier filter at 375px', () => {
     await expectNoBlockingViolations(page)
     await expectNoHeadingOrderViolations(page)
   })
+})
 
+test.describe('a tidier filter at 320px and 768px', () => {
   test('the longest chips never scroll the page sideways, even with a wide font', async ({ page }) => {
     for (const width of [320, 768]) {
-      await page.setViewportSize({ width, height: MOBIL.height })
-      await page.goto(LENGSTE)
-      await page.addStyleTag({ content: BRED_FONT })
-      if (width < 768) await filterKnapp(page).click()
-      await expect(panelChips(page)).toHaveCount(6)
-      await expect(panelChips(page).first()).toBeVisible()
-      await expectNoSidewaysScroll(page)
-      // Each chip stays inside the panel.
-      const panelBoks = await box(panel(page))
-      for (const chip of await panelChips(page).all()) {
-        const chipBoks = await box(chip)
-        expect(chipBoks.x + chipBoks.width).toBeLessThanOrEqual(panelBoks.x + panelBoks.width + 0.5)
+      for (const adresse of [LENGSTE, LENGSTE_KILDE]) {
+        await page.setViewportSize({ width, height: MOBIL.height })
+        await page.goto(adresse)
+        await page.addStyleTag({ content: BRED_FONT })
+        if (width < 768) await filterKnapp(page).click()
+        await expect(panelChips(page)).toHaveCount(6)
+        await expect(panelChips(page).first()).toBeVisible()
+        if (adresse === LENGSTE_KILDE) {
+          await expect(panelChips(page).filter({ hasText: 'Datagrunnlag siste 24 t (NVE)' })).toHaveCount(1)
+        }
+        await expectNoSidewaysScroll(page)
+        // Each chip stays inside the panel.
+        const panelBoks = await box(panel(page))
+        for (const chip of await panelChips(page).all()) {
+          const chipBoks = await box(chip)
+          expect(chipBoks.x + chipBoks.width).toBeLessThanOrEqual(panelBoks.x + panelBoks.width + 0.5)
+        }
       }
     }
   })
