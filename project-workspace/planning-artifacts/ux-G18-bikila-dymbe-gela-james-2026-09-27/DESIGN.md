@@ -100,8 +100,11 @@ components:
     shadow: '0 -2px 12px rgba(15,27,45,0.08)'
   banner-stale-data:
     radius: '{rounded.sm}'
-    background: '{colors.warning}'
-    textColor: '{colors.surface-raised}'
+    background: '{colors.surface-raised}'
+    textColor: '{colors.ink-primary}'
+    borderColor: '{colors.border-hairline}'
+    accentBorderColor: '{colors.warning}'
+    accentBorderWidth: '4px'
     padding: '{spacing.3} {spacing.4}'
   banner-demo:
     radius: '{rounded.sm}'
@@ -150,7 +153,7 @@ bruksmønstre («rett før en tur» og planlegging kvelden før); dette kan snus
   | Ufullstendige data | ingen | Ufullstendige data | `{colors.ink-secondary}` som ren tekst, ingen badge | – |
 - **Danger/Warning/Success** er strengt semantiske og aldri dekorative: danger til feil og
   utdaterte/fjernede data, warning til «siste kjente data» når dataene er eldre enn normalt
-  (alltid med hvit tekst, 5,93:1; `{colors.ink-primary}` på warning gir bare 2,92:1),
+  (som kant på banneret, ikke som bakgrunn; `{colors.ink-primary}` på warning gir bare 2,92:1),
   success til bekreftelser. *(v2: snøvarsel og tilbakemelding er Ikke i v1, så success har
   ingen fast bruk ennå; tokenet beholdes.)*
 - Unngå: å bruke SnowScore-skalaens blåtoner til noe som ikke er en SnowScore (ville lære
@@ -269,8 +272,10 @@ Navnene er de samme som i Komponentmønstre i EXPERIENCE.md, som beskriver atfer
   `{colors.ink-secondary}`.
 - **«Tilbake»** — En vanlig lenke i `{colors.accent}` nederst på stedssiden, minst `{spacing.7}` ×
   `{spacing.7}` som trykkmål.
-- **Banner-stale-data** — Full bredde, `{colors.warning}` bakgrunn og hvit tekst
-  (`{components.banner-stale-data.textColor}` = `{colors.surface-raised}`, 5,93:1). Vises på
+- **Banner-stale-data** — Full bredde, `{colors.surface-raised}` flate med tynn
+  `{colors.border-hairline}`-kant, en 4 px `{colors.warning}`-kant til venstre og
+  `{colors.ink-primary}` tekst (16,6:1). Stripen skiller det fra demobanneret, og flaten holder
+  teksten lett å lese *(Aksel, 2026-11-07, via `bmad-ux`: erstatter hvit tekst på warning fra 2026-10-28)*. Vises på
   Utforsk og stedssiden når datafila sist ble publisert for over 90 min siden (`generert`), for
   eksempel fordi timesjobben har stoppet. En frossen prognose fra MET i en fil som publiseres som
   normalt, gir ikke banner. Vises ikke sammen med «Ingen ferske data» *(Story 1.6b, 2026-11-07)*.
