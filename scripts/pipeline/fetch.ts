@@ -1,8 +1,8 @@
 // AD-2 stage, live source: fetches one MET Locationforecast and one NVE seNorge `fsw` response per
 // place in the catalog and puts them in `ctx.raw`, in the same shape as sources/fixtures.ts.
 // A call that fails with a network error, 429 or 5xx is tried again a fixed number of times with a
-// growing wait (Story 1.6), each attempt through the source's call-rate gate; a timeout or another 4xx
-// is not. No state is kept between runs. A call that still fails leaves the response missing with a
+// growing wait (Story 1.6), each attempt through the source's call-rate gate; a timeout, a connect
+// timeout or another 4xx is not. No state is kept between runs. A call that still fails leaves the response missing with a
 // reason, which validate.ts records; nothing is repaired (AD-11).
 import type { CatalogEntry } from '../../shared/contracts/catalog'
 import type { Avvisning } from '../../shared/contracts/published'
@@ -94,8 +94,20 @@ const shorten = (text: string) => {
 /** AbortSignal.timeout rejects with a TimeoutError; used both for the reason and to skip retries. */
 const isTimeout = (error: unknown) => error instanceof Error && error.name === 'TimeoutError'
 
+/**
+ * Story 1.6b: Node's fetch (undici) gives up connecting to a host that does not answer after about 10 s,
+ * before our own timeout, and reports it as "fetch failed" with this code in `cause`.
+ */
+const isConnectTimeout = (error: unknown) =>
+  error instanceof Error &&
+  typeof error.cause === 'object' &&
+  error.cause !== null &&
+  'code' in error.cause &&
+  error.cause.code === 'UND_ERR_CONNECT_TIMEOUT'
+
 function describeError(error: unknown, timeoutMs: number): string {
   if (isTimeout(error)) return `Tidsavbrudd etter ${timeoutMs / 1000} s`
+  if (isConnectTimeout(error)) return 'Tidsavbrudd ved tilkobling'
   if (error instanceof Error) {
     // Node's fetch reports "fetch failed" and puts the real cause (DNS, refused, reset) in `cause`.
     const cause = error.cause instanceof Error ? `: ${error.cause.message}` : ''
@@ -107,7 +119,8 @@ function describeError(error: unknown, timeoutMs: number): string {
 /**
  * One GET, one attempt. Never throws: any failure becomes a reason. Network errors, 429 and 5xx may
  * pass on a new attempt. A timeout is not retried: 300 places × 3 × 20 s would run into the next
- * hourly job, and a source that does not answer in 20 s is down, not unstable.
+ * hourly job, and a source that does not answer in 20 s is down, not unstable. A host that does not
+ * accept the connection is down for the same reason, so a connect timeout is not retried either.
  */
 async function getOnce(url: string, fetchFn: FetchFn, timeoutMs: number): Promise<Outcome> {
   try {
@@ -129,7 +142,7 @@ async function getOnce(url: string, fetchFn: FetchFn, timeoutMs: number): Promis
       return { error: 'Svaret er ikke JSON', retryable: false }
     }
   } catch (error) {
-    return { error: describeError(error, timeoutMs), retryable: !isTimeout(error) }
+    return { error: describeError(error, timeoutMs), retryable: !isTimeout(error) && !isConnectTimeout(error) }
   }
 }
 

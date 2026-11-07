@@ -200,6 +200,24 @@ describe('fetchAll', () => {
     expect(validate(ctx).avviste.map((a) => a.kilde)).toEqual(['met', 'nve'])
   })
 
+  // Story 1.6b: what Node's fetch (undici) throws when a host does not accept the connection in about 10 s.
+  it('gives up after a connect timeout, without a new attempt, and says so', async () => {
+    const { fetchFn, calls } = fakeFetch((url) => {
+      if (!isMet(url)) return json(nveResponse())
+      const cause = Object.assign(new Error('Connect Timeout Error (attempted address: api.met.no:443, timeout: 10000ms)'), {
+        name: 'ConnectTimeoutError',
+        code: 'UND_ERR_CONNECT_TIMEOUT',
+      })
+      throw new TypeError('fetch failed', { cause })
+    })
+    const { slept, sleep } = recordingSleep()
+    const ctx = await fetchAll(contextFor(['a']), { fetchFn, minIntervalMs: 0, sleep })
+
+    expect(calls.filter((c) => isMet(c.url))).toHaveLength(1)
+    expect(slept).toEqual([])
+    expect(ctx.raw[0].feil).toEqual({ met: 'Tidsavbrudd ved tilkobling' })
+  })
+
   it('treats a 200 response that is not JSON as a failed call', async () => {
     const { fetchFn } = fakeFetch((url) => (isMet(url) ? new Response('<html>Maintenance</html>') : json(nveResponse())))
     const ctx = await fetchAll(contextFor(['a']), { fetchFn, minIntervalMs: 0 })
