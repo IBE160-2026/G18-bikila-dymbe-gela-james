@@ -133,8 +133,8 @@ ordinær kontroll, ikke dra-og-slipp.
 UX-DR7: Beste skivindu-kort med mørketid-fallback-tekst («Mørketid – vindu vist uten dagslys»).
 UX-DR8: *(Ikke i v1, v3)* Snøvarsel-skjema inline på stedssiden.
 UX-DR9: *(Ikke i v1, v3)* Tilbakemeldingsskjema.
-UX-DR10: Global `banner-stale-data`-komponent (warning-bakgrunn) når siste data er eldre enn
-normalt.
+UX-DR10: Global `banner-stale-data`-komponent (lys flate med `warning`-kant til venstre, avgjort
+2026-11-07) når siste data er eldre enn normalt.
 UX-DR11: Tilstander: skjelett-lasting (`surface-sunken`), null-treff med forslag, "ufullstendige
 data"-tekst i stedet for score-badge.
 UX-DR12: Responsiv layout: filterpanel som bunn-ark (<768px) vs. fast venstre sidepanel
