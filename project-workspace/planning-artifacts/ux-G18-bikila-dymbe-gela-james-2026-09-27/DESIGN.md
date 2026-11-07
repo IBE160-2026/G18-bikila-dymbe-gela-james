@@ -270,9 +270,10 @@ Navnene er de samme som i Komponentmønstre i EXPERIENCE.md, som beskriver atfer
 - **«Tilbake»** — En vanlig lenke i `{colors.accent}` nederst på stedssiden, minst `{spacing.7}` ×
   `{spacing.7}` som trykkmål.
 - **Banner-stale-data** — Full bredde, `{colors.warning}` bakgrunn og hvit tekst
-  (`{components.banner-stale-data.textColor}` = `{colors.surface-raised}`, 5,93:1). Vises når de
-  nyeste dataene er eldre enn normalt (over 90 min), for eksempel fordi en datakilde er nede.
-  *(Ikke bygget ennå, Story 1.6.)*
+  (`{components.banner-stale-data.textColor}` = `{colors.surface-raised}`, 5,93:1). Vises på
+  Utforsk og stedssiden når datafila sist ble publisert for over 90 min siden (`generert`), for
+  eksempel fordi timesjobben har stoppet. En frossen prognose fra MET i en fil som publiseres som
+  normalt, gir ikke banner. Vises ikke sammen med «Ingen ferske data» *(Story 1.6b, 2026-11-07)*.
 - **Demobanner** *(v2)* — Full bredde, `{colors.surface-sunken}` bakgrunn med tynn
   `{colors.ink-secondary}`-kant og `{colors.ink-primary}` tekst: «Demodata – ikke ekte prognoser».
   Bevisst nøytral og ikke warning-farget, så den ikke forveksles med banneret for gamle data.

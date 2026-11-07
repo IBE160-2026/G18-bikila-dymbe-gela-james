@@ -114,8 +114,10 @@ flowchart LR
     `nveNysnoSisteDognMm` null and is recorded in the report without blocking publication (FR-6a, v4). In a published run, a location
     whose response failed appears as incomplete data without a score. The file never carries
     values from an earlier run.
-  - **Simple retries are *Should have* (FR-6b).** v1 makes one attempt per location with capped
-    concurrency. There is no circuit breaker, because there is no state between runs.
+  - **Simple retries (FR-6b, Story 1.6).** A call that fails with a network error, 429 or 5xx is
+    tried up to three times in all, waiting 1 s and then 2 s, and every attempt passes the source's
+    call-rate gate. A timeout (20 s), a connect timeout or another 4xx is not retried (Story 1.6b).
+    There is no circuit breaker and no retry budget, because there is no state between runs.
   - **Call rate.** `fetch.ts` starts at most one call per 100 ms per source (10/s), on top of the
     concurrency cap. MET's terms require an agreement above 20 requests/s per application (FR-2).
   - **Best ski window** *(Story 4.2, 2026-10-28)*. `score.ts` computes `skivindu` and an explicit
