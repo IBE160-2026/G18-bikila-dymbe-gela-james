@@ -87,10 +87,10 @@ context:
 ## Tasks & Acceptance
 
 **Execution:**
-- [ ] `src/components/FilterPanel.tsx` -- Lag `fjernKrav`, chipsene med ×, gruppene og en liten `MerOm`, etter Always. -- Dette er kjernen i storyen.
-- [ ] `src/styles/filter.css` -- Stil for chips med ×, overskriftene `h3`, «Mer om» (▸ og ▾), `.filter-hint[hidden]` og visuelt skjult `h2` under 768 px, etter DESIGN.md. -- Følger DESIGN.md.
-- [ ] `src/components/FilterPanel.test.tsx` -- Test radene i I/O-matrisen for tilstand mot `fjernKrav`. Test også markupen: chip-tekst og `aria-label` i panellisten, at det lukkede arket ikke har `<button>`, rekkefølgen av gruppene, at «Mer om» har `aria-expanded="false"` og `hidden`, og at det er én «Nullstill» sist. -- Akseptansen.
-- [ ] `tests/e2e/filter.spec.ts` -- Rett linje 1233. Nye tester, med locatorer avgrenset til `panel(page)` og `exact: true`:
+- [x] `src/components/FilterPanel.tsx` -- Lag `fjernKrav`, chipsene med ×, gruppene og en liten `MerOm`, etter Always. -- Dette er kjernen i storyen.
+- [x] `src/styles/filter.css` -- Stil for chips med ×, overskriftene `h3`, «Mer om» (▸ og ▾), `.filter-hint[hidden]` og visuelt skjult `h2` under 768 px, etter DESIGN.md. -- Følger DESIGN.md.
+- [x] `src/components/FilterPanel.test.tsx` -- Test radene i I/O-matrisen for tilstand mot `fjernKrav`. Test også markupen: chip-tekst og `aria-label` i panellisten, at det lukkede arket ikke har `<button>`, rekkefølgen av gruppene, at «Mer om» har `aria-expanded="false"` og `hidden`, og at det er én «Nullstill» sist. -- Akseptansen.
+- [x] `tests/e2e/filter.spec.ts` -- Rett linje 1233. Nye tester, med locatorer avgrenset til `panel(page)` og `exact: true`:
   - × fjerner ett krav med fokus på slideren ved 1280 px;
   - NVE: × på nysnø gir kildechipen, og × på den gir fokus på «Prognose»;
   - stedstype-× gir fokus på første boks;
@@ -98,8 +98,8 @@ context:
   - ingen sideveis rulling med de lengste chipsene og `BRED_FONT` ved 768 px og 320 px (åpent ark);
   - axe uten alvorlige eller kritiske brudd, og ingen `heading-order`.
   -- Ende-til-ende, og dekker fokus.
-- [ ] `project-phase-folders/2-Planleggingsfasen/SnowFinder-EXPERIENCE.md` og kopien i `ux-*/` -- Legg navnet «Bytt tilbake til prognose» for kildechipens × inn i «Aktive krav». -- Dokumentet skal stemme med koden.
-- [ ] `SnowFinder-Epics-og-Stories.md`, `sprintplan.md` og `sprint-status.yaml` -- Legg inn Story 3.1b med kriteriene under, et avvik i sprintplanen og nøkkelen `3-1b-ryddigere-filter: in-progress`. -- Prosjektregel.
+- [x] `project-phase-folders/2-Planleggingsfasen/SnowFinder-EXPERIENCE.md` og kopien i `ux-*/` -- Legg navnet «Bytt tilbake til prognose» for kildechipens × inn i «Aktive krav». -- Dokumentet skal stemme med koden.
+- [x] `SnowFinder-Epics-og-Stories.md`, `sprintplan.md` og `sprint-status.yaml` -- Legg inn Story 3.1b med kriteriene under, et avvik i sprintplanen og nøkkelen `3-1b-ryddigere-filter: in-progress`. -- Prosjektregel.
 
 **Acceptance Criteria:**
 - Gitt aktive krav, når panelet er åpent (eller bredden er minst 768 px), så står chipsene med × øverst under «Filter» og antall treff.
@@ -108,6 +108,12 @@ context:
 - Gitt det lukkede bunn-arket, når krav er aktive, så er chipsene ren tekst med «Nullstill», som før.
 
 ## Implementation Notes
+
+- Chip-utvalget ligger i `aktiveChips(params)`, som både det lukkede arket og panellisten bruker. Markupen på det lukkede arket er uendret (de gamle `toContain`-testene treffer fortsatt).
+- Navnene på ×-knappene ligger i den eksporterte `fjernNavn(chip)`, så enhetstesten kan sjekke alle sju.
+- Pilen i «Mer om» er et `<span aria-hidden="true">` (▸/▾) i stedet for `::before`, så knappens tilgjengelige navn er nøyaktig «Mer om skydekke». Teksten er én tekstnode, så `renderToStaticMarkup` ikke legger inn `<!-- -->`.
+- Under 768 px er `.filter-tittel-linje` `display: contents`, `h2` visuelt skjult og linjens eget antall skjult (arklinja viser det allerede). Fra 768 px er alt som før.
+- `heading-order` sjekkes med en egen axe-kjøring (`withRules(['heading-order'])`), fordi regelen ikke er i WCAG-taggene.
 
 ## Spec Change Log
 

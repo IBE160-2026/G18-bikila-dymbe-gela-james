@@ -1230,6 +1230,8 @@ test.describe('the new snow source at 1280px', () => {
     await expect(kildeGruppe(page)).toBeVisible()
     await expect(siste24(page)).toBeVisible()
     await expect(kildeGruppe(page)).toHaveAccessibleDescription(/modellerte verdier fra seNorge, ikke målt snø/)
+    // Story 3.1b: the explanation is behind «Mer om NVE-dataene», and a screen reader has it either way.
+    await panel(page).getByRole('button', { name: 'Mer om NVE-dataene', exact: true }).click()
     await expect(page.getByText('NVEs nysnø siste døgn er modellerte verdier fra seNorge, ikke målt snø', { exact: false })).toBeVisible()
   })
 
@@ -1421,5 +1423,170 @@ test.describe('the new snow source without NVE at 375px', () => {
     await page.goto('/?nysno=13')
     await expect(banner(page)).toBeVisible()
     await expect(banner(page).locator('.ingen-treff-nve')).toHaveCount(0)
+  })
+})
+
+// Story 3.1b (UX step 2, 2026-11-07): the active requirements as chips with × at the top of the panel, the
+// groups «Vær» and «Sted», and the long explanations behind «Mer om». The closed sheet is unchanged.
+const panelChips = (page: Page) =>
+  panel(page).locator('ul.filter-chips--fjern').getByRole('listitem')
+const fjernKnapp = (page: Page, name: string) => panel(page).getByRole('button', { name, exact: true })
+// The longest chips there are: every requirement, NVE as the source, and all three place types.
+const LENGSTE = '/?nysno=13&nysnokilde=nve&vind=8&temp=-11&sky=60&avstand=150&type=skisted,fjelltopp,by'
+
+async function expectNoHeadingOrderViolations(page: Page): Promise<void> {
+  const results = await new AxeBuilder({ page }).withRules(['heading-order']).analyze()
+  expect(results.violations, JSON.stringify(results.violations, null, 2)).toEqual([])
+}
+
+test.describe('a tidier filter at 1280px', () => {
+  test.use({ viewport: DESKTOP })
+
+  test('× removes just its own requirement and leaves focus on that slider', async ({ page }) => {
+    await page.goto('/?nysno=10&vind=8')
+    await expect(panel(page).getByRole('list', { name: 'Aktive krav', exact: true })).toBeVisible()
+    await expect(panelChips(page)).toHaveText(['Nysnø minst 10 cm', 'Vind høyst 8 m/s'])
+    const fjern = fjernKnapp(page, 'Fjern nysnøkravet')
+    const knappBoks = await box(fjern)
+    expect(knappBoks.width).toBeGreaterThanOrEqual(44)
+    expect(knappBoks.height).toBeGreaterThanOrEqual(44)
+
+    await fjern.click()
+    await expect(nysno(page)).toBeFocused()
+    await expect(nysno(page)).toHaveAttribute('aria-valuetext', 'Alle')
+    await expect(vind(page)).toHaveAttribute('aria-valuetext', 'høyst 8 m/s')
+    await expect(panelChips(page)).toHaveText(['Vind høyst 8 m/s'])
+    await expect(page).toHaveURL(/\/\?vind=8$/)
+
+    // The last one gone: no list and no «Nullstill».
+    await fjernKnapp(page, 'Fjern vindkravet').click()
+    await expect(vind(page)).toBeFocused()
+    await expect(panel(page).getByRole('list', { name: 'Aktive krav', exact: true })).toHaveCount(0)
+    await expect(panel(page).getByRole('button', { name: 'Nullstill', exact: true })).toHaveCount(0)
+    await expect(markers(page)).toHaveCount(24)
+  })
+
+  test('with NVE, × on new snow leaves the source chip, and its × goes back to «Prognose»', async ({ page }) => {
+    await page.goto('/?nysno=5&nysnokilde=nve')
+    await expect(panelChips(page)).toHaveText(['Nysnø siste 24 t minst 5 cm'])
+
+    await fjernKnapp(page, 'Fjern nysnøkravet').click()
+    await expect(nysno(page)).toBeFocused()
+    await expect(siste24(page)).toBeChecked()
+    await expect(panelChips(page)).toHaveText(['Datagrunnlag siste 24 t (NVE)'])
+    await expect(panel(page).getByRole('button', { name: 'Nullstill', exact: true })).toBeVisible()
+    await expect(page).toHaveURL(/\/\?nysnokilde=nve$/)
+
+    await fjernKnapp(page, 'Bytt tilbake til prognose').click()
+    await expect(prognose(page)).toBeFocused()
+    await expect(prognose(page)).toBeChecked()
+    await expect(panelChips(page)).toHaveCount(0)
+    await expect(page).toHaveURL(/\/$/)
+  })
+
+  test('× on the place type sets it to «Alle» and leaves focus on the first checkbox', async ({ page }) => {
+    await page.goto('/?type=skisted,by')
+    await expect(panelChips(page)).toHaveText(['Stedstype skisted, by'])
+    await fjernKnapp(page, 'Fjern stedstypekravet').click()
+    await expect(skisted(page)).toBeFocused()
+    await expect(skisted(page)).not.toBeChecked()
+    await expect(by(page)).not.toBeChecked()
+    await expect(markers(page)).toHaveCount(24)
+  })
+
+  test('the groups «Vær» and «Sted» come in order, with «Nullstill» once and last', async ({ page }) => {
+    await page.goto('/?nysno=2')
+    const vaer = panel(page).getByRole('group', { name: 'Vær', exact: true })
+    const sted = panel(page).getByRole('group', { name: 'Sted', exact: true })
+    await expect(vaer.getByRole('heading', { level: 3, name: 'Vær', exact: true })).toBeVisible()
+    for (const name of ['Nysnø', 'Vind', 'Temperatur', 'Skydekke i dagslys']) {
+      await expect(vaer.getByRole('slider', { name, exact: true })).toHaveCount(1)
+    }
+    await expect(vaer.getByRole('group', { name: 'Datagrunnlag for nysnø' })).toHaveCount(1)
+    await expect(sted.getByRole('slider', { name: 'Avstand' })).toHaveCount(1)
+    await expect(sted.getByRole('group', { name: 'Stedstype' })).toHaveCount(1)
+    const nullstill = panel(page).getByRole('button', { name: 'Nullstill', exact: true })
+    await expect(nullstill).toHaveCount(1)
+    expect((await box(nullstill)).y).toBeGreaterThan((await box(sted)).y + (await box(sted)).height - 1)
+  })
+
+  test('«Mer om» shows and hides its explanation, which is the description either way', async ({ page }) => {
+    await page.goto('/')
+    const skydekke = page.getByRole('slider', { name: 'Skydekke i dagslys' })
+    const merOm = panel(page).getByRole('button', { name: 'Mer om skydekke', exact: true })
+    const tekst = page.getByText('Steder uten dagslys de neste 24 timene (mørketid) vises ikke når kravet er på.')
+    await expect(merOm).toHaveAttribute('aria-expanded', 'false')
+    await expect(tekst).toBeHidden()
+    await expect(skydekke).toHaveAccessibleDescription(/mørketid/)
+    expect((await box(merOm)).height).toBeGreaterThanOrEqual(44)
+
+    await merOm.click()
+    await expect(merOm).toHaveAttribute('aria-expanded', 'true')
+    await expect(tekst).toBeVisible()
+    await merOm.click()
+    await expect(merOm).toHaveAttribute('aria-expanded', 'false')
+    await expect(tekst).toBeHidden()
+
+    const merOmNve = panel(page).getByRole('button', { name: 'Mer om NVE-dataene', exact: true })
+    await expect(merOmNve).toHaveAttribute('aria-expanded', 'false')
+    await merOmNve.click()
+    await expect(merOmNve).toHaveAttribute('aria-expanded', 'true')
+    await expect(page.getByText('NVEs nysnø siste døgn er modellerte verdier', { exact: false })).toBeVisible()
+    // The place type hint is never behind «Mer om».
+    await expect(page.getByText('Ingen avkrysset viser alle stedstyper.')).toBeVisible()
+  })
+
+  test('the panel with chips and «Mer om» open has no serious or critical violations, nor heading-order', async ({ page }) => {
+    await page.goto(LENGSTE)
+    await panel(page).getByRole('button', { name: 'Mer om skydekke', exact: true }).click()
+    await panel(page).getByRole('button', { name: 'Mer om NVE-dataene', exact: true }).click()
+    await expectNoBlockingViolations(page)
+    await expectNoHeadingOrderViolations(page)
+  })
+})
+
+test.describe('a tidier filter at 375px', () => {
+  test.use({ viewport: MOBIL })
+
+  test('the open sheet has the chips with ×, and the closed sheet keeps plain text with «Nullstill»', async ({ page }) => {
+    await page.goto('/?nysno=10&vind=8')
+    const lukket = page.locator('.filter-linje').getByRole('list', { name: 'Aktive krav', exact: true })
+    await expect(lukket.getByRole('listitem')).toHaveText(['Nysnø minst 10 cm', 'Vind høyst 8 m/s'])
+    await expect(lukket.getByRole('button')).toHaveCount(0)
+    await expect(page.locator('.filter-linje').getByRole('button', { name: 'Nullstill', exact: true })).toBeVisible()
+
+    await filterKnapp(page).click()
+    // One visible list of active requirements at a time.
+    await expect(page.getByRole('list', { name: 'Aktive krav', exact: true })).toHaveCount(1)
+    await expect(panelChips(page)).toHaveText(['Nysnø minst 10 cm', 'Vind høyst 8 m/s'])
+    await fjernKnapp(page, 'Fjern vindkravet').click()
+    await expect(vind(page)).toBeFocused()
+    await expect(panelChips(page)).toHaveText(['Nysnø minst 10 cm'])
+  })
+
+  test('the open sheet with chips has no serious or critical violations, nor heading-order', async ({ page }) => {
+    await page.goto(LENGSTE)
+    await filterKnapp(page).click()
+    await panel(page).getByRole('button', { name: 'Mer om skydekke', exact: true }).click()
+    await expectNoBlockingViolations(page)
+    await expectNoHeadingOrderViolations(page)
+  })
+
+  test('the longest chips never scroll the page sideways, even with a wide font', async ({ page }) => {
+    for (const width of [320, 768]) {
+      await page.setViewportSize({ width, height: MOBIL.height })
+      await page.goto(LENGSTE)
+      await page.addStyleTag({ content: BRED_FONT })
+      if (width < 768) await filterKnapp(page).click()
+      await expect(panelChips(page)).toHaveCount(6)
+      await expect(panelChips(page).first()).toBeVisible()
+      await expectNoSidewaysScroll(page)
+      // Each chip stays inside the panel.
+      const panelBoks = await box(panel(page))
+      for (const chip of await panelChips(page).all()) {
+        const chipBoks = await box(chip)
+        expect(chipBoks.x + chipBoks.width).toBeLessThanOrEqual(panelBoks.x + panelBoks.width + 0.5)
+      }
+    }
   })
 })

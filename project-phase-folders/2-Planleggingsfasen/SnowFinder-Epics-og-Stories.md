@@ -625,6 +625,36 @@ CI-blokkerende test mot `shared/filter.ts`
 fra 768px og oppover (DESIGN.md/UX-DR12), verifisert med en Playwright-test i begge
 viewport-bredder
 
+### Story 3.1b: Ryddigere filter *(ny 2026-11-07)*
+
+**Prioritet:** Bør ha
+
+As en bruker,
+I want å se samlet hvilke krav som filtrerer, og å fjerne ett krav med ett trykk,
+So that filteret er lett å lese og justere uten å lete etter slideren. Justerer UX for Epic 3 (UX-forbedring steg 2).
+
+**Acceptance Criteria:**
+
+**Given** aktive krav
+**When** panelet er åpent (eller bredden er minst 768 px)
+**Then** står chipsene med × øverst under «Filter» og antall treff
+**And** × fjerner bare det kravet og flytter fokus til kravets slider, til første avkrysningsboks for
+stedstype, eller til «Prognose» for kildechipen
+
+**Given** filteret
+**When** det vises
+**Then** kommer hurtigvalg, «Vær» og «Sted» i den rekkefølgen, hver med en overskrift, og én «Nullstill» sist
+
+**Given** skydekke eller datagrunnlaget
+**When** panelet åpnes
+**Then** er hjelpeteksten skjult bak «Mer om …»
+**And** et trykk viser den, og en skjermleser får den som beskrivelse uansett
+
+**Given** det lukkede bunn-arket
+**When** krav er aktive
+**Then** er chipsene ren tekst med «Nullstill», som før
+**And** filterlogikken, adressen og hurtigvalgene er uendret
+
 ### Story 3.2: Del og gjenåpne et filtrert søk
 
 **Prioritet:** Må ha

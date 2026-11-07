@@ -59,6 +59,7 @@ development_status:
 
   epic-3: in-progress  # Story 3.9 (søk) lagt til 2026-11-04
   3-1-filtrer-på-nysnø-vind-og-temperatur: done
+  3-1b-ryddigere-filter: in-progress  # UX-forbedring steg 2, lagt til 2026-11-07
   3-2-del-og-gjenåpne-et-filtrert-søk: done
   3-3-få-hjelp-ved-null-treff-og-se-antall-treff-live: done
   3-4-bruk-hurtigvalg-for-vanlige-kombinasjoner: done

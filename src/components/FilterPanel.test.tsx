@@ -1,7 +1,7 @@
 import { renderToStaticMarkup } from 'react-dom/server'
 import { describe, expect, it } from 'vitest'
 import { HURTIGVALG, STANDARD_FILTER, type FilterParams } from '../../shared/filter'
-import FilterPanel, { antallTekst, forslagTekst, kravTekst, verdiTekst } from './FilterPanel'
+import FilterPanel, { antallTekst, fjernKrav, fjernNavn, forslagTekst, kravTekst, verdiTekst } from './FilterPanel'
 
 // Story 3.1: the panel's markup, without a browser. Behaviour at 375 and 1280 px is in tests/e2e/filter.spec.ts.
 
@@ -122,7 +122,7 @@ describe('FilterPanel', () => {
     const html = render(STANDARD_FILTER)
     expect(html).toMatch(/id="filter-maksSkydekkeDagslys"[^>]*aria-describedby="filter-maksSkydekkeDagslys-hint"/)
     expect(html).toContain(
-      '<p id="filter-maksSkydekkeDagslys-hint" class="filter-hint">Steder uten dagslys de neste 24 timene (mørketid) vises ikke når kravet er på.</p>',
+      '<p id="filter-maksSkydekkeDagslys-hint" class="filter-hint" hidden="">Steder uten dagslys de neste 24 timene (mørketid) vises ikke når kravet er på.</p>',
     )
     // The other sliders have no note (the quick-pick chips also use aria-describedby, for their own text).
     expect(html.match(/<input[^>]*aria-describedby=/g)).toHaveLength(1)
@@ -306,7 +306,7 @@ describe('FilterPanel new snow source', () => {
 
   it('says in the linked hint that NVE’s values are modelled estimates, not measured snow, and how they are converted', () => {
     expect(render(STANDARD_FILTER)).toContain(
-      '<p id="filter-nysnokilde-hint" class="filter-hint">NVEs nysnø siste døgn er modellerte verdier fra seNorge, ikke målt snø. ' +
+      '<p id="filter-nysnokilde-hint" class="filter-hint" hidden="">NVEs nysnø siste døgn er modellerte verdier fra seNorge, ikke målt snø. ' +
         'NVE-verdiene er modellerte estimater. SnowFinder bruker en forenklet omregning der 1 mm vannekvivalent tilsvarer omtrent ' +
         '1 cm snø. Faktisk snødybde kan variere. Med «Siste 24 t» valgt og nysnøkravet på skjules steder uten NVE-verdi. ' +
         'Står nysnø på «Alle», har valget ingen effekt.</p>',
@@ -346,5 +346,132 @@ describe('FilterPanel new snow source', () => {
     const pudderdag = HURTIGVALG[0].verdier
     expect(render(pudderdag)).toMatch(/id="hurtigvalg-0" class="filter-hurtigvalg-chip" aria-pressed="true"/)
     expect(render({ ...pudderdag, nysnoKilde: 'nve' })).toMatch(/id="hurtigvalg-0" class="filter-hurtigvalg-chip" aria-pressed="false"/)
+  })
+})
+
+// Story 3.1b (UX step 2, 2026-11-07): removable chips at the top of the panel, the groups «Vær» and «Sted»,
+// and the long explanations behind «Mer om». Focus after × is in tests/e2e/filter.spec.ts.
+describe('fjernKrav (Story 3.1b)', () => {
+  it('turns off only the one requirement and leaves the rest as they were', () => {
+    const params: FilterParams = { ...STANDARD_FILTER, minNysnoCm: 10, maksVindMs: 8 }
+    expect(fjernKrav(params, 'minNysnoCm')).toEqual({ ...STANDARD_FILTER, maksVindMs: 8 })
+    expect(fjernKrav(params, 'maksVindMs')).toEqual({ ...STANDARD_FILTER, minNysnoCm: 10 })
+    expect(params).toEqual({ ...STANDARD_FILTER, minNysnoCm: 10, maksVindMs: 8 })
+  })
+
+  it('sets the place type back to «Alle»', () => {
+    expect(fjernKrav({ ...STANDARD_FILTER, stedstyper: ['skisted', 'by'] }, 'stedstyper')).toEqual(STANDARD_FILTER)
+  })
+
+  it('puts the source back to the forecast from its own chip', () => {
+    expect(fjernKrav({ ...STANDARD_FILTER, nysnoKilde: 'nve' }, 'kilde')).toEqual(STANDARD_FILTER)
+  })
+
+  it('keeps NVE when only the new snow requirement goes, so the source chip and «Nullstill» show up', () => {
+    const etter = fjernKrav({ ...STANDARD_FILTER, minNysnoCm: 5, nysnoKilde: 'nve' }, 'minNysnoCm')
+    expect(etter).toEqual({ ...STANDARD_FILTER, nysnoKilde: 'nve' })
+    const html = render(etter)
+    expect(html).toContain('<span class="filter-chip-tekst">Datagrunnlag siste 24 t (NVE)</span>')
+    expect(html.match(/>Nullstill<\/button>/g)).toHaveLength(2)
+  })
+
+  it('removing the last requirement leaves no chips and no «Nullstill»', () => {
+    const html = render(fjernKrav({ ...STANDARD_FILTER, maksTemperaturC: -5 }, 'maksTemperaturC'))
+    expect(html).not.toContain('Aktive krav')
+    expect(html).not.toContain('Nullstill')
+  })
+
+  it('names each × after what it removes', () => {
+    expect(fjernNavn('minNysnoCm')).toBe('Fjern nysnøkravet')
+    expect(fjernNavn('maksVindMs')).toBe('Fjern vindkravet')
+    expect(fjernNavn('maksTemperaturC')).toBe('Fjern temperaturkravet')
+    expect(fjernNavn('maksSkydekkeDagslys')).toBe('Fjern skydekkekravet')
+    expect(fjernNavn('maksAvstandKm')).toBe('Fjern avstandskravet')
+    expect(fjernNavn('stedstyper')).toBe('Fjern stedstypekravet')
+    expect(fjernNavn('kilde')).toBe('Bytt tilbake til prognose')
+  })
+})
+
+describe('FilterPanel, a tidier panel (Story 3.1b)', () => {
+  const fjernListe = (html: string) =>
+    html.match(/<ul class="filter-chips filter-chips--fjern" aria-label="Aktive krav">.*?<\/ul>/)?.[0]
+
+  it('has no list of active requirements in the panel at the default filter', () => {
+    expect(fjernListe(render(STANDARD_FILTER))).toBeUndefined()
+  })
+
+  it('shows the active requirements as chips with ×, in the closed sheet’s words and order', () => {
+    const html = render({ ...STANDARD_FILTER, minNysnoCm: 2, maksTemperaturC: 0, stedstyper: ['fjelltopp'] })
+    expect(fjernListe(html)).toBe(
+      '<ul class="filter-chips filter-chips--fjern" aria-label="Aktive krav">' +
+        '<li class="filter-chip filter-chip--fjern"><span class="filter-chip-tekst">Nysnø minst 2 cm</span>' +
+        '<button type="button" class="filter-chip-fjern" aria-label="Fjern nysnøkravet"></button></li>' +
+        '<li class="filter-chip filter-chip--fjern"><span class="filter-chip-tekst">Temperatur høyst 0 °C</span>' +
+        '<button type="button" class="filter-chip-fjern" aria-label="Fjern temperaturkravet"></button></li>' +
+        '<li class="filter-chip filter-chip--fjern"><span class="filter-chip-tekst">Stedstype fjelltopp</span>' +
+        '<button type="button" class="filter-chip-fjern" aria-label="Fjern stedstypekravet"></button></li></ul>',
+    )
+    // The closed sheet's chips are still plain text, with no button.
+    expect(html.match(/<ul class="filter-chips" aria-label="Aktive krav">.*?<\/ul>/)?.[0]).toBe(
+      '<ul class="filter-chips" aria-label="Aktive krav"><li class="filter-chip">Nysnø minst 2 cm</li>' +
+        '<li class="filter-chip">Temperatur høyst 0 °C</li><li class="filter-chip">Stedstype fjelltopp</li></ul>',
+    )
+  })
+
+  it('names the source chip’s × «Bytt tilbake til prognose»', () => {
+    expect(fjernListe(render({ ...STANDARD_FILTER, nysnoKilde: 'nve' }))).toContain(
+      '<span class="filter-chip-tekst">Datagrunnlag siste 24 t (NVE)</span>' +
+        '<button type="button" class="filter-chip-fjern" aria-label="Bytt tilbake til prognose"></button>',
+    )
+  })
+
+  it('orders the panel: heading and count, chips, quick picks, «Vær», «Sted», and one «Nullstill» last', () => {
+    const html = render({ ...STANDARD_FILTER, minNysnoCm: 2, stedstyper: ['by'] })
+    const innhold = html.slice(html.indexOf('id="filter-innhold"'))
+    const rekkefolge = [
+      '<h2 class="filter-tittel">Filter</h2>',
+      'class="filter-chips filter-chips--fjern"',
+      'aria-label="Hurtigvalg"',
+      '<div class="filter-gruppe" role="group" aria-labelledby="filter-gruppe-vaer"><h3 id="filter-gruppe-vaer" class="filter-gruppe-tittel">Vær</h3>',
+      'id="filter-minNysnoCm"',
+      'class="filter-felt filter-nysnokilde"',
+      'id="filter-maksVindMs"',
+      'id="filter-maksTemperaturC"',
+      'id="filter-maksSkydekkeDagslys"',
+      '<div class="filter-gruppe" role="group" aria-labelledby="filter-gruppe-sted"><h3 id="filter-gruppe-sted" class="filter-gruppe-tittel">Sted</h3>',
+      'id="filter-maksAvstandKm"',
+      'class="filter-felt filter-stedstyper"',
+      '>Nullstill</button>',
+    ].map((del) => innhold.indexOf(del))
+    expect(rekkefolge).not.toContain(-1)
+    expect(rekkefolge).toEqual([...rekkefolge].sort((a, b) => a - b))
+    expect(innhold.match(/>Nullstill<\/button>/g)).toHaveLength(1)
+    expect(innhold).toMatch(/>Nullstill<\/button><\/div><\/aside>$/)
+  })
+
+  it('puts the cloud cover and NVE explanations behind closed «Mer om» buttons, still as descriptions', () => {
+    const html = render(STANDARD_FILTER)
+    expect(html).toContain(
+      '<button type="button" class="filter-mer-om" aria-expanded="false" aria-controls="filter-maksSkydekkeDagslys-hint">' +
+        '<span class="filter-mer-om-pil" aria-hidden="true">▸</span>Mer om skydekke</button>' +
+        '<p id="filter-maksSkydekkeDagslys-hint" class="filter-hint" hidden="">',
+    )
+    expect(html).toContain(
+      '<button type="button" class="filter-mer-om" aria-expanded="false" aria-controls="filter-nysnokilde-hint">' +
+        '<span class="filter-mer-om-pil" aria-hidden="true">▸</span>Mer om NVE-dataene</button>' +
+        '<p id="filter-nysnokilde-hint" class="filter-hint" hidden="">',
+    )
+    expect(html).toMatch(/id="filter-maksSkydekkeDagslys"[^>]*aria-describedby="filter-maksSkydekkeDagslys-hint"/)
+    expect(html).toContain('aria-describedby="filter-nysnokilde-hint"><legend>')
+    // The NVE status and the place type hint stay outside «Mer om», always shown.
+    expect(html).toContain('<p class="filter-hint" role="status"></p><button type="button" class="filter-mer-om"')
+    expect(html).toContain('<p id="filter-stedstyper-hint" class="filter-hint">')
+    expect(html.match(/class="filter-mer-om"/g)).toHaveLength(2)
+  })
+
+  it('gives the distance status no «Mer om»', () => {
+    const html = render(STANDARD_FILTER, 24, false, 'Henter posisjonen din …')
+    expect(html).toContain('<p id="filter-maksAvstandKm-hint" class="filter-hint" role="status">Henter posisjonen din …</p>')
+    expect(html).not.toContain('aria-controls="filter-maksAvstandKm-hint"')
   })
 })

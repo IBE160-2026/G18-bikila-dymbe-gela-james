@@ -21,7 +21,8 @@ import { tall } from '../lib/format'
 // button rather than a drag (decided 2026-10-22), so it works with the keyboard and a screen reader.
 // Story 3.3 (FR-14, UX-DR4) shows the hit count in the panel and on the closed sheet. Story 3.7 (FR-24)
 // adds the place type as three checkboxes after the sliders, and Story 3.8 (FR-25) the new snow source as
-// two radio buttons under the new snow slider.
+// two radio buttons under the new snow slider. Story 3.1b (UX step 2, 2026-11-07) adds removable chips at
+// the top of the panel, the groups «Vær» and «Sted», and puts the long explanations behind «Mer om».
 
 export const ALLE = 'Alle'
 export const KNAPP_ID = 'filter-knapp'
@@ -63,6 +64,15 @@ const HINT: Partial<Record<FilterKrav, string>> = {
   maksSkydekkeDagslys: 'Steder uten dagslys de neste 24 timene (mørketid) vises ikke når kravet er på.',
 }
 
+/** Story 3.1b: the hints that are explanations, not statuses, go behind «Mer om …» with these names. */
+const MER_OM: Partial<Record<FilterKrav, string>> = { maksSkydekkeDagslys: 'skydekke' }
+
+/** Story 3.1b: the panel's two groups, «Vær» and «Sted», in FILTER_KRAV order. */
+const STED_KRAV: readonly FilterKrav[] = ['maksAvstandKm']
+const VAER_KRAV: readonly FilterKrav[] = FILTER_KRAV.filter((krav) => !STED_KRAV.includes(krav))
+const VAER_ID = 'filter-gruppe-vaer'
+const STED_ID = 'filter-gruppe-sted'
+
 const KRAV_TEKST: Record<FilterKrav, { navn: string; retning: string; enhet: string; kravet: string }> = {
   minNysnoCm: { navn: 'Nysnø', retning: 'minst', enhet: 'cm', kravet: 'nysnøkravet' },
   maksVindMs: { navn: 'Vind', retning: 'høyst', enhet: 'm/s', kravet: 'vindkravet' },
@@ -93,6 +103,43 @@ export function kravTekst(krav: FilterKrav, verdi: number | null, kilde: NysnoKi
 /** Story 3.7: the place type chip, «Stedstype skisted, by». */
 export function stedstypeTekst(stedstyper: readonly StedType[]): string {
   return `Stedstype ${stedstyper.map((type) => STEDSTYPE_NAVN[type].toLowerCase()).join(', ')}`
+}
+
+/** Story 3.1b: what a chip stands for, so its × knows what to remove. */
+export type Chip = FilterKrav | 'stedstyper' | 'kilde'
+
+/**
+ * The chips for the active requirements, in the same order and words on the closed sheet and at the top of
+ * the panel: the sliders, then the source (Story 3.8) and the place type (Story 3.7).
+ */
+function aktiveChips(params: FilterParams): { chip: Chip; tekst: string }[] {
+  const aktive = aktiveKrav(params)
+  const chips: { chip: Chip; tekst: string }[] = aktive.map((krav) => ({
+    chip: krav,
+    tekst: kravTekst(krav, params[krav], params.nysnoKilde),
+  }))
+  // Story 3.8: with new snow at «Alle» the new snow chip is gone, so the source gets its own, and
+  // «Nullstill» always has a visible reason.
+  if (params.nysnoKilde === 'nve' && !aktive.includes('minNysnoCm')) chips.push({ chip: 'kilde', tekst: KILDE_CHIP })
+  if (params.stedstyper) chips.push({ chip: 'stedstyper', tekst: stedstypeTekst(params.stedstyper) })
+  return chips
+}
+
+/**
+ * Story 3.1b: the filter without the one requirement a chip's × removes. A slider goes to «Alle», the place
+ * type to «Alle», and the source back to the forecast; everything else is left as it is.
+ */
+export function fjernKrav(params: FilterParams, chip: Chip): FilterParams {
+  if (chip === 'kilde') return { ...params, nysnoKilde: 'met' }
+  if (chip === 'stedstyper') return { ...params, stedstyper: null }
+  return { ...params, [chip]: null }
+}
+
+/** The accessible name of a chip's ×: «Fjern nysnøkravet», «Fjern stedstypekravet», «Bytt tilbake til prognose». */
+export function fjernNavn(chip: Chip): string {
+  if (chip === 'kilde') return 'Bytt tilbake til prognose'
+  if (chip === 'stedstyper') return 'Fjern stedstypekravet'
+  return `Fjern ${KRAV_TEKST[chip].kravet}`
 }
 
 /** Story 3.4 (FR-15): a quick pick's description, in the same words as the active-requirement chips. */
@@ -173,6 +220,34 @@ export function fokuserFilteret(krav: FilterKrav | 'stedstyper' = FILTER_KRAV[0]
   mal?.focus()
 }
 
+/**
+ * Story 3.1b: a long explanation behind a text button, closed by default. The paragraph keeps its id and is
+ * only `hidden`, so the slider or group that points to it with aria-describedby still has it as its
+ * description while it is closed.
+ */
+function MerOm({ navn, hintId, tekst }: { navn: string; hintId: string; tekst: string }) {
+  const [apen, setApen] = useState(false)
+  return (
+    <>
+      <button
+        type="button"
+        className="filter-mer-om"
+        aria-expanded={apen}
+        aria-controls={hintId}
+        onClick={() => setApen(!apen)}
+      >
+        <span className="filter-mer-om-pil" aria-hidden="true">
+          {apen ? '▾' : '▸'}
+        </span>
+        {`Mer om ${navn}`}
+      </button>
+      <p id={hintId} className="filter-hint" hidden={!apen}>
+        {tekst}
+      </p>
+    </>
+  )
+}
+
 type FeltProps = {
   krav: FilterKrav
   verdi: number | null
@@ -183,9 +258,11 @@ type FeltProps = {
   hintErStatus?: boolean
   /** Story 3.6 («Hele Norge»): an extra action shown next to this slider's label and value. */
   ekstraKnapp?: ReactNode
+  /** Story 3.1b: puts the hint behind «Mer om …» with this name. Never for a status. */
+  merOm?: string
 }
 
-function Filterfelt({ krav, verdi, onEndre, hint, hintErStatus, ekstraKnapp }: FeltProps) {
+function Filterfelt({ krav, verdi, onEndre, hint, hintErStatus, ekstraKnapp, merOm }: FeltProps) {
   const { min, max, steg, standard } = FILTER_GRENSER[krav]
   const id = feltId(krav)
   const tekst = verdiTekst(krav, verdi)
@@ -241,7 +318,8 @@ function Filterfelt({ krav, verdi, onEndre, hint, hintErStatus, ekstraKnapp }: F
             : undefined
         }
       />
-      {hint && (
+      {hint && merOm && <MerOm navn={merOm} hintId={hintId} tekst={hint} />}
+      {hint && !merOm && (
         <p id={hintId} className="filter-hint" role={hintErStatus ? 'status' : undefined}>
           {hint}
         </p>
@@ -309,9 +387,7 @@ function Nysnokilde({ params, onEndre, nveMangler }: Pick<Props, 'params' | 'onE
       <p className="filter-hint" role="status">
         {params.nysnoKilde === 'nve' && nveMangler ? NVE_MANGLER : ''}
       </p>
-      <p id={NYSNO_KILDE_HINT_ID} className="filter-hint">
-        {NYSNO_KILDE_HINT}
-      </p>
+      <MerOm navn="NVE-dataene" hintId={NYSNO_KILDE_HINT_ID} tekst={NYSNO_KILDE_HINT} />
     </fieldset>
   )
 }
@@ -361,8 +437,51 @@ export default function FilterPanel({
   nveMangler,
 }: Props) {
   const [apen, setApen] = useState(false)
-  const aktive = aktiveKrav(params)
+  const chips = aktiveChips(params)
   const harAktive = harAktiveKrav(params)
+
+  /** Story 3.1b: one requirement off, then focus on its own control, which is always in the panel. */
+  const fjern = (chip: Chip) => {
+    onEndre(fjernKrav(params, chip))
+    if (chip === 'kilde') document.getElementById(nysnoKildeId('met'))?.focus()
+    else fokuserFilteret(chip)
+  }
+
+  const felt = (krav: FilterKrav) => (
+    <Fragment key={krav}>
+      <Filterfelt
+        krav={krav}
+        verdi={params[krav]}
+        // Story 3.6 (FR-23, NFR-Privacy): the position is asked for only here, on the user's own
+        // move away from «Alle», never automatically from a link or on load.
+        hint={krav === 'maksAvstandKm' ? posisjonStatus || undefined : HINT[krav]}
+        hintErStatus={krav === 'maksAvstandKm'}
+        merOm={MER_OM[krav]}
+        // «Hele Norge» (Kelly, 2026-10-25): only when the distance requirement is active, so the
+        // user can get back to a national search without touching the other four requirements.
+        ekstraKnapp={
+          krav === 'maksAvstandKm' && params.maksAvstandKm !== null ? (
+            <button
+              type="button"
+              className="filter-hele-norge"
+              onClick={() => {
+                onEndre({ ...params, maksAvstandKm: null })
+                fokuserFilteret('maksAvstandKm')
+              }}
+            >
+              Hele Norge
+            </button>
+          ) : undefined
+        }
+        onEndre={(verdi) => {
+          onEndre({ ...params, [krav]: verdi })
+          if (krav === 'maksAvstandKm' && verdi !== null && !posisjonKjent) beOmPosisjon()
+        }}
+      />
+      {/* Story 3.8: the source belongs to the new snow requirement, so it sits right under its slider. */}
+      {krav === 'minNysnoCm' && <Nysnokilde params={params} onEndre={onEndre} nveMangler={nveMangler} />}
+    </Fragment>
+  )
 
   return (
     <aside className={`filter kort${apen ? ' filter--apen' : ''}`} aria-label="Filter">
@@ -381,62 +500,50 @@ export default function FilterPanel({
         <Antall antall={antall} />
         {!apen && harAktive && (
           <>
+            {/* Plain text on the closed sheet, not buttons; the chips with × are at the top of the panel. */}
             <ul className="filter-chips" aria-label="Aktive krav">
-              {aktive.map((krav) => (
-                <li key={krav} className="filter-chip">
-                  {kravTekst(krav, params[krav], params.nysnoKilde)}
+              {chips.map(({ chip, tekst }) => (
+                <li key={chip} className="filter-chip">
+                  {tekst}
                 </li>
               ))}
-              {/* Story 3.8: with new snow at «Alle» the new snow chip is gone, so the source gets its own,
-                  and «Nullstill» next to it always has a visible reason. */}
-              {params.nysnoKilde === 'nve' && !aktive.includes('minNysnoCm') && <li className="filter-chip">{KILDE_CHIP}</li>}
-              {params.stedstyper && <li className="filter-chip">{stedstypeTekst(params.stedstyper)}</li>}
             </ul>
             <Nullstill onEndre={onEndre} />
           </>
         )}
       </div>
       <div id={INNHOLD_ID} className="filter-innhold">
+        {/* Below 768px the heading is visually hidden, so the group headings under it are in order. */}
         <div className="filter-tittel-linje">
           <h2 className="filter-tittel">Filter</h2>
           <Antall antall={antall} />
         </div>
+        {/* Story 3.1b: the same chips as on the closed sheet, each with a × that removes just that one. */}
+        {harAktive && (
+          <ul className="filter-chips filter-chips--fjern" aria-label="Aktive krav">
+            {chips.map(({ chip, tekst }) => (
+              <li key={chip} className="filter-chip filter-chip--fjern">
+                <span className="filter-chip-tekst">{tekst}</span>
+                {/* The × is drawn by CSS, so the list item's text is the chip's text alone. */}
+                <button type="button" className="filter-chip-fjern" aria-label={fjernNavn(chip)} onClick={() => fjern(chip)} />
+              </li>
+            ))}
+          </ul>
+        )}
         <Hurtigvalgene params={params} onEndre={onEndre} />
-        {FILTER_KRAV.map((krav) => (
-          <Fragment key={krav}>
-          <Filterfelt
-            krav={krav}
-            verdi={params[krav]}
-            // Story 3.6 (FR-23, NFR-Privacy): the position is asked for only here, on the user's own
-            // move away from «Alle», never automatically from a link or on load.
-            hint={krav === 'maksAvstandKm' ? posisjonStatus || undefined : HINT[krav]}
-            hintErStatus={krav === 'maksAvstandKm'}
-            // «Hele Norge» (Kelly, 2026-10-25): only when the distance requirement is active, so the
-            // user can get back to a national search without touching the other four requirements.
-            ekstraKnapp={
-              krav === 'maksAvstandKm' && params.maksAvstandKm !== null ? (
-                <button
-                  type="button"
-                  className="filter-hele-norge"
-                  onClick={() => {
-                    onEndre({ ...params, maksAvstandKm: null })
-                    fokuserFilteret('maksAvstandKm')
-                  }}
-                >
-                  Hele Norge
-                </button>
-              ) : undefined
-            }
-            onEndre={(verdi) => {
-              onEndre({ ...params, [krav]: verdi })
-              if (krav === 'maksAvstandKm' && verdi !== null && !posisjonKjent) beOmPosisjon()
-            }}
-          />
-          {/* Story 3.8: the source belongs to the new snow requirement, so it sits right under its slider. */}
-          {krav === 'minNysnoCm' && <Nysnokilde params={params} onEndre={onEndre} nveMangler={nveMangler} />}
-          </Fragment>
-        ))}
-        <Stedstyper params={params} onEndre={onEndre} />
+        <div className="filter-gruppe" role="group" aria-labelledby={VAER_ID}>
+          <h3 id={VAER_ID} className="filter-gruppe-tittel">
+            Vær
+          </h3>
+          {VAER_KRAV.map(felt)}
+        </div>
+        <div className="filter-gruppe" role="group" aria-labelledby={STED_ID}>
+          <h3 id={STED_ID} className="filter-gruppe-tittel">
+            Sted
+          </h3>
+          {STED_KRAV.map(felt)}
+          <Stedstyper params={params} onEndre={onEndre} />
+        </div>
         {harAktive && <Nullstill onEndre={onEndre} />}
       </div>
     </aside>
