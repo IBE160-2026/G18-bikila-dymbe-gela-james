@@ -21,3 +21,16 @@
 > Spørsmål: Hvilken farge skal stolpene ha? Svar: «Nøytral grå (ink-secondary)».
 
 **Svar (kort):** Sally skrev valgene i memloggen, la til tokenet `score-part-bar` og beskrivelsen av delpoengstolpen i DESIGN.md, og oppdaterte SnowScore-kortet og kalkulatoren og la til regneeksemplet i EXPERIENCE.md. Stolpen er `aria-hidden`, og teksten «x av N» bærer tallet.
+
+### 4
+> ja
+
+**Svar (kort):** Claude pushet greinen og laget PR #93. Amelia (`bmad-build`) skrev spec-en for Story 2.5, delpoengstolper, på greinen `story/2-5-delpoengstolper`, og en subagent kompilerte Epic 2-konteksten på nytt.
+
+### 5 (valg)
+> Spørsmål: Hvor skal stolpene stå i regneeksemplet? Svar: «Liste under formlene».
+
+### 6
+> To små rettelser før godkjenning: 1. Flytt punktet om Regneeksemplet (Aksels valg 2026-11-08) fra «Never» til «Always». Det er et krav om noe som skal gjøres, ikke et forbud. 2. I E2E-oppgaven: «riktig fyllbredde» skal sjekkes via style-attributtet (f.eks. width: 50%), ikke ved å måle piksler, så testen ikke blir ustabil. Ellers ingen endringer. Deretter: godkjenn og stopp
+
+**Svar (kort):** Claude rettet begge punktene og satte spec-en til `ready-for-dev`. Koden er ikke endret.
