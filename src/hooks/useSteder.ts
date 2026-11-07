@@ -5,10 +5,10 @@ import { dataKilde, LOAD_ERROR_MESSAGE, loadPublishedData, type DataSource, type
 import type { PublishedData } from '../../shared/contracts/published'
 
 // AD-8: the only way pages and components get place data. One store per page loads the file once and
-// applies the age limits once, so every caller sees the same places and moving between routes never
-// fetches again. In live mode the store re-checks the limits every minute and when the tab is shown
-// again, so a tab left open still marks and removes places as they age. When a live file passes 90 min
-// it loads the file once more (Story 1.6b), so the banner only shows when the job has stopped.
+// applies the age limits, so every caller sees the same places and moving between routes does not
+// fetch again. In live mode the store re-checks the limits every minute and when the tab is shown
+// again, so a tab left open still marks and removes places as they age. The file is loaded again only
+// when a live file passes 90 min (Story 1.6b), so the banner only shows when the job has stopped.
 
 /** How often a live page re-checks the age limits. */
 export const FERSKHET_SJEKK_MS = 60_000
@@ -18,6 +18,8 @@ export const FERSKHET_SJEKK_MS = 60_000
  * most this often, so a tab costs one call an hour while the job is down.
  */
 export const NY_HENTING_ETTER_MS = 60 * 60_000
+/** A new load that has not answered by then counts as failed, and a late answer is ignored. */
+export const NY_HENTING_TIDSGRENSE_MS = 30_000
 
 /** LoadResult after the age limits (NFR-3): places older than 12 h are gone from `data.steder`. */
 export type StederResult =
@@ -91,9 +93,9 @@ function erGammelLiveFil(raw: LoadResult | null): boolean {
 }
 
 /**
- * One store for the whole page: it loads the file once, applies the age limits once and, for live
- * data, re-checks them every minute and when the tab is shown again. A live file that passes 90 min
- * is loaded again (Story 1.6b), so a tab left open gets the job's newer file instead of the banner.
+ * One store for the whole page: it loads the file once, applies the age limits and, for live data,
+ * re-checks them every minute and when the tab is shown again. The file is loaded again only when a
+ * live file passes 90 min (Story 1.6b), so a tab left open gets the job's newer file instead of the banner.
  * Every useSteder() caller reads the same snapshot, so map, list and place page can never disagree.
  */
 export function createStederStore(loadFn: () => Promise<LoadResult>): StederStore {
@@ -126,10 +128,17 @@ export function createStederStore(loadFn: () => Promise<LoadResult>): StederStor
     const forrige = raw.data.generert
     henter = true
     nesteHentingMs = naa + NY_HENTING_ETTER_MS
-    loadFn()
+    const feilet: LoadResult = { status: 'error', message: LOAD_ERROR_MESSAGE }
+    let tidsgrense: ReturnType<typeof setTimeout> | undefined
+    Promise.race([
+      // loadPublishedData has no timeout, so a load that never answers counts as failed after a while.
+      loadFn(),
+      new Promise<LoadResult>((resolve) => (tidsgrense = setTimeout(() => resolve(feilet), NY_HENTING_TIDSGRENSE_MS))),
+    ])
       // A failed load keeps the data on screen; the banner then shows as before.
-      .catch((): LoadResult => ({ status: 'error', message: LOAD_ERROR_MESSAGE }))
+      .catch((): LoadResult => feilet)
       .then((loaded) => {
+        clearTimeout(tidsgrense)
         henter = false
         // Only a newer file replaces the one on screen; the same or an older one means the job has stopped.
         if (loaded.status === 'ok' && Date.parse(loaded.data.generert) > Date.parse(forrige)) {

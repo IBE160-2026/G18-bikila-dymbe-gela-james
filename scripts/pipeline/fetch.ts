@@ -2,8 +2,8 @@
 // place in the catalog and puts them in `ctx.raw`, in the same shape as sources/fixtures.ts.
 // A call that fails with a network error, 429 or 5xx is tried again a fixed number of times with a
 // growing wait (Story 1.6), each attempt through the source's call-rate gate; a timeout, a connect
-// timeout or another 4xx is not. No state is kept between runs. A call that still fails leaves the response missing with a
-// reason, which validate.ts records; nothing is repaired (AD-11).
+// timeout or another 4xx is not. No state is kept between runs. A call that still fails leaves the
+// response missing with a reason, which validate.ts records; nothing is repaired (AD-11).
 import type { CatalogEntry } from '../../shared/contracts/catalog'
 import type { Avvisning } from '../../shared/contracts/published'
 import type { RawResponses, RunContext } from '../../shared/contracts/run'
@@ -118,9 +118,9 @@ function describeError(error: unknown, timeoutMs: number): string {
 
 /**
  * One GET, one attempt. Never throws: any failure becomes a reason. Network errors, 429 and 5xx may
- * pass on a new attempt. A timeout is not retried: 300 places × 3 × 20 s would run into the next
- * hourly job, and a source that does not answer in 20 s is down, not unstable. A host that does not
- * accept the connection is down for the same reason, so a connect timeout is not retried either.
+ * pass on a new attempt. Timeouts are not retried because of the time they cost: 300 places × 3 × 20 s
+ * would run into the next hourly job. A connect timeout (about 10 s) is skipped for the same reason.
+ * A per-run retry budget that would allow some of them is deferred (deferred-work.md, Story 1.6b).
  */
 async function getOnce(url: string, fetchFn: FetchFn, timeoutMs: number): Promise<Outcome> {
   try {

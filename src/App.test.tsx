@@ -138,10 +138,9 @@ describe('AppView', () => {
         expect(html.indexOf(TOM_REGION)).toBeLessThan(html.indexOf('<main'))
         expect(html).not.toContain('banner-stale-data')
       }
-      // The loaded page has the region in the same place, now with the banner, so React only fills it in.
-      const loading = render(null, route)
-      const loaded = render(gammel, route)
-      expect(loaded.slice(0, loaded.indexOf(GAMMEL_BANNER))).toBe(loading.slice(0, loading.indexOf(TOM_REGION) + TOM_REGION.length - '</div>'.length))
+      // Loading and loaded both have the region right after the header, so React only fills it in.
+      expect(render(null, route)).toContain(`</header>${TOM_REGION}`)
+      expect(render(gammel, route)).toContain(`</header><div role="status">${GAMMEL_BANNER}</div>`)
     }
   })
 
