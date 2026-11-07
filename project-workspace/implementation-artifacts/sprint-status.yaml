@@ -47,6 +47,7 @@ development_status:
   1-8-bruk-tilgjengelig-listevisning-i-stedet-for-kart: done
   1-9-åpne-en-stedsside-med-full-poengsum: done
   1-6-hold-tjenesten-oppe-når-en-datakilde-er-nede: done  # Bør ha (v3)
+  1-6b-rettinger-etter-review: in-progress  # Rettinger etter review av PR #77 (2026-11-07)
   epic-1-retrospective: optional
 
   epic-2: done
