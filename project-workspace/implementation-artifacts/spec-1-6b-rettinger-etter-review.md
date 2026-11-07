@@ -2,7 +2,7 @@
 title: 'Story 1.6b: Rettinger etter review av Story 1.6'
 type: 'bugfix'
 created: '2026-11-07'
-status: 'in-progress'
+status: 'done'
 baseline_commit: 'df8b70260180356207792663892e9f191f7f8021'
 route: 'dispatch'
 review_loop_iteration: 0
@@ -68,10 +68,34 @@ context: []
 ## Implementation Notes
 
 - Aksel godkjente specen 2026-11-07 og ba om å bygge videre mens han var borte i to timer. Stegene a–e bygges derfor i én økt, med én commit per steg, uten push. Aksel godkjenner før push.
+- Etter KI-gjennomgangen: 8 funn rettet i `db17f53`, 2 utsatt i `deferred-work.md`, 8 avvist. Verifisert lokalt på Windows: lint, typecheck, 687 enhetstester, `build:demo` og 135 E2E-tester er grønne.
 
 ## Spec Change Log
 
 ## Review Triage Log
+
+Gjennomgang med Blind Hunter (12 funn), Edge Case Hunter (8) og Verification Gap (1). Ingen funn ga intent_gap eller bad_spec.
+
+| # | Lag | Funn | Vurdering | Rute | Begrunnelse |
+|---|-----|------|-----------|------|-------------|
+| 1 | ECH | En ny henting som aldri svarer, holder banneret tilbake for alltid og stopper nye hentinger | medium | patch | `loadPublishedData` har ingen tidsgrense, så `henter` kan bli stående `true`. Matrisen sier at en mislykket henting gir banner. Hentingen får en tidsgrense. |
+| 2 | VG | Grenen som holder banneret tilbake mens «Utdatert» endres, er ikke testet | low | patch | Stemmer: testen krysser aldri 3 t. Ny test der stedet blir «Utdatert» i samme sjekk som hentingen starter. |
+| 3 | ECH, BH | Falske tidtakere og abonnementer lekker mellom rundene i løkketesten | low | patch | En feil i én runde ville gitt følgefeil i andre tester. Rundene gjøres til egne tester med opprydding. |
+| 4 | BH | Kommentarene i `useSteder.ts` lover fortsatt at fila lastes én gang | low | patch | Filhodet og JSDoc sier «loads the file once». Rettes. |
+| 5 | BH | AD-2 sier at det ikke finnes budsjett for nye forsøk «because there is no state between runs», og regelen for tidsavbrudd begrunnes med at verten er nede | low | patch | Et budsjett per kjøring trenger ingen tilstand, og grunnen til å ikke prøve på nytt er tidskostnaden. AD-2 (begge kopier) og kommentaren i `getOnce` rettes. |
+| 6 | BH | AD-8 sier ikke at storen henter fila på nytt | low | patch | Én setning i AD-8 i begge kopiene. |
+| 7 | BH | Likhetstesten av HTML i `App.test.tsx` er skjør og vanskelig å lese | low | patch | Den bryter ved enhver endring før regionen. Byttes med en sjekk av strukturen. E2E-testen viser allerede at elementet er det samme. |
+| 8 | BH | `deferred-work.md` merker fargedelen utgått, men koden bruker fortsatt fargene fra 1.6 | low | patch | `App.css` har lys bakgrunn med kant i `warning`, mens DESIGN.md sier `warning`-bakgrunn med hvit tekst. Fargevalget er åpent, så raden rettes til åpen. |
+| 9 | ECH, BH | `ETIMEDOUT` eller en `AggregateError` fra flere adresser regnes ikke som tidsavbrudd ved tilkobling | maybe-false | defer | Reviewen av #77 målte `UND_ERR_CONNECT_TIMEOUT` på Node 24. Om de andre formene forekommer mot MET og NVE, avgjøres med `varighetMs` og årsakene fra ekte kjøringer. Oppførselen er som før 1.6b. |
+| 10 | BH | NFR-3 og FR-6b i PRD-en er ikke presisert som DESIGN.md og EXPERIENCE.md | low | defer | En endring i PRD-en går via `bmad-correct-course`. Presiseringen endrer ikke kravet. |
+| 11 | BH | Story 1.6b mangler i `sprintplan.md`, epics, `fremdriftsplan.md` og KI-loggen | low | patch | Føres inn når storyen leveres, i samme PR. |
+| 12 | ECH | Ugyldig `generert` gir at en nyere fil aldri tas i bruk | false | avvist | `generert` valideres som tidspunkt av skjemaet i `loadPublishedData` før storen får fila. |
+| 13 | ECH | En henting som blir ferdig etter at alle har gått, oppdaterer storen | low | avvist | Det er bortkastet arbeid uten synlig følge, og det ville krevd en ekstra vakt. |
+| 14 | ECH | På stedssiden vises banneret over «for gamle til å vises» når alt er eldre enn 12 t | false | avvist | Raden i matrisen gjelder «Ingen ferske data», som bare Utforsk viser. På stedssiden er banneret riktig, slik 1.6 bestemte (#8 der). |
+| 15 | ECH | E2E-testen holder tilbake demofila, ikke en live-fil | low | avvist | Regionen tegnes likt i begge modusene. Live-veien er dekket i `App.test.tsx`. |
+| 16 | ECH | En side som åpnes på en gammel fil, viser banneret med en gang | false | avvist | Fila er nettopp hentet med `cache: 'no-cache'`, så en ny henting ville gitt den samme fila. |
+| 17 | BH | `.then` i `hentPaNytt` har ingen `.catch` | low | avvist | Fila er validert før `.then`, så den kaster ikke i praksis. Tidsgrensen i #1 sikrer uansett at `henter` blir nullstilt. |
+| 18 | BH | E2E dekker ikke kartet, stedssiden eller ny henting | low | avvist | Regionen er den samme komponenten på alle rutene og er testet i `App.test.tsx`. Ny henting avhenger av tid og er enhetstestet. |
 
 ## Design Notes
 

@@ -192,3 +192,11 @@
 - source_spec: `project-workspace/implementation-artifacts/spec-1-11g-timer.md`
   summary: Bytt sovingen i `data-timer.yml` med `environment: data-timer` med wait timer på 55 min, så ingen maskin er opptatt mens timeren venter.
   evidence: Bare admin kan lage environments med wait timer, og i repoet er det bare `bipa` og `TesAgi-HiMolde`. Kontrollen av alderen skal stå igjen, så kjeden ikke går i løkke om wait timeren mangler (`sprint-change-proposal-2026-11-04-timer.md`).
+
+- source_spec: `project-workspace/implementation-artifacts/spec-1-6b-rettinger-etter-review.md`
+  summary: Regn også `ETIMEDOUT` og en `AggregateError` fra flere adresser som tidsavbrudd ved tilkobling i `fetch.ts`, hvis de forekommer mot MET og NVE.
+  evidence: Uverifisert (maybe-false, ville vært medium). Reviewen av #77 målte bare `UND_ERR_CONNECT_TIMEOUT` på Node 24. Avgjøres med årsakene og `varighetMs` i kvalitetsrapporten fra ekte kjøringer der en kilde er nede.
+
+- source_spec: `project-workspace/implementation-artifacts/spec-1-6b-rettinger-etter-review.md`
+  summary: Presiser NFR-3 og FR-6b i PRD-en (begge kopier) slik DESIGN.md og EXPERIENCE.md nå gjør: banneret følger `generert`, en frossen MET-prognose gir ikke banner, og nye forsøk gjelder nettverksfeil, 429 og 5xx.
+  evidence: Funn 10 i gjennomgangen av 1.6b. En endring i PRD-en går via `bmad-correct-course`, og presiseringen endrer ikke kravet.
