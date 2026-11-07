@@ -77,6 +77,11 @@ components:
     padding: '{spacing.2} {spacing.3}'
     font: '{typography.numeric}'
     borderWidth: '2px'
+  score-part-bar:
+    height: '{spacing.2}'
+    radius: '{rounded.full}'
+    track: '{colors.surface-sunken}'
+    fill: '{colors.ink-secondary}'
   location-card:
     radius: '{rounded.md}'
     background: '{colors.surface-raised}'
@@ -264,6 +269,12 @@ Navnene er de samme som i Komponentmønstre i EXPERIENCE.md, som beskriver atfer
   `display`-rollen på tallet, det eneste stedet `display` brukes på en score. Delpoengene A, B og C
   står som etikett og verdi («30 av 60») med `{colors.border-hairline}`-strek mellom radene og
   verdien i `numeric`.
+- **Delpoengstolpe** *(2026-11-07)* — `{components.score-part-bar}`: en `{spacing.2}` høy,
+  avrundet skinne i `{colors.surface-sunken}` med fylt del i `{colors.ink-secondary}`, fylt mot
+  delpoengets eget maks. Står mellom etiketten og verdien i SnowScore-kortet, i regneeksemplet og
+  i kalkulatoren. Stolpen er nøytral grå med vilje: SnowScore-skalaen og aksentblått brukes ikke,
+  så score-badgen er fortsatt det eneste blå på kortet. Under 375 px kan stolpen bli smal, men den
+  skal aldri skyve verdien ut av raden. I mørk modus brukes `-dark`-variantene av de samme tokenene.
 - **Grunnlag-kortet** — Samme kort som SnowScore-kortet, med overskriften «Grunnlag» i `heading`
   og rådataene som etikett og verdi i `numeric`. Kilde og tidspunkt står nederst i `meta` og
   `{colors.ink-secondary}`.
