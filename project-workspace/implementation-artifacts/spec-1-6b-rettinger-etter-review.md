@@ -54,11 +54,11 @@ context: []
 ## Tasks & Acceptance
 
 **Execution:**
-- [ ] `src/App.tsx`, `src/components/GamleDataBanner.tsx`, `src/App.test.tsx` -- (a) regionen monteres på `utforsk` og `sted` fra første tegning, også mens data lastes. Banneret skjules når `statusMelding` gir `INGEN_FERSKE`.
-- [ ] `scripts/pipeline/fetch.ts`, `fetch.test.ts` -- (b) `isConnectTimeout` for `cause.code === 'UND_ERR_CONNECT_TIMEOUT'`, ikke nytt forsøk, og teksten «Tidsavbrudd ved tilkobling».
-- [ ] `src/hooks/useSteder.ts`, `useSteder.test.ts` -- (c) ny henting når live-data passerer 90 min, med test for nyere fil, samme fil og feil.
-- [ ] `scripts/pipeline/fetch.test.ts` -- (d) NVE med 5xx, 429 og nettverksfeil prøves tre ganger. Neste forsøk starter ikke før `sleep` er ferdig.
-- [ ] DESIGN.md, EXPERIENCE.md, arkitekturen (begge kopier) og `deferred-work.md` -- (e) som i Code Map.
+- [x] `src/App.tsx`, `src/components/GamleDataBanner.tsx`, `src/App.test.tsx` -- (a) regionen monteres på `utforsk` og `sted` fra første tegning, også mens data lastes. Banneret skjules når `statusMelding` gir `INGEN_FERSKE`.
+- [x] `scripts/pipeline/fetch.ts`, `fetch.test.ts` -- (b) `isConnectTimeout` for `cause.code === 'UND_ERR_CONNECT_TIMEOUT'`, ikke nytt forsøk, og teksten «Tidsavbrudd ved tilkobling».
+- [x] `src/hooks/useSteder.ts`, `useSteder.test.ts` -- (c) ny henting når live-data passerer 90 min, med test for nyere fil, samme fil og feil.
+- [x] `scripts/pipeline/fetch.test.ts` -- (d) NVE med 5xx, 429 og nettverksfeil prøves tre ganger. Neste forsøk starter ikke før `sleep` er ferdig.
+- [x] DESIGN.md, EXPERIENCE.md, arkitekturen (begge kopier) og `deferred-work.md` -- (e) som i Code Map.
 
 **Acceptance Criteria:**
 - Given en gammel live-fil, when Utforsk lastes, then finnes bannerets statusregion før dataene kommer, og den får teksten etterpå.
