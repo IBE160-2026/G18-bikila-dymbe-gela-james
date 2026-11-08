@@ -121,20 +121,40 @@ describe('AppView', () => {
     }
   })
 
-  it('has no old-data banner or region on the explanation page or while loading, and an empty region for a fresh file', () => {
+  it('has no old-data banner or region on the explanation page, and an empty region for a fresh file', () => {
     expect(render(gammel, { name: 'forklaring' })).not.toContain('banner-stale-data')
     expect(render(gammel, { name: 'forklaring' })).not.toContain(TOM_REGION)
+    expect(render(null, { name: 'forklaring' })).not.toContain(TOM_REGION)
     expect(render(demoResult)).not.toContain('banner-stale-data')
-    expect(render(null)).not.toContain('banner-stale-data')
-    expect(render(null)).not.toContain(TOM_REGION)
+    expect(render(demoResult)).toContain(TOM_REGION)
+  })
+
+  // Story 1.6b: a region inserted together with its text is often not announced, so on first load the
+  // empty region is there before the data, and the same region is filled in when the data arrives.
+  it('mounts the empty region above the content on Utforsk and the place page while loading and after an error', () => {
+    for (const route of [UTFORSK, LISTE, sted('gaustatoppen')]) {
+      for (const html of [render(null, route), render({ status: 'error', message: LOAD_ERROR_MESSAGE }, route)]) {
+        expect(html).toContain(TOM_REGION)
+        expect(html.indexOf(TOM_REGION)).toBeLessThan(html.indexOf('<main'))
+        expect(html).not.toContain('banner-stale-data')
+      }
+      // Loading and loaded both have the region right after the header, so React only fills it in.
+      expect(render(null, route)).toContain(`</header>${TOM_REGION}`)
+      expect(render(gammel, route)).toContain(`</header><div role="status">${GAMMEL_BANNER}</div>`)
+    }
   })
 
   it.each(['kart', 'liste'] as const)('explains an empty %s when every place is older than 12 h', (visning) => {
     vi.useFakeTimers({ now: Date.parse(demo.referenceTime) + 2 * FJERNES_ETTER_MS })
     try {
       const live = { ...demo, mode: 'live' as const }
-      const html = render(medFerskhet({ status: 'ok', data: live, source: 'latest' }), utforsk(visning))
+      const result = medFerskhet({ status: 'ok', data: live, source: 'latest' })
+      const html = render(result, utforsk(visning))
       expect(html).toContain('<p class="visually-hidden" role="status">Ingen ferske data</p>')
+      // Story 1.6b: the file is a day old too, but «Ingen ferske data» says it alone; the region stays empty.
+      expect(result).toMatchObject({ gamleData: true })
+      expect(html).not.toContain('banner-stale-data')
+      expect(html).toContain(TOM_REGION)
       expect(html).toContain('<h2 id="tom-overskrift">Ingen ferske data</h2>')
       expect(html).toContain(`<p>${INGEN_STEDER}</p>`)
       expect(html).not.toContain('aria-label="Visning"')
@@ -172,18 +192,20 @@ describe('AppView', () => {
     expect(html.match(/<h1/g)).toHaveLength(1)
     expect(html).toContain('<h1 class="sted-navn">Gaustatoppen</h1>')
     expect(html).toContain('<span class="score-badge score-badge--2">58 · Godt</span>')
-    const text = html.replace(/<[^>]+>/g, '|')
+    // Consecutive tags become one «|», so the sub-scores' decorative bars (Story 2.5) do not change the pairs.
+    expect(html.match(/class="delpoeng-stolpe"/g)).toHaveLength(3)
+    const text = html.replace(/(<[^>]+>)+/g, '|')
     for (const pair of [
-      'A Nysnøpotensial||30,0 av 60',
-      'B Kuldebonus||13,1 av 25',
-      'C Snøandel||15,0 av 15',
-      'Nysnø neste døgn||10 cm',
-      'Temperatur, snitt||−6,4 °C',
-      'Vind, maks||12 m/s',
-      'Skydekke, snitt||85 %',
-      'Skydekke i dagslys||87,9 %',
-      'Høyde||1\u00a0882 moh.',
-      'NVE-nysnø siste døgn||0 mm',
+      'A Nysnøpotensial|30,0 av 60',
+      'B Kuldebonus|13,1 av 25',
+      'C Snøandel|15,0 av 15',
+      'Nysnø neste døgn|10 cm',
+      'Temperatur, snitt|−6,4 °C',
+      'Vind, maks|12 m/s',
+      'Skydekke, snitt|85 %',
+      'Skydekke i dagslys|87,9 %',
+      'Høyde|1\u00a0882 moh.',
+      'NVE-nysnø siste døgn|0 mm',
     ]) {
       expect(text).toContain(pair)
     }

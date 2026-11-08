@@ -88,6 +88,92 @@
   letter-spacing: var(--typography-meta-letter-spacing);
 }
 
+/* Story 3.1b: the same chips at the top of the panel, each with a × that removes it. DESIGN.md
+   filter-chip-removable: the chip's border and text, and a spacing.7 square touch target for the ×. The chip
+   may shrink and its text wraps inside it, so a long chip with a wide font never scrolls the page sideways. */
+.filter-chip--fjern {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  max-width: 100%;
+  min-width: 0;
+  padding: 0 0 0 var(--spacing-2);
+  background: var(--color-surface-raised);
+}
+
+.filter-chip-tekst {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.filter-chip-fjern {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: var(--spacing-7);
+  height: var(--spacing-7);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--rounded-sm);
+  background: transparent;
+  color: var(--color-ink-secondary);
+  font: inherit;
+  font-size: var(--typography-heading-font-size);
+  line-height: 1;
+  cursor: pointer;
+}
+
+/* The × is drawn here, so the list item's text is the chip's text alone; the button is named by aria-label. */
+.filter-chip-fjern::before {
+  content: '×';
+}
+
+.filter-chip-fjern:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: -2px;
+}
+
+/* Story 3.1b: the group headings «Vær» and «Sted», heading in a small size, no rule or surface of their own. */
+.filter-gruppe {
+  display: grid;
+  gap: var(--spacing-3);
+  min-width: 0;
+}
+
+.filter-gruppe-tittel {
+  margin: var(--spacing-5) 0 0;
+  font-family: var(--typography-heading-font-family);
+  font-size: var(--typography-body-font-size);
+  font-weight: var(--typography-heading-font-weight);
+  line-height: var(--typography-heading-line-height);
+}
+
+/* Story 3.1b: «Mer om skydekke» and «Mer om NVE-dataene», a text button with an arrow (▸ closed, ▾ open). */
+.filter-mer-om {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-1);
+  min-height: var(--spacing-7);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-accent);
+  font-family: var(--typography-meta-font-family);
+  font-size: var(--typography-meta-font-size);
+  font-weight: var(--typography-meta-font-weight);
+  line-height: var(--typography-meta-line-height);
+  letter-spacing: var(--typography-meta-letter-spacing);
+  text-align: left;
+  cursor: pointer;
+}
+
+.filter-mer-om:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
 .filter-innhold {
   display: none;
 }
@@ -122,9 +208,10 @@
   font-feature-settings: var(--typography-numeric-font-feature-settings);
 }
 
-/* On a phone the «Filter» button names the panel and shows the count; the heading line is for the side panel. */
+/* On a phone the «Filter» button names the panel and shows the count; the heading line is for the side panel
+   (below 768px only its heading is kept, visually hidden; see the media query at the end). */
 .filter-tittel-linje {
-  display: none;
+  display: flex;
   flex-wrap: wrap;
   align-items: baseline;
   justify-content: space-between;
@@ -221,6 +308,16 @@
 /* Story 3.8: the always-present status under the new snow source takes no room while it is empty. */
 .filter-hint:empty {
   margin: 0;
+}
+
+/* Story 3.1b: a hint behind «Mer om» is hidden, but stays the slider's or group's description. */
+.filter-hint[hidden] {
+  display: none;
+}
+
+/* Right under its «Mer om» button. */
+.filter-mer-om + .filter-hint {
+  margin-top: 0;
 }
 
 /* Story 3.7: the place type checkboxes, and from Story 3.8 the new snow source radio buttons. The whole
@@ -356,6 +453,31 @@
   gap: var(--spacing-2);
 }
 
+/* Story 3.1b, below 768px: the «Filter» button and the sheet bar's count name the panel, so the heading line
+   is not shown. The h2 stays in the accessibility tree, visually hidden like .visually-hidden, so «Vær» and
+   «Sted» (h3) come after an h2. The heading line's own count is not shown or read; the bar already has it. */
+@media not all and (min-width: 768px) {
+  .filter-tittel-linje {
+    display: contents;
+  }
+
+  .filter-tittel-linje .filter-antall {
+    display: none;
+  }
+
+  .filter-tittel {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+  }
+}
+
 /* Story 3.9 (FR-32): the place search between the map/list switch and the results, on every width. The
    suggestions float over the map (whose Leaflet layers are isolated in .kart), and z-index 2 puts the open
    list above the bottom sheet (z-index 1) too, so a long list on a short phone is never hidden by it. */
@@ -489,9 +611,5 @@
     margin-top: 0;
     overflow: visible;
     animation: none;
-  }
-
-  .filter-tittel-linje {
-    display: flex;
   }
 }

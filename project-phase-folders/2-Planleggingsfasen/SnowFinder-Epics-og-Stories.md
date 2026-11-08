@@ -133,8 +133,8 @@ ordinær kontroll, ikke dra-og-slipp.
 UX-DR7: Beste skivindu-kort med mørketid-fallback-tekst («Mørketid – vindu vist uten dagslys»).
 UX-DR8: *(Ikke i v1, v3)* Snøvarsel-skjema inline på stedssiden.
 UX-DR9: *(Ikke i v1, v3)* Tilbakemeldingsskjema.
-UX-DR10: Global `banner-stale-data`-komponent (warning-bakgrunn) når siste data er eldre enn
-normalt.
+UX-DR10: Global `banner-stale-data`-komponent (lys flate med `warning`-kant til venstre, avgjort
+2026-11-07) når siste data er eldre enn normalt.
 UX-DR11: Tilstander: skjelett-lasting (`surface-sunken`), null-treff med forslag, "ufullstendige
 data"-tekst i stedet for score-badge.
 UX-DR12: Responsiv layout: filterpanel som bunn-ark (<768px) vs. fast venstre sidepanel
@@ -395,6 +395,11 @@ grønn kjøring betyr at dataene faktisk er ute *(ny v6, nettadressen v7)*
 siste publisering på grenen `data` er yngre enn 50 minutter, så GitHubs droppede kjøringer ikke gir
 timer gamle data, og MET fortsatt spørres omtrent én gang i timen. Kan ikke alderen leses, kjører
 jobben som vanlig *(ny 2026-11-02)*
+**And** hver kjøring på `main` som har hentet data, også en avvist, starter `data-timer.yml`, som
+venter til dataene er rundt 55 minutter gamle (minst 30 minutter) og så starter `data.yml`. Den
+starter ingenting når dataene er under 50 minutter gamle, og det går bare én timer om gangen. Så
+holder dataene seg under 90 minutter selv når GitHub dropper planlagte kjøringer; timeplanen er
+reserve hvis kjeden stopper *(ny 2026-11-04)*
 **And** en kjøring uten `latest.json` publiserer ingenting, så grenen beholder siste gyldige fil, og
 produksjon viser aldri demodata (AD-10)
 **And** en kjøring som ikke publiserer, laster opp kvalitetsrapporten som artifact og vises som
@@ -492,6 +497,28 @@ Storyen er derfor Bør ha.]`
 `[RETTET under sprintplanlegging 2026-09-27: Story 1.6 flyttet etter 1.9. Den krever
 `banner-stale-data` på Utforsk- og stedssiden, som først finnes etter 1.7 og 1.9 — en
 forover-avhengighet. Nummeret er beholdt så kryssreferanser ikke brytes.]`
+
+### Story 1.6b: Rettinger etter review av Story 1.6 *(ny 2026-11-07)*
+
+**Prioritet:** Bør ha
+
+As en bruker,
+I want at banneret for gamle data er riktig og blir lest opp, og at dataprogrammet ikke kaster bort tid på en kilde som ikke svarer,
+So that jeg kan stole på banneret. Retter funnene fra reviewen av PR #77. Realiserer FR-6b og NFR-3.
+
+**Acceptance Criteria:**
+
+**Given** en gammel live-fil
+**When** Utforsk eller stedssiden lastes
+**Then** finnes bannerets statusregion før dataene kommer, og den får teksten etterpå
+
+**Given** en fane som har stått åpen til fila passerer 90 min
+**When** jobben har publisert en nyere fil
+**Then** hentes fila på nytt og vises uten banner, og banneret vises bare når ingen nyere fil finnes
+
+**Given** at en vert ikke tar imot tilkoblingen
+**When** dataprogrammet kjører
+**Then** prøves kallet ikke på nytt, og årsaken er «Tidsavbrudd ved tilkobling»
 
 ---
 
@@ -592,6 +619,29 @@ So that jeg kan utforske formelen interaktivt. Bør ha. Realiserer FR-10.
 **And** kalkulatoren importerer `shared/snowscore.ts` direkte — ingen egen kopi av formelen
 finnes i kalkulator-komponenten (AD-6)
 
+### Story 2.5: Delpoengstolper i SnowScore-kortet, regneeksemplet og kalkulatoren *(ny 2026-11-08)*
+
+**Prioritet:** Bør ha
+
+As en bruker,
+I want å se med et blikk hvilket delpoeng som trekker ned,
+So that jeg forstår SnowScore uten å lese hvert tall. Realiserer FR-16, FR-9 og FR-10 og steg 3 i UX-forbedringen (PR #93).
+
+**Acceptance Criteria:**
+
+**Given** stedssiden for et sted med score
+**When** siden åpnes
+**Then** har A, B og C hver sin grå stolpe fylt mot 60, 25 og 15, og teksten «x av N» er uendret
+**And** regneeksemplet og kalkulatoren viser de samme stolpene, og kalkulatorens stolper følger tallene uten omlasting
+
+**Given** ufullstendige data eller ugyldig inndata i kalkulatoren
+**When** siden vises
+**Then** vises verken delpoeng eller stolper
+
+**Given** en skjermleser eller 320 px bredde
+**When** delpoenglista vises
+**Then** hører skjermleseren bare etikett og «x av N», og siden ruller ikke sidelengs
+
 ---
 
 ## Epic 3: Finn steder som oppfyller mine krav
@@ -619,6 +669,36 @@ CI-blokkerende test mot `shared/filter.ts`
 **And** filterpanelet vises som et bunn-ark under 768px bredde og som et fast venstre sidepanel
 fra 768px og oppover (DESIGN.md/UX-DR12), verifisert med en Playwright-test i begge
 viewport-bredder
+
+### Story 3.1b: Ryddigere filter *(ny 2026-11-07)*
+
+**Prioritet:** Bør ha
+
+As en bruker,
+I want å se samlet hvilke krav som filtrerer, og å fjerne ett krav med ett trykk,
+So that filteret er lett å lese og justere uten å lete etter slideren. Realiserer FR-20, UX-DR4 og UX-DR12 (justert i UX-forbedring steg 2).
+
+**Acceptance Criteria:**
+
+**Given** aktive krav
+**When** panelet er åpent (eller bredden er minst 768 px)
+**Then** står chipsene med × øverst under «Filter» og antall treff
+**And** × fjerner bare det kravet og flytter fokus til kravets slider, til første avkrysningsboks for
+stedstype, eller til «Prognose» for kildechipen
+
+**Given** filteret
+**When** det vises
+**Then** kommer hurtigvalg, «Vær» og «Sted» i den rekkefølgen, hver med en overskrift, og én «Nullstill» sist
+
+**Given** skydekke eller datagrunnlaget
+**When** panelet åpnes
+**Then** er hjelpeteksten skjult bak «Mer om …»
+**And** et trykk viser den, og en skjermleser får den som beskrivelse uansett
+
+**Given** det lukkede bunn-arket
+**When** krav er aktive
+**Then** er chipsene ren tekst med «Nullstill», som før
+**And** filterlogikken, adressen og hurtigvalgene er uendret
 
 ### Story 3.2: Del og gjenåpne et filtrert søk
 

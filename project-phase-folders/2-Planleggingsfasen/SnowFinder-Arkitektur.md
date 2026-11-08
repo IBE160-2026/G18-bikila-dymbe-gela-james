@@ -102,6 +102,10 @@ flowchart LR
     job, `gate`, ends a scheduled run when the last commit on the branch `data` is under 50 minutes old (read through
     the API, which is not cached). If it
     cannot read the age, the run goes ahead. Push, manual and PR runs always fetch. (2026-11-02)
+    The schedule alone left 4–8 hours between runs, so every run on `main` that fetched starts
+    `data-timer.yml`, which waits until the data is about 55 minutes old (at least 30) and dispatches
+    `data.yml`. It dispatches nothing when the data is under 50 minutes old, and only one timer exists
+    at a time. The schedule stays as a fallback that restarts the chain. (2026-11-04)
   - **Threshold and partial failures.** The 95 % threshold counts locations with a score. A
     rejected or missing MET response, and incomplete data, both leave a location without one
     (changed 2026-10-22: incomplete locations used to count as valid, so a run of outdated
@@ -110,8 +114,12 @@ flowchart LR
     `nveNysnoSisteDognMm` null and is recorded in the report without blocking publication (FR-6a, v4). In a published run, a location
     whose response failed appears as incomplete data without a score. The file never carries
     values from an earlier run.
-  - **Simple retries are *Should have* (FR-6b).** v1 makes one attempt per location with capped
-    concurrency. There is no circuit breaker, because there is no state between runs.
+  - **Simple retries (FR-6b, Story 1.6).** A call that fails with a network error, 429 or 5xx is
+    tried up to three times in all, waiting 1 s and then 2 s, and every attempt passes the source's
+    call-rate gate. Another 4xx is not retried. Timeouts (20 s) and connect timeouts (about 10 s,
+    Story 1.6b) are not retried because of the time they cost: 300 places × 3 attempts would run
+    into the next hourly job. A per-run retry budget that would allow some of them is deferred
+    (`deferred-work.md`). There is no circuit breaker, because there is no state between runs.
   - **Call rate.** `fetch.ts` starts at most one call per 100 ms per source (10/s), on top of the
     concurrency cap. MET's terms require an agreement above 20 requests/s per application (FR-2).
   - **Best ski window** *(Story 4.2, 2026-10-28)*. `score.ts` computes `skivindu` and an explicit
@@ -191,6 +199,8 @@ flowchart LR
   - Both views read the same filter parameters (parsed by `shared/filter.ts`, AD-12) and call
     the same `useSteder()` hook.
   - No page fetches or filters location data any other way.
+  - The store loads the published file again when a live file passes 90 min, at most once an hour,
+    and swaps it in only when it is newer *(Story 1.6b)*.
 
 ### AD-9 — Design tokens have one source in code *(v2, DESIGN.md)*
 
@@ -345,7 +355,7 @@ exact pins and updates them deliberately.
 flowchart TB
     U["Users<br/>mobile + desktop browser"] --> VERCEL["Vercel<br/>static app, built from main"]
     VERCEL -- "/data/latest.json<br/>rewrite" --> BRANCH["Branch data<br/>latest.json"]
-    CRON["GitHub Actions<br/>scheduled every 10 min, fetches when data is 50+ min old, one run at a time"] --> RUN["npm run data<br/>fetch → validate → score → publish"]
+    CRON["GitHub Actions<br/>restarted by data-timer about every hour, schedule every 10 min as fallback, one run at a time"] --> RUN["npm run data<br/>fetch → validate → score → publish"]
     RUN -- "reads" --> MET["MET Locationforecast"]
     RUN -- "reads" --> NVE["NVE seNorge"]
     RUN -- "publish<br/>(only if ≥95 % valid)" --> BRANCH
@@ -394,7 +404,8 @@ flowchart TB
 | Regenerate demo data | `npm run data:demo` | rewrites `demo.json` from fixtures | — |
 | CI `ci.yml` (every PR) | lint, typecheck, unit/property/contract/golden tests, `npm run build:demo` | demo | — |
 | CI `e2e.yml` (every PR) | `vite build --mode demo` + `vite preview` as Playwright `webServer`, plus a second build in normal mode (`npm run build` without `prebuild`) to prove which file each mode reads | demo, normal | Playwright browsers |
-| `data.yml` (every 10 min with an age gate, so about hourly; on push to `main`; and manual) | `npm run data`, then publish `latest.json` to the branch `data`, only if it was produced. The branch and the site are read back and their `runId` compared | live | Actions enabled in the repo |
+| `data.yml` (started by `data-timer.yml` about hourly; every 10 min with an age gate as fallback; on push to `main`; and manual) | `npm run data`, then publish `latest.json` to the branch `data`, only if it was produced. The branch and the site are read back and their `runId` compared | live | Actions enabled in the repo |
+| `data-timer.yml` (started by `data.yml`) | waits until the data is about 55 min old, then dispatches `data.yml` | live | Actions enabled in the repo |
 | Vercel (every push to `main`, and a preview per PR) | `npm run build` without `prebuild`, and without data files in `dist/`. The branch `data` is not built | live, through the rewrite | Vercel project, no keys |
 
 Story 1.1 created empty `supabase/` and `src/lib/supabase/` folders. Story 1.10 removes them
