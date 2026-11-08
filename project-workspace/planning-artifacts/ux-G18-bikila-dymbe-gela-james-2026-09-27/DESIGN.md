@@ -77,11 +77,22 @@ components:
     padding: '{spacing.2} {spacing.3}'
     font: '{typography.numeric}'
     borderWidth: '2px'
+  score-part-bar:
+    height: '{spacing.2}'
+    radius: '{rounded.full}'
+    track: '{colors.surface-sunken}'
+    fill: '{colors.ink-secondary}'
   location-card:
     radius: '{rounded.md}'
     background: '{colors.surface-raised}'
     padding: '{spacing.4}'
     gap: '{spacing.2}'
+  filter-chip-removable:
+    radius: '{rounded.sm}'
+    borderColor: '{colors.accent}'
+    borderWidth: '1px'
+    background: '{colors.surface-raised}'
+    removeSize: '{spacing.7}'
   filter-slider:
     radius: '{rounded.full}'
     trackHeight: '4px'
@@ -94,14 +105,27 @@ components:
     borderWidth: '2px'
     borderWidthSmall: '1px'
     borderColor: '{colors.surface-raised}'
+  map-legend:
+    background: '{colors.surface-raised}'
+    borderColor: '{colors.border-hairline}'
+    borderWidth: '1px'
+    radius: '{rounded.md}'
+    padding: '{spacing.2} {spacing.3}'
+    font: '{typography.body}'
+    fontCompact: '{typography.meta}'
+    swatchSize: '14px'
+    swatchSizeCompact: '10px'
   bottom-sheet:
     radius: '{rounded.lg}'
     background: '{colors.surface-raised}'
     shadow: '0 -2px 12px rgba(15,27,45,0.08)'
   banner-stale-data:
     radius: '{rounded.sm}'
-    background: '{colors.warning}'
-    textColor: '{colors.surface-raised}'
+    background: '{colors.surface-raised}'
+    textColor: '{colors.ink-primary}'
+    borderColor: '{colors.border-hairline}'
+    accentBorderColor: '{colors.warning}'
+    accentBorderWidth: '4px'
     padding: '{spacing.3} {spacing.4}'
   banner-demo:
     radius: '{rounded.sm}'
@@ -150,7 +174,7 @@ bruksmønstre («rett før en tur» og planlegging kvelden før); dette kan snus
   | Ufullstendige data | ingen | Ufullstendige data | `{colors.ink-secondary}` som ren tekst, ingen badge | – |
 - **Danger/Warning/Success** er strengt semantiske og aldri dekorative: danger til feil og
   utdaterte/fjernede data, warning til «siste kjente data» når dataene er eldre enn normalt
-  (alltid med hvit tekst, 5,93:1; `{colors.ink-primary}` på warning gir bare 2,92:1),
+  (som kant på banneret, ikke som bakgrunn; `{colors.ink-primary}` på warning gir bare 2,92:1),
   success til bekreftelser. *(v2: snøvarsel og tilbakemelding er Ikke i v1, så success har
   ingen fast bruk ennå; tokenet beholdes.)*
 - Unngå: å bruke SnowScore-skalaens blåtoner til noe som ikke er en SnowScore (ville lære
@@ -229,6 +253,21 @@ Navnene er de samme som i Komponentmønstre i EXPERIENCE.md, som beskriver atfer
   - Steder med ufullstendige data har hvit fyll og alltid 2 px stiplet grå kant
     (`{colors.snowscore-0}`), så de aldri leses som score 0.
   - Grunnen er at 300 steder med 28 px dekket hverandre på landsnivå (manuell sjekk 2026-10-08).
+- **Fargeforklaring** *(2026-11-08)* — `{components.map-legend}`: et lite
+  `{colors.surface-raised}`-kort med `{colors.border-hairline}`-kant og `{rounded.md}`, uten skygge,
+  oppe til høyre i kartet på alle bredder. Zoomknappene står oppe til venstre, kildehenvisningen nede
+  til høyre, og bunn-arket dekker bunnen av kartet på mobil. Overskriften «Fargeforklaring» står i
+  `meta`, og under den står fem rader med en prikk og en tekst:
+  - fire prikker i `{colors.snowscore-3}` til `{colors.snowscore-0}`, med hvit kant som kartmarkøren,
+    og teksten «70–100 Svært godt», «45–69 Godt», «20–44 Middels» og «0–19 Lite», med høyeste trinn
+    øverst;
+  - én hvit prikk med 2 px stiplet grå kant (`{colors.snowscore-0}`) og teksten «Ufullstendige data»,
+    så skillet ikke bare bygger på farge.
+  - Intervallene og ordene er de samme som i tabellen under Colors.
+  - Prikkene er `{components.map-legend.swatchSize}`, og teksten er `body` i `{colors.ink-primary}`.
+  - Under 768 px er forklaringen den samme lista i mindre form: prikkene er
+    `{components.map-legend.swatchSizeCompact}` og teksten `meta`. Den har ingen knapp og er alltid
+    synlig.
 - **Listerad** — `{colors.surface-raised}` kort (`{components.location-card}`) med stedsnavn
   (`heading`), score-badge, og tre nøkkeltall (nysnø/vind/temp) i `numeric`. Hele raden er
   lenken; kanten blir `{colors.accent}` ved hover.
@@ -250,6 +289,14 @@ Navnene er de samme som i Komponentmønstre i EXPERIENCE.md, som beskriver atfer
     Aktiv chip er fylt med `{colors.accent}` og har `{colors.surface-raised}` tekst.
   - Chipsene for aktive krav på det lukkede bunn-arket er ren tekst i `meta` med
     `{colors.accent}`-kant og `{rounded.sm}`, ikke knapper. Sirkelen er forbeholdt SnowScore.
+  - Chipsene for aktive krav øverst i panelet *(2026-11-07)* har samme tekst og kant
+    (`{components.filter-chip-removable}`) og en ×-knapp til høyre, `{spacing.7}` × `{spacing.7}`
+    som trykkmål, med × i `{colors.ink-secondary}`. Chipsene brytes over flere linjer, aldri sideveis rulling.
+  - Gruppeoverskriftene «Vær» og «Sted» *(2026-11-07)* står i `heading` i liten størrelse med
+    `{spacing.5}` over, uten strek eller egen flate, så panelet fortsatt er ett kort.
+  - «Mer om skydekke» og «Mer om NVE-dataene» *(2026-11-07)* er tekstknapper i `meta` og
+    `{colors.accent}` med en pil (▸ lukket, ▾ åpen), minst `{spacing.7}` høye. Teksten under står i
+    `meta` og `{colors.ink-secondary}`, som de andre hjelpetekstene.
   - «Filter», «Nullstill» og «Bruk forslaget» er knapper, minst `{spacing.7}` høye, med
     `{colors.accent}`-kant og `{rounded.sm}`. «Bruk forslaget» og åpen «Filter» er fylt med
     `{colors.accent}`; «Nullstill» er bare kantet.
@@ -264,15 +311,24 @@ Navnene er de samme som i Komponentmønstre i EXPERIENCE.md, som beskriver atfer
   `display`-rollen på tallet, det eneste stedet `display` brukes på en score. Delpoengene A, B og C
   står som etikett og verdi («30 av 60») med `{colors.border-hairline}`-strek mellom radene og
   verdien i `numeric`.
+- **Delpoengstolpe** *(2026-11-07)* — `{components.score-part-bar}`: en `{spacing.2}` høy,
+  avrundet skinne i `{colors.surface-sunken}` med fylt del i `{colors.ink-secondary}`, fylt mot
+  delpoengets eget maks. Står mellom etiketten og verdien i SnowScore-kortet, i regneeksemplet og
+  i kalkulatoren. Stolpen er nøytral grå med vilje: SnowScore-skalaen og aksentblått brukes ikke,
+  så score-badgen er fortsatt det eneste blå på kortet. Under 375 px kan stolpen bli smal, men den
+  skal aldri skyve verdien ut av raden. I mørk modus brukes `-dark`-variantene av de samme tokenene.
 - **Grunnlag-kortet** — Samme kort som SnowScore-kortet, med overskriften «Grunnlag» i `heading`
   og rådataene som etikett og verdi i `numeric`. Kilde og tidspunkt står nederst i `meta` og
   `{colors.ink-secondary}`.
 - **«Tilbake»** — En vanlig lenke i `{colors.accent}` nederst på stedssiden, minst `{spacing.7}` ×
   `{spacing.7}` som trykkmål.
-- **Banner-stale-data** — Full bredde, `{colors.warning}` bakgrunn og hvit tekst
-  (`{components.banner-stale-data.textColor}` = `{colors.surface-raised}`, 5,93:1). Vises når de
-  nyeste dataene er eldre enn normalt (over 90 min), for eksempel fordi en datakilde er nede.
-  *(Ikke bygget ennå, Story 1.6.)*
+- **Banner-stale-data** — Full bredde, `{colors.surface-raised}` flate med tynn
+  `{colors.border-hairline}`-kant, en 4 px `{colors.warning}`-kant til venstre og
+  `{colors.ink-primary}` tekst (16,6:1). Stripen skiller det fra demobanneret, og flaten holder
+  teksten lett å lese *(Aksel, 2026-11-07, via `bmad-ux`: erstatter hvit tekst på warning fra 2026-10-28)*. Vises på
+  Utforsk og stedssiden når datafila sist ble publisert for over 90 min siden (`generert`), for
+  eksempel fordi timesjobben har stoppet. En frossen prognose fra MET i en fil som publiseres som
+  normalt, gir ikke banner. Vises ikke sammen med «Ingen ferske data» *(Story 1.6b, 2026-11-07)*.
 - **Demobanner** *(v2)* — Full bredde, `{colors.surface-sunken}` bakgrunn med tynn
   `{colors.ink-secondary}`-kant og `{colors.ink-primary}` tekst: «Demodata – ikke ekte prognoser».
   Bevisst nøytral og ikke warning-farget, så den ikke forveksles med banneret for gamle data.

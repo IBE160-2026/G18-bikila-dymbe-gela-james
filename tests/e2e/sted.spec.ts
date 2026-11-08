@@ -24,6 +24,17 @@ test('Gaustatoppen from the list shows the sub-scores, the data and the source t
   await expect(verdi(page, 'A Nysnøpotensial')).toHaveText('30,0 av 60')
   await expect(verdi(page, 'B Kuldebonus')).toHaveText('13,1 av 25')
   await expect(verdi(page, 'C Snøandel')).toHaveText('15,0 av 15')
+  // Story 2.5: one decorative bar per sub-score, filled against 60, 25 and 15 (B ≈ 13,1 of 25 ≈ 52,4 %).
+  for (const [navn, bredde] of [
+    ['A Nysnøpotensial', /^width: 50%;?$/],
+    ['B Kuldebonus', /^width: 52(\.\d+)?%;?$/],
+    ['C Snøandel', /^width: 100%;?$/],
+  ] as const) {
+    const stolpe = verdi(page, navn).locator('.delpoeng-stolpe')
+    await expect(stolpe).toHaveAttribute('aria-hidden', 'true')
+    await expect(stolpe.locator('span')).toHaveAttribute('style', bredde)
+  }
+  await expect(page.locator('section.grunnlag .delpoeng-stolpe')).toHaveCount(0)
   await expect(verdi(page, 'Nysnø neste døgn')).toHaveText('10 cm')
   await expect(verdi(page, 'Temperatur, snitt')).toHaveText('−6,4 °C')
   await expect(verdi(page, 'Vind, maks')).toHaveText('12 m/s')
@@ -56,6 +67,7 @@ test('Trondheim shows «Ufullstendige data» as text, without a badge or sub-sco
   await expect(page.locator('.sted-score')).toHaveText('Ufullstendige data')
   await expect(page.locator('.score-badge')).toHaveCount(0)
   await expect(page.getByText('A Nysnøpotensial')).toHaveCount(0)
+  await expect(page.locator('.delpoeng-stolpe')).toHaveCount(0)
   await expect(verdi(page, 'Temperatur, snitt')).toHaveText('–')
 })
 
@@ -111,6 +123,41 @@ test('at 375 px the ski window card is under SnowScore and above Grunnlag, witho
   expect(grunnlag!.y).toBeGreaterThan(vindu!.y + vindu!.height - 1)
   expect(Math.abs(vindu!.x - score!.x)).toBeLessThan(1)
   await utenSidelengsRulling(page)
+})
+
+test('at 320 and 375 px each sub-score keeps label, bar and value on one row, without horizontal scrolling', async ({ page }) => {
+  // Story 2.5.
+  await page.setViewportSize({ width: 320, height: 740 })
+  await page.goto('/sted/gaustatoppen')
+  const rader = page.locator('section.snowscore .tall-liste div')
+  await expect(rader.locator('.delpoeng-stolpe')).toHaveCount(3)
+
+  /** Bar between label and value, and the value on one line. */
+  async function sjekkRader(etikettPaEnLinje: boolean) {
+    for (const rad of await rader.all()) {
+      const dt = (await rad.locator('dt').boundingBox())!
+      const stolpe = (await rad.locator('.delpoeng-stolpe').boundingBox())!
+      const dd = (await rad.locator('dd').boundingBox())!
+      // The value does not wrap (nowrap) and does not spill out of its dd. One line of the label is 24 px,
+      // two would be 48; the dd stretches to the row's height, so only the label's height is measured.
+      const [scrollBredde, bredde] = await rad.locator('dd').evaluate((el) => [el.scrollWidth, el.clientWidth])
+      expect(scrollBredde).toBeLessThanOrEqual(bredde)
+      // One line, or at most two when the label may wrap.
+      expect(dt.height).toBeLessThan(etikettPaEnLinje ? 36 : 60)
+      expect(stolpe.width).toBeGreaterThanOrEqual(32)
+      expect(stolpe.x).toBeGreaterThanOrEqual(dt.x + dt.width)
+      expect(stolpe.x + stolpe.width).toBeLessThanOrEqual(dd.x + dd.width)
+    }
+    await utenSidelengsRulling(page)
+  }
+
+  // A deliberately wide font, as in forklaring.spec.ts, because CI's Linux fonts are wider than Windows'.
+  await page.addStyleTag({ content: `* { font-family: Verdana, 'DejaVu Sans', sans-serif !important; }` })
+  // At 320 px the label may wrap to two lines, but the bar never slides under it and the value never wraps.
+  await sjekkRader(false)
+  // From 375 px the label fits on one line too.
+  await page.setViewportSize({ width: 375, height: 740 })
+  await sjekkRader(true)
 })
 
 test('Gaustatoppen, where it snows through the period, keeps the card with a message', async ({ page }) => {

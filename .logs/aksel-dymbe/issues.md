@@ -28,13 +28,30 @@
 - [ ] 2026-11-01 [story-1-11c-e2e-mot-demomodus](995-2026-11-01-00-16-06-story-1-11c-e2e-mot-demomodus.md) — Skriptet i verify i data.yml har ingen test i repoet (deferred-work.md)
 - [x] 2026-11-01 [story-1-11c-e2e-mot-demomodus](995-2026-11-01-00-16-06-story-1-11c-e2e-mot-demomodus.md) — Se at planlagte kjøringer av data.yml faktisk starter (løst 2026-11-02: de starter, men sjelden)
 - [x] 2026-11-01 [story-1-11c-e2e-mot-demomodus](995-2026-11-01-00-16-06-story-1-11c-e2e-mot-demomodus.md) — Steg 7: Pages på, sjekk nettsiden og direkte lenke, gjør «Pages er av» rød, og sett 1.11 til done (utgått 2026-11-01: Pages er slått av, Vercel erstatter)
-- [ ] 2026-11-01 [story-1-11c-e2e-mot-demomodus](995-2026-11-01-00-16-06-story-1-11c-e2e-mot-demomodus.md) — PR med vercel.json må merges før noen annen PR, ellers kan nettsiden miste rewriten
+- [x] 2026-11-01 [story-1-11c-e2e-mot-demomodus](995-2026-11-01-00-16-06-story-1-11c-e2e-mot-demomodus.md) — PR med vercel.json må merges før noen annen PR, ellers kan nettsiden miste rewriten (løst 2026-11-07)
 - [ ] 2026-11-01 [story-1-11c-e2e-mot-demomodus](995-2026-11-01-00-16-06-story-1-11c-e2e-mot-demomodus.md) — Lesesteget mot nettsiden i verify er ikke kjørt på ekte
 - [x] 2026-11-01 [story-1-11c-e2e-mot-demomodus](995-2026-11-01-00-16-06-story-1-11c-e2e-mot-demomodus.md) — AGENTS.md nevner fortsatt Pages; rettes via bmad-project-context (løst 2026-11-01)
 - [ ] 2026-11-02 [story-1-11c-e2e-mot-demomodus](995-2026-11-01-00-16-06-story-1-11c-e2e-mot-demomodus.md) — Bare 2 av 14 planlagte kjøringer startet natt til 2. november; timesoppdateringen må gjøres pålitelig via bmad-correct-course (bygget i 1.11f 2026-11-02, må måles et døgn etter merge)
 - [ ] 2026-11-02 [story-2-1b-toppnav-og-slidere](994-2026-11-02-21-00-52-story-2-1b-toppnav-og-slidere.md) — Prøv de speilede sliderne i Firefox og Safari i brukertesten (Firefox og WebKit gjort 2026-11-02, ekte Safari på Mac og iPhone gjenstår)
-- [ ] 2026-11-02 [story-2-1b-toppnav-og-slidere](994-2026-11-02-21-00-52-story-2-1b-toppnav-og-slidere.md) — PR for 2.1b trenger review fra et gruppemedlem før merge
+- [x] 2026-11-02 [story-2-1b-toppnav-og-slidere](994-2026-11-02-21-00-52-story-2-1b-toppnav-og-slidere.md) — PR for 2.1b trenger review fra et gruppemedlem før merge (løst 2026-11-07)
 - [ ] 2026-11-02 [story-2-1b-toppnav-og-slidere](994-2026-11-02-21-00-52-story-2-1b-toppnav-og-slidere.md) — Før npm run test:e2e:nettlesere og CI-jobben nettlesere inn i AGENTS.md via bmad-project-context
+- [ ] 2026-11-07 [prd-srs-v2-1](993-2026-11-07-12-29-57-prd-srs-v2-1.md) — Dagvalg og skala i PRD/SRS §7 er fortsatt til beslutning hos gruppa
+- [ ] 2026-11-07 [prd-srs-v2-1](993-2026-11-07-12-29-57-prd-srs-v2-1.md) — PR #83 (1.8b) og #85 (3.9) venter på godkjenning fra et gruppemedlem
+- [ ] 2026-11-07 [prd-srs-v2-1](993-2026-11-07-12-29-57-prd-srs-v2-1.md) — Rekrutter minst fem testpersoner til brukertesten 12.–16. november
+- [ ] 2026-11-07 [prd-srs-v2-1](993-2026-11-07-12-29-57-prd-srs-v2-1.md) — Bytt nøkkelen/tokenet som ble limt inn i chatten 2026-11-07, hvis det var et ekte
+- [ ] 2026-11-07 [story-1-6b-rettinger](992-2026-11-07-13-34-01-story-1-6b-rettinger.md) — Push, PR og review fra et gruppemedlem for Story 1.6b (greinen story/1-6b-rettinger)
+- [x] 2026-11-07 [story-1-6b-rettinger](992-2026-11-07-13-34-01-story-1-6b-rettinger.md) — Bannerfargene i src/App.css avviker fra DESIGN.md; avgjøres via bmad-ux (løst 2026-11-07)
+- [ ] 2026-11-07 [story-1-6b-rettinger](992-2026-11-07-13-34-01-story-1-6b-rettinger.md) — Steg 2–5 i UX-forbedringen; steg 2 (filteret) trenger bmad-ux først (UX-delen av steg 2 er gjort 2026-11-07)
+- [ ] 2026-11-07 [ux-filter-og-banner](991-2026-11-07-17-09-40-ux-filter-og-banner.md) — Bygg steg 2, det ryddigere filteret, med bmad-build
+- [ ] 2026-11-07 [story-3-1b-ryddigere-filter](990-2026-11-07-22-08-40-story-3-1b-ryddigere-filter.md) — Steg 3–5 i UX-forbedringen: poengfordeling på forklaringssiden, fargeforklaring på kartet, mobil- og kvalitetsrunde
+- [ ] 2026-11-08 [ux-poengfordeling](989-2026-11-08-00-00-36-ux-poengfordeling.md) — Bygg steg 3 som story: delpoengstolper i SnowScore-kortet, regneeksemplet og kalkulatoren
+- [x] 2026-11-08 [ux-poengfordeling](989-2026-11-08-00-00-36-ux-poengfordeling.md) — Bygg Story 2.5, delpoengstolper, etter spec-2-5-delpoengstolper.md (ready-for-dev) (løst 2026-11-08)
+- [x] 2026-11-08 [ux-poengfordeling](989-2026-11-08-00-00-36-ux-poengfordeling.md) — Story 2.5: bekreft i CI på Ubuntu at delpoengraden holder ved 320 px med bred font (løst 2026-11-08)
+- [ ] 2026-11-08 [ux-poengfordeling](989-2026-11-08-00-00-36-ux-poengfordeling.md) — Steg 4 (fargeforklaring på kartet) og steg 5 (mobil og kvalitet) i UX-forbedringen
+- [ ] 2026-11-08 [ux-poengfordeling](989-2026-11-08-00-00-36-ux-poengfordeling.md) — Story 2.5: PR #94 venter på at #93 merges og på godkjenning fra Joseph
+- [ ] 2026-11-08 [ux-fargeforklaring](988-2026-11-08-12-36-35-ux-fargeforklaring.md) — Steg 4: godkjenn UX for fargeforklaringen, så push og PR mot #93
+- [ ] 2026-11-08 [ux-fargeforklaring](988-2026-11-08-12-36-35-ux-fargeforklaring.md) — Steg 4: spec og bygging av fargeforklaringen (bmad-build), med storyen i epics
+- [ ] 2026-11-08 [ux-fargeforklaring](988-2026-11-08-12-36-35-ux-fargeforklaring.md) — Steg 5: gjennomgang av mobil og kvalitet nå, bygging etter merge av #89–#94
 - [ ] 2026-11-08 [prd-srs-v2-2](987-2026-11-08-14-15-55-prd-srs-v2-2.md) — Gruppa vedtar sakene i beslutningsnotatet (formel, dagvalg, skala, 500 ms/2 s, hvilket dokument som gjelder, kodefrys); deretter bmad-correct-course for M5
 - [ ] 2026-11-08 [prd-srs-v2-2](987-2026-11-08-14-15-55-prd-srs-v2-2.md) — Referat fra møtet 2026-11-01 («den rette formelen») mangler
 - [ ] 2026-11-08 [prd-srs-v2-2](987-2026-11-08-14-15-55-prd-srs-v2-2.md) — Testkolonne per SRS-krav i SRS §4 (B8) etter kodefrysen

@@ -1,9 +1,9 @@
 import type { Sted as StedData } from '../../shared/contracts/published'
-import { SNOWSCORE } from '../../shared/snowscore'
+import Delpoengliste from '../components/Delpoengliste'
 import Lenke from '../components/Lenke'
 import ScoreBadge from '../components/ScoreBadge'
 import Skivindukort from '../components/Skivindukort'
-import { delpoeng, medEnhet, norskTid, utdatertTekst } from '../lib/format'
+import { medEnhet, norskTid, utdatertTekst } from '../lib/format'
 import { useEffect } from 'react'
 import { href, replace, sted as stedRoute, type UtforskRoute } from '../lib/router'
 
@@ -58,13 +58,7 @@ export default function Sted({ sted, utdatert, sok }: Props) {
             <ScoreBadge snowScore={snowScore} />
           </p>
           {snowScore.kind === 'score' && (
-            <Tall
-              rader={[
-                ['A Nysnøpotensial', delpoeng(snowScore.a, SNOWSCORE.maxA)],
-                ['B Kuldebonus', delpoeng(snowScore.b, SNOWSCORE.maxB)],
-                ['C Snøandel', delpoeng(snowScore.c, SNOWSCORE.maxC)],
-              ]}
-            />
+            <Delpoengliste a={snowScore.a} b={snowScore.b} c={snowScore.c} />
           )}
           <Lenke to={{ name: 'forklaring' }} className="forklaring-lenke">
             Slik beregner vi SnowScore

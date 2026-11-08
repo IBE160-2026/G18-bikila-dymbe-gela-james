@@ -1,5 +1,6 @@
 import { tall } from '../lib/format'
 import { SNOWSCORE, WINDOW_HOURS, computeSnowScore, snowFraction } from '../lib/snowscore'
+import Delpoengliste from './Delpoengliste'
 import Formel from './Formel'
 
 // Story 2.2 (FR-9): the brief's worked example, from hourly values to the final score. Every number is
@@ -111,6 +112,8 @@ export default function Regneeksempel() {
         {` ${tall(T)}`} °C. Regner du etter med {tall(T)} °C, får du derfor et litt annet svar på andre desimal.
       </p>
       <Formel>{`C = ${maxC} · ${tall(S)} / ${tall(P)} = ${tall(c)}`}</Formel>
+      {/* Story 2.5: the same bars as on the place page, so the user recognises the sub-scores there. */}
+      <Delpoengliste a={a} b={b} c={c} />
 
       <h3>Summen</h3>
       <Formel>{`SnowScore = ${tall(a)} + ${tall(b)} + ${tall(c)} = ${tall(a + b + c)}, avrundet til ${score}`}</Formel>
