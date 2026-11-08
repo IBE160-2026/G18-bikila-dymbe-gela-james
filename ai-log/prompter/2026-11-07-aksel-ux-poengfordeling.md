@@ -21,3 +21,48 @@
 > Spørsmål: Hvilken farge skal stolpene ha? Svar: «Nøytral grå (ink-secondary)».
 
 **Svar (kort):** Sally skrev valgene i memloggen, la til tokenet `score-part-bar` og beskrivelsen av delpoengstolpen i DESIGN.md, og oppdaterte SnowScore-kortet og kalkulatoren og la til regneeksemplet i EXPERIENCE.md. Stolpen er `aria-hidden`, og teksten «x av N» bærer tallet.
+
+### 4
+> ja
+
+**Svar (kort):** Claude pushet greinen og laget PR #93. Amelia (`bmad-build`) skrev spec-en for Story 2.5, delpoengstolper, på greinen `story/2-5-delpoengstolper`, og en subagent kompilerte Epic 2-konteksten på nytt.
+
+### 5 (valg)
+> Spørsmål: Hvor skal stolpene stå i regneeksemplet? Svar: «Liste under formlene».
+
+### 6
+> To små rettelser før godkjenning: 1. Flytt punktet om Regneeksemplet (Aksels valg 2026-11-08) fra «Never» til «Always». Det er et krav om noe som skal gjøres, ikke et forbud. 2. I E2E-oppgaven: «riktig fyllbredde» skal sjekkes via style-attributtet (f.eks. width: 50%), ikke ved å måle piksler, så testen ikke blir ustabil. Ellers ingen endringer. Deretter: godkjenn og stopp
+
+**Svar (kort):** Claude rettet begge punktene og satte spec-en til `ready-for-dev`. Koden er ikke endret.
+
+### 7
+> push til git
+
+**Svar (kort):** Claude pushet `story/2-5-delpoengstolper` med spec-en. Ingen PR ennå, fordi koden ikke var bygget.
+
+### 8 (2026-11-08, `bmad-build`)
+> bygg Story 2.5
+
+**Svar (kort):** Amelia bygde `Delpoengliste` med stolpene og brukte den i SnowScore-kortet, regneeksemplet og kalkulatoren. Gjennomgangen i tre lag ga 26 funn: 9 rettet (testhull ved 320 px på forklaringssiden, tynne fylltester, løsere enhetstester og små dokumentfeil) og 17 avvist. Lint, typesjekk, 682 enhetstester, `build:demo` og 136 E2E-tester er grønne.
+
+### 9 (2026-11-08, push og PR)
+> ja, push og lag PR-en, men gjør dette i rekkefølge:
+>
+> 1. Før push: gi meg en kort liste over de 17 avviste funnene fra kodegjennomgangen, med én linje begrunnelse per funn. Marker de du er minst sikker på. Vent ikke på svar fra meg – fortsett til steg 2 – men stopp hvis noen av dem gjelder tilgjengelighet, skjermleser eller feil tall.
+>
+> 2. Push greinen story/2-5-delpoengstolper og lag PR-en mot docs/ux-poengfordeling (#93), med Joseph som reviewer.
+>
+> 3. PR-beskrivelsen skal ha med:
+>    - Kort hva storyen gjør (grå delpoengstolper i SnowScore-kortet, regneeksemplet og kalkulatoren; teksten «x av N» er uendret).
+>    - At #93 må merges før denne PR-en.
+>    - At «A Nysnøpotensial» kan brytes over to linjer på 320 px med bred skrift. Dette er akseptert: verdien brytes ikke, og siden ruller ikke sidelengs.
+>    - Lenke til spec-2-5-delpoengstolper.md.
+>
+> 4. Etter push: følg med på CI. Bekreft at alle jobbene blir grønne på Ubuntu, særlig 320 px-testen. Blir noe rødt, si fra hva som feilet og foreslå en rettelse før du endrer noe.
+
+**Svar (kort):** Claude listet de avviste funnene: 11 med begrunnelse og 6 gjentakelser. Ingen av dem gjaldt tilgjengelighet, skjermleser eller feil tall. Claude pushet greinen og laget PR #94 mot #93 med Joseph som reviewer. CI ble grønn på Ubuntu, også 320 px-testene.
+
+### 10
+> Legg dagens prompt i ai-log/prompter/ og push den sammen med sesjonsloggen til #94 nå, før Joseph reviewer. Bekreft at CI blir grønn igjen.
+
+**Svar (kort):** Promptene ble lagt inn her og pushet sammen med sesjonsloggen til #94.

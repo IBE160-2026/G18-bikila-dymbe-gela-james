@@ -45,3 +45,7 @@
 - [ ] 2026-11-07 [ux-filter-og-banner](991-2026-11-07-17-09-40-ux-filter-og-banner.md) — Bygg steg 2, det ryddigere filteret, med bmad-build
 - [ ] 2026-11-07 [story-3-1b-ryddigere-filter](990-2026-11-07-22-08-40-story-3-1b-ryddigere-filter.md) — Steg 3–5 i UX-forbedringen: poengfordeling på forklaringssiden, fargeforklaring på kartet, mobil- og kvalitetsrunde
 - [ ] 2026-11-08 [ux-poengfordeling](989-2026-11-08-00-00-36-ux-poengfordeling.md) — Bygg steg 3 som story: delpoengstolper i SnowScore-kortet, regneeksemplet og kalkulatoren
+- [x] 2026-11-08 [ux-poengfordeling](989-2026-11-08-00-00-36-ux-poengfordeling.md) — Bygg Story 2.5, delpoengstolper, etter spec-2-5-delpoengstolper.md (ready-for-dev) (løst 2026-11-08)
+- [x] 2026-11-08 [ux-poengfordeling](989-2026-11-08-00-00-36-ux-poengfordeling.md) — Story 2.5: bekreft i CI på Ubuntu at delpoengraden holder ved 320 px med bred font (løst 2026-11-08)
+- [ ] 2026-11-08 [ux-poengfordeling](989-2026-11-08-00-00-36-ux-poengfordeling.md) — Steg 4 (fargeforklaring på kartet) og steg 5 (mobil og kvalitet) i UX-forbedringen
+- [ ] 2026-11-08 [ux-poengfordeling](989-2026-11-08-00-00-36-ux-poengfordeling.md) — Story 2.5: PR #94 venter på at #93 merges og på godkjenning fra Joseph

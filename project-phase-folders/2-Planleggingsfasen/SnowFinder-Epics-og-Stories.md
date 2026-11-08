@@ -619,6 +619,29 @@ So that jeg kan utforske formelen interaktivt. Bør ha. Realiserer FR-10.
 **And** kalkulatoren importerer `shared/snowscore.ts` direkte — ingen egen kopi av formelen
 finnes i kalkulator-komponenten (AD-6)
 
+### Story 2.5: Delpoengstolper i SnowScore-kortet, regneeksemplet og kalkulatoren *(ny 2026-11-08)*
+
+**Prioritet:** Bør ha
+
+As en bruker,
+I want å se med et blikk hvilket delpoeng som trekker ned,
+So that jeg forstår SnowScore uten å lese hvert tall. Realiserer FR-16, FR-9 og FR-10 og steg 3 i UX-forbedringen (PR #93).
+
+**Acceptance Criteria:**
+
+**Given** stedssiden for et sted med score
+**When** siden åpnes
+**Then** har A, B og C hver sin grå stolpe fylt mot 60, 25 og 15, og teksten «x av N» er uendret
+**And** regneeksemplet og kalkulatoren viser de samme stolpene, og kalkulatorens stolper følger tallene uten omlasting
+
+**Given** ufullstendige data eller ugyldig inndata i kalkulatoren
+**When** siden vises
+**Then** vises verken delpoeng eller stolper
+
+**Given** en skjermleser eller 320 px bredde
+**When** delpoenglista vises
+**Then** hører skjermleseren bare etikett og «x av N», og siden ruller ikke sidelengs
+
 ---
 
 ## Epic 3: Finn steder som oppfyller mine krav
