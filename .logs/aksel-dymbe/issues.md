@@ -39,3 +39,7 @@
 - [ ] 2026-11-07 [prd-srs-v2-1](993-2026-11-07-12-29-57-prd-srs-v2-1.md) — PR #83 (1.8b) og #85 (3.9) venter på godkjenning fra et gruppemedlem
 - [ ] 2026-11-07 [prd-srs-v2-1](993-2026-11-07-12-29-57-prd-srs-v2-1.md) — Rekrutter minst fem testpersoner til brukertesten 12.–16. november
 - [ ] 2026-11-07 [prd-srs-v2-1](993-2026-11-07-12-29-57-prd-srs-v2-1.md) — Bytt nøkkelen/tokenet som ble limt inn i chatten 2026-11-07, hvis det var et ekte
+- [ ] 2026-11-07 [story-1-6b-rettinger](992-2026-11-07-13-34-01-story-1-6b-rettinger.md) — Push, PR og review fra et gruppemedlem for Story 1.6b (greinen story/1-6b-rettinger)
+- [x] 2026-11-07 [story-1-6b-rettinger](992-2026-11-07-13-34-01-story-1-6b-rettinger.md) — Bannerfargene i src/App.css avviker fra DESIGN.md; avgjøres via bmad-ux (løst 2026-11-07)
+- [ ] 2026-11-07 [story-1-6b-rettinger](992-2026-11-07-13-34-01-story-1-6b-rettinger.md) — Steg 2–5 i UX-forbedringen; steg 2 (filteret) trenger bmad-ux først (UX-delen av steg 2 er gjort 2026-11-07)
+- [ ] 2026-11-07 [ux-filter-og-banner](991-2026-11-07-17-09-40-ux-filter-og-banner.md) — Bygg steg 2, det ryddigere filteret, med bmad-build
