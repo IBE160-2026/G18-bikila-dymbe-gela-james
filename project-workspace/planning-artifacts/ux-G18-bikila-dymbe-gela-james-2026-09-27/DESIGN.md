@@ -82,6 +82,12 @@ components:
     background: '{colors.surface-raised}'
     padding: '{spacing.4}'
     gap: '{spacing.2}'
+  filter-chip-removable:
+    radius: '{rounded.sm}'
+    borderColor: '{colors.accent}'
+    borderWidth: '1px'
+    background: '{colors.surface-raised}'
+    removeSize: '{spacing.7}'
   filter-slider:
     radius: '{rounded.full}'
     trackHeight: '4px'
@@ -253,6 +259,14 @@ Navnene er de samme som i Komponentmønstre i EXPERIENCE.md, som beskriver atfer
     Aktiv chip er fylt med `{colors.accent}` og har `{colors.surface-raised}` tekst.
   - Chipsene for aktive krav på det lukkede bunn-arket er ren tekst i `meta` med
     `{colors.accent}`-kant og `{rounded.sm}`, ikke knapper. Sirkelen er forbeholdt SnowScore.
+  - Chipsene for aktive krav øverst i panelet *(2026-11-07)* har samme tekst og kant
+    (`{components.filter-chip-removable}`) og en ×-knapp til høyre, `{spacing.7}` × `{spacing.7}`
+    som trykkmål, med × i `{colors.ink-secondary}`. Chipsene brytes over flere linjer, aldri sideveis rulling.
+  - Gruppeoverskriftene «Vær» og «Sted» *(2026-11-07)* står i `heading` i liten størrelse med
+    `{spacing.5}` over, uten strek eller egen flate, så panelet fortsatt er ett kort.
+  - «Mer om skydekke» og «Mer om NVE-dataene» *(2026-11-07)* er tekstknapper i `meta` og
+    `{colors.accent}` med en pil (▸ lukket, ▾ åpen), minst `{spacing.7}` høye. Teksten under står i
+    `meta` og `{colors.ink-secondary}`, som de andre hjelpetekstene.
   - «Filter», «Nullstill» og «Bruk forslaget» er knapper, minst `{spacing.7}` høye, med
     `{colors.accent}`-kant og `{rounded.sm}`. «Bruk forslaget» og åpen «Filter» er fylt med
     `{colors.accent}`; «Nullstill» er bare kantet.
