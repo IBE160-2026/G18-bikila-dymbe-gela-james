@@ -39,17 +39,17 @@
 - [ ] 2026-11-07 [prd-srs-v2-1](993-2026-11-07-12-29-57-prd-srs-v2-1.md) — PR #83 (1.8b) og #85 (3.9) venter på godkjenning fra et gruppemedlem
 - [ ] 2026-11-07 [prd-srs-v2-1](993-2026-11-07-12-29-57-prd-srs-v2-1.md) — Rekrutter minst fem testpersoner til brukertesten 12.–16. november
 - [ ] 2026-11-07 [prd-srs-v2-1](993-2026-11-07-12-29-57-prd-srs-v2-1.md) — Bytt nøkkelen/tokenet som ble limt inn i chatten 2026-11-07, hvis det var et ekte
-- [ ] 2026-11-07 [story-1-6b-rettinger](992-2026-11-07-13-34-01-story-1-6b-rettinger.md) — Push, PR og review fra et gruppemedlem for Story 1.6b (greinen story/1-6b-rettinger)
+- [x] 2026-11-07 [story-1-6b-rettinger](992-2026-11-07-13-34-01-story-1-6b-rettinger.md) — Push, PR og review fra et gruppemedlem for Story 1.6b (greinen story/1-6b-rettinger) (løst 2026-11-08, PR #89–#96 merget)
 - [x] 2026-11-07 [story-1-6b-rettinger](992-2026-11-07-13-34-01-story-1-6b-rettinger.md) — Bannerfargene i src/App.css avviker fra DESIGN.md; avgjøres via bmad-ux (løst 2026-11-07)
 - [ ] 2026-11-07 [story-1-6b-rettinger](992-2026-11-07-13-34-01-story-1-6b-rettinger.md) — Steg 2–5 i UX-forbedringen; steg 2 (filteret) trenger bmad-ux først (UX-delen av steg 2 er gjort 2026-11-07)
-- [ ] 2026-11-07 [ux-filter-og-banner](991-2026-11-07-17-09-40-ux-filter-og-banner.md) — Bygg steg 2, det ryddigere filteret, med bmad-build
+- [x] 2026-11-07 [ux-filter-og-banner](991-2026-11-07-17-09-40-ux-filter-og-banner.md) — Bygg steg 2, det ryddigere filteret, med bmad-build (løst 2026-11-08, PR #89–#96 merget)
 - [ ] 2026-11-07 [story-3-1b-ryddigere-filter](990-2026-11-07-22-08-40-story-3-1b-ryddigere-filter.md) — Steg 3–5 i UX-forbedringen: poengfordeling på forklaringssiden, fargeforklaring på kartet, mobil- og kvalitetsrunde
-- [ ] 2026-11-08 [ux-poengfordeling](989-2026-11-08-00-00-36-ux-poengfordeling.md) — Bygg steg 3 som story: delpoengstolper i SnowScore-kortet, regneeksemplet og kalkulatoren
+- [x] 2026-11-08 [ux-poengfordeling](989-2026-11-08-00-00-36-ux-poengfordeling.md) — Bygg steg 3 som story: delpoengstolper i SnowScore-kortet, regneeksemplet og kalkulatoren (løst 2026-11-08, PR #89–#96 merget)
 - [x] 2026-11-08 [ux-poengfordeling](989-2026-11-08-00-00-36-ux-poengfordeling.md) — Bygg Story 2.5, delpoengstolper, etter spec-2-5-delpoengstolper.md (ready-for-dev) (løst 2026-11-08)
 - [x] 2026-11-08 [ux-poengfordeling](989-2026-11-08-00-00-36-ux-poengfordeling.md) — Story 2.5: bekreft i CI på Ubuntu at delpoengraden holder ved 320 px med bred font (løst 2026-11-08)
 - [ ] 2026-11-08 [ux-poengfordeling](989-2026-11-08-00-00-36-ux-poengfordeling.md) — Steg 4 (fargeforklaring på kartet) og steg 5 (mobil og kvalitet) i UX-forbedringen
-- [ ] 2026-11-08 [ux-poengfordeling](989-2026-11-08-00-00-36-ux-poengfordeling.md) — Story 2.5: PR #94 venter på at #93 merges og på godkjenning fra Joseph
-- [ ] 2026-11-08 [ux-fargeforklaring](988-2026-11-08-12-36-35-ux-fargeforklaring.md) — Steg 4: godkjenn UX for fargeforklaringen, så push og PR mot #93
+- [x] 2026-11-08 [ux-poengfordeling](989-2026-11-08-00-00-36-ux-poengfordeling.md) — Story 2.5: PR #94 venter på at #93 merges og på godkjenning fra Joseph (løst 2026-11-08, PR #89–#96 merget)
+- [x] 2026-11-08 [ux-fargeforklaring](988-2026-11-08-12-36-35-ux-fargeforklaring.md) — Steg 4: godkjenn UX for fargeforklaringen, så push og PR mot #93 (løst 2026-11-08, PR #89–#96 merget)
 - [ ] 2026-11-08 [ux-fargeforklaring](988-2026-11-08-12-36-35-ux-fargeforklaring.md) — Steg 4: spec og bygging av fargeforklaringen (bmad-build), med storyen i epics
 - [ ] 2026-11-08 [ux-fargeforklaring](988-2026-11-08-12-36-35-ux-fargeforklaring.md) — Steg 5: gjennomgang av mobil og kvalitet nå, bygging etter merge av #89–#94
 - [ ] 2026-11-08 [prd-srs-v2-2](987-2026-11-08-14-15-55-prd-srs-v2-2.md) — Gruppa vedtar sakene i beslutningsnotatet (formel, dagvalg, skala, 500 ms/2 s, hvilket dokument som gjelder, kodefrys); deretter bmad-correct-course for M5
@@ -58,3 +58,4 @@
 - [ ] 2026-11-08 [prd-srs-v2-2](987-2026-11-08-14-15-55-prd-srs-v2-2.md) — Epics-funn (FR-30-linja, mørketid i Story 4.2, 1.8b uten FR) i egen PR etter merge av #83, #85, #90–#94
 - [ ] 2026-11-08 [prd-srs-v2-2](987-2026-11-08-14-15-55-prd-srs-v2-2.md) — Stram data-workflow.test.ts til 10/50 min i egen story
 - [ ] 2026-11-08 [prd-srs-v2-2](987-2026-11-08-14-15-55-prd-srs-v2-2.md) — Oppdater SRS-F-34 når #90 (1.6b) merges, og SRS-F-15 når fargeforklaringen er bygget
+- [ ] 2026-11-08 [merge-av-apne-pr](986-2026-11-08-merge-av-apne-pr.md) — #83 (1.8b) og #85 (3.9) trenger godkjenning og løsing av flettekonflikter før merge; sett 3.9 til done etterpå
