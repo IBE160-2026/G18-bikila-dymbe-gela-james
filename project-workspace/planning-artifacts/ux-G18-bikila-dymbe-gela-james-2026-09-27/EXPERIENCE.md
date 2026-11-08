@@ -6,7 +6,7 @@ sources:
   - project-phase-folders/1-Oppstartsfasen/SnowFinder-Produktbrief.md
   - project-workspace/planning-artifacts/sprint-change-proposal-2026-10-07.md
   - project-workspace/planning-artifacts/sprint-change-proposal-2026-10-07-forenkling.md
-updated: 2026-11-07
+updated: 2026-11-08
 ---
 
 # SnowFinder — Experience Spine
@@ -75,6 +75,7 @@ Atferd. Visuelle spesifikasjoner ligger i `SnowFinder-DESIGN.md.Components`.
 | Kart \| Liste-veksling | Utforsk, rett under navigasjonen | To lenker, «Kart» og «Liste», ikke en bryter som bare finnes i JavaScript: valget står i URL-en (`visning=liste`), så Tilbake og delte lenker beholder det. Den valgte har `aria-current="page"`. Begge lenkene beholder filter og sortering. Lenken «Slik beregner vi SnowScore» står på samme linje, men bare under 768 px, der toppnavigasjonens lenke ligger bak ☰. Fra 768 px vises bare toppnavigasjonens lenke, så den aldri står to ganger *(endret 2026-11-02)*. |
 | Søkefelt *(Story 3.9)* | Utforsk, mellom Kart \| Liste-vekslingen og kartet eller listen, på alle bredder | Etiketten «Søk etter sted» er synlig over feltet. Forslag vises fra første tegn, høyst 8, i en liste rett under feltet. Hvert forslag viser stedsnavnet og score-badge, eller statusen som tekst («Oppfyller ikke filteret», «Ufullstendige data»). Steder med for gamle data er fjernet og finnes ikke i søket. Når alle steder er fjernet («Ingen ferske data»), vises heller ikke søkefeltet. Pil opp og ned flytter markeringen, Enter åpner stedssiden, og Escape lukker listen (andre trykk tømmer feltet). Et klikk utenfor lukker listen. Søketeksten står ikke i adressen og endrer aldri filteret eller trefftallet. Antallet forslag annonseres med `aria-live="polite"`. Feltet ligger aldri i bunn-arket. |
 | Kartmarkør | Utforsk (kart) | Klikk/trykk åpner stedsside. Hover (desktop) viser stedsnavn + score i tooltip. *(v3, 2026-10-08)* Ingen klynging: markørene er små på landsnivå og vokser når brukeren zoomer inn (mål i DESIGN.md `{components.map-marker}`), så ingen sted forsvinner inn i en klynge. |
+| Fargeforklaring *(2026-11-08)* | Utforsk (kart), oppe til høyre i kartet | Viser hva fargene på kartet betyr (SRS-F-15). Overskriften er «Fargeforklaring», og under den står en vanlig liste med fem punkter: «70–100 Svært godt», «45–69 Godt», «20–44 Middels», «0–19 Lite» og «Ufullstendige data». Skjermleseren leser overskriften og lista, mens fargeprikkene er pynt (`aria-hidden`). Forklaringen er ikke interaktiv: den har ingen knapp, får ikke fokus, og dekker aldri zoomknappene eller kildehenvisningen. Den er alltid synlig, også under 768 px, i mindre form (mål i DESIGN.md `{components.map-legend}`). Listevisningen har ingen forklaring, siden hver rad viser tall og ord. |
 | Listerad | Utforsk (liste) | Hele raden er én lenke: Tab-navigerbar, Enter åpner stedsside. Stedsnavn, score-badge og nøkkeltall (nysnø, vind, temperatur). |
 | Sorteringsvalg | Utforsk (liste), over radene | En ordinær `<select>` med etiketten «Sorter etter» og valgene «Score», «Avstand» og «Navn», aldri en museavhengig dra-og-slipp. «Score» og «Navn» står i URL-en. «Avstand» ber om posisjonen først når brukeren velger det, og posisjonen blir bare i minnet (se Tilstandsmønstre, avslått posisjon). |
 | Score-badge | Overalt SnowScore vises | Tall + tekstetikett alltid sammen. Trykk/tap gjør ingenting i seg selv (badge er ikke en egen lenke) — hele kortet/raden er klikkmålet. Trinn og etikett følger tersklene i tabellen under Colors i DESIGN.md (70 «Svært godt», 45 «Godt», 20 «Middels», 0 «Lite»). |
@@ -138,7 +139,8 @@ kartlaget (PRD NFR-7 — Marys og Sallys eksplisitte avgrensning; kartlaget komp
 listevisningen, som **er** fullt AA).
 
 - SnowScore vises **aldri** kun som farge — alltid tall + tekstetikett, i badge, kart-tooltip og
-  listerad likt.
+  listerad likt. Kartets fargeforklaring gir hvert trinn et intervall og et ord, og ufullstendige
+  data har stiplet kant i tillegg til farge *(2026-11-08)*.
 - Alle interaktive elementer nåbare og betjenbare med tastatur alene: Tab-rekkefølge følger
   lesretning, synlig fokusring, Enter/Space aktiverer, piltaster betjener slidere.
 - Filterets levende treff-antall annonseres til skjermleser via `aria-live="polite"` — en
@@ -157,7 +159,8 @@ listevisningen, som **er** fullt AA).
   nettbrett-spesifikk layout — nettbrett bruker desktop-layouten skalert ned.
 - **Mobil (<768px):** Kart/liste fyller skjermen under toppnavigasjonen. Filterpanelet ligger i
   et bunn-ark. Lukket viser det knappen «Filter» og de aktive kravene som chips. Knappen åpner
-  arket (Story 3.1, 2026-10-22: en knapp virker med tastatur og skjermleser). Stedsside er én kolonne; beste skivindu-kort ligger under SnowScore-kortet med delpoengene, over grunnlaget.
+  arket (Story 3.1, 2026-10-22: en knapp virker med tastatur og skjermleser). Fargeforklaringen står
+  oppe til høyre i kartet, så bunn-arket aldri dekker den *(2026-11-08)*. Stedsside er én kolonne; beste skivindu-kort ligger under SnowScore-kortet med delpoengene, over grunnlaget.
 - **Desktop (≥768px):** Filterpanelet er et fast venstre sidepanel (ikke bunn-ark), kart/liste
   fyller resten. Stedsside bruker to kolonner (SnowScore med delpoeng og grunnlaget under hverandre til
   venstre, beste skivindu til høyre).

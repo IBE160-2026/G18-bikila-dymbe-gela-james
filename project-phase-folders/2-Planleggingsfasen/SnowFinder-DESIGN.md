@@ -99,6 +99,16 @@ components:
     borderWidth: '2px'
     borderWidthSmall: '1px'
     borderColor: '{colors.surface-raised}'
+  map-legend:
+    background: '{colors.surface-raised}'
+    borderColor: '{colors.border-hairline}'
+    borderWidth: '1px'
+    radius: '{rounded.md}'
+    padding: '{spacing.2} {spacing.3}'
+    font: '{typography.body}'
+    fontCompact: '{typography.meta}'
+    swatchSize: '14px'
+    swatchSizeCompact: '10px'
   bottom-sheet:
     radius: '{rounded.lg}'
     background: '{colors.surface-raised}'
@@ -234,6 +244,21 @@ Navnene er de samme som i Komponentmønstre i EXPERIENCE.md, som beskriver atfer
   - Steder med ufullstendige data har hvit fyll og alltid 2 px stiplet grå kant
     (`{colors.snowscore-0}`), så de aldri leses som score 0.
   - Grunnen er at 300 steder med 28 px dekket hverandre på landsnivå (manuell sjekk 2026-10-08).
+- **Fargeforklaring** *(2026-11-08)* — `{components.map-legend}`: et lite
+  `{colors.surface-raised}`-kort med `{colors.border-hairline}`-kant og `{rounded.md}`, uten skygge,
+  oppe til høyre i kartet på alle bredder. Zoomknappene står oppe til venstre, kildehenvisningen nede
+  til høyre, og bunn-arket dekker bunnen av kartet på mobil. Overskriften «Fargeforklaring» står i
+  `meta`, og under den står fem rader med en prikk og en tekst:
+  - fire prikker i `{colors.snowscore-3}` til `{colors.snowscore-0}`, med hvit kant som kartmarkøren,
+    og teksten «70–100 Svært godt», «45–69 Godt», «20–44 Middels» og «0–19 Lite», med høyeste trinn
+    øverst;
+  - én hvit prikk med 2 px stiplet grå kant (`{colors.snowscore-0}`) og teksten «Ufullstendige data»,
+    så skillet ikke bare bygger på farge.
+  - Intervallene og ordene er de samme som i tabellen under Colors.
+  - Prikkene er `{components.map-legend.swatchSize}`, og teksten er `body` i `{colors.ink-primary}`.
+  - Under 768 px er forklaringen den samme lista i mindre form: prikkene er
+    `{components.map-legend.swatchSizeCompact}` og teksten `meta`. Den har ingen knapp og er alltid
+    synlig.
 - **Listerad** — `{colors.surface-raised}` kort (`{components.location-card}`) med stedsnavn
   (`heading`), score-badge, og tre nøkkeltall (nysnø/vind/temp) i `numeric`. Hele raden er
   lenken; kanten blir `{colors.accent}` ved hover.
