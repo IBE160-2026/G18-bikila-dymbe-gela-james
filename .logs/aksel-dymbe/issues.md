@@ -28,10 +28,18 @@
 - [ ] 2026-11-01 [story-1-11c-e2e-mot-demomodus](995-2026-11-01-00-16-06-story-1-11c-e2e-mot-demomodus.md) — Skriptet i verify i data.yml har ingen test i repoet (deferred-work.md)
 - [x] 2026-11-01 [story-1-11c-e2e-mot-demomodus](995-2026-11-01-00-16-06-story-1-11c-e2e-mot-demomodus.md) — Se at planlagte kjøringer av data.yml faktisk starter (løst 2026-11-02: de starter, men sjelden)
 - [x] 2026-11-01 [story-1-11c-e2e-mot-demomodus](995-2026-11-01-00-16-06-story-1-11c-e2e-mot-demomodus.md) — Steg 7: Pages på, sjekk nettsiden og direkte lenke, gjør «Pages er av» rød, og sett 1.11 til done (utgått 2026-11-01: Pages er slått av, Vercel erstatter)
-- [ ] 2026-11-01 [story-1-11c-e2e-mot-demomodus](995-2026-11-01-00-16-06-story-1-11c-e2e-mot-demomodus.md) — PR med vercel.json må merges før noen annen PR, ellers kan nettsiden miste rewriten
+- [x] 2026-11-01 [story-1-11c-e2e-mot-demomodus](995-2026-11-01-00-16-06-story-1-11c-e2e-mot-demomodus.md) — PR med vercel.json må merges før noen annen PR, ellers kan nettsiden miste rewriten (løst 2026-11-07)
 - [ ] 2026-11-01 [story-1-11c-e2e-mot-demomodus](995-2026-11-01-00-16-06-story-1-11c-e2e-mot-demomodus.md) — Lesesteget mot nettsiden i verify er ikke kjørt på ekte
 - [x] 2026-11-01 [story-1-11c-e2e-mot-demomodus](995-2026-11-01-00-16-06-story-1-11c-e2e-mot-demomodus.md) — AGENTS.md nevner fortsatt Pages; rettes via bmad-project-context (løst 2026-11-01)
 - [ ] 2026-11-02 [story-1-11c-e2e-mot-demomodus](995-2026-11-01-00-16-06-story-1-11c-e2e-mot-demomodus.md) — Bare 2 av 14 planlagte kjøringer startet natt til 2. november; timesoppdateringen må gjøres pålitelig via bmad-correct-course (bygget i 1.11f 2026-11-02, må måles et døgn etter merge)
 - [ ] 2026-11-02 [story-2-1b-toppnav-og-slidere](994-2026-11-02-21-00-52-story-2-1b-toppnav-og-slidere.md) — Prøv de speilede sliderne i Firefox og Safari i brukertesten (Firefox og WebKit gjort 2026-11-02, ekte Safari på Mac og iPhone gjenstår)
-- [ ] 2026-11-02 [story-2-1b-toppnav-og-slidere](994-2026-11-02-21-00-52-story-2-1b-toppnav-og-slidere.md) — PR for 2.1b trenger review fra et gruppemedlem før merge
+- [x] 2026-11-02 [story-2-1b-toppnav-og-slidere](994-2026-11-02-21-00-52-story-2-1b-toppnav-og-slidere.md) — PR for 2.1b trenger review fra et gruppemedlem før merge (løst 2026-11-07)
 - [ ] 2026-11-02 [story-2-1b-toppnav-og-slidere](994-2026-11-02-21-00-52-story-2-1b-toppnav-og-slidere.md) — Før npm run test:e2e:nettlesere og CI-jobben nettlesere inn i AGENTS.md via bmad-project-context
+- [ ] 2026-11-07 [prd-srs-v2-1](993-2026-11-07-12-29-57-prd-srs-v2-1.md) — Dagvalg og skala i PRD/SRS §7 er fortsatt til beslutning hos gruppa
+- [ ] 2026-11-07 [prd-srs-v2-1](993-2026-11-07-12-29-57-prd-srs-v2-1.md) — PR #83 (1.8b) og #85 (3.9) venter på godkjenning fra et gruppemedlem
+- [ ] 2026-11-07 [prd-srs-v2-1](993-2026-11-07-12-29-57-prd-srs-v2-1.md) — Rekrutter minst fem testpersoner til brukertesten 12.–16. november
+- [ ] 2026-11-07 [prd-srs-v2-1](993-2026-11-07-12-29-57-prd-srs-v2-1.md) — Bytt nøkkelen/tokenet som ble limt inn i chatten 2026-11-07, hvis det var et ekte
+- [ ] 2026-11-07 [story-1-6b-rettinger](992-2026-11-07-13-34-01-story-1-6b-rettinger.md) — Push, PR og review fra et gruppemedlem for Story 1.6b (greinen story/1-6b-rettinger)
+- [x] 2026-11-07 [story-1-6b-rettinger](992-2026-11-07-13-34-01-story-1-6b-rettinger.md) — Bannerfargene i src/App.css avviker fra DESIGN.md; avgjøres via bmad-ux (løst 2026-11-07)
+- [ ] 2026-11-07 [story-1-6b-rettinger](992-2026-11-07-13-34-01-story-1-6b-rettinger.md) — Steg 2–5 i UX-forbedringen; steg 2 (filteret) trenger bmad-ux først (UX-delen av steg 2 er gjort 2026-11-07)
+- [ ] 2026-11-07 [ux-filter-og-banner](991-2026-11-07-17-09-40-ux-filter-og-banner.md) — Bygg steg 2, det ryddigere filteret, med bmad-build

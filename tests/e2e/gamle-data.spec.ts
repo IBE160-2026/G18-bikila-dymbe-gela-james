@@ -57,6 +57,29 @@ test('Utforsk shows the banner at the top, and the list and the filter work as b
   await utenAxeBrudd(page)
 })
 
+// Story 1.6b: a region inserted with its text is often not announced, so the empty region is there from
+// the first paint and the same element is filled in when the data arrives.
+test('the empty status region is there while loading, and the same region gets the banner', async ({ page }) => {
+  let slipp!: () => void
+  const holdt = new Promise<void>((resolve) => (slipp = resolve))
+  // Registered after the context route, so it runs first and holds the file back until released.
+  await page.route('**/data/demo.json', async (route) => {
+    await holdt
+    await route.fallback()
+  })
+  await page.goto('/?visning=liste')
+  await expect(page.getByText('Laster stedsdata')).toBeAttached()
+  const region = page.locator('header + div[role="status"]')
+  await expect(region).toHaveCount(1)
+  await expect(region).toHaveText('')
+  await region.evaluate((element) => element.setAttribute('data-test-first', 'ja'))
+
+  slipp()
+  await expect(banner(page)).toHaveText(BANNER)
+  // React filled in the element that was there before the data, instead of inserting a new one.
+  await expect(page.locator('[data-test-first="ja"]')).toHaveText(BANNER)
+})
+
 test('the map view and the place page show the banner too', async ({ page }) => {
   await page.goto('/')
   await expect(banner(page)).toHaveText(BANNER)

@@ -46,6 +46,9 @@ til etter Aksels ønske og bygget mens 1.11 ventet på målingen. Den justerer U
 **Avvik (2026-11-04):** Story 3.9 (søk) er lagt til etter [endringsforslaget om søk](../../project-workspace/planning-artifacts/sprint-change-proposal-2026-11-04-sok.md)
 og bygges før brukertesten.
 
+**Avvik (2026-11-07):** Story 1.6b (rettinger etter reviewen av PR #77) er lagt til og bygget før
+kodefrysen, fordi funnene gjelder banneret brukertesten kan møte.
+
 **Ikke i v1 (v3):** Story 4.1 (PWA), 4.3 og 4.4 (snøvarsel) og hele Epic 5 (tilbakemelding).
 De står i `sprint-status.yaml` med kommentaren «Ikke i v1» og bygges ikke.
 

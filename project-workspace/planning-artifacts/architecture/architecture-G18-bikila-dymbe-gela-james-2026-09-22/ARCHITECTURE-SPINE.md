@@ -114,8 +114,12 @@ flowchart LR
     `nveNysnoSisteDognMm` null and is recorded in the report without blocking publication (FR-6a, v4). In a published run, a location
     whose response failed appears as incomplete data without a score. The file never carries
     values from an earlier run.
-  - **Simple retries are *Should have* (FR-6b).** v1 makes one attempt per location with capped
-    concurrency. There is no circuit breaker, because there is no state between runs.
+  - **Simple retries (FR-6b, Story 1.6).** A call that fails with a network error, 429 or 5xx is
+    tried up to three times in all, waiting 1 s and then 2 s, and every attempt passes the source's
+    call-rate gate. Another 4xx is not retried. Timeouts (20 s) and connect timeouts (about 10 s,
+    Story 1.6b) are not retried because of the time they cost: 300 places × 3 attempts would run
+    into the next hourly job. A per-run retry budget that would allow some of them is deferred
+    (`deferred-work.md`). There is no circuit breaker, because there is no state between runs.
   - **Call rate.** `fetch.ts` starts at most one call per 100 ms per source (10/s), on top of the
     concurrency cap. MET's terms require an agreement above 20 requests/s per application (FR-2).
   - **Best ski window** *(Story 4.2, 2026-10-28)*. `score.ts` computes `skivindu` and an explicit
@@ -195,6 +199,8 @@ flowchart LR
   - Both views read the same filter parameters (parsed by `shared/filter.ts`, AD-12) and call
     the same `useSteder()` hook.
   - No page fetches or filters location data any other way.
+  - The store loads the published file again when a live file passes 90 min, at most once an hour,
+    and swaps it in only when it is newer *(Story 1.6b)*.
 
 ### AD-9 — Design tokens have one source in code *(v2, DESIGN.md)*
 
