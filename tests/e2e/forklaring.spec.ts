@@ -35,6 +35,15 @@ test('the navigation opens the page, with its seven sections, three described gr
   }
   // Story 2.2: the worked example ends in the brief's score.
   await expect(page.getByText('SnowScore = 36 + 6,8 + 15 = 57,8, avrundet til 58')).toBeVisible()
+  // Story 2.5: the example's sub-scores with the same bars and text as on the place page.
+  const eksempel = page.locator('section[aria-labelledby="regneeksempel"] .tall-liste')
+  await expect(eksempel.locator('dd')).toHaveText(['36,0 av 60', '6,8 av 25', '15,0 av 15'])
+  await expect(eksempel.locator('.delpoeng-stolpe[aria-hidden="true"]')).toHaveCount(3)
+  const eksempelFyll = eksempel.locator('.delpoeng-stolpe > span')
+  await expect(eksempelFyll.nth(0)).toHaveAttribute('style', /^width: 60%;?$/)
+  // B is 6,77… of 25 ≈ 27,1 %, computed from the unrounded value.
+  await expect(eksempelFyll.nth(1)).toHaveAttribute('style', /^width: 27(\.\d+)?%;?$/)
+  await expect(eksempelFyll.nth(2)).toHaveAttribute('style', /^width: 100%;?$/)
   // Story 2.3: the sources point to Varsom, and the quality panel describes the demo data set.
   await expect(page.getByRole('link', { name: 'Varsom.no' })).toHaveAttribute('href', 'https://www.varsom.no/')
   await expect(page.locator('.datakvalitet')).toContainText('Du ser demodata: innspilte svar fra MET og NVE')
@@ -90,6 +99,10 @@ test('the calculator updates A, B, C and the score as you type, and explains an 
   const nedbor = page.getByLabel('Nedbør i 24 timer (mm)')
   const temperatur = page.getByLabel('Snittemperatur (°C)')
   await expect(resultat).toContainText('58 · Godt')
+  // Story 2.5: the start values give A 36 of 60 and a full C.
+  const fyll = resultat.locator('.delpoeng-stolpe > span')
+  await expect(fyll.nth(0)).toHaveAttribute('style', /^width: 60%;?$/)
+  await expect(fyll.nth(2)).toHaveAttribute('style', /^width: 100%;?$/)
 
   // 20 mm at −14 °C gives full A and full B: 60 + 25 + 15 = 100. No reload: the URL stays the same.
   await nedbor.fill('20')
@@ -97,17 +110,22 @@ test('the calculator updates A, B, C and the score as you type, and explains an 
   await expect(resultat).toContainText('60,0 av 60')
   await expect(resultat).toContainText('25,0 av 25')
   await expect(resultat).toContainText('100 · Svært godt')
+  // Story 2.5: the bars follow the input without a reload; A and B are full, and so is C.
+  await expect(fyll).toHaveCount(3)
+  for (let i = 0; i < 3; i++) await expect(fyll.nth(i)).toHaveAttribute('style', /^width: 100%;?$/)
   await expect(page).toHaveURL(/\/slik-beregner-vi-snowscore$/)
 
   // Rain at 5 °C gives no new snow, no cold bonus and no snow share.
   await temperatur.fill('5')
   await expect(resultat).toContainText('0 · Lite')
+  for (let i = 0; i < 3; i++) await expect(fyll.nth(i)).toHaveAttribute('style', /^width: 0%;?$/)
 
   await nedbor.fill('mye')
   await expect(nedbor).toHaveAttribute('aria-invalid', 'true')
   await expect(nedbor).toHaveAttribute('aria-describedby', 'kalkulator-nedbor-feil')
   await expect(page.locator('#kalkulator-nedbor-feil')).toHaveText('Skriv et tall, for eksempel 12 eller −2,5.')
   await expect(resultat).toHaveText('Rett verdiene over for å se SnowScore.')
+  await expect(resultat.locator('.delpoeng-stolpe')).toHaveCount(0)
 })
 
 test.describe('at 375px', () => {
@@ -225,6 +243,23 @@ for (const width of [320, 375]) {
     }
   })
 }
+
+test('at 320px with a wide font the sub-score values in the worked example and the calculator stay inside their rows', async ({ page }) => {
+  // Story 2.5: the bars must not push the page or a value sideways.
+  await page.setViewportSize({ width: 320, height: 740 })
+  await page.goto('/slik-beregner-vi-snowscore')
+  const verdier = page.locator(
+    'section[aria-labelledby="regneeksempel"] dd.delpoeng-verdi, .kalkulator-resultat dd.delpoeng-verdi',
+  )
+  await expect(verdier).toHaveCount(6)
+  await page.addStyleTag({ content: BRED_FONT })
+  const [scrollWidth, clientWidth] = await page.locator('html').evaluate((el) => [el.scrollWidth, el.clientWidth])
+  expect(scrollWidth).toBeLessThanOrEqual(clientWidth)
+  for (const dd of await verdier.all()) {
+    const [ddScroll, ddClient] = await dd.evaluate((el) => [el.scrollWidth, el.clientWidth])
+    expect(ddScroll).toBeLessThanOrEqual(ddClient)
+  }
+})
 
 test('both tables fit a 375px phone in the page font, without scrolling inside', async ({ page }) => {
   // The inner scrolling is only a safety net for wide fonts; with the page's own font the tighter

@@ -419,6 +419,34 @@ select:focus-visible {
   font-feature-settings: var(--typography-numeric-font-feature-settings);
 }
 
+/* Story 2.5 ({components.score-part-bar}): a grey bar between label and value. The bar shrinks on a
+   narrow phone; the value never wraps. The dd keeps at least the bar's minimum and the value, so on a
+   very narrow screen with a wide font the label wraps instead of the bar sliding under it. */
+.tall-liste dd.delpoeng-verdi {
+  display: flex;
+  flex: 1 0 auto;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--spacing-2);
+  white-space: nowrap;
+}
+
+.delpoeng-stolpe {
+  flex: 1;
+  min-width: 2rem;
+  max-width: 10rem;
+  height: var(--spacing-2);
+  overflow: hidden;
+  border-radius: var(--rounded-full);
+  background: var(--color-surface-sunken);
+}
+
+.delpoeng-stolpe > span {
+  display: block;
+  height: 100%;
+  background: var(--color-ink-secondary);
+}
+
 .sted-kilde {
   margin: var(--spacing-3) 0 0;
   color: var(--color-ink-secondary);

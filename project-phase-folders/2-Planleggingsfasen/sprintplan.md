@@ -48,6 +48,17 @@ Story 1.8b (resultatlisten som destinasjonskort). Hvert steg er en egen story me
 **Avvik (2026-11-04):** Story 3.9 (søk) er lagt til etter [endringsforslaget om søk](../../project-workspace/planning-artifacts/sprint-change-proposal-2026-11-04-sok.md)
 og bygges før brukertesten.
 
+**Avvik (2026-11-07):** Story 1.6b (rettinger etter reviewen av PR #77) er lagt til og bygget før
+kodefrysen, fordi funnene gjelder banneret brukertesten kan møte.
+
+**Avvik (2026-11-07):** Story 3.1b (ryddigere filter: aktive krav som chips med ×, gruppene «Vær» og «Sted»
+og forklaringer bak «Mer om») ble lagt til etter Aksels valg i UX-forbedringen 2026-11-07, og bygges før
+brukertesten. Den justerer UX for Epic 3, men endrer ikke filterlogikken eller adressen.
+
+**Avvik (2026-11-08):** Story 2.5 (delpoengstolper) er lagt til som steg 3 i UX-forbedringen (PR #93, Aksels
+valg 2026-11-07, og 2026-11-08 for plasseringen i regneeksemplet). Den gjenåpner Epic 2 og bygges før brukertesten, fordi den gjør SnowScore-kortet,
+regneeksemplet og kalkulatoren like.
+
 **Ikke i v1 (v3):** Story 4.1 (PWA), 4.3 og 4.4 (snøvarsel) og hele Epic 5 (tilbakemelding).
 De står i `sprint-status.yaml` med kommentaren «Ikke i v1» og bygges ikke.
 

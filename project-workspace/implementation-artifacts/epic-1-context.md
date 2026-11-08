@@ -14,7 +14,7 @@ Brukeren skal kunne åpne SnowFinder og se ferske SnowScore-data for norske sted
 - Story 1.4: Bygg den delte SnowScore-modulen (ferdig)
 - Story 1.10: Kjør SnowFinder lokalt med demodata (ferdig)
 - Story 1.5: Beregn og publiser SnowScore i dataprogrammet (ferdig)
-- Story 1.11: Kjør dataprogrammet hver time og publiser appen (pågår: Vercel i 1.11e, pålitelig timesjobb i 1.11f)
+- Story 1.11: Kjør dataprogrammet hver time og publiser appen (pågår: Vercel i 1.11e, pålitelig timesjobb i 1.11f, timer i 1.11g)
 - Story 1.7: Se Norgeskartet med fargelagte steder (ferdig)
 - Story 1.8: Bruk tilgjengelig listevisning i stedet for kart (ferdig)
 - Story 1.9: Åpne en stedsside med full poengsum (ferdig)
@@ -52,7 +52,7 @@ Byggerekkefølgen er rekkefølgen over. Alle unntatt 1.6 er Må ha.
 - **CI og drift:**
   - `ci.yml`: lint, typecheck, enhets-, egenskaps-, kontrakts- og fasittester, build.
   - `e2e.yml`: Playwright mot `vite preview` i demomodus.
-  - `data.yml`: prøver hvert 10. minutt (cron `5,15,25,35,45,55 * * * *`), ved push til `main` og manuelt, med `concurrency` uten avbrudd. GitHub dropper mange planlagte kjøringer, så den første jobben `gate` stopper en planlagt kjøring når siste commit på grenen `data` er under 50 min gammel (lest gjennom GitHub-API-et, som ikke caches). Kan alderen ikke leses, kjører alt (`sprint-change-proposal-2026-11-02-timesjobb.md`).
+  - `data.yml`: prøver hvert 10. minutt (cron `5,15,25,35,45,55 * * * *`), ved push til `main` og manuelt, med `concurrency` uten avbrudd. GitHub dropper mange planlagte kjøringer, så den første jobben `gate` stopper en planlagt kjøring når siste commit på grenen `data` er under 50 min gammel (lest gjennom GitHub-API-et, som ikke caches). Kan alderen ikke leses, kjører alt (`sprint-change-proposal-2026-11-02-timesjobb.md`). Timeplanen alene ga 4–8 timer mellom kjøringene, så jobben `timer` til slutt starter `data-timer.yml` på `main` når kjøringen har hentet. Timeren venter til dataene er rundt 55 min gamle (minst 30), starter `data.yml` med `workflow_dispatch` hvis de er minst 50 min gamle, og bare én venter om gangen (`sprint-change-proposal-2026-11-04-timer.md`).
   - Hver kjøring på `main` publiserer alltid `latest.json` som ett force-pushet commit til grenen `data` (`permissions: contents: write`) (AD-10 v6). Vercel publiserer appen fra `main`, og nettsiden henter datafila fra grenen gjennom en rewrite (v7, Pages er slått av i emnet). `npm run data:hent` laster ned fila fra grenen `data` før `dev` og `build`. Produksjonsbygget inneholder aldri `demo.json`, og appen selv leser aldri en ekstern adresse.
 - **Konvensjoner:** UTC ISO 8601 lagret, norsk lokaltid bare i UI. Kommentarer forklarer *hvorfor*. Eksakte versjoner. Tester ved siden av koden; E2E i `tests/e2e/`, kontraktstester i `tests/contract/`, fasittabeller i `tests/golden/`.
 
