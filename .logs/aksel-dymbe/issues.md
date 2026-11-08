@@ -43,3 +43,4 @@
 - [x] 2026-11-07 [story-1-6b-rettinger](992-2026-11-07-13-34-01-story-1-6b-rettinger.md) — Bannerfargene i src/App.css avviker fra DESIGN.md; avgjøres via bmad-ux (løst 2026-11-07)
 - [ ] 2026-11-07 [story-1-6b-rettinger](992-2026-11-07-13-34-01-story-1-6b-rettinger.md) — Steg 2–5 i UX-forbedringen; steg 2 (filteret) trenger bmad-ux først (UX-delen av steg 2 er gjort 2026-11-07)
 - [ ] 2026-11-07 [ux-filter-og-banner](991-2026-11-07-17-09-40-ux-filter-og-banner.md) — Bygg steg 2, det ryddigere filteret, med bmad-build
+- [ ] 2026-11-07 [story-3-1b-ryddigere-filter](990-2026-11-07-22-08-40-story-3-1b-ryddigere-filter.md) — Steg 3–5 i UX-forbedringen: poengfordeling på forklaringssiden, fargeforklaring på kartet, mobil- og kvalitetsrunde

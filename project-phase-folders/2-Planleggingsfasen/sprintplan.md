@@ -49,6 +49,10 @@ og bygges før brukertesten.
 **Avvik (2026-11-07):** Story 1.6b (rettinger etter reviewen av PR #77) er lagt til og bygget før
 kodefrysen, fordi funnene gjelder banneret brukertesten kan møte.
 
+**Avvik (2026-11-07):** Story 3.1b (ryddigere filter: aktive krav som chips med ×, gruppene «Vær» og «Sted»
+og forklaringer bak «Mer om») ble lagt til etter Aksels valg i UX-forbedringen 2026-11-07, og bygges før
+brukertesten. Den justerer UX for Epic 3, men endrer ikke filterlogikken eller adressen.
+
 **Ikke i v1 (v3):** Story 4.1 (PWA), 4.3 og 4.4 (snøvarsel) og hele Epic 5 (tilbakemelding).
 De står i `sprint-status.yaml` med kommentaren «Ikke i v1» og bygges ikke.
 
