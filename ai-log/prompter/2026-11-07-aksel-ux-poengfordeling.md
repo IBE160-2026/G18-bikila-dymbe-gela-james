@@ -44,3 +44,25 @@
 > bygg Story 2.5
 
 **Svar (kort):** Amelia bygde `Delpoengliste` med stolpene og brukte den i SnowScore-kortet, regneeksemplet og kalkulatoren. Gjennomgangen i tre lag ga 26 funn: 9 rettet (testhull ved 320 px på forklaringssiden, tynne fylltester, løsere enhetstester og små dokumentfeil) og 17 avvist. Lint, typesjekk, 682 enhetstester, `build:demo` og 136 E2E-tester er grønne.
+
+### 9 (2026-11-08, push og PR)
+> ja, push og lag PR-en, men gjør dette i rekkefølge:
+>
+> 1. Før push: gi meg en kort liste over de 17 avviste funnene fra kodegjennomgangen, med én linje begrunnelse per funn. Marker de du er minst sikker på. Vent ikke på svar fra meg – fortsett til steg 2 – men stopp hvis noen av dem gjelder tilgjengelighet, skjermleser eller feil tall.
+>
+> 2. Push greinen story/2-5-delpoengstolper og lag PR-en mot docs/ux-poengfordeling (#93), med Joseph som reviewer.
+>
+> 3. PR-beskrivelsen skal ha med:
+>    - Kort hva storyen gjør (grå delpoengstolper i SnowScore-kortet, regneeksemplet og kalkulatoren; teksten «x av N» er uendret).
+>    - At #93 må merges før denne PR-en.
+>    - At «A Nysnøpotensial» kan brytes over to linjer på 320 px med bred skrift. Dette er akseptert: verdien brytes ikke, og siden ruller ikke sidelengs.
+>    - Lenke til spec-2-5-delpoengstolper.md.
+>
+> 4. Etter push: følg med på CI. Bekreft at alle jobbene blir grønne på Ubuntu, særlig 320 px-testen. Blir noe rødt, si fra hva som feilet og foreslå en rettelse før du endrer noe.
+
+**Svar (kort):** Claude listet de avviste funnene: 11 med begrunnelse og 6 gjentakelser. Ingen av dem gjaldt tilgjengelighet, skjermleser eller feil tall. Claude pushet greinen og laget PR #94 mot #93 med Joseph som reviewer. CI ble grønn på Ubuntu, også 320 px-testene.
+
+### 10
+> Legg dagens prompt i ai-log/prompter/ og push den sammen med sesjonsloggen til #94 nå, før Joseph reviewer. Bekreft at CI blir grønn igjen.
+
+**Svar (kort):** Promptene ble lagt inn her og pushet sammen med sesjonsloggen til #94.
