@@ -54,4 +54,19 @@
 
 **Svar (kort):** Claude laget beslutningsnotatet med seks saker (formelen, dagvalg, skala, 500 ms eller 2 s, hvilket dokument som gjelder, og datoen for kodefrysen), hver med forslag og konsekvens. Notatet peker også på at det mangler referat fra møtet 2026-11-01. Claude spurte om UX-økta var ferdig, siden ingen annen økt kjørte og #95 var åpen. Aksel svarte «Start nå». Claude laget `docs/prd-srs-v2-2` fra main og rettet de valgte funnene. På main henter appen ikke datafila på nytt (det kommer i 1.6b), så SRS-F-34 beskriver at en åpen side sjekker alderen hvert minutt.
 
-**Hva vi gjorde med det:** brukt. Endringene står i endringsloggen for versjon 2.2 i dokumentet. Diffen ble vist til Aksel før push.
+**Hva vi gjorde med det:** brukt. Endringene står i endringsloggen for versjon 2.2 i dokumentet. Diffen ble vist til Aksel før push, se 3.
+
+### 3
+> Ser bra ut. Før push:
+> 1. M8: merk dagvalg i omfangstabellene i §5 (PRD og SRS) som «Forslag: Ikke i v1, venter på vedtak», så det ikke motsier §7. Sjekk at formel, skala, 500 ms/2 s, dokumentkonflikt og kodefrys også står som forslag der de nevnes i dokumentene, ikke bare i endringsloggen.
+> 2. Oppdater «Hvor er vi nå?» og «Sist oppdatert» i fremdriftsplan.md til versjon 2.2, i samme PR.
+> 3. Behold «tom hurtigbuffer» og «publisert app» i B11.
+>
+> Vis meg bare de nye endringene, så pusher du og lager docs-PR mot main etter mitt ja.
+
+### 4
+> bare push direkte til git
+
+**Svar (kort):** Claude merket dagvalg som forslag i begge omfangstabellene og i avsnittet under PRD §5. 500 ms i SRS-N-01 ble også merket som forslag, og NFR-1 og SM-1 i md-PRD-en viser nå til forslaget. PRD §7 fikk punktene «Filtertid» og «Dokument ved konflikt», §0 sier at konflikten ikke er avgjort, og intro-teksten i §7 sier at datoen for kodefrysen er et forslag. Formelen og skala sto allerede som åpent eller til beslutning. Fremdriftsplanen ble oppdatert. Etter prompt 4 pushet Claude og laget PR-en uten å vise diffen først.
+
+**Hva vi gjorde med det:** brukt.

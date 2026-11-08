@@ -44,7 +44,7 @@ fjerner de delene faglæreren pekte på som mest kompliserte:
 - Det finnes ingen skriving fra brukere, ingen hemmeligheter og ingen lagrede identifikatorer.
 
 **Rettinger (2026-11-08), ingen nye krav:** FR-30, §6.1, §8.2 og SM-8 er rettet så de stemmer med det
-som er bygget og vedtatt. Endringene står i endringsloggen for versjon 2.2 i
+som er bygget og vedtatt. NFR-1 og SM-1 viser til forslaget om 500 ms, som venter på vedtak. Endringene står i endringsloggen for versjon 2.2 i
 [SnowFinder-PRD-og-SRS.html](SnowFinder-PRD-og-SRS.html).
 
 FR-ID-ene er stabile og nummereres aldri om.
@@ -674,7 +674,8 @@ database. Begrunnelsen står i §0.
 
 ### 7.1 Ytelse
 
-- **NFR-1:** 95 % av filtersøk svarer på under 2 sekunder. Validerer FR-20.
+- **NFR-1:** 95 % av filtersøk svarer på under 2 sekunder. Validerer FR-20. *(2026-11-08: SRS-N-01 i
+  SnowFinder-PRD-og-SRS.html foreslår 500 ms. Forslaget venter på vedtak i gruppa.)*
 - **NFR-2:** Norgeskartet er interaktivt (kan panneres/zoomes) innen 3 sekunder på mobil, målt
   på en representativ midtsegment-telefon over 4G. Validerer FR-12.
 
@@ -800,7 +801,8 @@ ID-ene er beholdt fra v1.
 
 ### 9.2 Måles manuelt eller under demo (B)
 
-- **SM-1 (Ytelse):** 95 % av filtersøk under 2 sekunder. Validerer FR-20/NFR-1.
+- **SM-1 (Ytelse):** 95 % av filtersøk under 2 sekunder. Validerer FR-20/NFR-1. *(Forslag om
+  500 ms venter på vedtak, se NFR-1.)*
 - **SM-12 (Kartlasting, ny ID i v2):** Kartet er interaktivt innen 3 sekunder på en mobil over
   4G. Validerer NFR-2.
 - **SM-13 (Ferskhet, ny ID i v2):** Publiserte data er normalt under 90 minutter gamle. Det

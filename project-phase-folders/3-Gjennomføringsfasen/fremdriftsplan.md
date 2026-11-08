@@ -3,7 +3,7 @@
 Oversikt over hvordan vi går fram, steg for steg, så alle kan følge med selv om de ikke var
 på møtet. Oppdater statusen når et steg er ferdig.
 
-**Sist oppdatert:** 2026-11-07
+**Sist oppdatert:** 2026-11-08
 
 ## Slik holder du deg oppdatert
 
@@ -14,6 +14,18 @@ på møtet. Oppdater statusen når et steg er ferdig.
 4. Se promptene fra siste økt i [`ai-log/prompter/`](../../ai-log/prompter/).
 
 ## Hvor er vi nå?
+
+**8. november: PRD/SRS versjon 2.2 retter funnene fra en gjennomgang mot koden. Seks punkter venter på vedtak i gruppa.**
+
+- [`SnowFinder-PRD-og-SRS.html`](../2-Planleggingsfasen/SnowFinder-PRD-og-SRS.html) er versjon 2.2. Brukerreisene har de
+  opprinnelige ID-ene igjen (Kelly UJ-3, Sensor UJ-5), og banneret for gamle data står som SRS-F-34. Avstandssorteringen,
+  poengnivåene, timeren og måleprofilen er beskrevet slik de er bygget. `SnowFinder-PRD.md` (begge kopiene) er rettet i
+  FR-30, §6.1, §8.2 og SM-8. Alle endringene står i endringsloggen i dokumentet.
+- Venter på vedtak i gruppa: formelen, dagvalg, skala, 500 ms eller 2 s for filteret, hvilket dokument som gjelder ved
+  konflikt, og datoen for kodefrysen (11. november er et forslag). Dokumentene merker disse som forslag. Det finnes ikke
+  noe referat fra møtet 1. november, der formelen ble besluttet.
+- Neste: vedtak på neste møte, deretter `bmad-correct-course` for filtertid og dokumentkonflikt. Funnene i epics tas i en
+  egen PR når #83, #85 og #90–#94 er merget.
 
 **7. november: Story 1.11g er merget (PR #87), og PRD/SRS versjon 2.1 ligger i repoet. Story 1.8b og 3.9 venter på review.**
 
