@@ -172,18 +172,20 @@ describe('AppView', () => {
     expect(html.match(/<h1/g)).toHaveLength(1)
     expect(html).toContain('<h1 class="sted-navn">Gaustatoppen</h1>')
     expect(html).toContain('<span class="score-badge score-badge--2">58 · Godt</span>')
-    const text = html.replace(/<[^>]+>/g, '|')
+    // Consecutive tags become one «|», so the sub-scores' decorative bars (Story 2.5) do not change the pairs.
+    expect(html.match(/class="delpoeng-stolpe"/g)).toHaveLength(3)
+    const text = html.replace(/(<[^>]+>)+/g, '|')
     for (const pair of [
-      'A Nysnøpotensial||30,0 av 60',
-      'B Kuldebonus||13,1 av 25',
-      'C Snøandel||15,0 av 15',
-      'Nysnø neste døgn||10 cm',
-      'Temperatur, snitt||−6,4 °C',
-      'Vind, maks||12 m/s',
-      'Skydekke, snitt||85 %',
-      'Skydekke i dagslys||87,9 %',
-      'Høyde||1\u00a0882 moh.',
-      'NVE-nysnø siste døgn||0 mm',
+      'A Nysnøpotensial|30,0 av 60',
+      'B Kuldebonus|13,1 av 25',
+      'C Snøandel|15,0 av 15',
+      'Nysnø neste døgn|10 cm',
+      'Temperatur, snitt|−6,4 °C',
+      'Vind, maks|12 m/s',
+      'Skydekke, snitt|85 %',
+      'Skydekke i dagslys|87,9 %',
+      'Høyde|1\u00a0882 moh.',
+      'NVE-nysnø siste døgn|0 mm',
     ]) {
       expect(text).toContain(pair)
     }

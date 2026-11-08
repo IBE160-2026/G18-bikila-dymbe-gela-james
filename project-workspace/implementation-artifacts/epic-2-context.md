@@ -13,6 +13,7 @@ Brukeren skal kunne åpne forklaringssiden «Slik beregner vi SnowScore» og for
 - Story 2.2: Se det utledede regneeksempelet
 - Story 2.3: Les om datakilder og begrensninger
 - Story 2.4: Prøv SnowScore-kalkulatoren selv (Bør ha)
+- Story 2.5: Delpoengstolper i SnowScore-kortet, regneeksemplet og kalkulatoren (Bør ha, ny 2026-11-08)
 
 ## Requirements & Constraints
 

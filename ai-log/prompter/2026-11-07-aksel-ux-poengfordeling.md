@@ -34,3 +34,13 @@
 > To små rettelser før godkjenning: 1. Flytt punktet om Regneeksemplet (Aksels valg 2026-11-08) fra «Never» til «Always». Det er et krav om noe som skal gjøres, ikke et forbud. 2. I E2E-oppgaven: «riktig fyllbredde» skal sjekkes via style-attributtet (f.eks. width: 50%), ikke ved å måle piksler, så testen ikke blir ustabil. Ellers ingen endringer. Deretter: godkjenn og stopp
 
 **Svar (kort):** Claude rettet begge punktene og satte spec-en til `ready-for-dev`. Koden er ikke endret.
+
+### 7
+> push til git
+
+**Svar (kort):** Claude pushet `story/2-5-delpoengstolper` med spec-en. Ingen PR ennå, fordi koden ikke var bygget.
+
+### 8 (2026-11-08, `bmad-build`)
+> bygg Story 2.5
+
+**Svar (kort):** Amelia bygde `Delpoengliste` med stolpene og brukte den i SnowScore-kortet, regneeksemplet og kalkulatoren. Gjennomgangen i tre lag ga 26 funn: 9 rettet (testhull ved 320 px på forklaringssiden, tynne fylltester, løsere enhetstester og små dokumentfeil) og 17 avvist. Lint, typesjekk, 682 enhetstester, `build:demo` og 136 E2E-tester er grønne.
