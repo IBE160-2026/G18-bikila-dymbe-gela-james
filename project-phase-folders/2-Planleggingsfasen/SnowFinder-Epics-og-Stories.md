@@ -133,8 +133,8 @@ ordinær kontroll, ikke dra-og-slipp.
 UX-DR7: Beste skivindu-kort med mørketid-fallback-tekst («Mørketid – vindu vist uten dagslys»).
 UX-DR8: *(Ikke i v1, v3)* Snøvarsel-skjema inline på stedssiden.
 UX-DR9: *(Ikke i v1, v3)* Tilbakemeldingsskjema.
-UX-DR10: Global `banner-stale-data`-komponent (warning-bakgrunn) når siste data er eldre enn
-normalt.
+UX-DR10: Global `banner-stale-data`-komponent (lys flate med `warning`-kant til venstre, avgjort
+2026-11-07) når siste data er eldre enn normalt.
 UX-DR11: Tilstander: skjelett-lasting (`surface-sunken`), null-treff med forslag, "ufullstendige
 data"-tekst i stedet for score-badge.
 UX-DR12: Responsiv layout: filterpanel som bunn-ark (<768px) vs. fast venstre sidepanel
@@ -497,6 +497,28 @@ Storyen er derfor Bør ha.]`
 `[RETTET under sprintplanlegging 2026-09-27: Story 1.6 flyttet etter 1.9. Den krever
 `banner-stale-data` på Utforsk- og stedssiden, som først finnes etter 1.7 og 1.9 — en
 forover-avhengighet. Nummeret er beholdt så kryssreferanser ikke brytes.]`
+
+### Story 1.6b: Rettinger etter review av Story 1.6 *(ny 2026-11-07)*
+
+**Prioritet:** Bør ha
+
+As en bruker,
+I want at banneret for gamle data er riktig og blir lest opp, og at dataprogrammet ikke kaster bort tid på en kilde som ikke svarer,
+So that jeg kan stole på banneret. Retter funnene fra reviewen av PR #77. Realiserer FR-6b og NFR-3.
+
+**Acceptance Criteria:**
+
+**Given** en gammel live-fil
+**When** Utforsk eller stedssiden lastes
+**Then** finnes bannerets statusregion før dataene kommer, og den får teksten etterpå
+
+**Given** en fane som har stått åpen til fila passerer 90 min
+**When** jobben har publisert en nyere fil
+**Then** hentes fila på nytt og vises uten banner, og banneret vises bare når ingen nyere fil finnes
+
+**Given** at en vert ikke tar imot tilkoblingen
+**When** dataprogrammet kjører
+**Then** prøves kallet ikke på nytt, og årsaken er «Tidsavbrudd ved tilkobling»
 
 ---
 

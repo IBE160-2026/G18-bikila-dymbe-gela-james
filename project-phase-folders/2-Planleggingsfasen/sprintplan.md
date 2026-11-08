@@ -46,6 +46,9 @@ til etter Aksels ønske og bygget mens 1.11 ventet på målingen. Den justerer U
 **Avvik (2026-11-04):** Story 3.9 (søk) er lagt til etter [endringsforslaget om søk](../../project-workspace/planning-artifacts/sprint-change-proposal-2026-11-04-sok.md)
 og bygges før brukertesten.
 
+**Avvik (2026-11-07):** Story 1.6b (rettinger etter reviewen av PR #77) er lagt til og bygget før
+kodefrysen, fordi funnene gjelder banneret brukertesten kan møte.
+
 **Avvik (2026-11-07):** Story 3.1b (ryddigere filter: aktive krav som chips med ×, gruppene «Vær» og «Sted»
 og forklaringer bak «Mer om») ble lagt til etter Aksels valg i UX-forbedringen 2026-11-07, og bygges før
 brukertesten. Den justerer UX for Epic 3, men endrer ikke filterlogikken eller adressen.
