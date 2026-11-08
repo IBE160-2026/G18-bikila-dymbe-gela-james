@@ -36,3 +36,6 @@
 - [ ] 2026-11-02 [story-2-1b-toppnav-og-slidere](994-2026-11-02-21-00-52-story-2-1b-toppnav-og-slidere.md) — PR for 2.1b trenger review fra et gruppemedlem før merge
 - [ ] 2026-11-02 [story-2-1b-toppnav-og-slidere](994-2026-11-02-21-00-52-story-2-1b-toppnav-og-slidere.md) — Før npm run test:e2e:nettlesere og CI-jobben nettlesere inn i AGENTS.md via bmad-project-context
 - [ ] 2026-11-08 [ux-poengfordeling](989-2026-11-08-00-00-36-ux-poengfordeling.md) — Bygg steg 3 som story: delpoengstolper i SnowScore-kortet, regneeksemplet og kalkulatoren
+- [ ] 2026-11-08 [ux-fargeforklaring](988-2026-11-08-12-36-35-ux-fargeforklaring.md) — Steg 4: godkjenn UX for fargeforklaringen, så push og PR mot #93
+- [ ] 2026-11-08 [ux-fargeforklaring](988-2026-11-08-12-36-35-ux-fargeforklaring.md) — Steg 4: spec og bygging av fargeforklaringen (bmad-build), med storyen i epics
+- [ ] 2026-11-08 [ux-fargeforklaring](988-2026-11-08-12-36-35-ux-fargeforklaring.md) — Steg 5: gjennomgang av mobil og kvalitet nå, bygging etter merge av #89–#94
