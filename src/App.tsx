@@ -51,10 +51,19 @@ export function AppView({ result, route }: { result: StederResult | null; route:
       <header className="app-header">
         <Toppnavigasjon route={route} />
       </header>
-      {/* Story 1.6: an old data file is flagged on the pages that show its places, not on the explanation. */}
-      {result?.status === 'ok' && (route.name === 'utforsk' || route.name === 'sted') && (
-        <GamleDataBanner generert={result.data.generert} naa={now(result.data)} vis={result.gamleData} />
-      )}
+      {/* Story 1.6: an old data file is flagged on the pages that show its places, not on the explanation.
+          Story 1.6b: the region is mounted from the first paint, also while loading, so a screen reader
+          hears the banner when the data arrives. «Ingen ferske data» says enough on its own. */}
+      {(route.name === 'utforsk' || route.name === 'sted') &&
+        (result?.status === 'ok' ? (
+          <GamleDataBanner
+            generert={result.data.generert}
+            naa={now(result.data)}
+            vis={result.gamleData && statusMelding(result, route) !== INGEN_FERSKE}
+          />
+        ) : (
+          <GamleDataBanner vis={false} />
+        ))}
       {result?.status === 'ok' && result.data.mode === 'demo' && <DemoBanner />}
       <main className="app">
         {/* Rendered from the first paint, also while loading, so a screen reader hears the message when it
