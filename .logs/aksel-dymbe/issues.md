@@ -49,3 +49,6 @@
 - [x] 2026-11-08 [ux-poengfordeling](989-2026-11-08-00-00-36-ux-poengfordeling.md) — Story 2.5: bekreft i CI på Ubuntu at delpoengraden holder ved 320 px med bred font (løst 2026-11-08)
 - [ ] 2026-11-08 [ux-poengfordeling](989-2026-11-08-00-00-36-ux-poengfordeling.md) — Steg 4 (fargeforklaring på kartet) og steg 5 (mobil og kvalitet) i UX-forbedringen
 - [ ] 2026-11-08 [ux-poengfordeling](989-2026-11-08-00-00-36-ux-poengfordeling.md) — Story 2.5: PR #94 venter på at #93 merges og på godkjenning fra Joseph
+- [ ] 2026-11-08 [ux-fargeforklaring](988-2026-11-08-12-36-35-ux-fargeforklaring.md) — Steg 4: godkjenn UX for fargeforklaringen, så push og PR mot #93
+- [ ] 2026-11-08 [ux-fargeforklaring](988-2026-11-08-12-36-35-ux-fargeforklaring.md) — Steg 4: spec og bygging av fargeforklaringen (bmad-build), med storyen i epics
+- [ ] 2026-11-08 [ux-fargeforklaring](988-2026-11-08-12-36-35-ux-fargeforklaring.md) — Steg 5: gjennomgang av mobil og kvalitet nå, bygging etter merge av #89–#94
