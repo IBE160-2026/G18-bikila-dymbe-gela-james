@@ -15,6 +15,18 @@ på møtet. Oppdater statusen når et steg er ferdig.
 
 ## Hvor er vi nå?
 
+**8. november: PRD/SRS versjon 2.2 retter funnene fra en gjennomgang mot koden. Seks punkter venter på vedtak i gruppa.**
+
+- [`SnowFinder-PRD-og-SRS.html`](../2-Planleggingsfasen/SnowFinder-PRD-og-SRS.html) er versjon 2.2. Brukerreisene har de
+  opprinnelige ID-ene igjen (Kelly UJ-3, Sensor UJ-5), og banneret for gamle data står som SRS-F-34. Avstandssorteringen,
+  poengnivåene, timeren og måleprofilen er beskrevet slik de er bygget. `SnowFinder-PRD.md` (begge kopiene) er rettet i
+  FR-30, §6.1, §8.2 og SM-8. Alle endringene står i endringsloggen i dokumentet.
+- Venter på vedtak i gruppa: formelen, dagvalg, skala, 500 ms eller 2 s for filteret, hvilket dokument som gjelder ved
+  konflikt, og datoen for kodefrysen (11. november er et forslag). Dokumentene merker disse som forslag. Det finnes ikke
+  noe referat fra møtet 1. november, der formelen ble besluttet.
+- Neste: vedtak på neste møte, deretter `bmad-correct-course` for filtertid og dokumentkonflikt. Funnene i epics tas i en
+  egen PR når #83, #85 og #90–#94 er merget.
+
 **8. november: steg 3 i UX-forbedringen, delpoengstolper (Story 2.5), er bygget og venter på review.**
 
 - A, B og C har hver sin grå stolpe i SnowScore-kortet, i regneeksemplet og i kalkulatoren, fylt mot 60, 25 og 15

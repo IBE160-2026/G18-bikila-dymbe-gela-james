@@ -1,7 +1,7 @@
 ---
 title: SnowFinder
 created: 2026-09-27
-updated: 2026-11-04
+updated: 2026-11-08
 status: draft
 ---
 
@@ -42,6 +42,10 @@ fjerner de delene faglæreren pekte på som mest kompliserte:
   og appen filtrerer i nettleseren.
 - **Snøvarsel** (FR-18/19, UJ-2) og **tilbakemelding** (FR-27/28/29) er flyttet til «Ikke i v1».
 - Det finnes ingen skriving fra brukere, ingen hemmeligheter og ingen lagrede identifikatorer.
+
+**Rettinger (2026-11-08), ingen nye krav:** FR-30, §6.1, §8.2 og SM-8 er rettet så de stemmer med det
+som er bygget og vedtatt. NFR-1 og SM-1 viser til forslaget om 500 ms, som venter på vedtak. Endringene står i endringsloggen for versjon 2.2 i
+[SnowFinder-PRD-og-SRS.html](SnowFinder-PRD-og-SRS.html).
 
 FR-ID-ene er stabile og nummereres aldri om.
 
@@ -571,7 +575,8 @@ brukertesten trenger faste data, og fordi demodata ikke skal vises uten at de er
 - **Samme program, to kilder (v3):** `npm run data:demo` kjører dataprogrammet på de lagrede
   MET- og NVE-svarene i `tests/contract/fixtures/`. `npm run data` kjører det mot de ekte
   tjenestene. Begge skriver samme type datafil, og appen leser den på samme måte. Demodatasettet
-  (ca. 20–30 steder) er committet, så `npm run dev` virker uten at noe må kjøres først.
+  (ca. 20–30 steder) er committet, så `npm run dev:demo` virker uten at noe må kjøres først
+  *(rettet 2026-11-08: sa `npm run dev`, som fra v6 viser ekte data)*.
   - Demo har sin egen lille katalog, og fixtures dekker hvert sted i den. Da møter demokjøringen
     95 %-terskelen.
   - *(endret v4, 2026-10-22)* Terskelen teller steder med poengsum (FR-5). Før talte steder med
@@ -634,8 +639,9 @@ nysnø med NVE seNorges modellerte nysnø i etterkant, for katalogens steder ove
 
 ### 6.1 I omfang (Må ha)
 
-- Lokal demomodus med ferdige data, `.env.example` og en README som virker fra et rent klon
-  (§4.7, FR-30)
+- Lokal demomodus med ferdige data og en README som virker fra et rent klon (§4.7, FR-30)
+  *(rettet 2026-11-08: `.env.example` er fjernet fra lista, fordi v1 ikke har nøkler og fila ikke
+  finnes)*
 - Stedskatalog og et enkelt dataprogram (én planlagt jobb) med validering, atomisk publisering
   av datafilen, siste gyldige data ved nedetid (FR-6a) og datakvalitet per kjøring (§4.1,
   NFR-DQ1–3)
@@ -668,7 +674,8 @@ database. Begrunnelsen står i §0.
 
 ### 7.1 Ytelse
 
-- **NFR-1:** 95 % av filtersøk svarer på under 2 sekunder. Validerer FR-20.
+- **NFR-1:** 95 % av filtersøk svarer på under 2 sekunder. Validerer FR-20. *(2026-11-08: SRS-N-01 i
+  SnowFinder-PRD-og-SRS.html foreslår 500 ms. Forslaget venter på vedtak i gruppa.)*
 - **NFR-2:** Norgeskartet er interaktivt (kan panneres/zoomes) innen 3 sekunder på mobil, målt
   på en representativ midtsegment-telefon over 4G. Validerer FR-12.
 
@@ -743,8 +750,10 @@ er designet for å ikke *trenge* å samle inn mer enn den gjør.
 ### 8.2 Sikkerhet (safety)
 
 SnowFinder viser prognostiserte og modellerte forhold, aldri en garanti for føre eller
-skredsikkerhet. All tekst som kan tolkes som en sikkerhetsanbefaling unngås bevisst; stedssider
-for fjellområder lenker til Varsom.no (jf. Ethical Considerations i briefen).
+skredsikkerhet. All tekst som kan tolkes som en sikkerhetsanbefaling unngås bevisst, og
+forklaringssiden lenker til Varsom.no (FR-11, jf. Ethical Considerations i briefen). *(Rettet
+2026-11-08: teksten sa at stedssider for fjellområder lenker til Varsom.no. Det er ikke bygget, og
+FR-11 krever lenken på forklaringssiden.)*
 
 ### 8.3 Kostnad og drift
 
@@ -786,12 +795,14 @@ ID-ene er beholdt fra v1.
 - **SM-7 (Tilgjengelighet):** Automatisert axe-sjekk i CI rapporterer null kritiske
   WCAG 2.1 AA-brudd på filter, stedsside, forklaringsside og listevisning. Validerer FR-13/NFR-7.
 - **SM-8 (Sporbarhet):** 100 % av endringer i hovedgrenen kommer via Pull Requests (verifiserbart
-  i git-historikken). *(v3: krav om godkjenning fra et annet gruppemedlem er fjernet etter gruppas
-  beslutning 2026-10-07.)* Validerer prosesskravet i AGENTS.md.
+  i git-historikken). *(v3: krav om godkjenning fra et annet gruppemedlem ble fjernet etter gruppas
+  beslutning 2026-10-07. Rettet 2026-11-08: fra 2026-10-25 må en story-PR igjen godkjennes av et
+  annet gruppemedlem før merge, se AGENTS.md.)* Validerer prosesskravet i AGENTS.md.
 
 ### 9.2 Måles manuelt eller under demo (B)
 
-- **SM-1 (Ytelse):** 95 % av filtersøk under 2 sekunder. Validerer FR-20/NFR-1.
+- **SM-1 (Ytelse):** 95 % av filtersøk under 2 sekunder. Validerer FR-20/NFR-1. *(Forslag om
+  500 ms venter på vedtak, se NFR-1.)*
 - **SM-12 (Kartlasting, ny ID i v2):** Kartet er interaktivt innen 3 sekunder på en mobil over
   4G. Validerer NFR-2.
 - **SM-13 (Ferskhet, ny ID i v2):** Publiserte data er normalt under 90 minutter gamle. Det
