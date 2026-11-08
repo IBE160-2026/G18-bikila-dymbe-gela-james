@@ -36,5 +36,6 @@
 - [ ] 2026-11-02 [story-2-1b-toppnav-og-slidere](994-2026-11-02-21-00-52-story-2-1b-toppnav-og-slidere.md) — PR for 2.1b trenger review fra et gruppemedlem før merge
 - [ ] 2026-11-02 [story-2-1b-toppnav-og-slidere](994-2026-11-02-21-00-52-story-2-1b-toppnav-og-slidere.md) — Før npm run test:e2e:nettlesere og CI-jobben nettlesere inn i AGENTS.md via bmad-project-context
 - [x] 2026-11-08 [ux-poengfordeling](989-2026-11-08-00-00-36-ux-poengfordeling.md) — Bygg Story 2.5, delpoengstolper, etter spec-2-5-delpoengstolper.md (ready-for-dev) (løst 2026-11-08)
-- [ ] 2026-11-08 [ux-poengfordeling](989-2026-11-08-00-00-36-ux-poengfordeling.md) — Story 2.5: bekreft i CI på Ubuntu at delpoengraden holder ved 320 px med bred font
+- [x] 2026-11-08 [ux-poengfordeling](989-2026-11-08-00-00-36-ux-poengfordeling.md) — Story 2.5: bekreft i CI på Ubuntu at delpoengraden holder ved 320 px med bred font (løst 2026-11-08)
 - [ ] 2026-11-08 [ux-poengfordeling](989-2026-11-08-00-00-36-ux-poengfordeling.md) — Steg 4 (fargeforklaring på kartet) og steg 5 (mobil og kvalitet) i UX-forbedringen
+- [ ] 2026-11-08 [ux-poengfordeling](989-2026-11-08-00-00-36-ux-poengfordeling.md) — Story 2.5: PR #94 venter på at #93 merges og på godkjenning fra Joseph
