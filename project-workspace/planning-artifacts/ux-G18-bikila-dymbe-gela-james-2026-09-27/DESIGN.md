@@ -87,6 +87,12 @@ components:
     background: '{colors.surface-raised}'
     padding: '{spacing.4}'
     gap: '{spacing.2}'
+  filter-chip-removable:
+    radius: '{rounded.sm}'
+    borderColor: '{colors.accent}'
+    borderWidth: '1px'
+    background: '{colors.surface-raised}'
+    removeSize: '{spacing.7}'
   filter-slider:
     radius: '{rounded.full}'
     trackHeight: '4px'
@@ -115,8 +121,11 @@ components:
     shadow: '0 -2px 12px rgba(15,27,45,0.08)'
   banner-stale-data:
     radius: '{rounded.sm}'
-    background: '{colors.warning}'
-    textColor: '{colors.surface-raised}'
+    background: '{colors.surface-raised}'
+    textColor: '{colors.ink-primary}'
+    borderColor: '{colors.border-hairline}'
+    accentBorderColor: '{colors.warning}'
+    accentBorderWidth: '4px'
     padding: '{spacing.3} {spacing.4}'
   banner-demo:
     radius: '{rounded.sm}'
@@ -165,7 +174,7 @@ bruksmønstre («rett før en tur» og planlegging kvelden før); dette kan snus
   | Ufullstendige data | ingen | Ufullstendige data | `{colors.ink-secondary}` som ren tekst, ingen badge | – |
 - **Danger/Warning/Success** er strengt semantiske og aldri dekorative: danger til feil og
   utdaterte/fjernede data, warning til «siste kjente data» når dataene er eldre enn normalt
-  (alltid med hvit tekst, 5,93:1; `{colors.ink-primary}` på warning gir bare 2,92:1),
+  (som kant på banneret, ikke som bakgrunn; `{colors.ink-primary}` på warning gir bare 2,92:1),
   success til bekreftelser. *(v2: snøvarsel og tilbakemelding er Ikke i v1, så success har
   ingen fast bruk ennå; tokenet beholdes.)*
 - Unngå: å bruke SnowScore-skalaens blåtoner til noe som ikke er en SnowScore (ville lære
@@ -280,6 +289,14 @@ Navnene er de samme som i Komponentmønstre i EXPERIENCE.md, som beskriver atfer
     Aktiv chip er fylt med `{colors.accent}` og har `{colors.surface-raised}` tekst.
   - Chipsene for aktive krav på det lukkede bunn-arket er ren tekst i `meta` med
     `{colors.accent}`-kant og `{rounded.sm}`, ikke knapper. Sirkelen er forbeholdt SnowScore.
+  - Chipsene for aktive krav øverst i panelet *(2026-11-07)* har samme tekst og kant
+    (`{components.filter-chip-removable}`) og en ×-knapp til høyre, `{spacing.7}` × `{spacing.7}`
+    som trykkmål, med × i `{colors.ink-secondary}`. Chipsene brytes over flere linjer, aldri sideveis rulling.
+  - Gruppeoverskriftene «Vær» og «Sted» *(2026-11-07)* står i `heading` i liten størrelse med
+    `{spacing.5}` over, uten strek eller egen flate, så panelet fortsatt er ett kort.
+  - «Mer om skydekke» og «Mer om NVE-dataene» *(2026-11-07)* er tekstknapper i `meta` og
+    `{colors.accent}` med en pil (▸ lukket, ▾ åpen), minst `{spacing.7}` høye. Teksten under står i
+    `meta` og `{colors.ink-secondary}`, som de andre hjelpetekstene.
   - «Filter», «Nullstill» og «Bruk forslaget» er knapper, minst `{spacing.7}` høye, med
     `{colors.accent}`-kant og `{rounded.sm}`. «Bruk forslaget» og åpen «Filter» er fylt med
     `{colors.accent}`; «Nullstill» er bare kantet.
@@ -305,10 +322,13 @@ Navnene er de samme som i Komponentmønstre i EXPERIENCE.md, som beskriver atfer
   `{colors.ink-secondary}`.
 - **«Tilbake»** — En vanlig lenke i `{colors.accent}` nederst på stedssiden, minst `{spacing.7}` ×
   `{spacing.7}` som trykkmål.
-- **Banner-stale-data** — Full bredde, `{colors.warning}` bakgrunn og hvit tekst
-  (`{components.banner-stale-data.textColor}` = `{colors.surface-raised}`, 5,93:1). Vises når de
-  nyeste dataene er eldre enn normalt (over 90 min), for eksempel fordi en datakilde er nede.
-  *(Ikke bygget ennå, Story 1.6.)*
+- **Banner-stale-data** — Full bredde, `{colors.surface-raised}` flate med tynn
+  `{colors.border-hairline}`-kant, en 4 px `{colors.warning}`-kant til venstre og
+  `{colors.ink-primary}` tekst (16,6:1). Stripen skiller det fra demobanneret, og flaten holder
+  teksten lett å lese *(Aksel, 2026-11-07, via `bmad-ux`: erstatter hvit tekst på warning fra 2026-10-28)*. Vises på
+  Utforsk og stedssiden når datafila sist ble publisert for over 90 min siden (`generert`), for
+  eksempel fordi timesjobben har stoppet. En frossen prognose fra MET i en fil som publiseres som
+  normalt, gir ikke banner. Vises ikke sammen med «Ingen ferske data» *(Story 1.6b, 2026-11-07)*.
 - **Demobanner** *(v2)* — Full bredde, `{colors.surface-sunken}` bakgrunn med tynn
   `{colors.ink-secondary}`-kant og `{colors.ink-primary}` tekst: «Demodata – ikke ekte prognoser».
   Bevisst nøytral og ikke warning-farget, så den ikke forveksles med banneret for gamle data.
