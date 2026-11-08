@@ -118,9 +118,13 @@
 - source_spec: `project-workspace/implementation-artifacts/spec-1-6-hold-tjenesten-oppe.md`
   summary: Oppdater AD-2 i arkitekturen (begge kopier, på engelsk, via `bmad-architecture`): linje 110 sier «v1 makes one attempt per location», men `fetch.ts` prøver nå et kall inntil tre ganger (1 s og så 2 s pause, gjennom kildens kallport) ved nettverksfeil, 429 og 5xx, og aldri ved tidsavbrudd eller andre 4xx. Oppdater også `banner-stale-data` i DESIGN.md (begge kopier, via `bmad-ux`): `warning`-bakgrunn med `ink-primary`-tekst gir 2,92:1, under WCAG AA, så banneret bruker `surface-raised`-bakgrunn, tykk venstrekant i `warning` og `ink-primary`-tekst (16,6:1). Teksten er «Viser siste kjente data fra kl. HH:MM», med dato foran når fila er fra en annen dag, og grensen er 90 min regnet fra `generert`.
   evidence: Story 1.6, beslutningen om bannerets farger (2026-10-29) i spec-en. `SnowFinder-Arkitektur.md` linje 110 og `SnowFinder-DESIGN.md` stemmer ikke lenger med koden.
+  resolved: Story 1.6b (2026-11-07). AD-2 i begge kopier beskriver nå de nye forsøkene, også at tidsavbrudd ved tilkobling ikke prøves igjen. Bannerfargene er avgjort via `bmad-ux` (Aksel, 2026-11-07): fargene fra 1.6 i `src/App.css` gjelder (lys flate, `ink-primary`-tekst og `warning`-kant til venstre), og `banner-stale-data` i DESIGN.md (begge kopier) er rettet etter dem. DESIGN.md og EXPERIENCE.md sier ikke lenger «Ikke bygget ennå».
 - source_spec: `project-workspace/implementation-artifacts/spec-1-6-hold-tjenesten-oppe.md`
   summary: Vurder et tidsbudsjett per kall eller per kjøring i `scripts/pipeline/fetch.ts`, så trege 5xx- eller 429-svar like under tidsavbruddet på 20 s ikke gir tre forsøk hver og en kjøring på rundt en time, som kolliderer med neste timesjobb (Story 1.11).
   evidence: maybe-false, ville vært medium. Gjennomgangen av 1.6 (Blind Hunter, Edge Case Hunter). Tidsavbrudd prøves ikke på nytt av nettopp denne grunnen, men et 5xx-svar etter 19 s gjør det. Avgjøres når 1.11 går: se på `varighetMs` i kjøringsrapportene fra en periode der MET er ustabil.
+- source_spec: `project-workspace/implementation-artifacts/spec-1-6b-rettinger-etter-review.md`
+  summary: Vurder et budsjett for nye forsøk per kjøring i `scripts/pipeline/fetch.ts`, så også et kall som fikk tidsavbrudd (20 s) eller tidsavbrudd ved tilkobling kan prøves igjen så lenge budsjettet rekker. I dag prøves de aldri igjen.
+  evidence: Funn 3 i [reviewen av PR #77](https://github.com/IBE160-2026/G18-bikila-dymbe-gela-james/pull/77#issuecomment-6546891809). Med 300 steder tåler 95 %-terskelen 15 feil, og hvert stopp på 20 s kan ta med seg opptil 5 kall, så rundt 80 s stopp hos MET kan koste publiseringen den timen. Utsatt av Aksel 2026-11-07 (Story 1.6b).
 - source_spec: `project-workspace/implementation-artifacts/spec-1-11-timesjobb-og-publisering.md`
   summary: Kjør `data.yml` for hånd rett etter merge og se at reserven virker. Framtving én rød kjøring og se at `data-run-log` har kvalitetsrapporten. Prøv Pages-veien og en direkte lenke til `/sted/<id>` første gang etter at Pages står på «GitHub Actions».
   evidence: Gjennomgangen av 1.11 (Verification Gap). Disse veiene krever ekte tilstand på GitHub og kan ikke kjøres på en PR uten å publisere. Per 2026-10-31 viser API-et `has_pages: false`.
@@ -188,3 +192,11 @@
 - source_spec: `project-workspace/implementation-artifacts/spec-1-11g-timer.md`
   summary: Bytt sovingen i `data-timer.yml` med `environment: data-timer` med wait timer på 55 min, så ingen maskin er opptatt mens timeren venter.
   evidence: Bare admin kan lage environments med wait timer, og i repoet er det bare `bipa` og `TesAgi-HiMolde`. Kontrollen av alderen skal stå igjen, så kjeden ikke går i løkke om wait timeren mangler (`sprint-change-proposal-2026-11-04-timer.md`).
+
+- source_spec: `project-workspace/implementation-artifacts/spec-1-6b-rettinger-etter-review.md`
+  summary: Regn også `ETIMEDOUT` og en `AggregateError` fra flere adresser som tidsavbrudd ved tilkobling i `fetch.ts`, hvis de forekommer mot MET og NVE.
+  evidence: Uverifisert (maybe-false, ville vært medium). Reviewen av #77 målte bare `UND_ERR_CONNECT_TIMEOUT` på Node 24. Avgjøres med årsakene og `varighetMs` i kvalitetsrapporten fra ekte kjøringer der en kilde er nede.
+
+- source_spec: `project-workspace/implementation-artifacts/spec-1-6b-rettinger-etter-review.md`
+  summary: Presiser NFR-3 og FR-6b i PRD-en (begge kopier) slik DESIGN.md og EXPERIENCE.md nå gjør: banneret følger `generert`, en frossen MET-prognose gir ikke banner, og nye forsøk gjelder nettverksfeil, 429 og 5xx.
+  evidence: Funn 10 i gjennomgangen av 1.6b. En endring i PRD-en går via `bmad-correct-course`, og presiseringen endrer ikke kravet.
