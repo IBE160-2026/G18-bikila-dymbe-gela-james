@@ -58,4 +58,5 @@
 - [ ] 2026-11-08 [prd-srs-v2-2](987-2026-11-08-14-15-55-prd-srs-v2-2.md) — Epics-funn (FR-30-linja, mørketid i Story 4.2, 1.8b uten FR) i egen PR etter merge av #83, #85, #90–#94
 - [ ] 2026-11-08 [prd-srs-v2-2](987-2026-11-08-14-15-55-prd-srs-v2-2.md) — Stram data-workflow.test.ts til 10/50 min i egen story
 - [ ] 2026-11-08 [prd-srs-v2-2](987-2026-11-08-14-15-55-prd-srs-v2-2.md) — Oppdater SRS-F-34 når #90 (1.6b) merges, og SRS-F-15 når fargeforklaringen er bygget
-- [ ] 2026-11-08 [merge-av-apne-pr](986-2026-11-08-merge-av-apne-pr.md) — #83 (1.8b) og #85 (3.9) trenger godkjenning og løsing av flettekonflikter før merge; sett 3.9 til done etterpå
+- [x] 2026-11-08 [merge-av-apne-pr](986-2026-11-08-merge-av-apne-pr.md) — #83 (1.8b) og #85 (3.9) trenger godkjenning og løsing av flettekonflikter før merge; sett 3.9 til done etterpå (løst 2026-11-09: konfliktene er løst, godkjenning gjenstår, se neste punkt)
+- [ ] 2026-11-09 [merge-av-apne-pr](986-2026-11-08-merge-av-apne-pr.md) — #83 (1.8b) og #85 (3.9) er oppdatert mot main og grønne, men venter på «Approve» fra et annet gruppemedlem; merge så #83 → #85 og sett 1.8b og 3.9 til done i en docs-PR
