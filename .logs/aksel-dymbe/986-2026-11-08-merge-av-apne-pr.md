@@ -20,3 +20,23 @@ Merge de åpne PR-ene etter gruppas review, én om gangen i rekkefølgen #89 →
 
 ### Åpne punkter
 - #83 (1.8b) og #85 (3.9) trenger godkjenning og løsing av flettekonflikter før merge; sett 3.9 til `done` etterpå.
+
+## 2026-11-09 kl. 06:03 — Aksel Dymbe
+
+### Oppgave
+Oppdatere #83 og #85 mot main så de er klare når godkjenningen kommer, vise konflikter i kode, DESIGN.md, EXPERIENCE.md og Epics-fila før de løses, beholde alt i loggfilene, og merge etterpå.
+
+### Plan
+- Flett main inn i begge greinene, vis konfliktene og løs dem etter Aksels valg.
+- Vent på grønne sjekker, og vent på «Approve» fra et annet gruppemedlem før merge (AGENTS.md).
+
+### Resultat
+- #97 (statusoppdatering) merget som `731931d`; main grønn.
+- #83 (1.8b) oppdatert som `1ce2f05`: «Fargeforklaring» fra main og ny «Listerad (destinasjonskort)» fra #83 i DESIGN.md og EXPERIENCE.md (begge kopiene like). `fremdriftsplan.md` fra main, #83s tillegg under 2. november (kveld).
+- #85 (3.9) oppdatert som `1364259`: begge blokkene i `filter.css` (+100 linjer mot main), `epic-3-context.md` fra main pluss linjen om «Oppfyller ikke filteret» og `aria-live` for antall forslag. Lokalt 159 E2E-tester grønne.
+- Loggfilene: alle linjene beholdt.
+- Alle sjekkene er grønne på begge PR-ene, men ingen fikk «Approve» i løpet av sju timers venting (sjekket hvert tiende minutt til 06:02). Derfor er ingen av dem merget, og 1.8b og 3.9 er ikke satt til `done`.
+
+### Åpne punkter
+- #83 og #85 venter på «Approve» fra et annet gruppemedlem; merge så #83 → #85 og sett 1.8b og 3.9 til `done` i en docs-PR.
+- SRS-F-34 må oppdateres nå som #90 (1.6b) er merget (står alt i `issues.md`).
