@@ -298,6 +298,13 @@ i oppgavene under gjelder det. Endres fila, må fasiten sjekkes på nytt.
 Teams med skjermdeling. Én leder testen og én tar notater. Deltakerne samtykker muntlig til at
 notatene brukes anonymt i sluttrapporten.
 
+**Minimal test for SM-3** *(2026-11-14, PRD §9.3)*. SM-3 er Må ha. Blir femperstesten ikke
+gjennomført, måles SM-3 i en minimal test med minst tre personer, der minst 2 av 3 skal klare
+oppgave 3. Den minimale testen har samme introduksjon, samme demodata og samme måling som oppgave 3
+i tabellen under: deltakeren leser forklaringssiden og forklarer så Gaustatoppens poengsum med egne
+ord. De andre oppgavene og SUS-skjemaet kan tas med, men SM-2, SM-4 og SM-16 måles bare i
+femperstesten. Femperstesten er fortsatt planen, og den minimale testen er reserven.
+
 **Gjennomføring (ca. 20 min per person).** Kort introduksjon uten å forklare appen, så de fem
 oppgavene med tenk-høyt. Testlederen hjelper bare når deltakeren står fast i over to minutter, og
 noterer da oppgaven som «med hjelp». Til slutt SUS-skjemaet og to åpne spørsmål: «Hva var
@@ -312,7 +319,7 @@ i WebKit i CI, men ikke i ekte Safari.
 |---|---|---|---|
 | 1 | «Finn et skisted med minst 10 cm nysnø og vind høyst 10 m/s, og åpne det.» Riktig svar: Trysil (12,6 cm nysnø, vind 9,5 m/s, skisted). | Tid, og om den fullføres uten hjelp | SM-2: minst 4 av 5 på under 2 minutter uten hjelp |
 | 2 | «Finn ut når det er best å dra til Hafjell de neste to dagene.» | Om deltakeren finner kortet «Beste skivindu» | Minst 4 av 5 uten hjelp |
-| 3 | «Forklar med egne ord hvorfor Gaustatoppen har den poengsummen den har.» (58, Godt) | Om forklaringen nevner nysnø, nedbør som kommer som snø og/eller temperatur (delpoengene A, B og C). Vind teller ikke, fordi SnowScore ikke måler vind. | SM-3: minst 4 av 5 etter å ha lest forklaringssiden |
+| 3 | «Forklar med egne ord hvorfor Gaustatoppen har den poengsummen den har.» (58, Godt) | Om forklaringen nevner nysnø, nedbør som kommer som snø og/eller temperatur (delpoengene A, B og C). Vind teller ikke, fordi SnowScore ikke måler vind. | SM-3: minst 4 av 5 etter å ha lest forklaringssiden (minimal test: minst 2 av 3) |
 | 4 | «Send søket ditt til en venn, slik at hen ser de samme stedene.» | Om deltakeren kopierer adressen med filteret | Minst 4 av 5 uten hjelp |
 | 5 | «Er snøen i Kirkenes målt i dag, eller er det en prognose? Hvor ferske er tallene?» Kirkenes er det eneste utdaterte stedet i demodataene (4 t). | Om deltakeren ser «Prognose», dataalderen og «Utdatert» | SM-4: minst 4 av 5 uten å bli fortalt det |
 

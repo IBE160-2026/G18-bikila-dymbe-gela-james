@@ -68,9 +68,9 @@ FR-32: Søk på stedsnavn (i nettleseren, shared/) — Må ha (v5, 2026-11-04)
 
 ### Ikke-funksjonelle krav
 
-NFR-1: 95% av filtersøk < 2 sekunder (filtrering i nettleseren over ~300 steder)
+NFR-1: 95 % av endringene i filteret eller søkefeltet oppdaterer trefflisten < 500 ms, målt manuelt (filtrering i nettleseren over ~300 steder; endret fra 2 s 2026-11-14)
 NFR-2: Norgeskartet interaktivt < 3 sekunder på mobil
-NFR-3: Datafriskhet — normalt < 90 min; "utdatert" 3–12 t; fjernet fra visning > 12 t
+NFR-3: Datafriskhet — under 3 t, mål rundt 1 t i normal drift; "utdatert" 3–12 t; fjernet fra visning > 12 t (endret fra «normalt < 90 min» 2026-11-14)
 NFR-4: Tjenesten fungerer med siste gyldige data ved datakilde-nedetid
 NFR-DQ1: Datakontrakt — MET/NVE-svar valideres mot Zod-skjemaer, dokumentert som dataordbok
 NFR-DQ2: Kvalitetsrapport per kjøring (i datafilen, eller i jobbloggen/artifact ved feilet kjøring)
