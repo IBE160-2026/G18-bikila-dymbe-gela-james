@@ -64,10 +64,10 @@
 - [ ] 2026-11-08 [prd-srs-v2-2](987-2026-11-08-14-15-55-prd-srs-v2-2.md) — Oppdater SRS-F-34 når #90 (1.6b) merges, og SRS-F-15 når fargeforklaringen er bygget
 - [x] 2026-11-08 [merge-av-apne-pr](986-2026-11-08-merge-av-apne-pr.md) — #83 (1.8b) og #85 (3.9) trenger godkjenning og løsing av flettekonflikter før merge; sett 3.9 til done etterpå (løst 2026-11-09: konfliktene er løst, godkjenning gjenstår, se neste punkt)
 - [ ] 2026-11-09 [merge-av-apne-pr](986-2026-11-08-merge-av-apne-pr.md) — #83 (1.8b) og #85 (3.9) er oppdatert mot main og grønne, men venter på «Approve» fra et annet gruppemedlem; merge så #83 → #85 og sett 1.8b og 3.9 til done i en docs-PR
-- [ ] 2026-11-14 [prd-tilbakemelding](985-2026-11-14-22-57-22-prd-tilbakemelding.md) — SnowFinder-PRD-og-SRS.html må følge PRD-en: SRS-N-01 vedtatt, SRS-N-03, SM-13 og §7 etter NFR-3 og beslutning 1
-- [ ] 2026-11-14 [prd-tilbakemelding](985-2026-11-14-22-57-22-prd-tilbakemelding.md) — Epics: kravinventaret sier fortsatt NFR-1 2 s og NFR-3 «normalt < 90 min»
-- [ ] 2026-11-14 [prd-tilbakemelding](985-2026-11-14-22-57-22-prd-tilbakemelding.md) — EXPERIENCE.md: beskriv den minimale brukertesten for SM-3 (minst tre personer)
-- [ ] 2026-11-14 [prd-tilbakemelding](985-2026-11-14-22-57-22-prd-tilbakemelding.md) — Sett Story 3.9 til done i sprint-status.yaml og oppdater «Hvor er vi nå?» i fremdriftsplanen (PR #85 er merget)
+- [x] 2026-11-14 [prd-tilbakemelding](985-2026-11-14-22-57-22-prd-tilbakemelding.md) — SnowFinder-PRD-og-SRS.html må følge PRD-en: SRS-N-01 vedtatt, SRS-N-03, SM-13 og §7 etter NFR-3 og beslutning 1 (løst 2026-11-14: PR #100)
+- [x] 2026-11-14 [prd-tilbakemelding](985-2026-11-14-22-57-22-prd-tilbakemelding.md) — Epics: kravinventaret sier fortsatt NFR-1 2 s og NFR-3 «normalt < 90 min» (løst 2026-11-14: PR #100)
+- [x] 2026-11-14 [prd-tilbakemelding](985-2026-11-14-22-57-22-prd-tilbakemelding.md) — EXPERIENCE.md: beskriv den minimale brukertesten for SM-3 (minst tre personer) (løst 2026-11-14: PR #100)
+- [x] 2026-11-14 [prd-tilbakemelding](985-2026-11-14-22-57-22-prd-tilbakemelding.md) — Sett Story 3.9 til done i sprint-status.yaml og oppdater «Hvor er vi nå?» i fremdriftsplanen (PR #85 er merget) (løst 2026-11-14: PR #100)
 - [ ] 2026-11-14 [prd-tilbakemelding](985-2026-11-14-22-57-22-prd-tilbakemelding.md) — PR #83 trenger ny godkjenning på flettecommiten 6d7b8a7 før merge
 - [ ] 2026-11-14 [prd-tilbakemelding](985-2026-11-14-22-57-22-prd-tilbakemelding.md) — Gruppa bekrefter PRD-beslutning 1–6 fra 2026-11-14 på neste møte
 - [ ] 2026-11-14 [prd-tilbakemelding](985-2026-11-14-22-57-22-prd-tilbakemelding.md) — Sluttrapport og presentasjon (F5, forslag 2026-11-23) er ikke startet
