@@ -398,7 +398,8 @@ jobben som vanlig *(ny 2026-11-02)*
 **And** hver kjøring på `main` som har hentet data, også en avvist, starter `data-timer.yml`, som
 venter til dataene er rundt 55 minutter gamle (minst 30 minutter) og så starter `data.yml`. Den
 starter ingenting når dataene er under 50 minutter gamle, og det går bare én timer om gangen. Så
-holder dataene seg under 90 minutter selv når GitHub dropper planlagte kjøringer; timeplanen er
+holder dataene seg under 3 timer, og i normal drift rundt én time gamle (NFR-3), selv når GitHub
+dropper planlagte kjøringer; timeplanen er
 reserve hvis kjeden stopper *(ny 2026-11-04)*
 **And** en kjøring uten `latest.json` publiserer ingenting, så grenen beholder siste gyldige fil, og
 produksjon viser aldri demodata (AD-10)
@@ -662,7 +663,7 @@ So that jeg bare ser steder som faktisk oppfyller kravene mine. Realiserer FR-20
 **When** jeg setter minimum nysnø, maks vind og temperaturgrense i filterpanelet
 **Then** viser kart og liste bare steder som oppfyller ALLE valgte kriterier (kombinert med OG)
 **And** filtreringen skjer i nettleseren med den delte `shared/filter.ts`, og 95 % av
-filtersøk svarer på under 2 sekunder (NFR-1)
+endringene i filteret oppdaterer trefflisten på under 500 ms, målt manuelt (NFR-1)
 **And** en fasittabell (`tests/golden/filter.json`, 5–8 steder, flere kombinasjoner) kjøres som
 CI-blokkerende test mot `shared/filter.ts`
 **And** nysnø-cm-anslaget bruker samme faste 1mm≈1cm-omregning som forklaringssiden
