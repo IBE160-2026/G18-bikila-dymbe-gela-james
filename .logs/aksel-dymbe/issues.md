@@ -42,6 +42,9 @@
 - [ ] 2026-11-04 [story-1-11c-e2e-mot-demomodus](995-2026-11-01-00-16-06-story-1-11c-e2e-mot-demomodus.md) — Bytt sovingen i data-timer.yml med environment og wait timer når en admin har laget det
 - [ ] 2026-11-04 [story-1-11c-e2e-mot-demomodus](995-2026-11-01-00-16-06-story-1-11c-e2e-mot-demomodus.md) — UX-steg 2 (filteret): planen venter på Aksels godkjenning
 - [ ] 2026-11-04 [story-1-11c-e2e-mot-demomodus](995-2026-11-01-00-16-06-story-1-11c-e2e-mot-demomodus.md) — PR #83, #85 og #87 venter på Josephs godkjenning; PR #86 på grønn CI og Aksels ja
+- [ ] 2026-11-04 [sok-pa-stedsnavn](993-2026-11-04-22-43-41-sok-pa-stedsnavn.md) — Gruppa bekrefter «til beslutning»-punktene i PRD/SRS v2: søk som Må ha, valg av dag ikke i v1, skala som arkitekturforsikring
+- [x] 2026-11-04 [sok-pa-stedsnavn](993-2026-11-04-22-43-41-sok-pa-stedsnavn.md) — Story 3.9 trenger review fra et gruppemedlem før merge (løst 2026-11-14: PR #85 er merget)
+- [ ] 2026-11-04 [sok-pa-stedsnavn](993-2026-11-04-22-43-41-sok-pa-stedsnavn.md) — Fargeforklaring for kartet (SRS-F-15 i v2) trenger eget endringsforslag
 - [ ] 2026-11-07 [prd-srs-v2-1](993-2026-11-07-12-29-57-prd-srs-v2-1.md) — Dagvalg og skala i PRD/SRS §7 er fortsatt til beslutning hos gruppa
 - [ ] 2026-11-07 [prd-srs-v2-1](993-2026-11-07-12-29-57-prd-srs-v2-1.md) — PR #83 (1.8b) og #85 (3.9) venter på godkjenning fra et gruppemedlem
 - [ ] 2026-11-07 [prd-srs-v2-1](993-2026-11-07-12-29-57-prd-srs-v2-1.md) — Rekrutter minst fem testpersoner til brukertesten 12.–16. november
@@ -65,4 +68,5 @@
 - [ ] 2026-11-08 [prd-srs-v2-2](987-2026-11-08-14-15-55-prd-srs-v2-2.md) — Epics-funn (FR-30-linja, mørketid i Story 4.2, 1.8b uten FR) i egen PR etter merge av #83, #85, #90–#94
 - [ ] 2026-11-08 [prd-srs-v2-2](987-2026-11-08-14-15-55-prd-srs-v2-2.md) — Stram data-workflow.test.ts til 10/50 min i egen story
 - [ ] 2026-11-08 [prd-srs-v2-2](987-2026-11-08-14-15-55-prd-srs-v2-2.md) — Oppdater SRS-F-34 når #90 (1.6b) merges, og SRS-F-15 når fargeforklaringen er bygget
-- [ ] 2026-11-08 [merge-av-apne-pr](986-2026-11-08-merge-av-apne-pr.md) — #83 (1.8b) og #85 (3.9) trenger godkjenning og løsing av flettekonflikter før merge; sett 3.9 til done etterpå
+- [x] 2026-11-08 [merge-av-apne-pr](986-2026-11-08-merge-av-apne-pr.md) — #83 (1.8b) og #85 (3.9) trenger godkjenning og løsing av flettekonflikter før merge; sett 3.9 til done etterpå (løst 2026-11-09: konfliktene er løst, godkjenning gjenstår, se neste punkt)
+- [ ] 2026-11-09 [merge-av-apne-pr](986-2026-11-08-merge-av-apne-pr.md) — #83 (1.8b) og #85 (3.9) er oppdatert mot main og grønne, men venter på «Approve» fra et annet gruppemedlem; merge så #83 → #85 og sett 1.8b og 3.9 til done i en docs-PR

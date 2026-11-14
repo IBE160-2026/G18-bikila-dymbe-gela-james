@@ -33,6 +33,8 @@ test('a first load with only too-old live data explains it, offers a reload and 
   await expect(page.getByRole('heading', { level: 2, name: 'Ingen ferske data' })).toBeVisible()
   await expect(page.getByRole('button', { name: 'Last inn på nytt' })).toBeVisible()
   await expect(page.getByRole('navigation', { name: 'Visning' })).toHaveCount(0)
+  // Story 3.9: with no places there is nothing to search for either.
+  await expect(page.getByRole('combobox', { name: 'Søk etter sted' })).toHaveCount(0)
   // The page-wide status region existed while loading and was filled in afterwards, so it is announced.
   await expect(page.getByRole('status').filter({ hasText: 'Ingen ferske data' })).toHaveCount(1)
 
@@ -56,4 +58,30 @@ test('an open tab marks places «Utdatert» and then shows the empty state as th
   await page.clock.fastForward('09:00:00')
   await expect(page.locator('a.liste-rad')).toHaveCount(0)
   await expect(page.getByRole('status').filter({ hasText: 'Ingen ferske data' })).toHaveCount(1)
+})
+
+test('a place older than 12 h is gone from the search too, while the other places are still found', async ({
+  page,
+  context,
+}) => {
+  await serveLive(context)
+  // Story 3.9 (NFR-3): only Gaustatoppen is 13 h old; the rest of the demo places are fresh.
+  const gammel = {
+    ...JSON.parse(live),
+    steder: JSON.parse(live).steder.map((sted: { id: string }) =>
+      sted.id === 'gaustatoppen' ? { ...sted, kildeTidspunkt: new Date(ref - 13 * HOUR_MS).toISOString() } : sted,
+    ),
+  }
+  await context.route('**/data/demo.json', (route) => route.fulfill({ status: 200, json: gammel }))
+  await page.clock.install({ time: new Date(ref + 1 * HOUR_MS) })
+  await page.goto('/?visning=liste')
+  await expect(page.locator('a.liste-rad')).toHaveCount(23)
+
+  const felt = page.getByRole('combobox', { name: 'Søk etter sted' })
+  const forslag = page.getByRole('listbox', { name: 'Forslag' }).getByRole('option')
+  await felt.fill('gaus')
+  await expect(forslag).toHaveCount(0)
+  await expect(page.locator('.sted-sok-ingen')).toHaveText('Fant ingen steder som heter «gaus». SnowFinder dekker 23 steder i Norge.')
+  await felt.fill('tromso')
+  await expect(forslag).toHaveText([/^Tromsø,/, /^Tromsø Alpinpark,/])
 })

@@ -49,3 +49,17 @@ Aksel limte inn hele vurderingen fra ChatGPT: enig i søk som Må ha, med et for
 > Spørsmål: Godkjenner du endringsforslaget? Svar: «Godkjenn og bygg»
 
 **Svar (kort):** PRD, epics, EXPERIENCE.md (begge kopier), sprint-status, sprintplan og deferred-work ble oppdatert på grenen `docs/endringsforslag-sok`.
+
+### 8 (valg, `bmad-build`)
+> Spørsmål: Spec-en er over 1600 tokens. Svar: «Behold hele (Anbefalt)». Spørsmål: Godkjenner du spec-en? Svar: «Godkjenn og fortsett»
+
+### 9
+> husk at cloude code jobber akkuratt nå via vs code. viktig at dere ikke jobber dobbelt?
+
+**Svar (kort):** Claude stoppet før koden ble skrevet og spurte hva VS Code-økta gjorde. Aksel limte inn at den jobber med timesjobben (`story/1-11g-timer`). Claude fortsatte med søket og lot `.github/workflows/` og dataprogrammet være, men sa fra om mulige flettekonflikter i `sprint-status.yaml` og `ai-log/logg.md`.
+
+### 10 (valg, etter gjennomgangen)
+> Spørsmål: Skal treffregelen endres så «granvin» finner «Haugsåsen (Granvin Alpin)»? Svar: «Alle tegn utenom bokstav/tall (Anbefalt)». Spørsmål: Bygge på nytt eller rette i koden? Svar: «Rett i koden (Anbefalt)»
+
+**Svar (kort):** Tre gjennomganger (Blind Hunter, Edge Case Hunter og Verification Gap) ga 17 funn. 6 ble rettet: ordgrensen, forslagslisten under bunn-arket på lave skjermer, rulling til markert forslag, Escape med bare mellomrom, en test av at viste steder ikke merkes, og en test av at steder eldre enn 12 timer ikke finnes i søket. 11 ble avvist med begrunnelse i spec-ens Review Triage Log.
+

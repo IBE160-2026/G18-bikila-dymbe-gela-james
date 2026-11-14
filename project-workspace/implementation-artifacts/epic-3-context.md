@@ -55,7 +55,7 @@ Brukeren skal kunne sette presise krav og få bare de stedene som oppfyller alle
 - **Slidere:** Alle fem starter på «Alle» til venstre og blir strengere mot høyre. Piltast høyre gjør kravet strengere, og opp/ned følger tallet. Tallet vises ved gripepunktet. De har `role="slider"` og `aria-valuenow`, og de kan betjenes som ordinære skjemafelt.
 - **Stedstype:** tre avkrysningsbokser. Ingen avkrysset betyr «Alle».
 - **Null treff:** Teksten sier for eksempel «Ingen treff. Prøv vind høyst 8 m/s.» med «Bruk forslaget», som setter verdien og flytter fokus til slideren, og «Nullstill» ved siden av. Det blir aldri en tom flate uten handling.
-- **Søkefelt (3.9):** Feltet har den synlige etiketten «Søk etter sted» og står mellom Kart | Liste og kartet eller listen, aldri i bunn-arket. Det følger combobox-mønsteret (`aria-expanded`, `aria-controls`, `aria-activedescendant`). Escape lukker listen, og andre trykk tømmer feltet. Uten treff står «Fant ingen steder som heter «…». SnowFinder dekker N steder i Norge.» Feltet skjules når ingen steder har ferske data.
+- **Søkefelt (3.9):** Feltet har den synlige etiketten «Søk etter sted» og står mellom Kart | Liste og kartet eller listen, aldri i bunn-arket. Det følger combobox-mønsteret (`aria-expanded`, `aria-controls`, `aria-activedescendant`). Escape lukker listen, og andre trykk tømmer feltet. Antall forslag annonseres med `aria-live="polite"`. Uten treff står «Fant ingen steder som heter «…». SnowFinder dekker N steder i Norge.» Feltet skjules når ingen steder har ferske data.
 - **Tilgjengelighetsgulv:** Trykkmål er minst 44×44 px, også for gripepunkter, hurtigvalg og ×-knapper. Kontrasten er minst 4,5:1, og fokusringen er i `accent`. `prefers-reduced-motion` stopper arkets animasjon. Feilmeldinger kobles med `aria-describedby`. Mikroteksten lover aldri snø.
 
 ## Cross-Story Dependencies
@@ -64,5 +64,6 @@ Brukeren skal kunne sette presise krav og få bare de stedene som oppfyller alle
 - 3.4 forutsetter filtrene i hurtigvalgene. «Sol etter snøfall» trenger solfilteret fra 3.5.
 - 3.8 leser `nveNysnoSisteDognMm` fra dataprogrammet (1.3, 1.5). Verdien kan mangle når NVE har feilet.
 - 3.9 deler datalaget med kart og liste, og åpner stedssiden med søket i adressen som i 3.2b.
+- 3.9 bruker filteret fra 3.1 til å merke steder som «Oppfyller ikke filteret» i forslagene.
 - Epic 2: Lenken «Slik beregner vi SnowScore» ved Kart | Liste vises bare under 768 px og må overleve endringer i layouten.
 - Utsatte funn fra gjennomgangene står i `deferred-work.md`. Les dem før du endrer filteret.
