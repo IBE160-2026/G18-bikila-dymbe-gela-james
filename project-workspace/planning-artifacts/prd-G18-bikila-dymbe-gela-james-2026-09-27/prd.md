@@ -91,13 +91,13 @@ sjekker før de bestemmer seg for hvor de skal denne helgen.
   - **Inngangstilstand:** Ingen konto. Har allerede besøkt stedssiden for Oppdal én gang.
   - **Sti:** (1) Trykker «Varsle meg» på stedssiden. (2) Setter terskel: minst 15 mm nysnø.
     (3) Bekrefter — ingen navn, e-post eller passord kreves, bare en enhets-registrering via en
-    Edge Function. (4) To dager senere: push-varsel på mobilen når pipelinen har publisert data
+    Edge Function. (4) To dager senere: push-varsel på mobilen når dataprogrammet har publisert data
     som oppfyller terskelen.
   - **Klimaks:** Varselet kommer akkurat når kravet er oppfylt, ikke før og ikke duplisert.
   - **Oppløsning:** Han trykker på varselet, havner rett på stedssiden, og kan melde seg av med
     ett trykk derfra.
   - **Edge case:** Terskelen oppfylles flere døgn på rad — han får maks ett varsel per regel per
-    døgn, ikke ett per pipeline-kjøring (hver time).
+    døgn, ikke ett per kjøring av dataprogrammet (hver time).
 
 - **UJ-3. Kelly, som bruker skjermleser, finner et sted uten å bruke kartet.**
   - **Person + kontekst:** Kelly er turentusiast og bruker skjermleser og tastatur, ikke mus/touch.
@@ -139,24 +139,39 @@ sjekker før de bestemmer seg for hvor de skal denne helgen.
   nær polarsirkelen midtvinters kan stå opp og gå ned mellom to hele timer; uten den ville en kort
   vinterdag sett ut som mørketid. Brukes av beste skivindu (FR-17) og solfilteret (FR-22).
 - **Mørketid** — Et sted har mørketid i en periode når ingen time i perioden er en dagslystime.
-- **Vilkår (filterkrav)** — Én bruker-satt grense i filteret (f.eks. «min. 15 mm nysnø»). Flere
-  vilkår kombineres med OG, aldri ELLER.
+- **Krav (filterkrav)** — Én bruker-satt grense i filteret (f.eks. «min. 15 mm nysnø»). Flere
+  krav kombineres med OG, aldri ELLER. PRD-en bruker «krav» for dette, ikke «vilkår» eller
+  «kriterium».
 - **Snøvarsel (alert rule)** *(Ikke i v1)* — En brukers registrerte terskel for ett sted,
   som trigger maks ett push-varsel per regel per døgn.
 - **Datafil** — Den publiserte JSON-filen med alle steder, poengsummer og kvalitetsrapport,
   som appen leser.
-- **Publisert batch** — Resultatet av én pipeline-kjøring, gjort synlig for klienten kun hvis
+- **Publisert batch** — Resultatet av én kjøring av dataprogrammet, gjort synlig for klienten kun hvis
   minst 95 % av stedene fikk gyldige data, det vil si en poengsum (FR-5, arkitektur AD-2).
 - **Ufullstendige data** — Tilstanden når mer enn 10 % av timesverdiene for et sted mangler; vises
   i stedet for en poengsum (ikke som SnowScore 0, som ville feiltolkes som «ingen snø»).
-- **Datakilde-nedetid** — Tilstanden når MET eller NVE ikke svarer; pipelinen fortsetter å
+- **Datakilde-nedetid** — Tilstanden når MET eller NVE ikke svarer; dataprogrammet fortsetter å
   publisere siste gyldige data, aldri en feilverdi.
+- **Dataprogram** — Programmet som henter værdata fra MET og NVE, validerer dem, beregner
+  SnowScore og publiserer datafilen (§4.1). Det kjøres som en planlagt jobb omtrent hver time, og
+  kan kjøres lokalt. Én kjøring gir én kvalitetsrapport og høyst én publisert batch. PRD-en bruker
+  «dataprogram», ikke «pipeline».
+- **Kvalitetsrapport** — Rapporten hver kjøring av dataprogrammet skriver: tidspunkt, andel
+  gyldige steder, avviste svar og om batchen ble publisert (NFR-DQ2). Vises i panelet
+  «Datakvalitet» på forklaringssiden.
+- **Utforsk** — Forsiden, med kart og listevisning, filter og søkefelt (§4.3, §4.5).
+- **Stedsside** — Siden for ett sted, med egen delbar adresse, full poengsum, delpoeng, rådata og
+  beste skivindu (§4.4).
+- **Forklaringsside** — Siden som forklarer hvordan SnowScore beregnes, med regneeksempel,
+  kalkulator, datakilder og datakvalitet (§4.2).
+- **Demomodus** — Kjøring av appen på det committede demodatasettet med `npm run dev:demo`, uten
+  nett og nøkler, med fast demoklokke og tydelig merking (FR-30).
 
 ## 4. Funksjoner
 
-### 4.1 Stedskatalog og datapipeline
+### 4.1 Stedskatalog og dataprogram
 
-**Beskrivelse:** Det usynlige fundamentet: en offline-bygget stedskatalog og en pipeline som
+**Beskrivelse:** Det usynlige fundamentet: en offline-bygget stedskatalog og et dataprogram som
 henter, validerer, poengsetter og publiserer værdata hver time. Realiserer ingen UJ direkte, men
 er forutsetningen for alle andre funksjoner (uten ferske, gyldige data er kartet tomt).
 
@@ -186,7 +201,7 @@ oppdaterer prognosen. Hvordan kjøringene planlegges og startes på nytt, står 
 
 #### FR-3: Skjemavalidering av rådata *(Må ha)*
 
-Systemet validerer hvert API-svar mot et strengt skjema før det brukes videre i pipelinen
+Systemet validerer hvert API-svar mot et strengt skjema før det brukes videre i dataprogrammet
 (arkitektur AD-12).
 
 **Konsekvenser (testbare):**
@@ -252,7 +267,7 @@ Realiserer UJ-1 (klimaks: forstå delpoengene) og UJ-3 (tallet vises som tekst, 
 
 Systemet beregner SnowScore med formelen fra briefen (§«SnowScore», rettet av Mary): A
 (Nysnøpotensial) + B (Kuldebonus, null uten nedbør) + C (Snøandel), alle fra én delt modul som
-brukes av både pipeline og forklaringssidens kalkulator (arkitektur AD-6).
+brukes av både dataprogrammet og forklaringssidens kalkulator (arkitektur AD-6).
 
 **Konsekvenser (testbare):**
 - Egenskapsbaserte tester (minst 1000 tilfeldige inndata i CI, se SM-6 i §9.1): poengsummen er
@@ -292,7 +307,7 @@ endre seg umiddelbart.
 
 **Konsekvenser (testbare):**
 - Kalkulatoren importerer den delte SnowScore-modulen direkte — den inneholder aldri en egen kopi
-  av formelen (AD-6; hindrer at kalkulator og pipeline kan sprike).
+  av formelen (AD-6; hindrer at kalkulator og dataprogram kan sprike).
 
 #### FR-11: Datakilder og begrensninger-seksjon *(Må ha)*
 
@@ -345,10 +360,10 @@ fullverdig alternativ — ikke en nedskalert reserveløsning.
 #### FR-14: Antall-treff og null-treff-veiledning *(Må ha)*
 
 Både kart og liste viser levende antall treff mens filteret justeres, og foreslår hvilket
-kriterium som bør lempes ved null treff.
+krav som bør lempes ved null treff.
 
 **Konsekvenser (testbare):**
-- Ved null treff foreslår systemet det enkeltkriteriet som gir flest nye treff når det lempes så
+- Ved null treff foreslår systemet det enkeltkravet som gir flest nye treff når det lempes så
   lite som mulig (jf. UJ-1 edge case og eksempelet «Prøv vind under 8 m/s»):
   - For hvert aktivt krav finner systemet den nærmeste verdien på sliderens steg, i retning
     «Alle», som gir minst ett treff når de andre kravene står.
@@ -419,7 +434,7 @@ Stedssiden viser de fire beste sammenhengende timene i et 48-timers vindu, med m
   3. for få sammenhengende dagslystimer;
   4. mørketid.
 
-  Tabellen brukes både i dokumentasjonen og som test mot samme funksjon som pipelinen.
+  Tabellen brukes både i dokumentasjonen og som test mot samme funksjon som dataprogrammet.
 
 #### FR-18: Snøvarsel — registrering *(Ikke i v1)*
 
@@ -438,7 +453,7 @@ uten brukerkonto. Realiserer UJ-2.
 
 #### FR-19: Snøvarsel — utsendelse og avmelding *(Ikke i v1, se FR-18)*
 
-Etter hver publisering evaluerer pipelinen varselregler mot de nye dataene og sender push-varsel,
+Etter hver publisering evaluerer dataprogrammet varselregler mot de nye dataene og sender push-varsel,
 maks én gang per regel per døgn.
 
 **Konsekvenser (testbare):**
@@ -452,10 +467,10 @@ maks én gang per regel per døgn.
 **Beskrivelse:** Mekanismen som gjør «hvor oppfylles kravene mine nå?» besvarbart. Realiserer
 UJ-1 og UJ-3.
 
-#### FR-20: Flerkriteriefilter — nysnø, vind, temperatur *(Må ha)*
+#### FR-20: Filter med flere krav — nysnø, vind, temperatur *(Må ha)*
 
 Brukeren kan sette minimumskrav til nysnø (mm/cm) og grenser for vind og temperatur, kombinert
-med OG, og få tilbake bare steder som oppfyller alle valgte kriterier.
+med OG, og få tilbake bare steder som oppfyller alle valgte krav.
 
 **Konsekvenser (testbare):**
 - Treffene oppdateres innen tiden i NFR-1. Filtreringen skjer i nettleseren over de ~300 stedene i
@@ -504,7 +519,7 @@ Brukeren kan filtrere på stedstype (skisted, fjelltopp, by).
   steder av den typen i datafila.
 - Velges flere typer, vises steder av hvilken som helst av dem. Ingen valgt type betyr «Alle».
 
-#### FR-25: Nysnø siste 24 t (målt, ikke prognose) *(Bør ha)*
+#### FR-25: Nysnø siste 24 t (modellert, ikke prognose) *(Bør ha)*
 
 Brukeren kan filtrere på NVE seNorge sitt modellerte nysnø for siste døgn, som et alternativ til
 MET-prognosen for kommende 24/48 t.
@@ -1026,3 +1041,8 @@ ble tatt av Aksel 2026-11-14 på grunn av tidsfristen, og gruppa kan ta dem opp 
 - **FR-22, FR-24, FR-25 (4.5):** hver har fått testbare konsekvenser.
 - **SM-3 (4.5):** Må ha, med en minimal brukertest (minst 2 av 3) hvis den fulle testen ikke
   gjennomføres. Ny SM-16 for SUS og fullføringsgrad, fra brukertestplanen.
+- **Ordliste og termer (4.3):** nye begreper Dataprogram, Kvalitetsrapport, Utforsk, Stedsside,
+  Forklaringsside og Demomodus. «Pipeline» er byttet til «dataprogram», og «vilkår» og
+  «kriterium» om en filtergrense er byttet til «krav». FR-20 heter «Filter med flere krav».
+  FR-25 sa «målt, ikke prognose» i tittelen, men NVE-verdiene er modellerte, så tittelen sier nå
+  «modellert».
