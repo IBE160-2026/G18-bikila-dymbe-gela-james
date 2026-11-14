@@ -37,7 +37,7 @@
 - [ ] 2026-11-02 [story-2-1b-toppnav-og-slidere](994-2026-11-02-21-00-52-story-2-1b-toppnav-og-slidere.md) — Før npm run test:e2e:nettlesere og CI-jobben nettlesere inn i AGENTS.md via bmad-project-context
 - [x] 2026-11-02 [story-2-1b-toppnav-og-slidere](994-2026-11-02-21-00-52-story-2-1b-toppnav-og-slidere.md) — PR for 2.1b trenger review fra et gruppemedlem før merge (løst 2026-11-04: PR #82 er merget)
 - [ ] 2026-11-04 [sok-pa-stedsnavn](993-2026-11-04-22-43-41-sok-pa-stedsnavn.md) — Gruppa bekrefter «til beslutning»-punktene i PRD/SRS v2: søk som Må ha, valg av dag ikke i v1, skala som arkitekturforsikring
-- [ ] 2026-11-04 [sok-pa-stedsnavn](993-2026-11-04-22-43-41-sok-pa-stedsnavn.md) — Story 3.9 trenger review fra et gruppemedlem før merge
+- [x] 2026-11-04 [sok-pa-stedsnavn](993-2026-11-04-22-43-41-sok-pa-stedsnavn.md) — Story 3.9 trenger review fra et gruppemedlem før merge (løst 2026-11-14: PR #85 er merget)
 - [ ] 2026-11-04 [sok-pa-stedsnavn](993-2026-11-04-22-43-41-sok-pa-stedsnavn.md) — Fargeforklaring for kartet (SRS-F-15 i v2) trenger eget endringsforslag
 - [ ] 2026-11-07 [prd-srs-v2-1](993-2026-11-07-12-29-57-prd-srs-v2-1.md) — Dagvalg og skala i PRD/SRS §7 er fortsatt til beslutning hos gruppa
 - [ ] 2026-11-07 [prd-srs-v2-1](993-2026-11-07-12-29-57-prd-srs-v2-1.md) — PR #83 (1.8b) og #85 (3.9) venter på godkjenning fra et gruppemedlem
@@ -64,3 +64,10 @@
 - [ ] 2026-11-08 [prd-srs-v2-2](987-2026-11-08-14-15-55-prd-srs-v2-2.md) — Oppdater SRS-F-34 når #90 (1.6b) merges, og SRS-F-15 når fargeforklaringen er bygget
 - [x] 2026-11-08 [merge-av-apne-pr](986-2026-11-08-merge-av-apne-pr.md) — #83 (1.8b) og #85 (3.9) trenger godkjenning og løsing av flettekonflikter før merge; sett 3.9 til done etterpå (løst 2026-11-09: konfliktene er løst, godkjenning gjenstår, se neste punkt)
 - [ ] 2026-11-09 [merge-av-apne-pr](986-2026-11-08-merge-av-apne-pr.md) — #83 (1.8b) og #85 (3.9) er oppdatert mot main og grønne, men venter på «Approve» fra et annet gruppemedlem; merge så #83 → #85 og sett 1.8b og 3.9 til done i en docs-PR
+- [ ] 2026-11-14 [prd-tilbakemelding](985-2026-11-14-22-57-22-prd-tilbakemelding.md) — SnowFinder-PRD-og-SRS.html må følge PRD-en: SRS-N-01 vedtatt, SRS-N-03, SM-13 og §7 etter NFR-3 og beslutning 1
+- [ ] 2026-11-14 [prd-tilbakemelding](985-2026-11-14-22-57-22-prd-tilbakemelding.md) — Epics: kravinventaret sier fortsatt NFR-1 2 s og NFR-3 «normalt < 90 min»
+- [ ] 2026-11-14 [prd-tilbakemelding](985-2026-11-14-22-57-22-prd-tilbakemelding.md) — EXPERIENCE.md: beskriv den minimale brukertesten for SM-3 (minst tre personer)
+- [ ] 2026-11-14 [prd-tilbakemelding](985-2026-11-14-22-57-22-prd-tilbakemelding.md) — Sett Story 3.9 til done i sprint-status.yaml og oppdater «Hvor er vi nå?» i fremdriftsplanen (PR #85 er merget)
+- [ ] 2026-11-14 [prd-tilbakemelding](985-2026-11-14-22-57-22-prd-tilbakemelding.md) — PR #83 trenger ny godkjenning på flettecommiten 6d7b8a7 før merge
+- [ ] 2026-11-14 [prd-tilbakemelding](985-2026-11-14-22-57-22-prd-tilbakemelding.md) — Gruppa bekrefter PRD-beslutning 1–6 fra 2026-11-14 på neste møte
+- [ ] 2026-11-14 [prd-tilbakemelding](985-2026-11-14-22-57-22-prd-tilbakemelding.md) — Sluttrapport og presentasjon (F5, forslag 2026-11-23) er ikke startet
