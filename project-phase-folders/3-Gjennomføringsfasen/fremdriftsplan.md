@@ -82,8 +82,13 @@ på møtet. Oppdater statusen når et steg er ferdig.
 
 **2. november (kveld): Story 2.1b er bygget og venter på review.**
 
-- Logoen står ved «SnowFinder», «Slik beregner vi SnowScore» vises bare én gang på Utforsk, og alle fem
+- Story 2.1b: logoen står ved «SnowFinder», «Slik beregner vi SnowScore» vises bare én gang på Utforsk, og alle fem
   filterslidere starter på «Alle» til venstre ([spec](../../project-workspace/implementation-artifacts/spec-2-1b-toppnav-og-slidere.md)).
+- Aksel valgte fem steg i UX-forbedringen før kodefrysen: destinasjonskort i listen, et ryddigere filter, poengfordeling på
+  forklaringssiden, fargeforklaring på kartet og en mobil- og kvalitetsrunde. Vindvarsel og markørgruppering er
+  ikke med.
+- Steg 1, Story 1.8b, gjør listen om til kort med de samme feltene på samme plass
+  ([spec](../../project-workspace/implementation-artifacts/spec-1-8b-destinasjonskort.md)).
 - Timesjobben og Vercel (PR #81) er merget, og produksjonen bygges fra `main`. Et døgn med målinger av timesjobben pågår.
 
 **2. november: timesjobben startet bare 2 av 14 ganger i natt, så den prøver nå hvert 10. minutt.**

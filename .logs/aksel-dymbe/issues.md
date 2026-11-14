@@ -31,13 +31,19 @@
 - [x] 2026-11-01 [story-1-11c-e2e-mot-demomodus](995-2026-11-01-00-16-06-story-1-11c-e2e-mot-demomodus.md) — PR med vercel.json må merges før noen annen PR, ellers kan nettsiden miste rewriten (løst 2026-11-07)
 - [ ] 2026-11-01 [story-1-11c-e2e-mot-demomodus](995-2026-11-01-00-16-06-story-1-11c-e2e-mot-demomodus.md) — Lesesteget mot nettsiden i verify er ikke kjørt på ekte
 - [x] 2026-11-01 [story-1-11c-e2e-mot-demomodus](995-2026-11-01-00-16-06-story-1-11c-e2e-mot-demomodus.md) — AGENTS.md nevner fortsatt Pages; rettes via bmad-project-context (løst 2026-11-01)
-- [ ] 2026-11-02 [story-1-11c-e2e-mot-demomodus](995-2026-11-01-00-16-06-story-1-11c-e2e-mot-demomodus.md) — Bare 2 av 14 planlagte kjøringer startet natt til 2. november; timesoppdateringen må gjøres pålitelig via bmad-correct-course (bygget i 1.11f 2026-11-02, må måles et døgn etter merge)
+- [ ] 2026-11-02 [story-1-11c-e2e-mot-demomodus](995-2026-11-01-00-16-06-story-1-11c-e2e-mot-demomodus.md) — Bare 2 av 14 planlagte kjøringer startet natt til 2. november; timesoppdateringen må gjøres pålitelig via bmad-correct-course (bygget i 1.11f 2026-11-02; målingen 3. november viser at det ikke holder)
 - [ ] 2026-11-02 [story-2-1b-toppnav-og-slidere](994-2026-11-02-21-00-52-story-2-1b-toppnav-og-slidere.md) — Prøv de speilede sliderne i Firefox og Safari i brukertesten (Firefox og WebKit gjort 2026-11-02, ekte Safari på Mac og iPhone gjenstår)
 - [x] 2026-11-02 [story-2-1b-toppnav-og-slidere](994-2026-11-02-21-00-52-story-2-1b-toppnav-og-slidere.md) — PR for 2.1b trenger review fra et gruppemedlem før merge (løst 2026-11-07)
 - [ ] 2026-11-02 [story-2-1b-toppnav-og-slidere](994-2026-11-02-21-00-52-story-2-1b-toppnav-og-slidere.md) — Før npm run test:e2e:nettlesere og CI-jobben nettlesere inn i AGENTS.md via bmad-project-context
-- [x] 2026-11-02 [story-2-1b-toppnav-og-slidere](994-2026-11-02-21-00-52-story-2-1b-toppnav-og-slidere.md) — PR for 2.1b trenger review fra et gruppemedlem før merge (løst 2026-11-04: PR #82 er merget)
+- [ ] 2026-11-02 [ux-forbedring-steg-1-destinasjonskort](993-2026-11-02-22-30-00-ux-forbedring-steg-1-destinasjonskort.md) — Steg 2–5 av UX-forbedringen: filter, forklaringssiden, fargeforklaring på kartet, mobil- og kvalitetsrunde
+- [x] 2026-11-03 [story-1-11c-e2e-mot-demomodus](995-2026-11-01-00-16-06-story-1-11c-e2e-mot-demomodus.md) — Etter 1.11f startet GitHub bare 1 planlagt kjøring på 11 timer; data 285 min gamle. Ny løsning via bmad-correct-course (løst 2026-11-04: timeren er bygget i PR #87)
+- [x] 2026-11-04 [story-1-11c-e2e-mot-demomodus](995-2026-11-01-00-16-06-story-1-11c-e2e-mot-demomodus.md) — Endringsforslag (bmad-correct-course): nye data ved ca. 4 timer (230 min), uendret cron, banner etter 8 t, ingen timer. Venter på Aksel (utgått 2026-11-04: Aksel holder seg til originalplanen)
+- [ ] 2026-11-04 [story-1-11c-e2e-mot-demomodus](995-2026-11-01-00-16-06-story-1-11c-e2e-mot-demomodus.md) — Etter merge av PR #87: se at timeren starter data.yml, og mål et døgn før 1.11 settes til done
+- [ ] 2026-11-04 [story-1-11c-e2e-mot-demomodus](995-2026-11-01-00-16-06-story-1-11c-e2e-mot-demomodus.md) — Bytt sovingen i data-timer.yml med environment og wait timer når en admin har laget det
+- [ ] 2026-11-04 [story-1-11c-e2e-mot-demomodus](995-2026-11-01-00-16-06-story-1-11c-e2e-mot-demomodus.md) — UX-steg 2 (filteret): planen venter på Aksels godkjenning
+- [ ] 2026-11-04 [story-1-11c-e2e-mot-demomodus](995-2026-11-01-00-16-06-story-1-11c-e2e-mot-demomodus.md) — PR #83, #85 og #87 venter på Josephs godkjenning; PR #86 på grønn CI og Aksels ja
 - [ ] 2026-11-04 [sok-pa-stedsnavn](993-2026-11-04-22-43-41-sok-pa-stedsnavn.md) — Gruppa bekrefter «til beslutning»-punktene i PRD/SRS v2: søk som Må ha, valg av dag ikke i v1, skala som arkitekturforsikring
-- [ ] 2026-11-04 [sok-pa-stedsnavn](993-2026-11-04-22-43-41-sok-pa-stedsnavn.md) — Story 3.9 trenger review fra et gruppemedlem før merge
+- [x] 2026-11-04 [sok-pa-stedsnavn](993-2026-11-04-22-43-41-sok-pa-stedsnavn.md) — Story 3.9 trenger review fra et gruppemedlem før merge (løst 2026-11-14: PR #85 er merget)
 - [ ] 2026-11-04 [sok-pa-stedsnavn](993-2026-11-04-22-43-41-sok-pa-stedsnavn.md) — Fargeforklaring for kartet (SRS-F-15 i v2) trenger eget endringsforslag
 - [ ] 2026-11-07 [prd-srs-v2-1](993-2026-11-07-12-29-57-prd-srs-v2-1.md) — Dagvalg og skala i PRD/SRS §7 er fortsatt til beslutning hos gruppa
 - [ ] 2026-11-07 [prd-srs-v2-1](993-2026-11-07-12-29-57-prd-srs-v2-1.md) — PR #83 (1.8b) og #85 (3.9) venter på godkjenning fra et gruppemedlem
