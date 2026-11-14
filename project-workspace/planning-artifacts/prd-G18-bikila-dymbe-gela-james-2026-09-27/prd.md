@@ -1,8 +1,8 @@
 ---
 title: SnowFinder
 created: 2026-09-27
-updated: 2026-11-08
-status: draft
+updated: 2026-11-14
+status: final
 ---
 
 # PRD: SnowFinder
@@ -15,16 +15,19 @@ Denne PRD-en oversetter den rettede produktbriefen
 ([SnowFinder-Produktbrief.md](../1-Oppstartsfasen/SnowFinder-Produktbrief.md)) til presise,
 testbare krav for Sally (UX), Winston (arkitekt, oppdaterer
 [SnowFinder-Arkitektur.md](SnowFinder-Arkitektur.md)) og Amelia (utvikler). Den bygger på briefen
-og på Marys rettelser (begrunnelser i
-`project-workspace/planning-artifacts/.memlog.md`) — den gjentar dem ikke, men presiserer dem til
-funksjonelle krav (FR) med akseptansekriterier, ikke-funksjonelle krav (NFR) og en eksplisitt
-MVP-avgrensning. Ordlisten i §3 er bindende vokabular for resten av dokumentet og for alt som
+og på Marys rettelser av den, og presiserer dem til funksjonelle krav (FR) med
+akseptansekriterier, ikke-funksjonelle krav (NFR) og en eksplisitt MVP-avgrensning. Begrunnelsene
+kravene hviler på, står ved kravene. Arbeidsloggen med hver beslutning ligger i
+`project-workspace/planning-artifacts/.memlog.md`. Ordlisten i §3 er bindende vokabular for resten av dokumentet og for alt som
 bygger videre på det (UX-spesifikasjon, arkitektur, epics/stories).
 
 **Merknad om prosess:** Denne PRD-en ble først skrevet i én sammenhengende agent-økt (John,
 PM-agenten) rett etter Marys brief-rettelser, ikke gjennom flere runder brukersamtale. Der noe er
-antatt fremfor bekreftet med gruppa, er det merket `[ASSUMPTION]` inline og samlet i §9 — dette er
+antatt fremfor bekreftet med gruppa, er det merket `[ASSUMPTION]` inline og samlet i §11 — dette er
 Fast-path-modus, ikke Coaching-modus.
+
+**Status (2026-11-14):** endelig for v1, revidert etter faglærers tilbakemelding 2026-11-12.
+Senere endringer går via `bmad-correct-course` og føres i §12.
 
 Kravene beskriver det som gjelder nå. Hvordan de har endret seg, og hvorfor, står i §12
 Endringslogg og i endringsforslagene den lenker til.
@@ -32,9 +35,11 @@ Endringslogg og i endringsforslagene den lenker til.
 **Gjeldende dokument:** `SnowFinder-PRD.md` i `project-phase-folders/2-Planleggingsfasen/` er
 kilden til sannhet for kravene. `prd.md` i `project-workspace/planning-artifacts/` er en lik
 speilkopi. `SnowFinder-PRD-og-SRS.html` er en avledet detaljspesifikasjon med egne ID-er
-(SRS-F/SRS-N): ved konflikt gjelder denne PRD-en, og SRS-en rettes etter den.
+(SRS-F/SRS-N): ved konflikt gjelder denne PRD-en, og SRS-en rettes etter den. Lenkene i
+dokumentet er relative til den gjeldende kopien, så de løser seg derfra og ikke fra speilkopien.
 
-FR-ID-ene er stabile og nummereres aldri om.
+FR-ID-ene er stabile og nummereres aldri om. Hvert krav står under funksjonen det hører til, så
+ID-ene kommer ikke alltid i tallrekkefølge: FR-32 (søk) står i §4.3 sammen med kart og liste.
 
 ## 1. Visjon
 
@@ -109,8 +114,8 @@ sjekker før de bestemmer seg for hvor de skal denne helgen.
   - **Klimaks:** Hun får nøyaktig samme informasjon og samme filtreringsmulighet som
     kart-brukeren, uten å være avhengig av et visuelt, museavhengig kart.
   - **Oppløsning:** Havner på samme stedsside som i UJ-1 — resten av opplevelsen er identisk.
-  - **Edge case:** Realiserer WCAG 2.1 AA-kravet fra §7.4; se Marys begrunnelse i memloggen for
-    hvorfor selve kartlaget er unntatt mens listevisningen må være fullt AA-kompatibel.
+  - **Edge case:** Realiserer WCAG 2.1 AA-kravet fra §7.4; NFR-7 begrunner hvorfor selve
+    kartlaget er unntatt mens listevisningen må være fullt AA-kompatibel.
 
 - **UJ-4. Mari sjekker ett bestemt sted.**
   - **Person + kontekst:** Mari har hytte på Beitostølen og vil bare vite hvordan forholdene er der.
@@ -131,8 +136,9 @@ sjekker før de bestemmer seg for hvor de skal denne helgen.
 - **Stedskatalog** — Den kuraterte listen av ~300 steder i v1, bygget offline fra OpenStreetMap
   og Kartverket (arkitektur AD-5). Read-only i produksjon.
 - **Beste skivindu** — De fire sammenhengende timene med lavest snittvind og minst skydekke i et
-  48-timers vindu, beregnet blant dagslystimer, eller — i mørketid — blant alle timer (Marys
-  rettelse, se memlogg).
+  48-timers vindu, beregnet blant dagslystimer, eller — i mørketid — blant alle timer. Reserven
+  for mørketid er Marys rettelse: i Nord-Norge midtvinters finnes ingen dagslystime, og uten den
+  ville stedene der fått et tomt svar (FR-17).
 - **Dagslystime** — En time på et sted der solens senter er over horisonten (solhøyde over 0°)
   ved timens start eller en halvtime senere, regnet ut fra stedets koordinater med en standard
   tilnærming for solhøyde, uten ekstern kilde og uten lysbrytning. Halvtimen er med fordi solen
@@ -268,6 +274,10 @@ Realiserer UJ-1 (klimaks: forstå delpoengene) og UJ-3 (tallet vises som tekst, 
 Systemet beregner SnowScore med formelen fra briefen (§«SnowScore», rettet av Mary): A
 (Nysnøpotensial) + B (Kuldebonus, null uten nedbør) + C (Snøandel), alle fra én delt modul som
 brukes av både dataprogrammet og forklaringssidens kalkulator (arkitektur AD-6).
+
+*Begrunnelse for Marys rettelser av formelen:* B og C er 0 uten nedbør (P < 0,5 mm), så en kald,
+tørr dag ikke scorer høyt. Nevneren i B er endret fra 6 til 16, så B sprer seg mellom −2 og
+−14 °C i stedet for å nå maksimum allerede ved −4 °C.
 
 **Konsekvenser (testbare):**
 - Egenskapsbaserte tester (minst 1000 tilfeldige inndata i CI, se SM-6 i §9.1): poengsummen er
@@ -533,7 +543,8 @@ MET-prognosen for kommende 24/48 t.
 
 #### FR-26: Null-treff-veiledning *(Må ha, dekket av FR-14)*
 
-*(Kryssreferanse — se FR-14; ikke en separat implementasjon.)*
+Samme krav som FR-14, beholdt fordi ID-en brukes i epics og §6.1. Det har ingen egen
+implementasjon og testes gjennom FR-14.
 
 ### 4.6 Tilbakemelding uten konto *(Ikke i v1)*
 
@@ -589,7 +600,8 @@ uten en lokal datafil sier appen fra og viser kommandoen for demomodus.
 - **Samme program, to kilder:** `npm run data:demo` kjører dataprogrammet på de lagrede
   MET- og NVE-svarene i `tests/contract/fixtures/`. `npm run data` kjører det mot de ekte
   tjenestene. Begge skriver samme type datafil, og appen leser den på samme måte. Demodatasettet
-  (ca. 20–30 steder) er committet, så `npm run dev:demo` virker uten at noe må kjøres først.
+  (ca. 20–30 steder `[ASSUMPTION: nok til å vise alle tilstander og gi meningsfulle
+  filtertreff, se §11]`) er committet, så `npm run dev:demo` virker uten at noe må kjøres først.
   - Demo har sin egen lille katalog, og fixtures dekker hvert sted i den. Da møter demokjøringen
     95 %-terskelen.
   - Terskelen teller steder med poengsum (FR-5). Demo har ett ufullstendig sted av 24, så 95,8 %
@@ -740,7 +752,8 @@ database. Begrunnelsene står i §12.
   listevisningen (FR-13) er et fullt AA-kompatibelt alternativ til kartet. Selve det visuelle
   Leaflet-kartlaget er eksplisitt unntatt fra full AA-etterlevelse (fargekontrast på kart-tiles
   og kompleks kartnavigasjon er ikke realistisk å gjøre fullt AA-kompatibelt innenfor
-  prosjektets tidsramme) — begrunnelse i memloggen. Validerer FR-13.
+  prosjektets tidsramme). Unntaket stenger ingen ute, fordi listevisningen gir den samme
+  informasjonen og de samme filtrene (FR-13, UJ-3). Validerer FR-13.
 
 ### 7.5 Skalerbarhet (begrensning, ikke ambisjon for v1)
 
@@ -861,23 +874,23 @@ er kjernen i visjonen (§1): forstår ikke brukerne poengsummen, svikter produkt
    ingen nøkler.
 3. ~~**IBE160-vurderingskriterier:**~~ *Lukket.* Sensorveiledningen for del 1 og faglærers
    tilbakemelding (2026-10-06) er kjent og krysjekket mot §6 og §9.
+4. ~~**Skalatall for NFR-8:**~~ *Lukket 2026-11-14:* «noen tusen brukere» er en arkitekturforsikring,
+   ikke et lastkrav, og lasttesting hører ikke hjemme i QA-minimumet. Appen er statiske filer på
+   Vercels CDN, og dataprogrammet henter like mye uansett hvor mange som leser, så trafikken
+   belaster verken datakildene eller jobben. Skalakravet som betyr noe, er antall steder (NFR-8).
+5. ~~**Varselfrekvens-grense:**~~ *Utgår* sammen med snøvarsel.
 6. ~~**Kursets skjermkrav:**~~ *Lukket 2026-10-28 (steg 8c):* emnet ber om wireframes for
    pålogging, profil, innsjekking, sosial feed og arrangementer, men v1 har bevisst ingen kontoer
    eller sosiale funksjoner (§5). Pålogging er droppet (gruppas beslutning 2026-10-09). Profil og
    innsjekking er koblet til stedssiden, sosial feed til listevisningen og arrangementer til beste
    skivindu. Ingen nye funksjoner. Se «Kursets skjermkrav» i EXPERIENCE.md.
-4. **Skalatall for NFR-8:** Er «noen tusen brukere» en reell forventning for
-   innleveringen/demoen, eller kun en arkitektonisk forsikring? Påvirker om lasttesting hører
-   hjemme i Må ha-QA-minimumet.
-5. ~~**Varselfrekvens-grense:**~~ *Utgår* sammen med snøvarsel.
 
 ## 11. Antagelsesindeks
 
-- §7.5 — «Noen tusen brukere» tolket som ~5000 samtidige i spissbelastning; ingen offisiell
-  målsetting oppgitt.
+- §7.5 NFR-8 — «Noen tusen brukere» tolket som ~5000 samtidige i spissbelastning; ingen offisiell
+  målsetting oppgitt. Tallet er en arkitekturforsikring, ikke et lastkrav (§10 spørsmål 4).
 - §9 SM-6 — Antall egenskapstest-kjøringer skalert fra 10 000 (brief) til 1000 (PRD) for
   realistisk CI-kjøretid; samme testede egenskaper.
-- §6.2 — *(utgår: det finnes ingen skriveendepunkter å sikkerhetsteste.)*
 - §4.7 FR-30 — Demodatasettet på ca. 20–30 steder antas å være nok til å vise alle
   tilstander og gi meningsfulle filtertreff. Det økes hvis fasittabellen for filter trenger flere
   steder.
@@ -1046,3 +1059,12 @@ ble tatt av Aksel 2026-11-14 på grunn av tidsfristen, og gruppa kan ta dem opp 
   «kriterium» om en filtergrense er byttet til «krav». FR-20 heter «Filter med flere krav».
   FR-25 sa «målt, ikke prognose» i tittelen, men NVE-verdiene er modellerte, så tittelen sier nå
   «modellert».
+- **Mekaniske funn (§5 i tilbakemeldingen):** §0 viser til §11 for antakelsene (sa §9).
+  Antakelsen om demodatasettet er merket inline i FR-30, og den utgåtte oppføringen for §6.2 er
+  fjernet fra §11. §0 sier at lenkene er relative til den gjeldende kopien. §10 står i rekkefølgen
+  1–6. FR-32 blir stående i §4.3, der søket hører hjemme, og §0 forklarer at ID-ene derfor ikke
+  alltid kommer i tallrekkefølge. FR-26 sier hvorfor ID-en er beholdt. Begrunnelsene fra memloggen
+  for formelen (FR-7), mørketid (§3) og WCAG-unntaket (NFR-7, UJ-3) står nå i PRD-en.
+- **§10 spørsmål 4 (§6 i tilbakemeldingen):** lukket. NFR-8 er en arkitekturforsikring, ikke et
+  lastkrav.
+- **Status:** `final` for v1.
