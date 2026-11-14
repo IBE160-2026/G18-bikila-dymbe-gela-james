@@ -45,6 +45,12 @@ krever nøkkel, men som trenger nett for å vise kartbildene.
 Velg «Liste» under navigasjonen (eller åpne `/?visning=liste`) for å se de samme stedene som en
 liste som virker med tastatur og skjermleser, sortert etter score, avstand eller navn.
 
+Over kartet og listen står feltet «Søk etter sted». Skriv starten av et navn eller et ord i navnet, for
+eksempel «gaus» eller «skisenter», og velg et av høyst 8 forslag med mus, berøring eller piltastene og Enter
+for å åpne stedssiden. Søket skiller ikke store og små bokstaver, og «tromso» finner Tromsø. Et sted som
+filteret skjuler, står likevel i forslagene, merket «Oppfyller ikke filteret». Søket endrer aldri filteret
+eller adressen. Escape lukker forslagene, og et trykk til tømmer feltet.
+
 Filteret (til venstre på store skjermer, bak knappen «Filter» nederst på mobil) har seks krav:
 minst så mye nysnø, høyst så mye vind, høyst så høy temperatur, høyst så mye skydekke i dagslys
 (0–100 % i steg på 10, «Alle» ved 100), høyst så langt unna din egen posisjon (0–200 km i steg på 10,
@@ -133,7 +139,7 @@ alltid automatisk fra prognosen.
 Playwright-testene i `tests/e2e/` bygger appen to ganger: i demomodus for de fleste testene, og i normal
 modus for `tests/e2e/normalmodus.spec.ts`, som viser at normal modus aldri leser `demo.json`. Portene 4173 og
 4174 må være ledige. Testene sjekker kart → stedsside
-→ tilbake, listevisningen med tastatur, filteret (ved 1280 og 375 px), stedssiden, forklaringssiden (også ved 320 og 375 px), den tomme
+→ tilbake, listevisningen med tastatur, filteret (ved 1280 og 375 px), søket etter sted, stedssiden, forklaringssiden (også ved 320 og 375 px), den tomme
 tilstanden og en axe-sjekk av tilgjengeligheten i Chromium på demodataene.
 De henter ingenting fra nett. Nettleseren lastes ned én gang:
 

@@ -35,6 +35,10 @@
 - [ ] 2026-11-02 [story-2-1b-toppnav-og-slidere](994-2026-11-02-21-00-52-story-2-1b-toppnav-og-slidere.md) — Prøv de speilede sliderne i Firefox og Safari i brukertesten (Firefox og WebKit gjort 2026-11-02, ekte Safari på Mac og iPhone gjenstår)
 - [x] 2026-11-02 [story-2-1b-toppnav-og-slidere](994-2026-11-02-21-00-52-story-2-1b-toppnav-og-slidere.md) — PR for 2.1b trenger review fra et gruppemedlem før merge (løst 2026-11-07)
 - [ ] 2026-11-02 [story-2-1b-toppnav-og-slidere](994-2026-11-02-21-00-52-story-2-1b-toppnav-og-slidere.md) — Før npm run test:e2e:nettlesere og CI-jobben nettlesere inn i AGENTS.md via bmad-project-context
+- [x] 2026-11-02 [story-2-1b-toppnav-og-slidere](994-2026-11-02-21-00-52-story-2-1b-toppnav-og-slidere.md) — PR for 2.1b trenger review fra et gruppemedlem før merge (løst 2026-11-04: PR #82 er merget)
+- [ ] 2026-11-04 [sok-pa-stedsnavn](993-2026-11-04-22-43-41-sok-pa-stedsnavn.md) — Gruppa bekrefter «til beslutning»-punktene i PRD/SRS v2: søk som Må ha, valg av dag ikke i v1, skala som arkitekturforsikring
+- [ ] 2026-11-04 [sok-pa-stedsnavn](993-2026-11-04-22-43-41-sok-pa-stedsnavn.md) — Story 3.9 trenger review fra et gruppemedlem før merge
+- [ ] 2026-11-04 [sok-pa-stedsnavn](993-2026-11-04-22-43-41-sok-pa-stedsnavn.md) — Fargeforklaring for kartet (SRS-F-15 i v2) trenger eget endringsforslag
 - [ ] 2026-11-07 [prd-srs-v2-1](993-2026-11-07-12-29-57-prd-srs-v2-1.md) — Dagvalg og skala i PRD/SRS §7 er fortsatt til beslutning hos gruppa
 - [ ] 2026-11-07 [prd-srs-v2-1](993-2026-11-07-12-29-57-prd-srs-v2-1.md) — PR #83 (1.8b) og #85 (3.9) venter på godkjenning fra et gruppemedlem
 - [ ] 2026-11-07 [prd-srs-v2-1](993-2026-11-07-12-29-57-prd-srs-v2-1.md) — Rekrutter minst fem testpersoner til brukertesten 12.–16. november

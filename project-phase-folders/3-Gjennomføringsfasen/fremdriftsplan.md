@@ -67,6 +67,11 @@ på møtet. Oppdater statusen når et steg er ferdig.
 - Neste: review av #83 og #85, de fire andre stegene i UX-forbedringen, og at timesjobben går hver time fram til
   kodefrysen 11. november. Ingen testpersoner er rekruttert til brukertesten ennå.
 
+**4. november (kveld): søk på stedsnavn er vedtatt og bygget (Story 3.9), og venter på review.**
+
+- Et gruppemedlem spurte om Utforsk kunne være søkbar. Tre av fem oppgaver i brukertesten ber deltakeren finne et bestemt sted, så søket er Må ha ([endringsforslaget](../../project-workspace/planning-artifacts/sprint-change-proposal-2026-11-04-sok.md), FR-32 og UJ-4).
+- Feltet «Søk etter sted» står over kart og liste og gir forslag mens man skriver, også for steder filteret skjuler ([spec](../../project-workspace/implementation-artifacts/spec-3-9-sok-etter-et-sted-ved-navn.md)). Fargeforklaring for kartet er utsatt.
+
 **4. november: timesjobben får en timer, så dataene kan oppdateres hver time (Story 1.11g).**
 
 - Etter 1.11f startet GitHub bare 7 planlagte kjøringer på 49 timer, og dataene var ofte 4–8 timer gamle. Hver kjøring

@@ -478,6 +478,106 @@
   }
 }
 
+/* Story 3.9 (FR-32): the place search between the map/list switch and the results, on every width. The
+   suggestions float over the map (whose Leaflet layers are isolated in .kart), and z-index 2 puts the open
+   list above the bottom sheet (z-index 1) too, so a long list on a short phone is never hidden by it. */
+.sted-sok {
+  position: relative;
+  margin-bottom: var(--spacing-4);
+}
+
+.sted-sok-etikett {
+  display: block;
+  margin-bottom: var(--spacing-1);
+}
+
+.sted-sok input {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: var(--spacing-7);
+  padding: 0 var(--spacing-3);
+  border: 1px solid var(--color-ink-secondary);
+  border-radius: var(--rounded-sm);
+  background: var(--color-surface-raised);
+  color: var(--color-ink-primary);
+  font: inherit;
+}
+
+.sted-sok input:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.sted-sok-forslag,
+.sted-sok-ingen {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  left: 0;
+  z-index: 2;
+  margin: var(--spacing-1) 0 0;
+  border: 1px solid var(--color-border-hairline);
+  border-radius: var(--rounded-md);
+  background: var(--color-surface-raised);
+  box-shadow: 0 2px 12px color-mix(in srgb, var(--color-ink-primary) 8%, transparent);
+}
+
+.sted-sok-forslag {
+  max-height: 60vh;
+  padding: var(--spacing-1) 0;
+  overflow-y: auto;
+  list-style: none;
+}
+
+.sted-sok-forslag[hidden] {
+  display: none;
+}
+
+.sted-sok-ingen {
+  padding: var(--spacing-3) var(--spacing-4);
+  overflow-wrap: anywhere;
+}
+
+/* A 48px row, so each suggestion is a touch target of at least 44px. */
+.sted-sok-forslag-rad {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-1) var(--spacing-2);
+  min-height: var(--spacing-7);
+  padding: var(--spacing-1) var(--spacing-3);
+  border-left: 4px solid transparent;
+  cursor: pointer;
+}
+
+.sted-sok-forslag-rad:hover {
+  background: var(--color-surface-sunken);
+}
+
+/* The highlighted suggestion has a thick accent bar and an underlined name, so it never relies on colour alone. */
+.sted-sok-forslag-rad[aria-selected='true'] {
+  border-left-color: var(--color-accent);
+  background: var(--color-surface-sunken);
+}
+
+.sted-sok-forslag-rad[aria-selected='true'] .sted-sok-navn {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.sted-sok-navn {
+  flex: 1 1 auto;
+}
+
+.sted-sok-status {
+  color: var(--color-ink-secondary);
+  font-family: var(--typography-meta-font-family);
+  font-size: var(--typography-meta-font-size);
+  font-weight: var(--typography-meta-font-weight);
+  line-height: var(--typography-meta-line-height);
+  letter-spacing: var(--typography-meta-letter-spacing);
+}
+
 /* From 768px: a fixed left side panel, always open, with map or list filling the rest. */
 @media (min-width: 768px) {
   .utforsk {
