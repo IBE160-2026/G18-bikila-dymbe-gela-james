@@ -29,6 +29,11 @@ Fast-path-modus, ikke Coaching-modus.
 Kravene beskriver det som gjelder nå. Hvordan de har endret seg, og hvorfor, står i §12
 Endringslogg og i endringsforslagene den lenker til.
 
+**Gjeldende dokument:** `SnowFinder-PRD.md` i `project-phase-folders/2-Planleggingsfasen/` er
+kilden til sannhet for kravene. `prd.md` i `project-workspace/planning-artifacts/` er en lik
+speilkopi. `SnowFinder-PRD-og-SRS.html` er en avledet detaljspesifikasjon med egne ID-er
+(SRS-F/SRS-N): ved konflikt gjelder denne PRD-en, og SRS-en rettes etter den.
+
 FR-ID-ene er stabile og nummereres aldri om.
 
 ## 1. Visjon
@@ -128,6 +133,12 @@ sjekker før de bestemmer seg for hvor de skal denne helgen.
 - **Beste skivindu** — De fire sammenhengende timene med lavest snittvind og minst skydekke i et
   48-timers vindu, beregnet blant dagslystimer, eller — i mørketid — blant alle timer (Marys
   rettelse, se memlogg).
+- **Dagslystime** — En time på et sted der solens senter er over horisonten (solhøyde over 0°)
+  ved timens start eller en halvtime senere, regnet ut fra stedets koordinater med en standard
+  tilnærming for solhøyde, uten ekstern kilde og uten lysbrytning. Halvtimen er med fordi solen
+  nær polarsirkelen midtvinters kan stå opp og gå ned mellom to hele timer; uten den ville en kort
+  vinterdag sett ut som mørketid. Brukes av beste skivindu (FR-17) og solfilteret (FR-22).
+- **Mørketid** — Et sted har mørketid i en periode når ingen time i perioden er en dagslystime.
 - **Vilkår (filterkrav)** — Én bruker-satt grense i filteret (f.eks. «min. 15 mm nysnø»). Flere
   vilkår kombineres med OG, aldri ELLER.
 - **Snøvarsel (alert rule)** *(Ikke i v1)* — En brukers registrerte terskel for ett sted,
@@ -151,8 +162,9 @@ er forutsetningen for alle andre funksjoner (uten ferske, gyldige data er kartet
 
 #### FR-1: Stedskatalog-bygging *(Må ha)*
 
-Utvikler kan kjøre et frittstående skript (`scripts/build-catalog/`) som produserer en
-katalogfil med ~300 steder fra OpenStreetMap og Kartverket. Filen versjoneres i repoet.
+Utvikler kan kjøre et frittstående skript som produserer en katalogfil med ~300 steder fra
+OpenStreetMap og Kartverket. Filen versjoneres i repoet. Plassering og format står i arkitektur
+AD-5.
 
 **Konsekvenser (testbare):**
 - Skriptet er ikke en del av kjøretidskoden. Verken appen eller dataprogrammet importerer det
@@ -162,34 +174,26 @@ katalogfil med ~300 steder fra OpenStreetMap og Kartverket. Filen versjoneres i 
 
 #### FR-2: Timesbasert henting fra MET og NVE *(Må ha)*
 
-Systemet henter værdata for alle steder i katalogen hver time via en planlagt jobb. Selve
-hentingen er et Node-script (`npm run data`) som også kan kjøres lokalt uten nøkler. Den planlagte
-jobben er en GitHub Actions-jobb.
+Systemet henter værdata for alle steder i katalogen omtrent én gang i timen, i takt med at MET
+oppdaterer prognosen. Hvordan kjøringene planlegges og startes på nytt, står i arkitektur AD-2.
 
 **Konsekvenser (testbare):**
-- Forespørsler bruker identifiserende User-Agent og begrenset samtidighet. Hvert sted hentes én
-  gang per time, i takt med hvor ofte MET oppdaterer prognosen.
-- Jobben startes hvert 10. minutt og henter bare når siste publisering på grenen `data` er minst
-  50 minutter gammel. Tidspunktet for den publiseringen er det eneste den leser fra forrige
-  kjøring.
-- Hver kjøring som har hentet, starter en timer som starter neste kjøring når dataene er rundt
-  55 minutter gamle. Timeplanen er reserve.
-- Én kjøring henter alle ~300 steder, med begrenset samtidighet. En avbrutt kjøring publiserer
-  ingenting (FR-5) og prøves på nytt av timeren etter minst 30 minutter, eller ved neste planlagte
-  forsøk.
-- Hver kilde får høyst 10 kall i sekundet: to kall til samme kilde starter minst 100 ms fra
-  hverandre. MET krever en egen avtale over 20 kall i sekundet, og et blokkert dataprogram ville
-  gitt en tjeneste uten data. Hentingen tar da minst 30 sekunder per kilde.
+- Publiserte data er under 3 timer gamle, og i normal drift rundt én time gamle (NFR-3, SM-13).
+- Hver kilde får høyst 10 kall i sekundet, med identifiserende User-Agent. MET krever en egen
+  avtale over 20 kall i sekundet, og et blokkert dataprogram ville gitt en tjeneste uten data.
+- En avbrutt kjøring publiserer ingenting (FR-5).
+- Dataprogrammet kan kjøres lokalt uten nøkler (FR-30).
 
 #### FR-3: Skjemavalidering av rådata *(Må ha)*
 
-Systemet validerer hvert API-svar mot et strengt skjema (Zod) før det brukes videre i pipelinen.
+Systemet validerer hvert API-svar mot et strengt skjema før det brukes videre i pipelinen
+(arkitektur AD-12).
 
 **Konsekvenser (testbare):**
 - Et ugyldig svar (feil felt, feil type, manglende felt) avvises og registreres i kjøringens
   kvalitetsrapport (NFR-DQ2) med sted, kilde og årsak. Det rettes aldri automatisk og kommer aldri
   med i den publiserte datafilen.
-- Kontraktstester kjører samme validering mot opptatte, ekte MET/NVE-svar (`tests/contract/`) og
+- Kontraktstester kjører samme validering mot opptatte, ekte MET/NVE-svar (arkitektur AD-4) og
   fanger opp brytende API-endringer før de treffer produksjon.
 
 #### FR-4: SnowScore- og skivindu-beregning *(Må ha; skivindu-delen er Bør ha)*
@@ -247,15 +251,15 @@ Realiserer UJ-1 (klimaks: forstå delpoengene) og UJ-3 (tallet vises som tekst, 
 #### FR-7: Delt SnowScore-modul *(Må ha)*
 
 Systemet beregner SnowScore med formelen fra briefen (§«SnowScore», rettet av Mary): A
-(Nysnøpotensial) + B (Kuldebonus, null uten nedbør) + C (Snøandel), alle fra samme
-`shared/snowscore.ts`-modul brukt av både pipeline og forklaringssidens kalkulator (AD-6).
+(Nysnøpotensial) + B (Kuldebonus, null uten nedbør) + C (Snøandel), alle fra én delt modul som
+brukes av både pipeline og forklaringssidens kalkulator (arkitektur AD-6).
 
 **Konsekvenser (testbare):**
 - Egenskapsbaserte tester (minst 1000 tilfeldige inndata i CI, se SM-6 i §9.1): poengsummen er
   alltid mellom 0 og 100; mer nysnø gir aldri lavere A; lavere snittemperatur gir aldri lavere B;
   ingen nedbør (P < 0,5 mm) gir alltid B = 0 og C = 0; samme inndata gir alltid samme resultat.
-- Appen og dataprogrammet importerer samme modul (`shared/snowscore.ts`), og begge kjører på Node
-  og i nettleseren. Det finnes ingen annen kopi av formelen, så en egen parity-test trengs ikke.
+- Appen og dataprogrammet importerer samme modul (AD-6). Det finnes ingen annen kopi av formelen,
+  så en egen parity-test trengs ikke.
 
 #### FR-8: Forklaringsside — kort fortalt og steg for steg *(Må ha)*
 
@@ -278,8 +282,8 @@ til ferdig poengsum, slik Mary rettet det (6-timers tabell, se briefen).
 
 **Konsekvenser (testbare):**
 - Eksemplet viser eksplisitt S, P og T̄ utledet fra timesverdiene — ikke bare sluttsvaret.
-- Eksempelets inndata og forventede svar (58) kjøres som fasittest mot `shared/snowscore.ts`
-  (SM-10). Siden og testen bruker samme tabell, så de kan ikke sprike.
+- Eksempelets inndata og forventede svar (58) kjøres som fasittest mot den delte SnowScore-modulen
+  (AD-6, SM-10). Siden og testen bruker samme tabell, så de kan ikke sprike.
 
 #### FR-10: «Prøv selv»-kalkulator *(Bør ha)*
 
@@ -287,8 +291,8 @@ Brukeren kan justere nedbør og temperatur på forklaringssiden og se poengsumme
 endre seg umiddelbart.
 
 **Konsekvenser (testbare):**
-- Kalkulatoren importerer `shared/snowscore.ts` direkte — den inneholder aldri en egen kopi av
-  formelen (AD-6; hindrer at kalkulator og pipeline kan sprike).
+- Kalkulatoren importerer den delte SnowScore-modulen direkte — den inneholder aldri en egen kopi
+  av formelen (AD-6; hindrer at kalkulator og pipeline kan sprike).
 
 #### FR-11: Datakilder og begrensninger-seksjon *(Må ha)*
 
@@ -312,7 +316,8 @@ Systemet viser et kart over Norge (Leaflet med Kartverkets topografiske bakgrunn
 nøkkel) der hvert sted i katalogen er fargelagt etter sin gjeldende SnowScore.
 
 **Konsekvenser (testbare):**
-- Fargeskalaen går fra grått (lavt snøpotensial) til sterkt blått (høyt), med minst fire trinn.
+- Fargeskalaen går fra grått (lavt snøpotensial) til sterkt blått (høyt), med ett trinn per
+  poengnivå i FR-13 (fire trinn).
 - Et trykk/klikk på et sted åpner stedssiden for det stedet.
 
 #### FR-13: Tilgjengelig listevisning *(Må ha)*
@@ -322,7 +327,17 @@ fullverdig alternativ — ikke en nedskalert reserveløsning.
 
 **Konsekvenser (testbare):**
 - Hvert listeelement viser SnowScore som tall og som tekstetikett (f.eks. «82 – Svært godt»),
-  aldri kun som farge.
+  aldri kun som farge. Etiketten er poengnivået:
+
+  | Poengsum | Poengnivå |
+  |---|---|
+  | 70–100 | Svært godt |
+  | 45–69 | Godt |
+  | 20–44 | Middels |
+  | 0–19 | Lite |
+
+  Grensene er inkludert. Et sted med ufullstendige data har ikke noe poengnivå og viser
+  «Ufullstendige data» i stedet.
 - Hele listen er nåbar og betjenbar med tastatur alene (Tab/Enter/piltaster), verifisert med
   automatisert tilgjengelighetstest (axe/Playwright) i CI.
 - Listen kan sorteres på SnowScore, avstand (hvis posisjon er delt) og navn.
@@ -443,8 +458,8 @@ Brukeren kan sette minimumskrav til nysnø (mm/cm) og grenser for vind og temper
 med OG, og få tilbake bare steder som oppfyller alle valgte kriterier.
 
 **Konsekvenser (testbare):**
-- Svar på under 2 sekunder for 95 % av søk (NFR-1 i §7). Filtreringen skjer i nettleseren over de
-  ~300 stedene i datafilen, med delt filterlogikk (`shared/filter.ts`).
+- Treffene oppdateres innen tiden i NFR-1. Filtreringen skjer i nettleseren over de ~300 stedene i
+  datafilen, med én delt filterlogikk (arkitektur AD-6).
 - Nysnø-cm-anslaget bruker den faste omregningen 1 mm vannekvivalent ≈ 1 cm nysnø (Marys
   presisering), identisk med SnowScore-seksjonens forklaring.
 - En fasittabell med et lite stedssett (5–8 steder) og flere filterkombinasjoner viser
@@ -465,6 +480,12 @@ gjenskapes ved åpning.
 
 Brukeren kan sette maks skydekke i dagslystimer.
 
+**Konsekvenser (testbare):**
+- Med kravet aktivt vises bare steder der snittskydekket i dagslystimene (§3) i SnowScore-vinduet
+  er høyst grensen. Grensen er inkludert.
+- Har stedet ingen dagslystime i vinduet (mørketid), eller mangler mer enn 10 % av dagslystimene
+  skydekke, er verdien ukjent, og stedet skjules mens kravet er aktivt.
+
 #### FR-23: Avstandsfilter *(Bør ha)*
 
 Brukeren kan sette maks avstand fra egen posisjon; posisjonen beregnes og brukes kun i
@@ -478,10 +499,22 @@ nettleseren og lagres aldri (jf. NFR-Privacy i §7).
 
 Brukeren kan filtrere på stedstype (skisted, fjelltopp, by).
 
+**Konsekvenser (testbare):**
+- Valg av «skisted» viser bare steder med stedstype skisted, og antall treff stemmer med antall
+  steder av den typen i datafila.
+- Velges flere typer, vises steder av hvilken som helst av dem. Ingen valgt type betyr «Alle».
+
 #### FR-25: Nysnø siste 24 t (målt, ikke prognose) *(Bør ha)*
 
 Brukeren kan filtrere på NVE seNorge sitt modellerte nysnø for siste døgn, som et alternativ til
 MET-prognosen for kommende 24/48 t.
+
+**Konsekvenser (testbare):**
+- Med NVE valgt som kilde for nysnøkravet vises bare steder der NVEs modellerte nysnø siste døgn
+  er minst grensen, med omregningen 1 mm ≈ 1 cm (FR-20).
+- Mangler NVE-verdien for et sted, skjules stedet mens nysnøkravet er aktivt.
+- Valget av kilde står i adressen (FR-21), og grensesnittet merker verdiene som modellerte, ikke
+  målte.
 
 #### FR-26: Null-treff-veiledning *(Må ha, dekket av FR-14)*
 
@@ -612,14 +645,16 @@ nysnø med NVE seNorges modellerte nysnø i etterkant, for katalogens steder ove
   FR-20/21/26)
 - CI med det reelle QA-minimumet: egenskapsbaserte tester, kontraktstester, fasittabell for
   filter og én E2E-røyktest (kart → filter → stedsside) i demomodus
+- Måling av SM-3 (forklarbarhet), om nødvendig i en minimal brukertest med minst tre personer
+  (§9.3)
 
 ### 6.2 Utenfor MVP (Bør ha — bygges først når Må ha er ferdig og testet)
 
 - Beste skivindu (FR-17), kalkulator på forklaringssiden (FR-10), hurtigvalg (FR-15), solfilter
   (FR-22), avstandsfilter (FR-23), stedstypefilter (FR-24), nysnø siste 24 t (FR-25)
 - Nye forsøk ved feil (FR-6b)
-- Den oppgavebaserte 5-persons brukertesten er «bør ha»-dybde (Marys skille), ikke en
-  blokkerende del av en «må ha»-leveranse.
+- Den oppgavebaserte 5-persons brukertesten (SM-2, SM-4, SM-16) er «bør ha»-dybde (Marys
+  skille), ikke en blokkerende del av en «må ha»-leveranse. SM-3 er unntaket og er Må ha (§6.1).
 
 ### 6.3 Ikke i v1 (Won't have)
 
@@ -632,16 +667,23 @@ database. Begrunnelsene står i §12.
 
 ### 7.1 Ytelse
 
-- **NFR-1:** 95 % av filtersøk svarer på under 2 sekunder. Validerer FR-20. *(SRS-N-01 i
-  SnowFinder-PRD-og-SRS.html foreslår 500 ms. Forslaget venter på vedtak i gruppa.)*
+- **NFR-1:** Treffantall og treffliste oppdateres på under 500 ms etter en endring i filteret
+  eller søkefeltet, for 95 % av endringene. Det måles manuelt på samme mobilprofil som NFR-2, og
+  resultatet føres i sluttrapporten (SM-1). Validerer FR-20 og FR-32. *Avveining:* filtreringen
+  skjer i nettleseren over ~300 steder, så en grense på 2 sekunder ville ikke testet noe reelt.
+  En automatisk tidsmåling i CI er valgt bort, fordi den gir ustabile tester på delte maskiner.
 - **NFR-2:** Norgeskartet er interaktivt (kan panneres/zoomes) innen 3 sekunder på mobil, målt
   på en representativ midtsegment-telefon over 4G. Validerer FR-12.
 
 ### 7.2 Datafriskhet og robusthet
 
-- **NFR-3:** Publiserte data er normalt under 90 minutter gamle; data eldre enn tre timer
-  merkes «utdatert», og steder med data eldre enn tolv timer fjernes fra kart og filter.
-  Validerer FR-16.
+- **NFR-3:** Publiserte data er under tre timer gamle. Data eldre enn tre timer merkes
+  «utdatert», og steder med data eldre enn tolv timer fjernes fra kart og filter. *Mål:* i normal
+  drift er dataene rundt én time gamle (SM-13). Validerer FR-16.
+  *Begrunnelse for brukeren:* MET oppdaterer prognosen omtrent hver time, og den som planlegger
+  tur, trenger en fersk prognose før hen drar. Kravet er satt til grensen for «utdatert», så
+  brukeren alltid får beskjed når det ikke holdes, og aldri tror gamle data er ferske. *Bevisst
+  svekket 2026-11-14* fra «normalt under 90 minutter», se §12.
 - **NFR-4:** Tjenesten fungerer med siste gyldige data når MET er utilgjengelig, og publiserer uten
   NVE-verdier når NVE er utilgjengelig — verifisert ved å simulere nedetid i test. Validerer
   FR-6a.
@@ -722,7 +764,8 @@ Suksessmålene er delt etter hvordan de verifiseres, slik at det går klart fram
 verifisert:
 - **A:** automatisk i CI, og blokkerer merge;
 - **B:** målt manuelt eller under demo, og rapportert med måledata;
-- **C:** mål for den oppgavebaserte brukertesten med fem personer.
+- **C:** mål for den oppgavebaserte brukertesten med fem personer (SM-3 kan også måles i en
+  minimal test, se §9.3).
 
 ### 9.1 Verifiseres automatisk i CI (A)
 
@@ -751,13 +794,14 @@ verifisert:
 
 ### 9.2 Måles manuelt eller under demo (B)
 
-- **SM-1 (Ytelse):** 95 % av filtersøk under 2 sekunder. Validerer FR-20/NFR-1. *(Forslag om
-  500 ms venter på vedtak, se NFR-1.)*
+- **SM-1 (Ytelse):** 95 % av endringene i filteret eller søkefeltet gir oppdatert treffliste på
+  under 500 ms, målt manuelt som beskrevet i NFR-1. Validerer FR-20/FR-32/NFR-1.
 - **SM-12 (Kartlasting):** Kartet er interaktivt innen 3 sekunder på en mobil over 4G. Validerer
   NFR-2.
-- **SM-13 (Ferskhet):** Publiserte data er normalt under 90 minutter gamle. Det måles fra
-  Actions-historikken (tidspunkt for vellykkede kjøringer) over minst én uke med den planlagte
-  jobben i gang. Validerer NFR-3.
+- **SM-13 (Ferskhet):** Publiserte data er under tre timer gamle, og i normal drift rundt én time
+  gamle. Det måles fra Actions-historikken (tidspunkt for vellykkede kjøringer) over minst én uke
+  med den planlagte jobben i gang, og rapporteres som typisk alder og andel av tiden over tre
+  timer. Validerer NFR-3.
 - **SM-14 (Kjørbarhet):** Et gruppemedlem som ikke har satt opp prosjektet før, starter appen fra
   et rent klon kun etter README, både i demomodus (`npm run dev:demo`) og med ekte data
   (`npm run dev`), på under 10 minutter og uten hjelp. Det gjøres første gang senest rett etter
@@ -774,14 +818,18 @@ fordi de avhenger av nettverk og maskinvare.
 
 - **SM-2 (Nytte):** Minst 4 av 5 testbrukere fullfører oppgaven «finn et skisted som oppfyller
   et gitt krav» på under 2 minutter, uten hjelp fra testleder. Validerer FR-20/FR-12/FR-13.
-- **SM-3 (Forklarbarhet):** Minst 4 av 5 testbrukere kan forklare en vist SnowScore etter å ha
-  lest forklaringssiden. Validerer FR-8/FR-9.
+- **SM-3 (Forklarbarhet, Må ha):** Minst 4 av 5 testbrukere kan forklare en vist SnowScore etter å
+  ha lest forklaringssiden. Blir den fulle brukertesten ikke gjennomført, måles SM-3 i en minimal
+  brukertest med minst tre personer, der minst 2 av 3 skal klare det. Validerer FR-8/FR-9.
 - **SM-4 (Dataforståelse):** Minst 4 av 5 testbrukere skiller prognose fra faktiske forhold og
   oppdager utdaterte data uten å bli fortalt det på forhånd. Validerer FR-11/FR-16.
+- **SM-16 (Brukbarhet):** SUS-snittet er minst 68, og minst 80 % av alle oppgavene i brukertesten
+  fullføres uten hjelp.
 
-Brukertestplanen (oppgaver, måling og SUS-skjema) ligger i EXPERIENCE.md. Selve brukertesten
+Brukertestplanen (oppgaver, måling og SUS-skjema) ligger i EXPERIENCE.md. Den fulle brukertesten
 med fem personer er Bør ha-dybde (§6.2), men oppgavene er Må ha-flyten (UJ-1, UJ-3), så
-testen kan gjennomføres så snart Må ha er ferdig.
+testen kan gjennomføres så snart Må ha er ferdig. SM-3 er Må ha, fordi den måler tilliten som
+er kjernen i visjonen (§1): forstår ikke brukerne poengsummen, svikter produktets løfte.
 
 ### 9.4 Mot-metrikker (skal ikke optimeres isolert)
 - **SM-C1** *(gjelder først når snøvarsel kommer, etter v1)*: Antall sendte snøvarsler skal
@@ -944,5 +992,37 @@ endringsloggen for versjon 2.2 i SnowFinder-PRD-og-SRS.html.
 
 ### 2026-11-14: faglærers tilbakemelding på PRD-en
 
-- Versjonsmerknader, datostempler og «funnet i revisjonen» er flyttet fra kravene til denne
-  endringsloggen, og kravene er skrevet i presens. Ingen krav har endret betydning i dette steget.
+Svar på faglærers formative tilbakemelding 2026-11-12 (`tilbakemelding-prd.md`). Beslutningene
+ble tatt av Aksel 2026-11-14 på grunn av tidsfristen, og gruppa kan ta dem opp igjen
+([sprint-change-proposal-2026-11-14-prd-tilbakemelding.md](../../project-workspace/planning-artifacts/sprint-change-proposal-2026-11-14-prd-tilbakemelding.md)).
+
+- **Form (4.1):** versjonsmerknader, datostempler og «funnet i revisjonen» er flyttet fra kravene
+  til denne endringsloggen, og kravene er skrevet i presens. Ingen krav har endret betydning i
+  dette steget.
+- **§0, gjeldende dokument:** `SnowFinder-PRD.md` er kilden til sannhet, og
+  SnowFinder-PRD-og-SRS.html følger den ved konflikt. SM-16 og poengnivåene er hentet fra SRS-en.
+- **FR-2 (4.2):** skrevet om til et testbart krav. Planleggingen av kjøringene (hvert 10. minutt,
+  aldersgrense på 50 minutter, timer ved rundt 55 minutter, nytt forsøk etter minst 30 minutter,
+  minst 100 ms mellom kall) står i arkitektur AD-2 og er fjernet fra PRD-en. Det samme gjelder
+  setningen om at hentingen tar minst 30 sekunder per kilde, som bare var en følge av grensen på
+  10 kall i sekundet.
+- **FR-1, FR-3, FR-7, FR-9, FR-10, FR-20 (4.2):** filbaner og verktøy (Zod, Node,
+  `shared/…`, `tests/contract/`, `scripts/build-catalog/`) er erstattet med henvisninger til
+  arkitektur AD-4, AD-5, AD-6 og AD-12.
+- **NFR-1 og SM-1 (4.4):** 500 ms for 95 % av endringene i filteret eller søkefeltet, målt manuelt
+  på mobilprofilen i NFR-2. Før: 2 sekunder for filtersøk. Skjerpet, fordi 2 sekunder ikke testet
+  noe reelt.
+- **NFR-3 og SM-13 (4.4), bevisst svekkelse:** kravet er endret fra «normalt under 90 minutter»
+  til «under tre timer», med rundt én time som mål i normal drift. Begrunnelse: 90-minuttersmålet
+  drev en kjede av timeplan og timer i FR-2 som ikke sto i forhold til nytten for brukeren, og
+  tre timer er samme grense som banneret «utdatert», så brukeren alltid får beskjed når kravet
+  ikke holdes. Svekkelsen gjelder kravet, ikke tester: ingen Må ha-test er fjernet eller svekket
+  (SM-C2), og dataprogrammet kjører uendret.
+- **FR-12 og FR-13 (4.3):** poengnivåene 70–100 Svært godt, 45–69 Godt, 20–44 Middels og 0–19
+  Lite, slik gruppa vedtok dem 2026-10-08 og koden har dem. Fargeskalaen har ett trinn per
+  poengnivå.
+- **Dagslystime og mørketid (4.3):** definert i §3 slik dataprogrammet regner dem: solhøyde over
+  0° ved timens start eller en halvtime senere.
+- **FR-22, FR-24, FR-25 (4.5):** hver har fått testbare konsekvenser.
+- **SM-3 (4.5):** Må ha, med en minimal brukertest (minst 2 av 3) hvis den fulle testen ikke
+  gjennomføres. Ny SM-16 for SUS og fullføringsgrad, fra brukertestplanen.
