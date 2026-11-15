@@ -138,3 +138,31 @@ tilgang: testen går i demomodus på maskinen til testlederen, så en lenke fung
 fysisk på testmaskinen, deltakerens telefon via `--host` og Teams med «Gi kontroll».
 **Hva vi gjorde med det:** brukt. Sjekklisten var feil om Teams (deltakeren delte skjermen, men kunne
 ikke åpne appen), og er rettet.
+
+### 18
+> hvordan skal jeg finne skjemaet på git og skrive det ut? kan du gi meg linekn så jeg kan prublisere den på teams? skla jeg laste opp svarene her i cloude slik at du pusher til git+
+
+**Svar (kort):** Lenke til spørreskjemaet og mappen på GitHub, utskrift med Ctrl+P, og ikke send skjemaet til
+deltakerne på forhånd. Svarene kan lastes opp hit med kode og uten navn, og bare de samlede tallene går inn i repoet,
+som er offentlig.
+**Hva vi gjorde med det:** brukt.
+
+### 19
+> lag en melding til teamsgruppa
+
+**Svar (kort):** Melding med lenke til materiellet, rekrutteringsfristen og hvordan testen og svarene skal håndteres.
+**Hva vi gjorde med det:** Aksel sender selv.
+
+### 20
+> kan du konvertere undersøøkelesen over til en excel fil som jeg bare kan laste opp her når svarene er gjennomgått
+
+**Svar (kort):** Arbeidsbok med arkene Veiledning, Svar (D1–D6, nedtrekkslister og validering) og Sammendrag
+(formler mot SM-2, SM-3, SM-4 og SM-16).
+**Hva vi gjorde med det:** brukt. Formlene ble sjekket med en testkopi, fordi LibreOffice ikke finnes på maskinen.
+
+### 21
+> ja legg den inn og lag pr
+
+**Svar (kort):** Malen er lagt i `brukertest/` og lenket fra README-en for brukertesten, med beskjed om å lagre den
+utfylte kopien utenfor repoet.
+**Hva vi gjorde med det:** brukt.
