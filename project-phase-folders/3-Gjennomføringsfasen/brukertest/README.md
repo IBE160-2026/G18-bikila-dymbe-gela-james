@@ -9,6 +9,7 @@ EXPERIENCE.md. Mappen her sier bare hvordan og når vi gjennomfører testen.
 |---|---|
 | [`testmanus.md`](testmanus.md) | Det testlederen leser opp, ordrett, og reglene for når hen kan hjelpe |
 | [`observasjonsskjema.md`](observasjonsskjema.md) | Ett ark per deltaker, fylles ut av den som tar notater |
+| [`spørreskjema.md`](spørreskjema.md) | Ett ark per deltaker, fylles ut av deltakeren etter oppgavene: bakgrunn, SUS og to åpne spørsmål |
 | [`resultater.md`](resultater.md) | Samlet resultat, fylles ut etter siste test og brukes i sluttrapporten |
 
 ## Tidsplan *(forslag 2026-11-15)*
@@ -45,6 +46,32 @@ Bruk bare fornavn eller en kode (D1–D6) i repoet. Kontaktinformasjon skal ikke
 | D5 | | | | | |
 | D6 (reserve) | | | | | |
 
+## Slik får deltakerne tilgang til appen
+
+Deltakerne kan ikke bare få en lenke. Den publiserte nettsiden viser ekte data, og der stemmer ikke
+fasiten (Trysil, Gaustatoppen 58 og Kirkenes som utdatert). Testen må gå i demomodus, og den
+finnes bare på maskinen til testlederen (`npm run preview` etter `npm run build:demo`). Testen er
+også ledet: testlederen gir én oppgave om gangen, og notattakeren tar tiden. Det går derfor ikke an
+å sende ut en lenke og la folk ta testen alene.
+
+Velg én av disse tre måtene, i denne rekkefølgen:
+
+1. **Fysisk, på testmaskinen (anbefalt).** Deltakeren bruker laptopen til testlederen. Det er
+   enklest, og alle får samme skjerm. Spørreskjemaet er på papir.
+2. **Fysisk, på deltakerens egen telefon.** Brukes når deltakeren har iPhone med Safari (se
+   Safari-sjekken i manuset).
+   - Testlederen kjører `npm run preview -- --host`, og deltakeren åpner adressen som vises
+     (`http://<IP-en til maskinen>:4173`) på samme nettverk.
+   - Blokkerer skolenettet (eduroam) trafikk mellom enheter, kobler laptopen seg til en mobil
+     hotspot, og telefonen bruker samme hotspot.
+3. **På Teams.**
+   - Testlederen deler vinduet med appen og gir deltakeren kontroll (I Teams: «Gi kontroll»).
+     Deltakeren styrer musa og tenker høyt.
+   - Spørreskjemaet leses opp, og notattakeren krysser av, eller testlederen limer
+     det inn i chatten. Svarene skrives aldri inn med navn.
+   - Bruk dette bare når vi ikke får nok deltakere fysisk. Tiden i oppgave 1 blir litt
+     lengre på grunn av forsinkelsen.
+
 ## Sjekkliste før hver test
 
 1. Hent siste `main`: `git pull`, så `npm ci`.
@@ -53,10 +80,10 @@ Bruk bare fornavn eller en kode (D1–D6) i repoet. Kontaktinformasjon skal ikke
    `public/data/demo.json`, så fasiten i manuset stemmer.
 3. Åpne appen på Utforsk, uten filter i adressen. Lukk andre faner, og tøm historikken hvis den
    avslører adresser med filter.
-4. Deltaker på egen telefon eller Mac: bruk samme nettverk og maskinens IP-adresse
-   (`npm run preview -- --host`), eller la deltakeren bruke testmaskinen.
-5. Teams med skjermdeling: deltakeren deler skjermen, og testlederen ser på uten å styre.
-6. Ha et tomt observasjonsskjema og en klokke klar.
+4. Deltaker på egen telefon eller Mac: se punkt 2 over.
+5. Teams: testlederen deler appen og gir kontroll (se punkt 3 over). Deltakeren kan ikke åpne
+   `localhost` hos seg selv.
+6. Ha et tomt observasjonsskjema, et utskrevet [spørreskjema](spørreskjema.md) og en klokke klar.
 
 ## Etter testen
 

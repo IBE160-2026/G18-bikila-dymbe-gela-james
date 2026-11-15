@@ -81,9 +81,11 @@ oppgavene, mens deltakeren ser på:
 
 ## 4. SUS-skjemaet (3 min)
 
-Gi deltakeren de ti påstandene fra
-[EXPERIENCE.md](../../2-Planleggingsfasen/SnowFinder-EXPERIENCE.md#brukertestplan-steg-8c-2026-10-28)
-på papir eller i et delt skjema.
+Gi deltakeren [spørreskjemaet](spørreskjema.md) på papir. På Teams leses det opp. Det har de ti
+påstandene fra
+[EXPERIENCE.md](../../2-Planleggingsfasen/SnowFinder-EXPERIENCE.md#brukertestplan-steg-8c-2026-10-28),
+to spørsmål om bakgrunnen og de to åpne spørsmålene i del 5. Deltakeren kan skrive svarene på de
+åpne spørsmålene selv, eller svare muntlig.
 
 > Til slutt vil jeg be deg ta stilling til ti påstander om nettsiden, fra 1 (helt uenig) til 5
 > (helt enig). Ikke tenk for lenge på hver.

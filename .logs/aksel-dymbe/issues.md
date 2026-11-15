@@ -84,3 +84,5 @@
 - [x] 2026-11-15 [sluttrapport-skjelett](981-2026-11-15-16-11-06-sluttrapport-skjelett.md) — Mål SM-1 (500 ms i filteret) og SM-12 (kart på 4G) manuelt og før dem inn i sluttrapporten (løst 2026-11-15: målt, se 980-…-maling-sm-1-og-sm-12)
 - [ ] 2026-11-15 [maling-sm-1-og-sm-12](980-2026-11-15-18-11-27-maling-sm-1-og-sm-12.md) — SM-1 og SM-12 holder ikke på mobilprofilen (kart 9 s, 61 % under 500 ms): gruppa velger retting via bmad-build før 21.11 eller avvik
 - [ ] 2026-11-15 [maling-sm-1-og-sm-12](980-2026-11-15-18-11-27-maling-sm-1-og-sm-12.md) — Bekreft SM-1 og SM-12 på ekte telefon i mellomsegmentet over 4G
+- [ ] 2026-11-15 [brukertest-sporreskjema](979-2026-11-15-18-28-31-brukertest-sporreskjema.md) — Skriv ut 6 spørreskjemaer før 17.11
+- [ ] 2026-11-15 [brukertest-sporreskjema](979-2026-11-15-18-28-31-brukertest-sporreskjema.md) — Sjekk at `npm run preview -- --host` kan nås fra en telefon på skolenettet (ellers hotspot)

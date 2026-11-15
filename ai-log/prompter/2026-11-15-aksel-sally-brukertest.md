@@ -121,3 +121,20 @@ under 500 ms.
 ingenting, og SM-1 talte nettleserhendelser i stedet for endringer. Den første kjøringen (14,5 s,
 kald hurtigbuffer) ble forkastet. Sannsynlige årsaker og rettinger står i
 `4-Avslutningsfasen/målinger/README.md`. Gruppa bestemmer om de skal bygges før kodefrysen.
+
+### 16
+> hvordan skal spørreskjemaet til testbrukerne se ut
+
+**Svar (kort):** Skjemaet var bestemt i EXPERIENCE.md (SUS), men det fantes bare i observasjonsskjemaet.
+Claude foreslo et eget ark for deltakeren: to bakgrunnsspørsmål, de ti SUS-påstandene uendret og de
+to åpne spørsmålene.
+**Hva vi gjorde med det:** brukt, se neste prompt.
+
+### 17
+> ja og legg det inn som spørreskjema, hvordan skal folk få mulighten til å gå inn å ta testen
+
+**Svar (kort):** `brukertest/spørreskjema.md` med utregning av poengsummen. README fikk en seksjon om
+tilgang: testen går i demomodus på maskinen til testlederen, så en lenke fungerer ikke. Rekkefølgen er
+fysisk på testmaskinen, deltakerens telefon via `--host` og Teams med «Gi kontroll».
+**Hva vi gjorde med det:** brukt. Sjekklisten var feil om Teams (deltakeren delte skjermen, men kunne
+ikke åpne appen), og er rettet.
