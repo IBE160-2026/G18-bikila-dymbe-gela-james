@@ -42,6 +42,8 @@ hurtigvalget «Sol etter snøfall» trenger solfilteret.
 
 **Avvik (2026-11-02):** Story 2.1b (logo, én forklaringslenke og slidere som starter til venstre) ble lagt
 til etter Aksels ønske og bygget mens 1.11 ventet på målingen. Den justerer UX for 2.1 og Epic 3.
+**Avvik (2026-11-02):** Aksel bestilte en UX-forbedring i fem steg, før kodefrysen 11. november. Steg 1 er
+Story 1.8b (resultatlisten som destinasjonskort). Hvert steg er en egen story med egen PR.
 
 **Avvik (2026-11-04):** Story 3.9 (søk) er lagt til etter [endringsforslaget om søk](../../project-workspace/planning-artifacts/sprint-change-proposal-2026-11-04-sok.md)
 og bygges før brukertesten.

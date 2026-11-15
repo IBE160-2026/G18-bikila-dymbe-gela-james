@@ -268,9 +268,13 @@ Navnene er de samme som i Komponentmønstre i EXPERIENCE.md, som beskriver atfer
   - Under 768 px er forklaringen den samme lista i mindre form: prikkene er
     `{components.map-legend.swatchSizeCompact}` og teksten `meta`. Den har ingen knapp og er alltid
     synlig.
-- **Listerad** — `{colors.surface-raised}` kort (`{components.location-card}`) med stedsnavn
-  (`heading`), score-badge, og tre nøkkeltall (nysnø/vind/temp) i `numeric`. Hele raden er
-  lenken; kanten blir `{colors.accent}` ved hover.
+- **Listerad** *(destinasjonskort, endret 2026-11-02)* — `{colors.surface-raised}` kort
+  (`{components.location-card}`). Øverst stedsnavn (`heading`) til venstre og score-badge til høyre.
+  Under står faste felt: etikett i `meta` og `{colors.ink-secondary}`, verdien under i `numeric`. Hele
+  kortet er lenken, og kanten blir `{colors.accent}` ved hover. Feltene står nederst i kortet. Én kolonne
+  under 768 px. Fra 768 px et rutenett med kolonner på minst 240 px, så to til tre kort står side om
+  side når listen har plass (med filterpanelet ved siden av fra rundt 1024 px), med `{spacing.3}` mellom.
+  *(Før: navn, badge og tre nøkkeltall på én linje.)*
 - **Sorteringsvalg** — Etiketten «Sorter etter» og en ordinær `<select>`, minst `{spacing.7}` høy,
   med `{colors.ink-secondary}`-kant, `{rounded.sm}` og `{colors.surface-raised}` bakgrunn.
   Statusteksten under (for eksempel avslått posisjon) står i `meta` og `{colors.ink-secondary}`.

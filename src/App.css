@@ -210,15 +210,30 @@ select:focus-visible {
 
 .liste-rader {
   display: grid;
-  gap: var(--spacing-2);
+  /* minmax(0, …): a card may shrink below its content, which wraps, so a 320px phone never scrolls sideways. */
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--spacing-3);
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-/* DESIGN.md listerad: a surface-raised card; the whole row is the link, not just the badge. */
+/* Story 1.8b: one card per row on mobile, then as many 240px+ columns as fit next to the filter. */
+@media (min-width: 768px) {
+  .liste-rader {
+    grid-template-columns: repeat(auto-fill, minmax(min(240px, 100%), 1fr));
+  }
+}
+
+/* DESIGN.md listerad (a destination card from Story 1.8b): a surface-raised card; the whole card is the link,
+   not just the badge. The card fills its grid cell, so cards in one row are the same height. */
 .app .liste-rad {
   display: grid;
+  height: 100%;
+  box-sizing: border-box;
+  /* Story 1.8b: the header at the top and the fields at the bottom, so the values line up across a row of
+     cards even when a name wraps or a card has «Utdatert». */
+  align-content: space-between;
   grid-template-columns: 1fr auto;
   align-items: center;
   gap: var(--spacing-2) var(--spacing-3);
@@ -236,21 +251,49 @@ select:focus-visible {
 }
 
 .liste-navn {
+  min-width: 0;
+  overflow-wrap: anywhere;
   font-family: var(--typography-heading-font-family);
   font-size: var(--typography-heading-font-size);
   font-weight: var(--typography-heading-font-weight);
   line-height: var(--typography-heading-line-height);
 }
 
+/* Story 1.8b: fixed fields in equal columns, the label above the value, so values line up card to card. */
 .liste-detaljer {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
   grid-column: 1 / -1;
-  gap: var(--spacing-1) var(--spacing-4);
+  grid-auto-columns: minmax(0, 1fr);
+  grid-auto-flow: column;
+  gap: var(--spacing-2);
+}
+
+/* Each field is a column with its value at the bottom, so a wrapped label («Nysnø siste 24 t») does not
+   push its value below the others. */
+.liste-felt {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-width: 0;
+}
+
+.liste-felt-etikett {
+  display: block;
   color: var(--color-ink-secondary);
+  font-family: var(--typography-meta-font-family);
+  font-size: var(--typography-meta-font-size);
+  font-weight: var(--typography-meta-font-weight);
+  line-height: var(--typography-meta-line-height);
+  letter-spacing: var(--typography-meta-letter-spacing);
+}
+
+.liste-felt-verdi {
+  display: block;
+  color: var(--color-ink-primary);
   font-family: var(--typography-numeric-font-family);
   font-size: var(--typography-numeric-font-size);
   font-feature-settings: var(--typography-numeric-font-feature-settings);
+  overflow-wrap: anywhere;
 }
 
 /* «Utdatert» is a small meta text with the source time, never a block (EXPERIENCE, 3–12 h). */
