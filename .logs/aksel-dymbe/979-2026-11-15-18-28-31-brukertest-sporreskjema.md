@@ -48,3 +48,18 @@ Aksel ba om lenker til skjemaet for Teams, en melding til gruppa og en Excel-fil
 
 ### Åpne punkter
 - Når testene er ferdige, laster Aksel opp den utfylte Excel-fila. Claude fører resultatene inn i `resultater.md` og i sluttrapporten §4.
+
+## 2026-11-15 kl. 21:10 — Aksel Dymbe
+
+### Oppgave
+Aksel ba om spørreskjemaet for deltakerne som en Excel-fil, og om en PR med den.
+
+### Plan
+- Lage arket med openpyxl, med de samme spørsmålene som i `spørreskjema.md` og uten poengutregning.
+
+### Resultat
+- Ny fil `brukertest/spørreskjema.xlsx`. Deltakeren fyller ut gule felt og velger svar fra nedtrekkslister. SUS-svarene er tall fra 1 til 5. Arket får plass på én utskrevet side.
+- README-en for brukertesten lenker til fila. KI-loggen og promptene er oppdatert.
+
+### Åpne punkter
+Ingen nye.
