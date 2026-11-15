@@ -21,3 +21,30 @@ Aksel spurte hvordan spørreskjemaet til deltakerne skal se ut, og ba om at det 
 ### Åpne punkter
 - Skriv ut 6 eksemplarer av spørreskjemaet før 17.11.
 - Sjekk før første test at `npm run preview -- --host` kan nås fra en telefon på skolenettet. Ellers: bruk hotspot.
+
+## 2026-11-15 kl. 20:54 — Aksel Dymbe
+
+### Oppgave
+Aksel ba om lenker til skjemaet for Teams, en melding til gruppa og en Excel-fil han kan fylle inn svarene i og laste opp til Claude.
+
+### Plan
+- Lage arbeidsboka med openpyxl, med formler for SUS og et sammendrag mot målene.
+- Sjekke formlene på en testkopi.
+- Legge den tomme malen i `brukertest/` via en docs-PR.
+
+### Resultat
+- `brukertest/brukertest-svar.xlsx` har tre ark:
+  - Veiledning, med en fiktiv eksempelrad;
+  - Svar, med én rad for hver av D1–D6, nedtrekkslister, validering av SUS-svarene og SUS-poengene regnet ut med formler;
+  - Sammendrag, som viser Ja/Nei for SM-2, SM-3 (med regelen for minimal test), SM-4 og SM-16.
+- Formlene er sjekket med Python-pakken `formulas` på fem fiktive deltakere, mot tall regnet ut for hånd:
+  - SUS 75,0;
+  - 22 av 25 oppgaver (88 %) uten hjelp;
+  - SM-2 1 av 5 «Nei».
+
+  Den tomme malen gir tomme felt uten feil.
+- README-en for brukertesten lenker til malen og sier at den utfylte kopien skal lagres utenfor repoet.
+- Meldingen til Teams er skrevet, men Aksel sender den selv.
+
+### Åpne punkter
+- Når testene er ferdige, laster Aksel opp den utfylte Excel-fila. Claude fører resultatene inn i `resultater.md` og i sluttrapporten §4.

@@ -86,3 +86,4 @@
 - [ ] 2026-11-15 [maling-sm-1-og-sm-12](980-2026-11-15-18-11-27-maling-sm-1-og-sm-12.md) — Bekreft SM-1 og SM-12 på ekte telefon i mellomsegmentet over 4G
 - [ ] 2026-11-15 [brukertest-sporreskjema](979-2026-11-15-18-28-31-brukertest-sporreskjema.md) — Skriv ut 6 spørreskjemaer før 17.11
 - [ ] 2026-11-15 [brukertest-sporreskjema](979-2026-11-15-18-28-31-brukertest-sporreskjema.md) — Sjekk at `npm run preview -- --host` kan nås fra en telefon på skolenettet (ellers hotspot)
+- [ ] 2026-11-15 [brukertest-sporreskjema](979-2026-11-15-18-28-31-brukertest-sporreskjema.md) — Etter testene: last opp utfylt brukertest-svar.xlsx, før resultatene inn i resultater.md og sluttrapporten §4
