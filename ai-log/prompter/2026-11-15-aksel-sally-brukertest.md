@@ -56,3 +56,42 @@ fremdriftsplanen ble oppdatert, i PR #102.
 **Hva vi gjorde med det:** brukt. Datoen for kodefrys (21.11) var godkjent, men den gamle
 milepælen sa at koden fryses *før* testen. Claude delte den derfor i «ingen nye stories etter
 16.11» og «kodefrys 21.11 etter rettingene». Gruppa bekrefter datoene på neste møte.
+
+## Fortsettelse samme dag (Claude Code, uten BMad-agent)
+
+### 8
+> ja merge
+
+**Svar (kort):** PR #103 merget etter grønne sjekker.
+
+### 9
+> lag en melding til gruppa om rekruttering
+
+**Svar (kort):** En melding til gruppechatten om å rekruttere 5–6 testpersoner innen 16.11 kl. 20.
+**Hva vi gjorde med det:** brukt (sendes av Aksel).
+
+### 10
+> gi meg en status for oppgaven hav mangler?
+
+**Svar (kort):** Appen er bygget. Det som mangler, er brukertest, sluttrapport, presentasjon og
+generalprøve. I tillegg må 1.11 lukkes, møtereferater skrives og gruppevedtak tas, og
+`issues.md` hadde mange utdaterte punkter.
+**Hva vi gjorde med det:** brukt.
+
+### 11
+> ja sett igang
+
+**Svar (kort):** Timesjobben ble målt fra Actions: 232 grønne kjøringer siden 8.11, og lengste
+opphold 58 min siste døgn. 1.11, Epic 1 og Epic 2 ble satt til done, og M1 er nådd. 15 punkter i
+`issues.md` ble lukket etter å ha blitt sjekket mot GitHub (PR #104).
+**Hva vi gjorde med det:** brukt. Målingen ble gjort fra Actions-historikken i stedet for å
+polle nettsiden hvert 10. minutt slik spec-1-11g sier. Avviket står i PR-en.
+
+### 12
+> ja
+
+**Svar (kort):** PR #104 merget. Skjelettet til sluttrapporten ble skrevet med målene fra PRD §9,
+og de målte tallene ble fylt inn (SM-13 og SM-8).
+**Hva vi gjorde med det:** brukt. Under arbeidet kom det fram at SM-8 («100 % via PR») ikke holder
+helt: steg 3–7 ble committet direkte 2026-09-27, og faglærer har committet direkte. Det står
+ærlig i rapporten.

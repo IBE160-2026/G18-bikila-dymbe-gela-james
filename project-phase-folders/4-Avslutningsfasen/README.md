@@ -11,7 +11,7 @@ Se [milepælene](../2-Planleggingsfasen/milepæler.md) og
 
 ## Innhold (legges til etter hvert)
 
-- **Sluttrapport** — sammenstilling av mål, resultat og avvik mot produktbrief og
+- **[Sluttrapport](SnowFinder-Sluttrapport.md)** (skjelett 2026-11-15) — sammenstilling av mål, resultat og avvik mot produktbrief og
   suksesskriterier (ytelse, ferskhet, robusthet, korrekthet, nytte, tilgjengelighet)
 - **Retrospektiv** — hva fungerte, hva bør endres neste gang
 - **Leveransedokumentasjon** — demo-instruksjoner, driftsettingsnotater
