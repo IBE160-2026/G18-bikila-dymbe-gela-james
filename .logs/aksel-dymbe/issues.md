@@ -76,7 +76,9 @@
 - [x] 2026-11-14 [prd-tilbakemelding](985-2026-11-14-22-57-22-prd-tilbakemelding.md) — Sett Story 3.9 til done i sprint-status.yaml og oppdater «Hvor er vi nå?» i fremdriftsplanen (PR #85 er merget) (løst 2026-11-14: PR #100)
 - [x] 2026-11-14 [prd-tilbakemelding](985-2026-11-14-22-57-22-prd-tilbakemelding.md) — PR #83 trenger ny godkjenning på flettecommiten 6d7b8a7 før merge (løst 2026-11-15: merget)
 - [ ] 2026-11-14 [prd-tilbakemelding](985-2026-11-14-22-57-22-prd-tilbakemelding.md) — Gruppa bekrefter PRD-beslutning 1–6 fra 2026-11-14 på neste møte
-- [ ] 2026-11-14 [prd-tilbakemelding](985-2026-11-14-22-57-22-prd-tilbakemelding.md) — Sluttrapport og presentasjon (F5, forslag 2026-11-23) er ikke startet
+- [x] 2026-11-14 [prd-tilbakemelding](985-2026-11-14-22-57-22-prd-tilbakemelding.md) — Sluttrapport og presentasjon (F5, forslag 2026-11-23) er ikke startet (løst 2026-11-15: skjelett til sluttrapporten, se [sluttrapport-skjelett](981-2026-11-15-16-11-06-sluttrapport-skjelett.md); presentasjonen er ikke startet)
 - [x] 2026-11-15 [status-og-merge-1-8b](984-2026-11-15-15-13-01-status-og-merge-1-8b.md) — Gruppa vedtar nye datoer for kodefrys og brukertest, så tidslinjen og milepæler.md kan oppdateres (løst 2026-11-15: forslag lagt inn, se [brukertest-materiell](983-2026-11-15-15-34-15-brukertest-materiell.md))
 - [ ] 2026-11-15 [brukertest-materiell](983-2026-11-15-15-34-15-brukertest-materiell.md) — Gruppa bekrefter datoforslagene (ingen nye stories etter 16.11, brukertest 17.–19.11, kodefrys 21.11) og bytter «forslag» med «vedtatt»
 - [ ] 2026-11-15 [1-11-done-og-opprydding](982-2026-11-15-16-01-28-1-11-done-og-opprydding.md) — Rekrutter 5–6 deltakere til brukertesten innen 16.11 kl. 20 (minst én med iPhone/Safari)
+- [ ] 2026-11-15 [sluttrapport-skjelett](981-2026-11-15-16-11-06-sluttrapport-skjelett.md) — Skriv sluttrapporten ferdig og lag presentasjonen innen F5 (forslag 23.11)
+- [ ] 2026-11-15 [sluttrapport-skjelett](981-2026-11-15-16-11-06-sluttrapport-skjelett.md) — Mål SM-1 (500 ms i filteret) og SM-12 (kart på 4G) manuelt og før dem inn i sluttrapporten
