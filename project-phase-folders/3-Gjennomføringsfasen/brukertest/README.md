@@ -10,6 +10,7 @@ EXPERIENCE.md. Mappen her sier bare hvordan og når vi gjennomfører testen.
 | [`testmanus.md`](testmanus.md) | Det testlederen leser opp, ordrett, og reglene for når hen kan hjelpe |
 | [`observasjonsskjema.md`](observasjonsskjema.md) | Ett ark per deltaker, fylles ut av den som tar notater |
 | [`spørreskjema.md`](spørreskjema.md) | Ett ark per deltaker, fylles ut av deltakeren etter oppgavene: bakgrunn, SUS og to åpne spørsmål |
+| [`brukertest-svar.xlsx`](brukertest-svar.xlsx) | Excel-mal for å registrere svarene: én rad per deltaker, SUS og sammendrag mot målene regnes ut automatisk. Lagre den utfylte kopien **utenfor repoet** (repoet er offentlig) |
 | [`resultater.md`](resultater.md) | Samlet resultat, fylles ut etter siste test og brukes i sluttrapporten |
 
 ## Tidsplan *(forslag 2026-11-15)*
@@ -87,6 +88,6 @@ Velg én av disse tre måtene, i denne rekkefølgen:
 
 ## Etter testen
 
-- Fyll ut [`resultater.md`](resultater.md) og lag en `docs/`-PR med den.
+- Før svarene inn i en kopi av [`brukertest-svar.xlsx`](brukertest-svar.xlsx) utenfor repoet, og fyll ut [`resultater.md`](resultater.md) fra arket «Sammendrag». Lag en `docs/`-PR med `resultater.md`.
 - Kritiske funn blir `fix`-PR-er med review. Resten skrives inn i sluttrapporten som videre arbeid.
 - Sett UX-dokumentene (DESIGN.md og EXPERIENCE.md) til `final` via `bmad-ux`.
