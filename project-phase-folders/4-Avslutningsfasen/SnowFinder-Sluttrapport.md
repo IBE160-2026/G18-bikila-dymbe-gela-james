@@ -58,8 +58,8 @@ CI. Avvik nevnes her.]*
 
 | Mål | Krav | Metode | Dato | Resultat |
 |---|---|---|---|---|
-| SM-1 Ytelse | 95 % av filterendringene under 500 ms | *[Fylles inn]* | | |
-| SM-12 Kartlasting | Interaktivt innen 3 s på mobil over 4G | *[Fylles inn: Lighthouse eller DevTools med 4G-struping]* | | |
+| SM-1 Ytelse | 95 % av filterendringene under 500 ms | Event Timing i Chromium, 114 endringer (slidere, hurtigvalg, søk) på nettsiden med 300 steder ([målinger](målinger/README.md)) | 2026-11-15 | **Ikke oppfylt på mobilprofilen** (4G, CPU 4×): 61 % under 500 ms, p95 1320 ms. Med rask CPU: 100 %, p95 112 ms. *[Bekreft på ekte telefon]* |
+| SM-12 Kartlasting | Interaktivt innen 3 s på mobil over 4G | Playwright med 4G-struping, tom hurtigbuffer, fem kjøringer ([målinger](målinger/README.md)) | 2026-11-15 | **Ikke oppfylt på mobilprofilen**: median 9,0 s. Med 4G og rask CPU: median 2,7 s, 4 av 5 under 3 s. *[Bekreft på ekte telefon]* |
 | SM-13 Ferskhet | Under 3 t, i normal drift rundt 1 t | Actions-historikken for `data.yml` | 2026-11-08 til 2026-11-15 | 232 grønne kjøringer, ingen røde. Lengste opphold 136 min (2026-11-11), siste døgn 58 min. Nettsiden viste 300 steder med 18 min gamle data 2026-11-15. *[Oppdater med typisk alder og andel av tiden over 3 t fram til levering]* |
 | SM-14 Kjørbarhet | Rent klon etter README på under 10 min, uten hjelp | Generalprøven 2026-11-24 | | *[Fylles inn]* |
 
@@ -117,6 +117,9 @@ fem steg (2026-11-02), og om fargeforklaringen på kartet ble bygget.]*
 
 - Funksjonene som er «Ikke i v1»: snøvarsel, tilbakemelding, PWA og brukerkontoer (PRD §6.3).
 - Fargeforklaring på kartet (UX-steg 4, designet i PR #95), hvis den ikke er bygget før kodefrysen.
+- Ytelse på mobil (SM-1 og SM-12), hvis den ikke rettes før kodefrysen: hente data og Leaflet
+  parallelt, og tegne markørene med canvas i stedet for å lage 300 SVG-markører ved hver endring
+  (se [målingene](målinger/README.md)).
 - Mørketid: beste skivindu i perioder uten dagslys (avviket fra FR-30 i Story 4.2).
 - Valg av dag i filteret og skalering ut over 300 steder (til beslutning i PRD §7).
 - Funnene fra brukertesten som ikke ble rettet. *[Fylles inn]*
