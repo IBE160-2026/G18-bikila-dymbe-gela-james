@@ -81,4 +81,6 @@
 - [ ] 2026-11-15 [brukertest-materiell](983-2026-11-15-15-34-15-brukertest-materiell.md) — Gruppa bekrefter datoforslagene (ingen nye stories etter 16.11, brukertest 17.–19.11, kodefrys 21.11) og bytter «forslag» med «vedtatt»
 - [ ] 2026-11-15 [1-11-done-og-opprydding](982-2026-11-15-16-01-28-1-11-done-og-opprydding.md) — Rekrutter 5–6 deltakere til brukertesten innen 16.11 kl. 20 (minst én med iPhone/Safari)
 - [ ] 2026-11-15 [sluttrapport-skjelett](981-2026-11-15-16-11-06-sluttrapport-skjelett.md) — Skriv sluttrapporten ferdig og lag presentasjonen innen F5 (forslag 23.11)
-- [ ] 2026-11-15 [sluttrapport-skjelett](981-2026-11-15-16-11-06-sluttrapport-skjelett.md) — Mål SM-1 (500 ms i filteret) og SM-12 (kart på 4G) manuelt og før dem inn i sluttrapporten
+- [x] 2026-11-15 [sluttrapport-skjelett](981-2026-11-15-16-11-06-sluttrapport-skjelett.md) — Mål SM-1 (500 ms i filteret) og SM-12 (kart på 4G) manuelt og før dem inn i sluttrapporten (løst 2026-11-15: målt, se 980-…-maling-sm-1-og-sm-12)
+- [ ] 2026-11-15 [maling-sm-1-og-sm-12](980-2026-11-15-18-11-27-maling-sm-1-og-sm-12.md) — SM-1 og SM-12 holder ikke på mobilprofilen (kart 9 s, 61 % under 500 ms): gruppa velger retting via bmad-build før 21.11 eller avvik
+- [ ] 2026-11-15 [maling-sm-1-og-sm-12](980-2026-11-15-18-11-27-maling-sm-1-og-sm-12.md) — Bekreft SM-1 og SM-12 på ekte telefon i mellomsegmentet over 4G
