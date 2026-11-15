@@ -77,4 +77,5 @@
 - [x] 2026-11-14 [prd-tilbakemelding](985-2026-11-14-22-57-22-prd-tilbakemelding.md) — PR #83 trenger ny godkjenning på flettecommiten 6d7b8a7 før merge (løst 2026-11-15: merget)
 - [ ] 2026-11-14 [prd-tilbakemelding](985-2026-11-14-22-57-22-prd-tilbakemelding.md) — Gruppa bekrefter PRD-beslutning 1–6 fra 2026-11-14 på neste møte
 - [ ] 2026-11-14 [prd-tilbakemelding](985-2026-11-14-22-57-22-prd-tilbakemelding.md) — Sluttrapport og presentasjon (F5, forslag 2026-11-23) er ikke startet
-- [ ] 2026-11-15 [status-og-merge-1-8b](984-2026-11-15-15-13-01-status-og-merge-1-8b.md) — Gruppa vedtar nye datoer for kodefrys og brukertest, så tidslinjen og milepæler.md kan oppdateres
+- [x] 2026-11-15 [status-og-merge-1-8b](984-2026-11-15-15-13-01-status-og-merge-1-8b.md) — Gruppa vedtar nye datoer for kodefrys og brukertest, så tidslinjen og milepæler.md kan oppdateres (løst 2026-11-15: forslag lagt inn, se [brukertest-materiell](983-2026-11-15-15-34-15-brukertest-materiell.md))
+- [ ] 2026-11-15 [brukertest-materiell](983-2026-11-15-15-34-15-brukertest-materiell.md) — Gruppa bekrefter datoforslagene (ingen nye stories etter 16.11, brukertest 17.–19.11, kodefrys 21.11) og bytter «forslag» med «vedtatt»
