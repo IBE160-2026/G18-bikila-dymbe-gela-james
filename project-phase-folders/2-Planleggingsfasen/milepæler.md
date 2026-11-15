@@ -28,7 +28,7 @@ fører fram til dem står i [aktivitetslisten](../3-Gjennomføringsfasen/aktivit
 
 | # | Milepæl | Epic og sprint | Frist |
 |---|---|---|---|
-| 1 | Stedskatalog og datapipeline (MET, NVE, Kartverket, OSM) | Epic 1, sprint 1–2 | Katalog og pipeline nådd 2026-10-08 (PR #18, #23, #24). Timesjobb og publisering (1.11): merget 2026-11-01 (PR #78), grenen `data` oppdateres, appen ikke publisert før Vercel er satt opp. Frist 2026-11-21, forslag (var 2026-11-11). Jobben skriver alltid datafila til grenen `data`, og Vercel publiserer appen fra `main` (GitHub Pages er slått av i emnet, 2026-11-01) |
+| 1 | Stedskatalog og datapipeline (MET, NVE, Kartverket, OSM) | Epic 1, sprint 1–2 | Katalog og pipeline nådd 2026-10-08 (PR #18, #23, #24). Timesjobb og publisering (1.11): merget 2026-11-01 (PR #78), grenen `data` oppdateres, appen ikke publisert før Vercel er satt opp. I drift og nådd 2026-11-15: 232 grønne kjøringer siden 8. november, lengste opphold 58 min siste døgn (frist var 2026-11-11). Jobben skriver alltid datafila til grenen `data`, og Vercel publiserer appen fra `main` (GitHub Pages er slått av i emnet, 2026-11-01) |
 | 2 | SnowScore-beregning og forklaringsside | Epic 1 (1.4) og Epic 2, sprint 1 | 2026-10-09, nådd (PR #20, #33–#36) |
 | 3 | Norgeskart og stedssider | Epic 1 (1.7–1.9), sprint 2 | 2026-10-08, nådd (PR #25–#32) |
 | 4 | Filter (nysnø, vind, sol, temperatur, avstand, stedstype, nysnø siste 24 timer) | Epic 3, sprint 3 | 2026-10-28, nådd (PR #48–#71). Forslaget var 2026-11-01 |
@@ -71,7 +71,7 @@ godkjenning, og PRD-en ble revidert etter faglærers tilbakemelding. Aksel fores
 - **17.–19. november: brukertest (F4).** Etter [materiellet i brukertest/](../3-Gjennomføringsfasen/brukertest/).
   Har vi under fem avtaler 18. november, måler vi SM-3 i den minimale testen med minst tre personer.
 - **19.–20. november: resultatene** fylles ut i `brukertest/resultater.md`.
-- **20.–21. november: kritiske rettinger** som `fix`-PR-er med review. **21. november: kodefrys (M5)**
-  og timesjobben i drift (M1).
+- **20.–21. november: kritiske rettinger** som `fix`-PR-er med review. **21. november: kodefrys (M5).**
+  Timesjobben (M1) ble nådd allerede 15. november.
 - **21.–23. november: funnene inn i sluttrapporten (F5).** Generalprøve 24. november og levering
   25. november står som før.

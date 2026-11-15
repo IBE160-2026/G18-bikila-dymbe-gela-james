@@ -39,7 +39,7 @@ flowchart TD
     b2 --> b5["Publiser alltid datafila<br/>til grenen data"]
     b5 --> b6["Vercel publiserer appen fra main<br/>og henter datafila fra grenen"]
     b6 --> b7["Les tilbake fra grenen og nettsiden<br/>og sammenlign runId"]
-    b7 --> m1["M1: pipeline i drift<br/>forslag 2026-11-21"]
+    b7 --> m1["M1: pipeline i drift<br/>nådd 2026-11-15"]
 
     %% Spor C: UX og brukertestplan
     fork1 --> c1["Steg 8c med bmad-ux:<br/>wireframes og kursets skjermkrav"]
@@ -156,7 +156,7 @@ flowchart LR
 | 1.7 | Se Norgeskartet med fargelagte steder (med 1.7b) | Må ha | 1.10 | 2 | Aksel | 2026-10-08 (PR #25, #28) |
 | 1.8 | Bruk tilgjengelig listevisning i stedet for kart | Må ha | 1.10 | 2 | Aksel | 2026-10-08 (PR #27) |
 | 1.9 | Åpne en stedsside med full poengsum (med 1.9b og 1.9c) | Må ha | 1.7, 1.8 | 2 | Aksel | 2026-10-08 (PR #30–#32) |
-| 1.11 | Kjør dataprogrammet hver time og publiser appen | Må ha | 1.5, Vercel-prosjekt fra Aksel (for appen, grenen `data` skrives uansett) | 2, flyttet til 4 | Aksel | 2026-11-01 (PR #78, merget, Vercel gjenstår) |
+| 1.11 | Kjør dataprogrammet hver time og publiser appen | Må ha | 1.5, Vercel-prosjekt fra Aksel (for appen, grenen `data` skrives uansett) | 2, flyttet til 4 | Aksel | 2026-11-15, ferdig (PR #78, #81, #87; målt i drift) |
 | 1.6 | Hold tjenesten oppe når en datakilde er nede | Bør ha | 1.9 | 4 | Joseph | 2026-10-29 (PR #77, review i etterkant) |
 | **Epic 2** | **Forstå og stole på SnowScore** | | | | | |
 | 2.1 | Les kort fortalt og steg for steg | Må ha | 1.4 | 1 | Aksel | 2026-10-09 (PR #33) |
@@ -193,7 +193,7 @@ flowchart LR
 | P4 | Forenkling etter faglærers tilbakemelding (steg 8b og 8d) | Planlegging | P3 | Joseph og Aksel | 2026-10-07 (F2, PR #8–#21) |
 | P5 | Revisjon og rettinger i dataprogrammet | Gjennomføring | Epic 1 og 2 | Aksel | 2026-10-22 (PR #43–#47) |
 | P6 | Wireframes, kursets skjermkrav og brukertestplan (steg 8c, `bmad-ux`) | Planlegging | P4 | Aksel | 2026-10-28, ferdig (F3) |
-| P7 | Kodefrys: alle v1-stories merget | Gjennomføring | 1.6, 1.11, 4.2 | Hele gruppa | 2026-11-16 for nye stories, 2026-11-21 for rettinger og 1.11, forslag (M1 og M5) |
+| P7 | Kodefrys: alle v1-stories merget | Gjennomføring | 1.6, 1.11, 4.2 | Hele gruppa | 2026-11-16 for nye stories og 2026-11-21 for rettinger, forslag (M5). 1.11 i drift 2026-11-15 (M1, nådd) |
 | P8 | Brukertest med minst fem personer | Gjennomføring | P6, P7 | Joseph og Aksel | 17.–19. november, forslag (F4), materiell i [brukertest/](brukertest/) |
 | P9 | Rettinger etter brukertesten (bare kritiske funn) | Gjennomføring | P8 | Fordeles etter testen | 2026-11-21, forslag |
 | P10 | Sluttrapport, retrospektiv og presentasjon | Avslutning | P8 | Hele gruppa | 2026-11-23, forslag (F5) |
