@@ -95,3 +95,29 @@ og de målte tallene ble fylt inn (SM-13 og SM-8).
 **Hva vi gjorde med det:** brukt. Under arbeidet kom det fram at SM-8 («100 % via PR») ikke holder
 helt: steg 3–7 ble committet direkte 2026-09-27, og faglærer har committet direkte. Det står
 ærlig i rapporten.
+
+### 13
+> lag møteinkalling
+
+**Svar (kort):** Møteinnkalling til gruppa for 16.11 med seks saker: status, datoene, PRD-beslutning
+1–6, brukertesten, sluttrapporten og eventuelt.
+**Hva vi gjorde med det:** Aksel fyller inn tid, sted og referent og sender selv.
+
+### 14
+> hva mangler vi
+
+**Svar (kort):** 14 punkter etter frist: rekruttering og møte, brukertesten, målingene SM-1, SM-12 og
+SM-14, sluttrapporten og presentasjonen, og fargeforklaringen.
+**Hva vi gjorde med det:** Aksel ba om å måle SM-1 og SM-12.
+
+### 15
+> ja mål sm.1 og sm12
+
+**Svar (kort):** Et Playwright-skript målte nettsiden med 300 steder. På mobilprofilen (4G, CPU 4×)
+ble kartet interaktivt etter median 9,0 s, og 61 % av filterendringene var under 500 ms, så ingen
+av målene holder. Med rask CPU ble kartet interaktivt etter 2,7 s, og alle filterendringene var
+under 500 ms.
+**Hva vi gjorde med det:** brukt, med to rettinger av skriptet underveis. Zoomsjekken målte
+ingenting, og SM-1 talte nettleserhendelser i stedet for endringer. Den første kjøringen (14,5 s,
+kald hurtigbuffer) ble forkastet. Sannsynlige årsaker og rettinger står i
+`4-Avslutningsfasen/målinger/README.md`. Gruppa bestemmer om de skal bygges før kodefrysen.
