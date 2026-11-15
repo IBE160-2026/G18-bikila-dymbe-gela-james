@@ -166,3 +166,10 @@ som er offentlig.
 **Svar (kort):** Malen er lagt i `brukertest/` og lenket fra README-en for brukertesten, med beskjed om å lagre den
 utfylte kopien utenfor repoet.
 **Hva vi gjorde med det:** brukt.
+
+### 22
+> kan du gi meg excelfilen som er spørsmålene som annonyme brukere skal svare på
+
+**Svar (kort):** `spørreskjema.xlsx` med deltakernummer, to bakgrunnsspørsmål, de ti SUS-påstandene og to åpne
+spørsmål. Gule felt og nedtrekkslister, uten poengutregning, og tilpasset én utskrevet side.
+**Hva vi gjorde med det:** brukt, og lagt inn med PR etter «ja lag pr».
