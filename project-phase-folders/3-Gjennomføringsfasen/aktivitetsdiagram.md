@@ -32,28 +32,28 @@ flowchart TD
     a10 -- "Ja" --> a11["Merge og slett greinen"]
     a11 --> a12{"Flere v1-stories igjen?"}
     a12 -- "Ja" --> a1
-    a12 -- "Nei" --> m4["M5 kodefrys<br/>forslag 2026-11-11"]
+    a12 -- "Nei" --> m4["Ingen nye stories<br/>etter 2026-11-16, forslag"]
 
     %% Spor B: Story 1.11
     fork1 --> b2["Bygg Story 1.11:<br/>timesjobb og publisering"]
     b2 --> b5["Publiser alltid datafila<br/>til grenen data"]
     b5 --> b6["Vercel publiserer appen fra main<br/>og henter datafila fra grenen"]
     b6 --> b7["Les tilbake fra grenen og nettsiden<br/>og sammenlign runId"]
-    b7 --> m1["M1: pipeline i drift<br/>forslag 2026-11-11"]
+    b7 --> m1["M1: pipeline i drift<br/>forslag 2026-11-21"]
 
     %% Spor C: UX og brukertestplan
     fork1 --> c1["Steg 8c med bmad-ux:<br/>wireframes og kursets skjermkrav"]
     c1 --> c2["Brukertestplan:<br/>oppgaver, minst fem personer"]
     c2 --> f3["F3: steg 8c ferdig<br/>nådd 2026-10-28"]
 
-    m4 --> join1{{"Alle tre spor ferdige:<br/>kodefrys"}}
+    m4 --> join1{{"Alle tre spor ferdige:<br/>versjonen som testes"}}
     m1 --> join1
     f3 --> join1
 
-    join1 --> d1["Brukertest med minst fem personer<br/>2026-11-12 til 2026-11-16"]
-    d1 --> f4["F4: brukertest ferdig<br/>forslag 2026-11-16"]
+    join1 --> d1["Brukertest med minst fem personer<br/>2026-11-17 til 2026-11-19, se brukertest/"]
+    d1 --> f4["F4: brukertest ferdig<br/>forslag 2026-11-19"]
     f4 --> d2{"Kritiske funn?"}
-    d2 -- "Ja" --> d3["Bygg rettingene som fix-PR-er<br/>med review, innen 2026-11-20"]
+    d2 -- "Ja" --> d3["Bygg rettingene som fix-PR-er<br/>med review, innen 2026-11-21:<br/>M5 kodefrys"]
     d2 -- "Nei" --> e1
     d3 --> e1["Sluttrapport, retrospektiv<br/>og presentasjon i 4-Avslutningsfasen"]
     e1 --> f5["F5: sluttrapport klar<br/>forslag 2026-11-23"]
@@ -69,7 +69,7 @@ flowchart TD
   føres inn i milepælene, og «forslag» byttes med «vedtatt».
 - **Når en frist ikke holder:** flytt den i milepælene og tidslinjen i samme PR, og si hvorfor i
   «Hvor er vi nå?» i fremdriftsplanen. Nye krav eller mer omfang går gjennom `bmad-correct-course`.
-- **Etter kodefrys (2026-11-11):** bare rettinger fra brukertesten bygges. Alt annet skrives inn i
+- **Etter 2026-11-16 (forslag):** ingen nye stories, bare rettinger fra brukertesten, fram til kodefrysen 2026-11-21. Alt annet skrives inn i
   sluttrapporten som videre arbeid.
 - **Kontoene til Kelly og Sena:** til GitHub Support har sluppet dem fri, lager et annet medlem
   synlige kopi-PR-er av arbeidet deres (se spor A).
@@ -193,9 +193,9 @@ flowchart LR
 | P4 | Forenkling etter faglærers tilbakemelding (steg 8b og 8d) | Planlegging | P3 | Joseph og Aksel | 2026-10-07 (F2, PR #8–#21) |
 | P5 | Revisjon og rettinger i dataprogrammet | Gjennomføring | Epic 1 og 2 | Aksel | 2026-10-22 (PR #43–#47) |
 | P6 | Wireframes, kursets skjermkrav og brukertestplan (steg 8c, `bmad-ux`) | Planlegging | P4 | Aksel | 2026-10-28, ferdig (F3) |
-| P7 | Kodefrys: alle v1-stories merget | Gjennomføring | 1.6, 1.11, 4.2 | Hele gruppa | 2026-11-11, forslag (M1 og M5) |
-| P8 | Brukertest med minst fem personer | Gjennomføring | P6, P7 | Joseph og Aksel | 2026-11-16, forslag (F4) |
-| P9 | Rettinger etter brukertesten (bare kritiske funn) | Gjennomføring | P8 | Fordeles etter testen | 2026-11-20, forslag |
+| P7 | Kodefrys: alle v1-stories merget | Gjennomføring | 1.6, 1.11, 4.2 | Hele gruppa | 2026-11-16 for nye stories, 2026-11-21 for rettinger og 1.11, forslag (M1 og M5) |
+| P8 | Brukertest med minst fem personer | Gjennomføring | P6, P7 | Joseph og Aksel | 17.–19. november, forslag (F4), materiell i [brukertest/](brukertest/) |
+| P9 | Rettinger etter brukertesten (bare kritiske funn) | Gjennomføring | P8 | Fordeles etter testen | 2026-11-21, forslag |
 | P10 | Sluttrapport, retrospektiv og presentasjon | Avslutning | P8 | Hele gruppa | 2026-11-23, forslag (F5) |
 | P11 | Generalprøve: `npm ci`, så `npm run dev:demo` og `npm run dev`, etter README på en ren maskin | Avslutning | P9, P10 | Joseph og Aksel | 2026-11-24, forslag |
 | P12 | Levering og demo | Avslutning | P11 | Hele gruppa | 2026-11-25, vedtatt (M6) |
