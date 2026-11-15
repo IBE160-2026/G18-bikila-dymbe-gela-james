@@ -19,9 +19,11 @@ på møtet. Oppdater statusen når et steg er ferdig.
 
 - Story 1.8b, destinasjonskort, er merget med godkjenning (PR #83) og står som `done`. Alle stories i v1 er bygget
   unntatt 1.11, som står som pågående til timesjobben er målt.
-- Fristene for kodefrysen (11. november) og brukertesten (16. november) er passert eller holder ikke. Tidslinjen og
-  milepælene får nye datoer når gruppa har bestemt dem.
-- Brukertesten er ikke startet, og ingen testpersoner er rekruttert. Sluttrapporten og presentasjonen er ikke startet.
+- Fristene for kodefrysen (11. november) og brukertesten (16. november) holdt ikke. Nye forslag fra Aksel
+  2026-11-15: ingen nye stories etter 16. november, brukertest 17.–19. november (F4), kritiske rettinger og
+  kodefrys 21. november (M1 og M5). Gruppa bekrefter dem på neste møte.
+- Materiellet til brukertesten ligger i [`brukertest/`](brukertest/): tidsplan, roller, testmanus,
+  observasjonsskjema og resultatmal. Ingen deltakere er rekruttert ennå. Sluttrapporten og presentasjonen er ikke startet.
 - Fortsatt åpent for gruppa: formelen, dagvalg, datoen for kodefrysen og beslutning 1–6 i PRD-en fra 14. november.
 
 **14. november: PR #85 (søk) og #99 (PRD etter faglærers tilbakemelding) er merget. #83 venter på ny godkjenning.**
@@ -331,11 +333,12 @@ gantt
     M4 Filter ferdig                              : milestone, done, 2026-10-28, 0d
     Retrospektiv Epic 3 (valgfri)                 : 2026-11-02, 2026-11-03
     Sprint 4 robusthet (1.6) og skivindu (4.2)    : done, 2026-10-28, 2026-10-29
-    Story 1.11 timesjobb og publisering           : 2026-10-31, 2026-11-11
-    M1 og M5 pipeline i drift og kodefrys         : milestone, 2026-11-11, 0d
-    Brukertest med fem personer                   : 2026-11-12, 2026-11-16
-    F4 Brukertest ferdig                          : milestone, 2026-11-16, 0d
-    Rettinger etter brukertesten                  : 2026-11-17, 2026-11-20
+    Story 1.11 timesjobb og publisering           : 2026-10-31, 2026-11-21
+    Rekruttering til brukertesten                 : 2026-11-15, 2026-11-17
+    Brukertest med fem personer                   : 2026-11-17, 2026-11-20
+    F4 Brukertest ferdig                          : milestone, 2026-11-19, 0d
+    Rettinger etter brukertesten                  : 2026-11-20, 2026-11-22
+    M1 og M5 pipeline i drift og kodefrys         : milestone, 2026-11-21, 0d
 
     section 4 Avslutning
     Sluttrapport og presentasjon                  : 2026-11-16, 2026-11-23
@@ -360,9 +363,9 @@ gantt
 | 2026-10-29 | Story 4.2 (PR #74, 28. oktober) og 1.6 (PR #77) ferdige | Gjennomføring | ✅ |
 | 2026-10-31 | Story 1.11 bygget. Jobben velger Pages eller reserven selv i hver kjøring, så valget 4. november trengs ikke | Gjennomføring | 🔄 venter på review |
 | 2026-11-01 | Story 1.11: jobben skriver alltid grenen `data` og leser den tilbake (PR #78 merget). Faglærer slo av Pages, så Vercel publiserer appen | Gjennomføring | 🔄 venter på Vercel |
-| 2026-11-11 | M1 Timesjobb og publisering (1.11) og M5 kodefrys: robusthet (1.6) og beste skivindu (4.2) | Gjennomføring | ⬜ forslag |
-| 2026-11-16 | F4 Brukertest med fem personer | Gjennomføring | ⬜ forslag |
-| 2026-11-20 | Kritiske funn fra brukertesten rettet | Gjennomføring | ⬜ forslag |
+| 2026-11-16 | Ingen nye stories etter dette: denne versjonen brukertestes ([brukertest/](brukertest/)) | Gjennomføring | ⬜ forslag |
+| 2026-11-19 | F4 Brukertest med fem personer, 17.–19. november (reserve: minimal test for SM-3 hvis under fem 18. november) | Gjennomføring | ⬜ forslag (var 2026-11-16) |
+| 2026-11-21 | Kritiske funn rettet, M1 Timesjobb og publisering (1.11) og M5 kodefrys | Gjennomføring | ⬜ forslag (var 2026-11-11 og 2026-11-20) |
 | 2026-11-23 | F5 Sluttrapport og presentasjon | Avslutning | ⬜ forslag |
 | 2026-11-24 | Generalprøve: `npm ci`, så `npm run dev:demo` og `npm run dev`, etter README på en ren maskin | Avslutning | ⬜ forslag |
 | 2026-11-25 | M6 Levering og demo | Avslutning | ⬜ vedtatt |

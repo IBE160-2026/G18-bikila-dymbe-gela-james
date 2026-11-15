@@ -6,7 +6,7 @@ sources:
   - project-phase-folders/1-Oppstartsfasen/SnowFinder-Produktbrief.md
   - project-workspace/planning-artifacts/sprint-change-proposal-2026-10-07.md
   - project-workspace/planning-artifacts/sprint-change-proposal-2026-10-07-forenkling.md
-updated: 2026-11-08
+updated: 2026-11-15
 ---
 
 # SnowFinder — Experience Spine
@@ -289,10 +289,11 @@ som finnes, uten nye funksjoner. Koblingen står også som merknader i wireframe
 
 Denne seksjonen er ikke et byggekrav. Den er planen for å måle SM-2, SM-3 og SM-4 (PRD §9.3).
 
-Gjennomføres fra 2026-11-12 og innen F4 (forslag 2026-11-16) av Joseph og Aksel, med appen i demomodus
+Gjennomføres 2026-11-17–19 og innen F4 (forslag 2026-11-19, flyttet fra 2026-11-16 den 2026-11-15) av Joseph og Aksel, med appen i demomodus
 (`npm ci && npm run build:demo && npm run preview`), så alle deltakerne ser de samme dataene.
 Testdatasettet er `public/data/demo.json` (24 steder, kjørings-ID `demo`). Det er committet, og fasiten
-i oppgavene under gjelder det. Endres fila, må fasiten sjekkes på nytt.
+i oppgavene under gjelder det (sjekket på nytt 2026-11-15). Endres fila, må fasiten sjekkes på nytt.
+Testmanus, observasjonsskjema, tidsplan og resultatmal ligger i `project-phase-folders/3-Gjennomføringsfasen/brukertest/`.
 
 **Deltakere.** Minst fem personer med blandet erfaring, også noen utenfor studiet, fysisk eller via
 Teams med skjermdeling. Én leder testen og én tar notater. Deltakerne samtykker muntlig til at

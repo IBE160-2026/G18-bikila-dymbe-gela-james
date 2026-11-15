@@ -21,18 +21,18 @@ fører fram til dem står i [aktivitetslisten](../3-Gjennomføringsfasen/aktivit
 | F1 | Produktbrief ferdig (steg 1) | [Oppstartsfasen](../1-Oppstartsfasen/) | 2026-09-22, nådd |
 | F2 | Planleggingen ferdig etter faglærers tilbakemelding: PRD v3, arkitektur v4, UX, epics og sprintplan (steg 2–8d) | Planleggingsfasen | 2026-10-07, nådd (PR #8–#21) |
 | F3 | Wireframes, kursets skjermkrav og brukertestplan (steg 8c) | Planleggingsfasen | 2026-10-28, nådd. Forslaget var 2026-11-04 |
-| F4 | Brukertest med minst fem personer | [Gjennomføringsfasen](../3-Gjennomføringsfasen/) | 2026-11-16, forslag |
+| F4 | Brukertest med minst fem personer | [Gjennomføringsfasen](../3-Gjennomføringsfasen/) | 2026-11-19, forslag (var 2026-11-16). Test 17.–19. november, se [brukertest/](../3-Gjennomføringsfasen/brukertest/) |
 | F5 | Sluttrapport og presentasjon klare | [Avslutningsfasen](../4-Avslutningsfasen/) | 2026-11-23, forslag |
 
 ## Produktmilepæler
 
 | # | Milepæl | Epic og sprint | Frist |
 |---|---|---|---|
-| 1 | Stedskatalog og datapipeline (MET, NVE, Kartverket, OSM) | Epic 1, sprint 1–2 | Katalog og pipeline nådd 2026-10-08 (PR #18, #23, #24). Timesjobb og publisering (1.11): merget 2026-11-01 (PR #78), grenen `data` oppdateres, appen ikke publisert før Vercel er satt opp. Frist 2026-11-11, forslag. Jobben skriver alltid datafila til grenen `data`, og Vercel publiserer appen fra `main` (GitHub Pages er slått av i emnet, 2026-11-01) |
+| 1 | Stedskatalog og datapipeline (MET, NVE, Kartverket, OSM) | Epic 1, sprint 1–2 | Katalog og pipeline nådd 2026-10-08 (PR #18, #23, #24). Timesjobb og publisering (1.11): merget 2026-11-01 (PR #78), grenen `data` oppdateres, appen ikke publisert før Vercel er satt opp. Frist 2026-11-21, forslag (var 2026-11-11). Jobben skriver alltid datafila til grenen `data`, og Vercel publiserer appen fra `main` (GitHub Pages er slått av i emnet, 2026-11-01) |
 | 2 | SnowScore-beregning og forklaringsside | Epic 1 (1.4) og Epic 2, sprint 1 | 2026-10-09, nådd (PR #20, #33–#36) |
 | 3 | Norgeskart og stedssider | Epic 1 (1.7–1.9), sprint 2 | 2026-10-08, nådd (PR #25–#32) |
 | 4 | Filter (nysnø, vind, sol, temperatur, avstand, stedstype, nysnø siste 24 timer) | Epic 3, sprint 3 | 2026-10-28, nådd (PR #48–#71). Forslaget var 2026-11-01 |
-| 5 | «Bør ha» ferdig og kodefrys for v1: robusthet ved nedetid (1.6) og beste skivindu (4.2). Etter dette bygges bare rettinger fra brukertesten (snøvarsel og tilbakemelding er «Ikke i v1») | 1.6 og 4.2 i sprint 4, 2.4 i sprint 1 | Storyene er nådd: 4.2 2026-10-28 (PR #74), 1.6 2026-10-29 (PR #77). Kodefrys 2026-11-11, forslag |
+| 5 | «Bør ha» ferdig og kodefrys for v1: robusthet ved nedetid (1.6) og beste skivindu (4.2). Ingen nye stories etter 2026-11-16, og etter brukertesten bygges bare kritiske rettinger fram til kodefrysen (snøvarsel og tilbakemelding er «Ikke i v1») | 1.6 og 4.2 i sprint 4, 2.4 i sprint 1 | Storyene er nådd: 4.2 2026-10-28 (PR #74), 1.6 2026-10-29 (PR #77). Kodefrys 2026-11-21, forslag (var 2026-11-11) |
 | 6 | Levering og demo | Avslutningsfasen | 2026-11-25, vedtatt ([referat 2026-10-25](../3-Gjennomføringsfasen/møtereferater/2026-10-25-møtereferat.md)) |
 
 ## Forslaget fra 2026-10-28
@@ -60,3 +60,18 @@ Hvor langt vi har kommet på hver milepæl, står i
 [fremdriftsplanen](../3-Gjennomføringsfasen/fremdriftsplan.md). Datoene her endres når en
 milepæl nås, når gruppa vedtar en frist, eller når en frist flyttes. Endringen gjøres i samme PR
 som oppdaterer tidslinjen.
+
+## Forslaget fra 2026-11-15
+
+Kodefrysen 11. november og brukertesten 12.–16. november holdt ikke: Story 1.8b og 3.9 ventet på
+godkjenning, og PRD-en ble revidert etter faglærers tilbakemelding. Aksel foreslo nye datoer
+2026-11-15, og gruppa bekrefter dem på neste møte:
+
+- **15.–16. november: rekruttering.** 5–6 deltakere, én i reserve. Ingen nye stories etter 16. november.
+- **17.–19. november: brukertest (F4).** Etter [materiellet i brukertest/](../3-Gjennomføringsfasen/brukertest/).
+  Har vi under fem avtaler 18. november, måler vi SM-3 i den minimale testen med minst tre personer.
+- **19.–20. november: resultatene** fylles ut i `brukertest/resultater.md`.
+- **20.–21. november: kritiske rettinger** som `fix`-PR-er med review. **21. november: kodefrys (M5)**
+  og timesjobben i drift (M1).
+- **21.–23. november: funnene inn i sluttrapporten (F5).** Generalprøve 24. november og levering
+  25. november står som før.
