@@ -93,3 +93,26 @@ PR #111 og #112 ble merget, siden Bård har godtatt levering 2. desember. Derett
 ### Åpne punkter
 - Push og PR for rettingene, med review fra et gruppemedlem (vanligvis joseph210066) før merge.
 - Testene `nettlesere` (Firefox og WebKit) er ikke kjørt lokalt. CI kjører dem.
+
+## 2026-11-18 kl. 22:40 — Aksel Dymbe
+
+### Oppgave
+PR #113 ble pushet uten reviewer. Deretter Story 1.12 «Best akkurat nå» med `bmad-build`, og push med PR.
+
+### Plan
+- Spesifikasjon: [spec-1-12-best-akkurat-naa.md](../../project-workspace/implementation-artifacts/spec-1-12-best-akkurat-naa.md), oneshot-ruten.
+- Greinen `story/1-12-best-akkurat-naa` er bygget oppå `fix/rettinger-etter-gjennomgang` (#113), som ikke er merget.
+
+### Resultat
+- **Commit `fad9a6f`:**
+  - `besteSteder` i `sortering.ts`;
+  - komponenten `BestAkkuratNaa`, plassert øverst i resultatkolonnen;
+  - CSS, enhets-, komponent- og E2E-tester (`best-naa.spec.ts`, med axe).
+- **Plasseringen:** raden ble flyttet inn i `.utforsk-resultat`. Bunn-arket er `sticky` i `.utforsk` og forsvant på en kort telefon da raden sto over beholderen. E2E-testen `sok.spec.ts:215` oppdaget det.
+- **Gjennomgangen** (Blind Hunter): 15 funn. 10 ble rettet og 5 avvist.
+- **Status:** sprint-status sier at 1-12 og epic-1 er `done`. Fremdriftsplanen er oppdatert (Hvor er vi nå?, steg 9 og Sist oppdatert).
+- **PR #113 er ikke merget**, fordi Aksel bestilte den selv og ikke kan godkjenne sin egen PR.
+
+### Åpne punkter
+- PR #113 og PR-en for 1.12 trenger godkjenning fra et annet gruppemedlem før merge, innen 28.11.
+- Når #113 er merget: flett `main` inn i greinen for 1.12, eller la GitHub flytte basen.
