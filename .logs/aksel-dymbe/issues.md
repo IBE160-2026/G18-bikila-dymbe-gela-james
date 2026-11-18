@@ -87,3 +87,8 @@
 - [ ] 2026-11-15 [brukertest-sporreskjema](979-2026-11-15-18-28-31-brukertest-sporreskjema.md) — Skriv ut 6 spørreskjemaer før 17.11
 - [ ] 2026-11-15 [brukertest-sporreskjema](979-2026-11-15-18-28-31-brukertest-sporreskjema.md) — Sjekk at `npm run preview -- --host` kan nås fra en telefon på skolenettet (ellers hotspot)
 - [ ] 2026-11-15 [brukertest-sporreskjema](979-2026-11-15-18-28-31-brukertest-sporreskjema.md) — Etter testene: last opp utfylt brukertest-svar.xlsx, før resultatene inn i resultater.md og sluttrapporten §4
+- [ ] 2026-11-18 [gjennomgang-og-utsatt-kodefrys](978-2026-11-18-19-23-11-gjennomgang-og-utsatt-kodefrys.md) — Gruppa bekrefter kodefrys 28.11 og levering 2.12, og Bård godtar den nye leveringsdatoen (erstatter datoene i punktet fra 2026-11-15)
+- [ ] 2026-11-18 [gjennomgang-og-utsatt-kodefrys](978-2026-11-18-19-23-11-gjennomgang-og-utsatt-kodefrys.md) — Endringsforslag for «Best akkurat nå» (topp 3 på forsiden) i bmad-correct-course før storyen bygges
+- [ ] 2026-11-18 [gjennomgang-og-utsatt-kodefrys](978-2026-11-18-19-23-11-gjennomgang-og-utsatt-kodefrys.md) — Rettings-PR fra gjennomgangen: ordbrudd i navn, plassholder i søket, desimaler, enheter (cm og mm), tegnforklaring, ferskhet på forsiden, SnowScore og skivindu, tydelig Tilbake. Innen 28.11
+- [ ] 2026-11-18 [gjennomgang-og-utsatt-kodefrys](978-2026-11-18-19-23-11-gjennomgang-og-utsatt-kodefrys.md) — Svar på Bårds to refleksjonsspørsmål fra PRD-tilbakemeldingen i sluttrapporten
+- [ ] 2026-11-18 [gjennomgang-og-utsatt-kodefrys](978-2026-11-18-19-23-11-gjennomgang-og-utsatt-kodefrys.md) — Sett en dato for sluttrapporten (F5), etter levering 2.12
