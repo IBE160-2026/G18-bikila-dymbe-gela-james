@@ -36,7 +36,15 @@ på møtet. Oppdater statusen når et steg er ferdig.
   og står som `done`. Øverst på Utforsk står de tre beste stedene blant treffene, med overskriften «Best blant treffene»
   når et filter er aktivt. PR-en bygger på rettings-PR-en (#113) og venter på review.
   Favoritter, «nær meg», minikart på stedssiden og PWA er v2 og skrives inn i sluttrapporten som videre arbeid.
-- Brukertesten pågår 17.–19. november.
+- En agent skal overvåke nettsiden, godkjent av Aksel 2026-11-18 etter et rundbord med agentene, se
+  [endringsforslaget](../../project-workspace/planning-artifacts/sprint-change-proposal-2026-11-18-overvaakingsagent.md).
+  En planlagt Claude-økt sjekker siden utenfra kl. 06, 12, 18 og 24, og lager ett issue med etiketten `overvåking` når
+  siden er nede, stedene mangler eller dataene er over 2 timer gamle. Den leser og melder fra, men endrer aldri kode.
+  NFR-6, SRS-N-11 (versjon 2.5) og AD-11 er oppdatert, og instruksen står i
+  [`drift/overvaakingsagent.md`](../../drift/overvaakingsagent.md). Aksel setter opp den planlagte økten etter merge,
+  med to prøvekjøringer. Den skal være i drift før kodefrysen 28. november.
+- Brukertesten pågår 17.–19. november. Resultatene kommer 19. november, og gruppa velger da høyst tre rettinger
+  fra funnene.
 
 **15. november: Story 1.8b (PR #83) er merget, og Story 1.11 er ferdig, så alle v1-stories er bygget. Brukertesten og sluttrapporten er ikke startet.**
 

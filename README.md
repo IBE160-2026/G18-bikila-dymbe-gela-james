@@ -245,6 +245,14 @@ funnet, og timeren starter neste kjøring når dataene er rundt 55 minutter gaml
 Feltene i datafila og kildesvarene er beskrevet i
 [`shared/contracts/data-dictionary.md`](shared/contracts/data-dictionary.md).
 
+### Drift og overvåking
+
+Stopper kjeden, blir ingen kjøring rød. Derfor sjekker en planlagt Claude-økt på kontoen til Aksel nettsiden utenfra kl. 06,
+12, 18 og 24. Er siden nede, mangler stedene eller er dataene over 2 timer gamle, lager den ett issue med etiketten
+`overvåking`, med diagnose og neste steg, og lukker det når alt er i orden igjen. Får dere et slikt issue, følg neste
+steg i det. Agenten leser og melder fra, men endrer aldri kode. Instruksen står i
+[`drift/overvaakingsagent.md`](drift/overvaakingsagent.md).
+
 ### Stedskatalogen
 
 `data/catalog.json` er lista over de ca. 300 stedene appen viser (skisteder, fjelltopper og byer). Den er committet og endres bare når vi bygger den på nytt for hånd:
