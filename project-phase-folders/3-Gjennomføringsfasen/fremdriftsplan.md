@@ -18,7 +18,7 @@ på møtet. Oppdater statusen når et steg er ferdig.
 **18. november: kodefrysen og leveringen er utsatt én uke. Ny kodefrys er 28. november, levering og demo 2. desember, og sluttrapporten skrives etterpå.**
 
 - Aksel foreslo de nye fristene 2026-11-18, og gruppa bekreftet dem samme dag, se
-  [milepælene](../2-Planleggingsfasen/milepæler.md#vedtaket-fra-2026-11-18). Faglærer må godta den nye leveringsdatoen.
+  [milepælene](../2-Planleggingsfasen/milepæler.md#vedtaket-fra-2026-11-18). Faglærer har godtatt den nye leveringsdatoen.
 - Den ekstra uka brukes til rettinger og forsiden «Best akkurat nå» (topp 3 steder). Rettingene kommer
   fra en gjennomgang av nettsiden 2026-11-18: navn som brytes midt i ordet, søkefelt uten hint,
   for mange desimaler, ulike enheter for nysnø, tegnforklaring på kartet, hvor ferske dataene er på
@@ -384,7 +384,7 @@ gantt
 | 2026-11-15 | M1 Timesjobb og publisering (1.11) i drift: 232 grønne kjøringer siden 8. november | Gjennomføring | ✅ (frist var 2026-11-11) |
 | 2026-11-28 | Rettinger og «Best akkurat nå» ferdige, M5 kodefrys | Gjennomføring | ⬜ vedtatt (var 2026-11-11, 2026-11-20 og 2026-11-21) |
 | 2026-12-01 | Generalprøve: `npm ci`, så `npm run dev:demo` og `npm run dev`, etter README på en ren maskin | Avslutning | ⬜ vedtatt (var 2026-11-24) |
-| 2026-12-02 | M6 Levering og demo | Avslutning | ⬜ vedtatt (var 2026-11-25), faglærer må godta |
+| 2026-12-02 | M6 Levering og demo | Avslutning | ⬜ vedtatt (var 2026-11-25), godtatt av faglærer |
 | Etter 2026-12-02 | F5 Sluttrapport og presentasjon, dato ikke satt | Avslutning | ⬜ vedtatt (var 2026-11-23) |
 
 ## Stegene
