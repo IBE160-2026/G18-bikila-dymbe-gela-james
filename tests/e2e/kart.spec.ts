@@ -63,3 +63,34 @@ test('a link to an unknown place says so and links to the map', async ({ page })
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Fant ikke stedet')
   await expect(page.getByRole('link', { name: 'Gå til kartet' })).toBeVisible()
 })
+
+// Review 2026-11-18: the front page says how fresh the data is and explains the map colours.
+test('the map has a legend above it and the front page says when the data was updated', async ({ page }) => {
+  await page.goto('/')
+  // The demo file is generated 2026-10-07T20:30:29Z, which is 22:30 in Norway, the same day as the demo clock.
+  await expect(page.getByText('Oppdatert kl. 22:30', { exact: true })).toBeVisible()
+  const legend = page.getByRole('list', { name: 'Fargeforklaring' })
+  await expect(legend.getByRole('listitem')).toHaveText(['70–100 Svært godt', '45–69 Godt', '20–44 Middels', '0–19 Lite', 'Ufullstendige data'])
+  // A strip above the map, never on top of it: its bottom edge is at or above the map's top edge.
+  const legendBox = await legend.boundingBox()
+  const mapBox = await page.locator('.kart').boundingBox()
+  if (!legendBox || !mapBox) throw new Error('The legend and the map must both be rendered')
+  expect(legendBox.y + legendBox.height).toBeLessThanOrEqual(mapBox.y)
+  // The list view has no map, so it has no legend.
+  await page.getByRole('link', { name: 'Liste', exact: true }).click()
+  await expect(page.getByRole('list', { name: 'Fargeforklaring' })).toHaveCount(0)
+})
+
+// Review 2026-11-18: on a phone the legend is still shown, above the map and clear of the closed bottom sheet.
+test('at 375 px the legend is visible above the map and not under the bottom sheet', async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 812 })
+  await page.goto('/')
+  const legend = page.getByRole('list', { name: 'Fargeforklaring' })
+  await expect(legend).toBeVisible()
+  const legendBox = await legend.boundingBox()
+  const mapBox = await page.locator('.kart').boundingBox()
+  const sheetBox = await page.locator('.filter').boundingBox()
+  if (!legendBox || !mapBox || !sheetBox) throw new Error('The legend, the map and the sheet must all be rendered')
+  expect(legendBox.y + legendBox.height).toBeLessThanOrEqual(mapBox.y)
+  expect(legendBox.y + legendBox.height).toBeLessThanOrEqual(sheetBox.y)
+})

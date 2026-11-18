@@ -214,3 +214,46 @@ test('sorted by distance, a card shows «Avstand» over «0 km», and a screen r
   await ingenSidevisRulling(page)
   await context.close()
 })
+
+// Review 2026-11-18: a place name is never broken inside a word (it was «Innerdalstårn/et»). A name that does
+// not fit beside the badge gets its own line instead. Each word must lie on one line: one client rect.
+for (const bredde of [390, 1440]) {
+  test(`no place name is broken inside a word at ${bredde} px`, async ({ page }) => {
+    await page.setViewportSize({ width: bredde, height: 900 })
+    await page.goto('/?visning=liste')
+    await expect(page.locator('.liste-navn').first()).toBeVisible()
+    const brutt = await page.locator('.liste-navn').evaluateAll((navn) =>
+      navn.flatMap((el) => {
+        const tekst = el.firstChild
+        // 3 is a text node; the E2E tsconfig has no DOM lib, so Node and document are reached through the element.
+        if (!tekst || tekst.nodeType !== 3) return []
+        const ord: string[] = []
+        for (const match of (tekst.textContent ?? '').matchAll(/\S+/g)) {
+          const range = el.ownerDocument.createRange()
+          range.setStart(tekst, match.index)
+          range.setEnd(tekst, match.index + match[0].length)
+          if (range.getClientRects().length > 1) ord.push(match[0])
+        }
+        return ord
+      }),
+    )
+    expect(brutt).toEqual([])
+  })
+}
+
+test('at 1440 px the badge stays beside a short name and moves under a name that does not fit', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await page.goto('/?visning=liste')
+  const deler = async (navn: string) => {
+    const kort = page.locator('a.liste-rad').filter({ hasText: navn })
+    const navnBox = await kort.locator('.liste-navn').boundingBox()
+    const badgeBox = await kort.locator('.score-badge').boundingBox()
+    if (!navnBox || !badgeBox) throw new Error(`${navn}: the name and the badge must both be rendered`)
+    return { navnBox, badgeBox }
+  }
+  const kort = await deler('Trysil')
+  expect(kort.badgeBox.x).toBeGreaterThanOrEqual(kort.navnBox.x + kort.navnBox.width)
+  expect(kort.badgeBox.y).toBeLessThan(kort.navnBox.y + kort.navnBox.height)
+  const langt = await deler('Store Skagastølstind')
+  expect(langt.badgeBox.y).toBeGreaterThanOrEqual(langt.navnBox.y + langt.navnBox.height)
+})

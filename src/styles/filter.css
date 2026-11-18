@@ -486,6 +486,13 @@
   margin-bottom: var(--spacing-4);
 }
 
+/* Review 2026-11-18: a full-width field (about 1 400 px) did not read as a search box on a wide screen. */
+@media (min-width: 768px) {
+  .sted-sok {
+    max-width: 32rem;
+  }
+}
+
 .sted-sok-etikett {
   display: block;
   margin-bottom: var(--spacing-1);

@@ -23,6 +23,13 @@ på møtet. Oppdater statusen når et steg er ferdig.
   fra en gjennomgang av nettsiden 2026-11-18: navn som brytes midt i ordet, søkefelt uten hint,
   for mange desimaler, ulike enheter for nysnø, tegnforklaring på kartet, hvor ferske dataene er på
   forsiden, og en linje som skiller SnowScore fra skivinduet.
+- Rettingene fra gjennomgangen er bygget på `fix/rettinger-etter-gjennomgang`
+  ([spec](../../project-workspace/implementation-artifacts/spec-fix-rettinger-etter-gjennomgang.md)). PR-en venter på review.
+  - Kartet har fått tegnforklaring, og forsiden viser «Oppdatert kl. …».
+  - Stedsnavn brytes ikke lenger midt i ordet, og søkefeltet har fått en plassholder.
+  - Stedssiden viser NVE-nysnø i cm og har «Tilbake» øverst.
+  - Skivinduet sier at det gjelder været, ikke snøen.
+  - Desimalene er beholdt, fordi de stemmer med filteret.
 - «Best akkurat nå» er godkjent av Aksel som Story 1.12 og FR-33 (Bør ha), se
   [endringsforslaget](../../project-workspace/planning-artifacts/sprint-change-proposal-2026-11-18-best-akkurat-naa.md).
   Den bygges etter rettingene og før kodefrysen, og står som `backlog`.

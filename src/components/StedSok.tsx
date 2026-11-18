@@ -137,6 +137,7 @@ export default function StedSok({ steder, treffIds, route, start = START_TILSTAN
         autoComplete="off"
         spellCheck={false}
         enterKeyHint="go"
+        placeholder="F.eks. Hemsedal eller Tromsø"
         aria-autocomplete="list"
         aria-expanded={vises && forslag.length > 0}
         aria-controls={listeId}

@@ -106,11 +106,6 @@ components:
     borderWidthSmall: '1px'
     borderColor: '{colors.surface-raised}'
   map-legend:
-    background: '{colors.surface-raised}'
-    borderColor: '{colors.border-hairline}'
-    borderWidth: '1px'
-    radius: '{rounded.md}'
-    padding: '{spacing.2} {spacing.3}'
     font: '{typography.body}'
     fontCompact: '{typography.meta}'
     swatchSize: '14px'
@@ -253,14 +248,12 @@ Navnene er de samme som i Komponentmønstre i EXPERIENCE.md, som beskriver atfer
   - Steder med ufullstendige data har hvit fyll og alltid 2 px stiplet grå kant
     (`{colors.snowscore-0}`), så de aldri leses som score 0.
   - Grunnen er at 300 steder med 28 px dekket hverandre på landsnivå (manuell sjekk 2026-10-08).
-- **Fargeforklaring** *(2026-11-08)* — `{components.map-legend}`: et lite
-  `{colors.surface-raised}`-kort med `{colors.border-hairline}`-kant og `{rounded.md}`, uten skygge,
-  oppe til høyre i kartet på alle bredder. Zoomknappene står oppe til venstre, kildehenvisningen nede
-  til høyre, og bunn-arket dekker bunnen av kartet på mobil. Overskriften «Fargeforklaring» står i
-  `meta`, og under den står fem rader med en prikk og en tekst:
-  - fire prikker i `{colors.snowscore-3}` til `{colors.snowscore-0}`, med hvit kant som kartmarkøren,
-    og teksten «70–100 Svært godt», «45–69 Godt», «20–44 Middels» og «0–19 Lite», med høyeste trinn
-    øverst;
+- **Fargeforklaring** *(2026-11-08, endret 2026-11-18)* — `{components.map-legend}`: en stripe rett
+  over kartet på alle bredder, uten kort, kant eller skygge, så den aldri dekker markører (Finnmark ligger
+  oppe til høyre) og aldri havner under bunn-arket på mobil. Fem punkter med en prikk og en tekst står
+  på én linje som brytes ved behov, og lista heter «Fargeforklaring» for skjermlesere:
+  - fire prikker i `{colors.snowscore-3}` til `{colors.snowscore-0}` og teksten «70–100 Svært godt»,
+    «45–69 Godt», «20–44 Middels» og «0–19 Lite», med høyeste trinn først;
   - én hvit prikk med 2 px stiplet grå kant (`{colors.snowscore-0}`) og teksten «Ufullstendige data»,
     så skillet ikke bare bygger på farge.
   - Intervallene og ordene er de samme som i tabellen under Colors.
@@ -270,6 +263,8 @@ Navnene er de samme som i Komponentmønstre i EXPERIENCE.md, som beskriver atfer
     synlig.
 - **Listerad** *(destinasjonskort, endret 2026-11-02)* — `{colors.surface-raised}` kort
   (`{components.location-card}`). Øverst stedsnavn (`heading`) til venstre og score-badge til høyre.
+  Får ikke navnet plass ved siden av badgen, går badgen ned på linjen under, så navnet ikke brytes midt
+  i et ord. Bare et enkelt ord som er bredere enn hele kortet, deles, med bindestrek *(2026-11-18)*.
   Under står faste felt: etikett i `meta` og `{colors.ink-secondary}`, verdien under i `numeric`. Hele
   kortet er lenken, og kanten blir `{colors.accent}` ved hover. Feltene står nederst i kortet. Én kolonne
   under 768 px. Fra 768 px et rutenett med kolonner på minst 240 px, så to til tre kort står side om

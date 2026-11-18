@@ -5,6 +5,7 @@ import { medEnhet, tidsrom } from '../lib/format'
 type Props = Pick<Sted, 'skivindu' | 'skivinduUtenDagslys'>
 
 export const MORKETID_TEKST = 'Mørketid – vindu vist uten dagslys'
+export const SKIVINDU_FORKLARING = 'Gjelder været (vind, skydekke og dagslys), ikke snøen. Snøen står i SnowScore.'
 
 /**
  * Story 4.2 (FR-17): when it is best to go. Only reads what the pipeline wrote (AD-2): the window and
@@ -22,6 +23,8 @@ export default function Skivindukort({ skivindu, skivinduUtenDagslys }: Props) {
   return (
     <section className="sted-kort kort skivindu" aria-labelledby="sted-skivindu">
       <h2 id="sted-skivindu">Beste skivindu</h2>
+      {/* Review 2026-11-18: a good window next to «0 · Lite» looked like a contradiction. */}
+      <p className="skivindu-forklaring">{SKIVINDU_FORKLARING}</p>
       {skivindu === null ? (
         <p className="skivindu-mangler">Fant ikke noe skivindu de neste 48 timene.</p>
       ) : (

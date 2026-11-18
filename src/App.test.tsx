@@ -109,15 +109,24 @@ describe('AppView', () => {
   // The status region stays mounted while empty, so filling it in on an open tab is announced.
   const TOM_REGION = '<div role="status"></div>'
 
+  // Review 2026-11-18: a file from an earlier day than «now» shows its date, so it never looks like today's.
+  it('says «Oppdatert» with the date on Utforsk when the file is from another day', () => {
+    const igaar = medFerskhet({ status: 'ok', data: { ...demo, generert: '2026-10-06T20:30:29Z' }, source: 'demo' })
+    expect(render(igaar, UTFORSK)).toContain('<p class="utforsk-oppdatert">Oppdatert 6. oktober kl. 22:30</p>')
+    expect(render(demoResult, UTFORSK)).toContain('<p class="utforsk-oppdatert">Oppdatert kl. 22:30</p>')
+  })
+
   it('shows the old-data banner in its status region above the content on Utforsk and the place page, which work as before', () => {
     for (const route of [UTFORSK, LISTE, sted('gaustatoppen')]) {
       const html = render(gammel, route)
       expect(html).toContain(`<div role="status">${GAMMEL_BANNER}</div>`)
       expect(html.indexOf(GAMMEL_BANNER)).toBeLessThan(html.indexOf('<main'))
-      // Everything else is exactly as without the banner, where the region is there but empty.
+      // Everything else is exactly as without the banner, where the region is there but empty. The older
+      // file also moves Utforsk's «Oppdatert» line from 22:30 to 20:30 (review 2026-11-18), and nothing else.
       const fersk = render(demoResult, route)
       expect(fersk).toContain(TOM_REGION)
-      expect(html.replace(GAMMEL_BANNER, '')).toBe(fersk)
+      const utenOppdatert = (h: string) => h.replace(/Oppdatert [^<]+/, '')
+      expect(utenOppdatert(html.replace(GAMMEL_BANNER, ''))).toBe(utenOppdatert(fersk))
     }
   })
 
@@ -159,6 +168,9 @@ describe('AppView', () => {
       expect(html).toContain(`<p>${INGEN_STEDER}</p>`)
       expect(html).not.toContain('aria-label="Visning"')
       expect(html).not.toContain('forklaring-lenke')
+      // Review 2026-11-18: no freshness line and no legend when there is nothing to show.
+      expect(html).not.toContain('Oppdatert')
+      expect(html).not.toContain('aria-label="Fargeforklaring"')
       expect(html).not.toContain('aria-label="Filter"')
       expect(html).toContain('Last inn på nytt</button>')
       expect(html).not.toContain('class="kart"')
@@ -187,6 +199,16 @@ describe('AppView', () => {
     }
   })
 
+  // Review 2026-11-18: NVE's new snow in cm with the list's conversion (1 mm ≈ 1 cm), and «–» when it is missing.
+  it.each([
+    [12, 'Nysnø siste 24 t (NVE)|12 cm'],
+    [null, 'Nysnø siste 24 t (NVE)|–'],
+  ] as const)('shows NVE new snow %s mm on the place page as «%s»', (mm, pair) => {
+    const data = { ...demo, steder: demo.steder.map((s) => (s.id === 'gaustatoppen' ? { ...s, nveNysnoSisteDognMm: mm } : s)) }
+    const html = render(medFerskhet({ status: 'ok', data, source: 'demo' }), sted('gaustatoppen'))
+    expect(html.replace(/(<[^>]+>)+/g, '|')).toContain(pair)
+  })
+
   it('shows a full place page: badge, sub-scores out of their maximum, data with units and Norwegian time', () => {
     const html = render(demoResult, sted('gaustatoppen'))
     expect(html.match(/<h1/g)).toHaveLength(1)
@@ -205,14 +227,14 @@ describe('AppView', () => {
       'Skydekke, snitt|85 %',
       'Skydekke i dagslys|87,9 %',
       'Høyde|1\u00a0882 moh.',
-      'NVE-nysnø siste døgn|0 mm',
+      'Nysnø siste 24 t (NVE)|0 cm',
     ]) {
       expect(text).toContain(pair)
     }
     // 20:30 UTC is 22:30 in Norway in October (CEST).
     expect(html).toContain('Prognose fra MET, oppdatert 7. oktober 2026 kl. 22:30')
     expect(html).not.toContain('Utdatert')
-    expect(html).toContain('<a href="/" class="sted-tilbake">Tilbake</a>')
+    expect(html).toContain('<a href="/" class="sted-tilbake"><span aria-hidden="true">←</span>Tilbake</a>')
     expect(html).not.toContain('class="kart"')
   })
 
@@ -227,7 +249,7 @@ describe('AppView', () => {
   // Story 3.2b: the place page shows the same as without a search, and «Tilbake» goes to that search.
   it('links «Tilbake» on a place page to the search in its address', () => {
     const html = render(demoResult, sted('gaustatoppen', SEKS_I_LISTEN))
-    expect(html).toContain('<a href="/?visning=liste&amp;nysno=2&amp;temp=0" class="sted-tilbake">Tilbake</a>')
+    expect(html).toContain('<a href="/?visning=liste&amp;nysno=2&amp;temp=0" class="sted-tilbake"><span aria-hidden="true">←</span>Tilbake</a>')
     expect(html.replace(/<a href="[^"]*" class="sted-tilbake">/, '')).toBe(
       render(demoResult, sted('gaustatoppen')).replace(/<a href="[^"]*" class="sted-tilbake">/, ''),
     )
@@ -256,7 +278,7 @@ describe('AppView', () => {
     const s = '<span class="visually-hidden">, </span>'
     const list = render(demoResult, LISTE)
     expect(list).toContain(
-      `<span class="score-badge score-badge--0">0 · Lite</span>${s}<span class="utdatert">Utdatert · data fra 7. oktober 2026 kl. 18:30</span>${s}`,
+      `<span class="score-badge score-badge--0">0 · Lite</span></span>${s}<span class="utdatert">Utdatert · data fra 7. oktober 2026 kl. 18:30</span>${s}`,
     )
     // Only Kirkenes is stale in the demo data.
     expect(list.match(/class="utdatert"/g)).toHaveLength(1)
@@ -370,12 +392,13 @@ describe('AppView', () => {
       `<span class="liste-felt">${forste ? '' : s}<span class="liste-felt-etikett">${etikett}</span> ` +
       `<span class="liste-felt-verdi">${verdi}</span></span>`
     expect(html).toContain(
-      `<a href="/sted/gaustatoppen?visning=liste" class="liste-rad"><span class="liste-navn">Gaustatoppen</span>${s}` +
-        `<span class="score-badge score-badge--2">58 · Godt</span>${s}` +
+      // Review 2026-11-18: name and badge share the wrapping «liste-topp» row; the text read is unchanged.
+      `<a href="/sted/gaustatoppen?visning=liste" class="liste-rad"><span class="liste-topp"><span class="liste-navn">Gaustatoppen</span>${s}` +
+        `<span class="score-badge score-badge--2">58 · Godt</span></span>${s}` +
         `<span class="liste-detaljer">${felt('Nysnø', '10 cm', true)}${felt('Vind', '12 m/s')}${felt('Temp', '−6,4 °C')}</span></a>`,
     )
     expect(html).toContain(
-      `<span class="liste-navn">Trondheim</span>${s}<span class="score-incomplete">Ufullstendige data</span>${s}` +
+      `<span class="liste-navn">Trondheim</span>${s}<span class="score-incomplete">Ufullstendige data</span></span>${s}` +
         `<span class="liste-detaljer">${felt('Nysnø', '–', true)}${felt('Vind', '5,1 m/s')}${felt('Temp', '–')}</span>`,
     )
   })

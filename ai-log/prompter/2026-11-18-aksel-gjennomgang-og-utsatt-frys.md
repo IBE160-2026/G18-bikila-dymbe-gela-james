@@ -87,3 +87,30 @@ aktivitetsdiagrammet. Leveringen 2. desember er merket med at faglærer må godt
 **Svar (kort):** Endringene er gjort i PRD og EXPERIENCE (begge kopiene), epics, SRS (versjon 2.4),
 `sprint-status.yaml`, `sprintplan.md` og fremdriftsplanen, i samme PR som datoene.
 **Hva vi gjorde med det:** brukt.
+
+### 9
+> ja merge. bård har godkjent dette siden det var vi som satt en innlveringsdato
+
+**Svar (kort):** PR #111 merget. PR #112 fører inn at faglærer har godtatt levering 2. desember.
+**Hva vi gjorde med det:** brukt.
+
+### 10
+> ja merge og start rettingene
+
+**Svar (kort):** PR #112 er merget, og `bmad-build` er startet for rettingene. Claude stilte tre spørsmål:
+- desimalene;
+- hvor tegnforklaringen skal stå;
+- om «Tilbake» skal flyttes.
+
+Aksel valgte de anbefalte svarene og godkjente subagenter til gjennomgangen.
+**Hva vi gjorde med det:** brukt.
+
+### 11
+> godkjen og fortsett
+
+**Svar (kort):** Rettingene ble implementert og testet. Tre gjennomgangsagenter fant 18 punkter:
+- 13 ble rettet, blant annet at navnet og badgen nå står i en egen rad, og at tegnforklaringen er testet på 375 px;
+- 5 ble avvist med begrunnelse.
+
+Etterpå var lint, typecheck, 782 enhetstester, `build:demo` og 168 E2E-tester grønne.
+**Hva vi gjorde med det:** brukt.

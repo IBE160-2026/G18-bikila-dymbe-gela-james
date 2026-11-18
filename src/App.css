@@ -234,7 +234,6 @@ select:focus-visible {
   /* Story 1.8b: the header at the top and the fields at the bottom, so the values line up across a row of
      cards even when a name wraps or a card has «Utdatert». */
   align-content: space-between;
-  grid-template-columns: 1fr auto;
   align-items: center;
   gap: var(--spacing-2) var(--spacing-3);
   min-height: var(--spacing-7);
@@ -250,9 +249,23 @@ select:focus-visible {
   border-color: var(--color-accent);
 }
 
+/* Review 2026-11-18: name and badge wrap instead of sitting in a grid with a fixed badge column, so a name
+   that does not fit beside the badge gets the whole line and the badge moves below it. */
+.liste-topp {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-2) var(--spacing-3);
+}
+
 .liste-navn {
+  flex: 1 1 auto;
   min-width: 0;
-  overflow-wrap: anywhere;
+  /* Review 2026-11-18: «anywhere» broke names mid-word («Innerdalstårn/et»). Only a word wider than the whole
+     card is broken, hyphenated by the page's language (lang="nb"). */
+  overflow-wrap: break-word;
+  hyphens: auto;
   font-family: var(--typography-heading-font-family);
   font-size: var(--typography-heading-font-size);
   font-weight: var(--typography-heading-font-weight);
@@ -386,6 +399,7 @@ select:focus-visible {
   line-height: var(--typography-heading-line-height);
 }
 
+.skivindu-forklaring,
 .skivindu-grunn,
 .skivindu-mangler {
   margin: 0 0 var(--spacing-1);
@@ -461,8 +475,11 @@ select:focus-visible {
 .sted-tilbake {
   display: inline-flex;
   align-items: center;
+  gap: var(--spacing-1);
   min-height: var(--spacing-7);
   min-width: var(--spacing-7);
+  /* Review 2026-11-18: above the place name, so it is seen without scrolling. */
+  margin-bottom: var(--spacing-2);
 }
 
 /* EXPERIENCE.md: never an empty surface without an explanation. */
@@ -572,6 +589,80 @@ select:focus-visible {
     flex-basis: auto;
     gap: var(--spacing-4);
   }
+}
+
+/* Review 2026-11-18: how fresh the data is, as small meta text next to the map/list switch. */
+.utforsk-oppdatert {
+  margin: 0 auto 0 0;
+  color: var(--color-ink-secondary);
+  font-family: var(--typography-meta-font-family);
+  font-size: var(--typography-meta-font-size);
+  font-weight: var(--typography-meta-font-weight);
+  line-height: var(--typography-meta-line-height);
+  letter-spacing: var(--typography-meta-letter-spacing);
+}
+
+/* FR-12, SRS-F-15: the map legend, a strip above the map that wraps on narrow screens (review 2026-11-18). */
+.tegnforklaring {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-1) var(--spacing-4);
+  margin: 0 0 var(--spacing-2);
+  padding: 0;
+  list-style: none;
+  /* DESIGN.md components.map-legend: meta text and 10px swatches below 768px, body text and 14px from it. */
+  color: var(--color-ink-primary);
+  font-family: var(--typography-meta-font-family);
+  font-size: var(--typography-meta-font-size);
+  font-weight: var(--typography-meta-font-weight);
+  line-height: var(--typography-meta-line-height);
+  --tegnforklaring-prikk: 10px;
+}
+
+@media (min-width: 768px) {
+  .tegnforklaring {
+    font-family: var(--typography-body-font-family);
+    font-size: var(--typography-body-font-size);
+    font-weight: var(--typography-body-font-weight);
+    line-height: var(--typography-body-line-height);
+    --tegnforklaring-prikk: 14px;
+  }
+}
+
+.tegnforklaring li {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-1);
+}
+
+/* The same look as the markers (kartMarkor.ts): a filled dot per tier, a hollow dashed ring for incomplete. */
+.tegnforklaring-prikk {
+  box-sizing: border-box;
+  flex: none;
+  width: var(--tegnforklaring-prikk);
+  height: var(--tegnforklaring-prikk);
+  border-radius: 50%;
+}
+
+.tegnforklaring-prikk--0 {
+  background: var(--color-snowscore-0);
+}
+
+.tegnforklaring-prikk--1 {
+  background: var(--color-snowscore-1);
+}
+
+.tegnforklaring-prikk--2 {
+  background: var(--color-snowscore-2);
+}
+
+.tegnforklaring-prikk--3 {
+  background: var(--color-snowscore-3);
+}
+
+.tegnforklaring-prikk--ufullstendig {
+  border: 2px dashed var(--color-snowscore-0);
+  background: var(--color-surface-raised);
 }
 
 /* The map/list switch and the explanation link share one row, wrapping on narrow screens. */
