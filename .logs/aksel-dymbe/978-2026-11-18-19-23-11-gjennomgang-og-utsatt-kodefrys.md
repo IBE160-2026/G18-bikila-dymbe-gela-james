@@ -40,3 +40,27 @@ Aksel ba om fire ting:
 - Rettings-PR med listen fra gjennomgangen (`bmad-build`), med review fra et gruppemedlem, innen 28. november.
 - Bårds to refleksjonsspørsmål i PRD-tilbakemeldingen besvares i sluttrapporten.
 - Sett en dato for sluttrapporten (F5).
+
+## 2026-11-18 kl. 20:10 — Aksel Dymbe
+
+### Oppgave
+Gruppa bekreftet de nye datoene. Aksel ba om steg 2, endringsforslaget for «Best akkurat nå», godkjente forslaget og ba om at endringene ble gjort og PR-en åpnet.
+
+### Plan
+- Datoene endret fra «forslag» til «vedtatt», på greinen `docs/best-akkurat-naa`. Greinen het før `docs/sesjonslogg-2026-11-18`.
+- `bmad-correct-course` i samlet modus, etter malen i endringsforslaget om søk fra 2026-11-04.
+- Endringsforslag: [sprint-change-proposal-2026-11-18-best-akkurat-naa.md](../../project-workspace/planning-artifacts/sprint-change-proposal-2026-11-18-best-akkurat-naa.md).
+
+### Resultat
+- **Datoene er vedtatt:** `9bfe824`, i milepælene, fremdriftsplanen og aktivitetsdiagrammet.
+- **Nytt krav FR-33 (Bør ha):**
+  - PRD-en (begge kopiene): §0, §4.3, §6.2 og §12.
+  - SRS-en: ny SRS-F-35 og F3.5, og dokumentet er versjon 2.4.
+  - EXPERIENCE.md (begge kopiene): ny komponentrad og en setning om mobil.
+- **Story 1.12:** står i epics og i kravinventaret.
+- **Status og plan:** `sprint-status.yaml` har fått `1-12: backlog`, og `epic-1` står som `in-progress`. `sprintplan.md` har fått et avsnitt om avviket, og fremdriftsplanen er oppdatert.
+- **Logg:** raden i `ai-log` og promptene er ført.
+
+### Åpne punkter
+- Bård må godta at leveringen flyttes til 2. desember.
+- Rettings-PR fra gjennomgangen (se punktet over), deretter Story 1.12 med `bmad-build` på `story/1-12-best-akkurat-naa`, begge før 28. november.

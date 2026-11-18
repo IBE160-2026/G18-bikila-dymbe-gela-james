@@ -78,7 +78,7 @@
 - [ ] 2026-11-14 [prd-tilbakemelding](985-2026-11-14-22-57-22-prd-tilbakemelding.md) — Gruppa bekrefter PRD-beslutning 1–6 fra 2026-11-14 på neste møte
 - [x] 2026-11-14 [prd-tilbakemelding](985-2026-11-14-22-57-22-prd-tilbakemelding.md) — Sluttrapport og presentasjon (F5, forslag 2026-11-23) er ikke startet (løst 2026-11-15: skjelett til sluttrapporten, se [sluttrapport-skjelett](981-2026-11-15-16-11-06-sluttrapport-skjelett.md); presentasjonen er ikke startet)
 - [x] 2026-11-15 [status-og-merge-1-8b](984-2026-11-15-15-13-01-status-og-merge-1-8b.md) — Gruppa vedtar nye datoer for kodefrys og brukertest, så tidslinjen og milepæler.md kan oppdateres (løst 2026-11-15: forslag lagt inn, se [brukertest-materiell](983-2026-11-15-15-34-15-brukertest-materiell.md))
-- [ ] 2026-11-15 [brukertest-materiell](983-2026-11-15-15-34-15-brukertest-materiell.md) — Gruppa bekrefter datoforslagene (ingen nye stories etter 16.11, brukertest 17.–19.11, kodefrys 21.11) og bytter «forslag» med «vedtatt»
+- [x] 2026-11-15 [brukertest-materiell](983-2026-11-15-15-34-15-brukertest-materiell.md) — Gruppa bekrefter datoforslagene (ingen nye stories etter 16.11, brukertest 17.–19.11, kodefrys 21.11) og bytter «forslag» med «vedtatt» (løst 2026-11-18: erstattet av vedtaket om kodefrys 28.11)
 - [ ] 2026-11-15 [1-11-done-og-opprydding](982-2026-11-15-16-01-28-1-11-done-og-opprydding.md) — Rekrutter 5–6 deltakere til brukertesten innen 16.11 kl. 20 (minst én med iPhone/Safari)
 - [ ] 2026-11-15 [sluttrapport-skjelett](981-2026-11-15-16-11-06-sluttrapport-skjelett.md) — Skriv sluttrapporten ferdig og lag presentasjonen innen F5 (forslag 23.11)
 - [x] 2026-11-15 [sluttrapport-skjelett](981-2026-11-15-16-11-06-sluttrapport-skjelett.md) — Mål SM-1 (500 ms i filteret) og SM-12 (kart på 4G) manuelt og før dem inn i sluttrapporten (løst 2026-11-15: målt, se 980-…-maling-sm-1-og-sm-12)
@@ -87,8 +87,10 @@
 - [ ] 2026-11-15 [brukertest-sporreskjema](979-2026-11-15-18-28-31-brukertest-sporreskjema.md) — Skriv ut 6 spørreskjemaer før 17.11
 - [ ] 2026-11-15 [brukertest-sporreskjema](979-2026-11-15-18-28-31-brukertest-sporreskjema.md) — Sjekk at `npm run preview -- --host` kan nås fra en telefon på skolenettet (ellers hotspot)
 - [ ] 2026-11-15 [brukertest-sporreskjema](979-2026-11-15-18-28-31-brukertest-sporreskjema.md) — Etter testene: last opp utfylt brukertest-svar.xlsx, før resultatene inn i resultater.md og sluttrapporten §4
-- [ ] 2026-11-18 [gjennomgang-og-utsatt-kodefrys](978-2026-11-18-19-23-11-gjennomgang-og-utsatt-kodefrys.md) — Gruppa bekrefter kodefrys 28.11 og levering 2.12, og Bård godtar den nye leveringsdatoen (erstatter datoene i punktet fra 2026-11-15)
-- [ ] 2026-11-18 [gjennomgang-og-utsatt-kodefrys](978-2026-11-18-19-23-11-gjennomgang-og-utsatt-kodefrys.md) — Endringsforslag for «Best akkurat nå» (topp 3 på forsiden) i bmad-correct-course før storyen bygges
+- [x] 2026-11-18 [gjennomgang-og-utsatt-kodefrys](978-2026-11-18-19-23-11-gjennomgang-og-utsatt-kodefrys.md) — Gruppa bekrefter kodefrys 28.11 og levering 2.12 (løst 2026-11-18; Bårds godkjenning står som eget punkt)
+- [x] 2026-11-18 [gjennomgang-og-utsatt-kodefrys](978-2026-11-18-19-23-11-gjennomgang-og-utsatt-kodefrys.md) — Endringsforslag for «Best akkurat nå» (topp 3 på forsiden) i bmad-correct-course før storyen bygges (løst 2026-11-18)
 - [ ] 2026-11-18 [gjennomgang-og-utsatt-kodefrys](978-2026-11-18-19-23-11-gjennomgang-og-utsatt-kodefrys.md) — Rettings-PR fra gjennomgangen: ordbrudd i navn, plassholder i søket, desimaler, enheter (cm og mm), tegnforklaring, ferskhet på forsiden, SnowScore og skivindu, tydelig Tilbake. Innen 28.11
 - [ ] 2026-11-18 [gjennomgang-og-utsatt-kodefrys](978-2026-11-18-19-23-11-gjennomgang-og-utsatt-kodefrys.md) — Svar på Bårds to refleksjonsspørsmål fra PRD-tilbakemeldingen i sluttrapporten
 - [ ] 2026-11-18 [gjennomgang-og-utsatt-kodefrys](978-2026-11-18-19-23-11-gjennomgang-og-utsatt-kodefrys.md) — Sett en dato for sluttrapporten (F5), etter levering 2.12
+- [ ] 2026-11-18 [gjennomgang-og-utsatt-kodefrys](978-2026-11-18-19-23-11-gjennomgang-og-utsatt-kodefrys.md) — Bård må godta at leveringen flyttes fra 25.11 til 2.12
+- [ ] 2026-11-18 [gjennomgang-og-utsatt-kodefrys](978-2026-11-18-19-23-11-gjennomgang-og-utsatt-kodefrys.md) — Bygg Story 1.12 (Best akkurat nå) med bmad-build etter rettings-PR-en, før 28.11
