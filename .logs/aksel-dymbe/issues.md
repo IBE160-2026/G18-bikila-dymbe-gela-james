@@ -93,4 +93,5 @@
 - [ ] 2026-11-18 [gjennomgang-og-utsatt-kodefrys](978-2026-11-18-19-23-11-gjennomgang-og-utsatt-kodefrys.md) — Svar på Bårds to refleksjonsspørsmål fra PRD-tilbakemeldingen i sluttrapporten
 - [ ] 2026-11-18 [gjennomgang-og-utsatt-kodefrys](978-2026-11-18-19-23-11-gjennomgang-og-utsatt-kodefrys.md) — Sett en dato for sluttrapporten (F5), etter levering 2.12
 - [x] 2026-11-18 [gjennomgang-og-utsatt-kodefrys](978-2026-11-18-19-23-11-gjennomgang-og-utsatt-kodefrys.md) — Bård må godta at leveringen flyttes fra 25.11 til 2.12 (løst 2026-11-18: godtatt, gruppa satte selv innleveringsdatoen)
-- [ ] 2026-11-18 [gjennomgang-og-utsatt-kodefrys](978-2026-11-18-19-23-11-gjennomgang-og-utsatt-kodefrys.md) — Bygg Story 1.12 (Best akkurat nå) med bmad-build etter rettings-PR-en, før 28.11
+- [x] 2026-11-18 [gjennomgang-og-utsatt-kodefrys](978-2026-11-18-19-23-11-gjennomgang-og-utsatt-kodefrys.md) — Bygg Story 1.12 (Best akkurat nå) med bmad-build etter rettings-PR-en, før 28.11 (løst 2026-11-18, venter på review)
+- [ ] 2026-11-18 [gjennomgang-og-utsatt-kodefrys](978-2026-11-18-19-23-11-gjennomgang-og-utsatt-kodefrys.md) — PR #113 og PR-en for Story 1.12 trenger godkjenning fra et annet gruppemedlem før merge, innen 28.11

@@ -209,6 +209,22 @@ describe('AppView', () => {
     expect(html.replace(/(<[^>]+>)+/g, '|')).toContain(pair)
   })
 
+  // Story 1.12: with hits but no place with a score, «Best akkurat nå» is not shown, and the list still is.
+  it('leaves out «Best akkurat nå» when no hit has a score, and keeps incomplete places out of it', () => {
+    const ingenScore = {
+      ...demo,
+      steder: demo.steder.map((s) => ({ ...s, snowScore: { kind: 'incomplete' as const, missingShare: 0.5 } })),
+    }
+    const html = render(medFerskhet({ status: 'ok', data: ingenScore, source: 'demo' }), LISTE)
+    expect(html).not.toContain('class="best-naa"')
+    expect(html).toContain('class="liste-rad"')
+    // On the demo data the incomplete Trondheim is in the list but never in the row.
+    const vanlig = render(demoResult, LISTE)
+    const rad = vanlig.slice(vanlig.indexOf('class="best-naa"'), vanlig.indexOf('</section>', vanlig.indexOf('class="best-naa"')))
+    expect(vanlig).toContain('<span class="liste-navn">Trondheim</span>')
+    expect(rad).not.toContain('Trondheim')
+  })
+
   it('shows a full place page: badge, sub-scores out of their maximum, data with units and Norwegian time', () => {
     const html = render(demoResult, sted('gaustatoppen'))
     expect(html.match(/<h1/g)).toHaveLength(1)

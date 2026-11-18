@@ -114,3 +114,20 @@ Aksel valgte de anbefalte svarene og godkjente subagenter til gjennomgangen.
 
 Etterpå var lint, typecheck, 782 enhetstester, `build:demo` og 168 E2E-tester grønne.
 **Hva vi gjorde med det:** brukt.
+
+### 12
+> ja push. trenger ikke å ta med joseph som reviewer
+
+**Svar (kort):** Greinen ble pushet, og PR #113 ble åpnet uten reviewer. Alle sjekkene i CI var grønne. Claude minnet om at en kode-PR etter gruppas regel trenger godkjenning fra et annet gruppemedlem før merge.
+**Hva vi gjorde med det:** brukt.
+
+### 13
+> jeg godkjenner. bygg story 1.12
+
+**Svar (kort):** PR #113 ble ikke merget, fordi Aksel er den som bestilte den, og GitHub tillater ikke å godkjenne sin egen PR. Story 1.12 ble bygget med `bmad-build` på en grein oppå #113:
+- utvalgsfunksjonen `besteSteder`;
+- komponenten `BestAkkuratNaa`;
+- enhets-, komponent- og E2E-tester, med axe.
+
+Raden ble flyttet inn i resultatkolonnen, fordi bunn-arket ellers forsvant på korte telefoner.
+**Hva vi gjorde med det:** brukt.
