@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import type { Sted } from '../../shared/contracts/published'
 import { aktiveKrav, filtrerSteder, forslagVedNullTreff, type FilterParams } from '../../shared/filter'
+import BestAkkuratNaa from '../components/BestAkkuratNaa'
 import FilterPanel, { antallTekst, fokuserFilteret, forslagTekst, Nullstill, NVE_MANGLER } from '../components/FilterPanel'
 import KartVisning from '../components/KartVisning'
 import ListeVisning from '../components/ListeVisning'
@@ -9,7 +10,7 @@ import Tegnforklaring from '../components/Tegnforklaring'
 import Lenke from '../components/Lenke'
 import VisningVeksler from '../components/VisningVeksler'
 import { href, replace, type UrlSortering, type UtforskRoute } from '../lib/router'
-import type { Posisjon } from '../lib/sortering'
+import { besteSteder, type Posisjon } from '../lib/sortering'
 
 // Story 3.6 (FR-23, NFR-Privacy): the distance filter's own position, independent of ListeVisning's for
 // its distance sort. Fetched only on the user's own move of the slider (see FilterPanel), never from an
@@ -80,6 +81,8 @@ export default function Utforsk({ steder, utdatert, route, oppdatert }: Props) {
     () => (treff.length === 0 ? forslagVedNullTreff(steder, filter, avstandPosisjon ?? undefined) : null),
     [treff, steder, filter, avstandPosisjon],
   )
+  // Story 1.12 (FR-33): the best three among the hits, in the list's score order, without incomplete data.
+  const beste = useMemo(() => besteSteder(treff), [treff])
   // Story 3.9: the search reads every fresh place, before the filter, and only marks the ones it hides.
   const treffIds = useMemo(() => new Set(treff.map(({ id }) => id)), [treff])
   const nullTreff = treff.length === 0 ? `${antallTekst(0)}. ${forslagTekst(forslag, filter.nysnoKilde)}` : null
@@ -142,6 +145,10 @@ export default function Utforsk({ steder, utdatert, route, oppdatert }: Props) {
               <p className="visually-hidden" role="status">
                 {nullTreff ?? antallTekst(treff.length)}
               </p>
+              {/* Story 1.12: at the top of the result column, so it sits between the search and the map or list on
+                  every width. Inside .utforsk, not above it, so the sticky bottom sheet still pins to the bottom of a
+                  short phone's screen. At zero hits `beste` is empty and the zero-hit card alone explains it. */}
+              <BestAkkuratNaa steder={beste} filterAktiv={aktiveKrav(filter).length > 0} sok={route} />
               {/* Never an empty surface: say which requirement to ease, and offer the way back. */}
               {nullTreff && (
                 <div className="ingen-treff kort">

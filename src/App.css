@@ -665,6 +665,82 @@ select:focus-visible {
   background: var(--color-surface-raised);
 }
 
+/* Story 1.12 (FR-33): «Best akkurat nå», a compact row of the three best places above the map and the list.
+   One line per place below 768px, three cards side by side from 768px. */
+.best-naa {
+  margin-bottom: var(--spacing-4);
+}
+
+.best-naa-overskrift {
+  margin: 0 0 var(--spacing-2);
+  font-family: var(--typography-heading-font-family);
+  font-size: var(--typography-heading-font-size);
+  font-weight: var(--typography-heading-font-weight);
+  line-height: var(--typography-heading-line-height);
+}
+
+.best-naa-liste {
+  display: grid;
+  gap: var(--spacing-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 768px) {
+  .best-naa-liste {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.app .best-naa-rad {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-3);
+  box-sizing: border-box;
+  height: 100%;
+  min-height: var(--spacing-7);
+  padding: var(--spacing-2) var(--spacing-3);
+  border: 1px solid var(--color-border-hairline);
+  border-radius: var(--rounded-md);
+  background: var(--color-surface-raised);
+  color: var(--color-ink-primary);
+  text-decoration: none;
+}
+
+.app .best-naa-rad:hover,
+.app .best-naa-rad:focus-visible {
+  border-color: var(--color-accent);
+}
+
+/* One line per place: a name too long for the row ends in «…» rather than wrapping or scrolling sideways. */
+.best-naa-navn {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: var(--typography-heading-font-weight);
+}
+
+.best-naa-rad .score-badge {
+  flex: none;
+}
+
+/* Below 768px the three rows stay compact, so the map starts as high as it can: a smaller badge and less
+   padding bring each row down to its 48px minimum height, above the 44px touch target. */
+@media (max-width: 767px) {
+  .app .best-naa-rad {
+    padding: var(--spacing-1) var(--spacing-3);
+  }
+
+  .best-naa-rad .score-badge {
+    padding: var(--spacing-1) var(--spacing-2);
+    font-family: var(--typography-meta-font-family);
+    font-size: var(--typography-meta-font-size);
+  }
+}
+
 /* The map/list switch and the explanation link share one row, wrapping on narrow screens. */
 .utforsk-verktoy {
   display: flex;

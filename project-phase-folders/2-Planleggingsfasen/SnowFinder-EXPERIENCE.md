@@ -161,8 +161,8 @@ listevisningen, som **er** fullt AA).
 - **Brytpunkt:** én hovedbrytning ved ~768px (mobil vs. desktop-layout). Ingen egen
   nettbrett-spesifikk layout — nettbrett bruker desktop-layouten skalert ned.
 - **Mobil (<768px):** Kart/liste fyller skjermen under toppnavigasjonen. Over kartet og listen står
-  søkefeltet og raden «Best akkurat nå» (Story 1.12). Raden har høyst tre linjer, så kartet starter
-  fortsatt på første skjerm. Filterpanelet ligger i
+  søkefeltet og raden «Best akkurat nå» (Story 1.12). Raden har høyst tre kompakte linjer med mindre
+  badge. På en liten telefon kan kartet derfor starte under bunn-arket, og brukeren ruller ned til det *(2026-11-18)*. Filterpanelet ligger i
   et bunn-ark. Lukket viser det knappen «Filter» og de aktive kravene som chips. Knappen åpner
   arket (Story 3.1, 2026-10-22: en knapp virker med tastatur og skjermleser). Fargeforklaringen står
   rett over kartet, så bunn-arket aldri dekker den *(2026-11-18)*. Stedsside er én kolonne; beste skivindu-kort ligger under SnowScore-kortet med delpoengene, over grunnlaget.
