@@ -64,3 +64,32 @@ Gruppa bekreftet de nye datoene. Aksel ba om steg 2, endringsforslaget for «Bes
 ### Åpne punkter
 - Bård må godta at leveringen flyttes til 2. desember.
 - Rettings-PR fra gjennomgangen (se punktet over), deretter Story 1.12 med `bmad-build` på `story/1-12-best-akkurat-naa`, begge før 28. november.
+
+## 2026-11-18 kl. 21:10 — Aksel Dymbe
+
+### Oppgave
+PR #111 og #112 ble merget, siden Bård har godtatt levering 2. desember. Deretter rettingene fra gjennomgangen av nettsiden, med `bmad-build`.
+
+### Plan
+- Spesifikasjon: [spec-fix-rettinger-etter-gjennomgang.md](../../project-workspace/implementation-artifacts/spec-fix-rettinger-etter-gjennomgang.md), på greinen `fix/rettinger-etter-gjennomgang`.
+- Aksels valg:
+  - stedssiden beholder én desimal, som stemmer med filteret;
+  - tegnforklaringen er en stripe over kartet;
+  - «Tilbake» står øverst på stedssiden.
+- Gjennomgang med tre subagenter: Blind Hunter, Edge Case Hunter og Verification Gap.
+
+### Resultat
+- **Commit `86a48b4`** (lokal, ikke pushet):
+  - tegnforklaring over kartet, og «Oppdatert kl. …» på forsiden;
+  - stedsnavn uten ordbrudd, med navn og badge i `.liste-topp`;
+  - plassholder og maksbredde i søkefeltet;
+  - NVE-nysnø i cm og «Tilbake» øverst på stedssiden;
+  - en forklaringslinje i skivinduet;
+  - DESIGN.md, EXPERIENCE.md (begge kopiene) og SRS-F-15 er oppdatert.
+- **Gjennomgangen:** 18 funn. 13 ble rettet og 5 avvist. Se Review Triage Log i spesifikasjonen.
+- **Sjekker:** lint, typecheck, 782 enhetstester, `build:demo` og 168 E2E-tester (Chromium) er grønne. Ordbruddstesten feiler når feilen legges inn med vilje, så den fanger det den skal.
+- **PR #111 og #112 er merget.** Punktet om Bårds godkjenning er lukket.
+
+### Åpne punkter
+- Push og PR for rettingene, med review fra et gruppemedlem (vanligvis joseph210066) før merge.
+- Testene `nettlesere` (Firefox og WebKit) er ikke kjørt lokalt. CI kjører dem.
