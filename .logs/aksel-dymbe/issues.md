@@ -92,5 +92,5 @@
 - [ ] 2026-11-18 [gjennomgang-og-utsatt-kodefrys](978-2026-11-18-19-23-11-gjennomgang-og-utsatt-kodefrys.md) — Rettings-PR fra gjennomgangen: ordbrudd i navn, plassholder i søket, desimaler, enheter (cm og mm), tegnforklaring, ferskhet på forsiden, SnowScore og skivindu, tydelig Tilbake. Innen 28.11
 - [ ] 2026-11-18 [gjennomgang-og-utsatt-kodefrys](978-2026-11-18-19-23-11-gjennomgang-og-utsatt-kodefrys.md) — Svar på Bårds to refleksjonsspørsmål fra PRD-tilbakemeldingen i sluttrapporten
 - [ ] 2026-11-18 [gjennomgang-og-utsatt-kodefrys](978-2026-11-18-19-23-11-gjennomgang-og-utsatt-kodefrys.md) — Sett en dato for sluttrapporten (F5), etter levering 2.12
-- [ ] 2026-11-18 [gjennomgang-og-utsatt-kodefrys](978-2026-11-18-19-23-11-gjennomgang-og-utsatt-kodefrys.md) — Bård må godta at leveringen flyttes fra 25.11 til 2.12
+- [x] 2026-11-18 [gjennomgang-og-utsatt-kodefrys](978-2026-11-18-19-23-11-gjennomgang-og-utsatt-kodefrys.md) — Bård må godta at leveringen flyttes fra 25.11 til 2.12 (løst 2026-11-18: godtatt, gruppa satte selv innleveringsdatoen)
 - [ ] 2026-11-18 [gjennomgang-og-utsatt-kodefrys](978-2026-11-18-19-23-11-gjennomgang-og-utsatt-kodefrys.md) — Bygg Story 1.12 (Best akkurat nå) med bmad-build etter rettings-PR-en, før 28.11

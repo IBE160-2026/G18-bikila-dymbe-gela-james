@@ -33,7 +33,7 @@ fører fram til dem står i [aktivitetslisten](../3-Gjennomføringsfasen/aktivit
 | 3 | Norgeskart og stedssider | Epic 1 (1.7–1.9), sprint 2 | 2026-10-08, nådd (PR #25–#32) |
 | 4 | Filter (nysnø, vind, sol, temperatur, avstand, stedstype, nysnø siste 24 timer) | Epic 3, sprint 3 | 2026-10-28, nådd (PR #48–#71). Forslaget var 2026-11-01 |
 | 5 | «Bør ha» ferdig og kodefrys for v1: robusthet ved nedetid (1.6) og beste skivindu (4.2). Ingen nye stories etter 2026-11-16, og etter brukertesten bygges bare kritiske rettinger fram til kodefrysen (snøvarsel og tilbakemelding er «Ikke i v1») | 1.6 og 4.2 i sprint 4, 2.4 i sprint 1 | Storyene er nådd: 4.2 2026-10-28 (PR #74), 1.6 2026-10-29 (PR #77). Kodefrys 2026-11-28, vedtatt av gruppa 2026-11-18 (var 2026-11-11 og 2026-11-21). «Best akkurat nå» kan bygges etter 16. november hvis endringsforslaget godkjennes |
-| 6 | Levering og demo | Avslutningsfasen | 2026-12-02, vedtatt av gruppa 2026-11-18. Var 2026-11-25, vedtatt ([referat 2026-10-25](../3-Gjennomføringsfasen/møtereferater/2026-10-25-møtereferat.md)). Faglærer må godta den nye datoen |
+| 6 | Levering og demo | Avslutningsfasen | 2026-12-02, vedtatt av gruppa 2026-11-18. Var 2026-11-25, vedtatt ([referat 2026-10-25](../3-Gjennomføringsfasen/møtereferater/2026-10-25-møtereferat.md)). Faglærer har godtatt den, fordi gruppa selv satte innleveringsdatoen |
 
 ## Forslaget fra 2026-10-28
 
@@ -80,7 +80,7 @@ godkjenning, og PRD-en ble revidert etter faglærers tilbakemelding. Aksel fores
 
 Aksel utsatte kodefrysen og leveringen én uke 2026-11-18, så det er tid til rettingene etter
 brukertesten og til forsiden «Best akkurat nå» (topp 3 steder). Sluttrapporten skrives etter
-leveringen. Gruppa bekreftet datoene samme dag, og faglærer må godta den nye leveringsdatoen:
+leveringen. Gruppa bekreftet datoene samme dag, og faglærer har godtatt den nye leveringsdatoen, fordi gruppa selv satte innleveringsdatoen:
 
 - **17.–19. november: brukertest (F4)** som før.
 - **19.–27. november: rettinger og «Best akkurat nå».** Rettingene kommer fra gjennomgangen av nettsiden
