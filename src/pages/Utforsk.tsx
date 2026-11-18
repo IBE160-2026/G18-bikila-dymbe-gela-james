@@ -5,6 +5,7 @@ import FilterPanel, { antallTekst, fokuserFilteret, forslagTekst, Nullstill, NVE
 import KartVisning from '../components/KartVisning'
 import ListeVisning from '../components/ListeVisning'
 import StedSok from '../components/StedSok'
+import Tegnforklaring from '../components/Tegnforklaring'
 import Lenke from '../components/Lenke'
 import VisningVeksler from '../components/VisningVeksler'
 import { href, replace, type UrlSortering, type UtforskRoute } from '../lib/router'
@@ -21,9 +22,10 @@ const AVSTAND_POSISJON_TIMEOUT_MS = 10_000
 export const INGEN_FERSKE = 'Ingen ferske data'
 export const INGEN_STEDER = 'Ingen steder har ferske nok data akkurat nå. Last inn siden på nytt for å hente de nyeste dataene.'
 
-type Props = { steder: Sted[]; utdatert: ReadonlySet<string>; route: UtforskRoute }
+/** `oppdatert` is «Oppdatert kl. 17:29» for the data file, or null when its time is invalid (no line then). */
+type Props = { steder: Sted[]; utdatert: ReadonlySet<string>; route: UtforskRoute; oppdatert: string | null }
 
-export default function Utforsk({ steder, utdatert, route }: Props) {
+export default function Utforsk({ steder, utdatert, route, oppdatert }: Props) {
   // Story 3.2 (FR-21, AD-12): the address is the only copy of the filter and the list order, so a shared
   // link, Back from a place page and the map/list switch all show the same search. A change replaces the
   // address instead of adding a history step, so Back leaves the page rather than undoing a slider step.
@@ -115,6 +117,8 @@ export default function Utforsk({ steder, utdatert, route }: Props) {
               below 768px, where the top navigation's link is folded behind ☰, so it is never shown twice. */}
           <div className="utforsk-verktoy">
             <VisningVeksler route={route} />
+            {/* Review 2026-11-18: how fresh the data is, on the front page and not only on a place page. */}
+            {oppdatert !== null && <p className="utforsk-oppdatert">{oppdatert}</p>}
             <Lenke to={{ name: 'forklaring' }} className="forklaring-lenke utforsk-forklaring">
               Slik beregner vi SnowScore
             </Lenke>
@@ -156,7 +160,12 @@ export default function Utforsk({ steder, utdatert, route }: Props) {
               {visning === 'liste' ? (
                 <ListeVisning steder={treff} utdatert={utdatert} sortering={route.sortering} onSortering={settSortering} sok={route} />
               ) : (
-                <KartVisning steder={treff} sok={route} />
+                <>
+                  {/* FR-12, SRS-F-15: the colour legend in a strip above the map, so it never covers a marker
+                      (Finnmark is top right) or sits under the bottom sheet (review 2026-11-18). */}
+                  {treff.length > 0 && <Tegnforklaring />}
+                  <KartVisning steder={treff} sok={route} />
+                </>
               )}
             </div>
           </div>

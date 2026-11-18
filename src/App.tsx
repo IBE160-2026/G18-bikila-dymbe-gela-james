@@ -3,6 +3,7 @@ import GamleDataBanner from './components/GamleDataBanner'
 import Toppnavigasjon from './components/Toppnavigasjon'
 import { useSteder, type StederResult } from './hooks/useSteder'
 import { now } from './lib/clock'
+import { oppdatertTekst } from './lib/format'
 import { useRoute, type Route } from './lib/router'
 import IkkeFunnet from './pages/IkkeFunnet'
 import SlikBeregnerViSnowScore from './pages/SlikBeregnerViSnowScore'
@@ -30,7 +31,14 @@ function Innhold({ result, route }: { result: StederResult | null; route: Route 
     )
   }
   if (route.name === 'utforsk') {
-    return <Utforsk steder={result.data.steder} utdatert={result.utdatert} route={route} />
+    return (
+      <Utforsk
+        steder={result.data.steder}
+        utdatert={result.utdatert}
+        route={route}
+        oppdatert={oppdatertTekst(result.data.generert, now(result.data))}
+      />
+    )
   }
   // NFR-3: a place removed for being older than 12 h says so, instead of "not found".
   if (result.fjernet.has(route.id)) return <IkkeFunnet melding="Dataene for dette stedet er for gamle til å vises" sok={route.sok} />

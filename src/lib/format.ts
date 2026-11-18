@@ -84,9 +84,28 @@ const dagFormat = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Oslo' })
  * When the file is from another day than now, the date is added: «… fra 7. oktober kl. 22:30».
  */
 export function gamleDataTekst(generert: string, naa: Date): string {
-  const ms = Date.parse(generert)
-  if (!Number.isFinite(ms)) return 'Viser siste kjente data'
+  const tid = tidspunktMotNaa(generert, naa)
+  return tid === null ? 'Viser siste kjente data' : `Viser siste kjente data fra ${tid}`
+}
+
+/**
+ * «kl. 14:05» when the instant is on the same Norwegian day as `naa`, else «7. oktober kl. 22:30»;
+ * null for an invalid timestamp.
+ */
+function tidspunktMotNaa(iso: string, naa: Date): string | null {
+  const ms = Date.parse(iso)
+  if (!Number.isFinite(ms)) return null
   const klokke = `kl. ${klokkeFormat.format(ms)}`
   const sammeDag = Number.isFinite(naa.getTime()) && dagFormat.format(ms) === dagFormat.format(naa)
-  return `Viser siste kjente data fra ${sammeDag ? klokke : `${datoFormat.format(ms)} ${klokke}`}`
+  return sammeDag ? klokke : `${datoFormat.format(ms)} ${klokke}`
+}
+
+/**
+ * Review 2026-11-18: how fresh the data file is, shown on Utforsk next to the map/list switch:
+ * «Oppdatert kl. 17:29», with the date when the file is from another day. Null for an invalid timestamp,
+ * so no line is shown rather than a wrong one.
+ */
+export function oppdatertTekst(generert: string, naa: Date): string | null {
+  const tid = tidspunktMotNaa(generert, naa)
+  return tid === null ? null : `Oppdatert ${tid}`
 }

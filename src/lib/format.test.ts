@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { delpoeng, gamleDataTekst, medEnhet, norskTid, tidsrom, utdatertTekst } from './format'
+import { delpoeng, gamleDataTekst, medEnhet, norskTid, oppdatertTekst, tidsrom, utdatertTekst } from './format'
 
 describe('medEnhet', () => {
   it('formats in Norwegian with one decimal, and shows a dash for missing data', () => {
@@ -54,6 +54,18 @@ describe('tidsrom', () => {
 
   it('shows a dash for an invalid time', () => {
     expect(tidsrom('ikke en tid', 4)).toBe('–')
+  })
+})
+
+describe('oppdatertTekst', () => {
+  it('gives the Norwegian clock time when the file is from today, and the date when it is not', () => {
+    // 16:29 UTC is 17:29 in Norway in November (winter time).
+    expect(oppdatertTekst('2026-11-18T16:29:00Z', new Date('2026-11-18T17:00:00Z'))).toBe('Oppdatert kl. 17:29')
+    expect(oppdatertTekst('2026-11-17T16:29:00Z', new Date('2026-11-18T08:00:00Z'))).toBe('Oppdatert 17. november kl. 17:29')
+  })
+
+  it('gives no text for an invalid timestamp', () => {
+    expect(oppdatertTekst('ikke en tid', new Date('2026-11-18T17:00:00Z'))).toBeNull()
   })
 })
 

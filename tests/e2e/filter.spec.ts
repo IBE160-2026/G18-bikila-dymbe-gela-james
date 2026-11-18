@@ -68,7 +68,10 @@ test.describe('at 1280px', () => {
     const panelBox = await box(panel(page))
     const kartBox = await box(page.locator('.kart'))
     expect(panelBox.x + panelBox.width).toBeLessThanOrEqual(kartBox.x)
-    expect(Math.abs(panelBox.y - kartBox.y)).toBeLessThan(2)
+    // The panel and the result column start level. The map itself sits under the legend strip (review 2026-11-18).
+    const resultatBox = await box(page.locator('.utforsk-resultat'))
+    expect(Math.abs(panelBox.y - resultatBox.y)).toBeLessThan(2)
+    expect(kartBox.y).toBeGreaterThan(resultatBox.y)
 
     // Every requirement starts at «Alle», and nothing is hidden.
     for (const slider of [nysno(page), vind(page), temperatur(page)]) {

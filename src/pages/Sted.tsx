@@ -3,6 +3,7 @@ import Delpoengliste from '../components/Delpoengliste'
 import Lenke from '../components/Lenke'
 import ScoreBadge from '../components/ScoreBadge'
 import Skivindukort from '../components/Skivindukort'
+import { mmToCm } from '../../shared/snowscore'
 import { medEnhet, norskTid, utdatertTekst } from '../lib/format'
 import { useEffect } from 'react'
 import { href, replace, sted as stedRoute, type UtforskRoute } from '../lib/router'
@@ -44,11 +45,17 @@ export default function Sted({ sted, utdatert, sok }: Props) {
     // Story 3.5: what the sun filter compares with; «–» in the polar night or for a file older than the field.
     ['Skydekke i dagslys', medEnhet(sted.skydekkeDagslys, '%')],
     ['Høyde', medEnhet(sted.hoyde, 'moh.')],
-    ['NVE-nysnø siste døgn', medEnhet(sted.nveNysnoSisteDognMm, 'mm')],
+    // Review 2026-11-18: in cm with the same conversion as the list and the filter (1 mm ≈ 1 cm), not raw mm.
+    ['Nysnø siste 24 t (NVE)', medEnhet(sted.nveNysnoSisteDognMm === null ? null : mmToCm(sted.nveNysnoSisteDognMm), 'cm')],
   ]
 
   return (
     <article className="sted">
+      {/* Review 2026-11-18: «Tilbake» at the top, where it is seen without scrolling past the whole page. */}
+      <Lenke to={sok} className="sted-tilbake" tilbake>
+        <span aria-hidden="true">←</span>
+        Tilbake
+      </Lenke>
       <h1 className="sted-navn">{sted.navn}</h1>
       {utdatert && <p className="utdatert">{utdatertTekst(sted.kildeTidspunkt)}</p>}
       <div className="sted-kolonner">
@@ -76,9 +83,6 @@ export default function Sted({ sted, utdatert, sok }: Props) {
           </p>
         </section>
       </div>
-      <Lenke to={sok} className="sted-tilbake" tilbake>
-        Tilbake
-      </Lenke>
     </article>
   )
 }

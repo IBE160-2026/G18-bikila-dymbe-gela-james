@@ -130,9 +130,13 @@ export default function ListeVisning({ steder, utdatert, sortering: urlSortering
           return (
             <li key={sted.id}>
               <Lenke to={stedRoute(sted.id, sok)} className="liste-rad">
-                <span className="liste-navn">{sted.navn}</span>
-                <Skille />
-                <ScoreBadge snowScore={sted.snowScore} />
+                {/* Review 2026-11-18: name and badge share one wrapping row, so a long name pushes the badge
+                    under it while the card keeps its rows (header, «Utdatert», fields). */}
+                <span className="liste-topp">
+                  <span className="liste-navn">{sted.navn}</span>
+                  <Skille />
+                  <ScoreBadge snowScore={sted.snowScore} />
+                </span>
                 <Skille />
                 {utdatert.has(sted.id) && (
                   <>

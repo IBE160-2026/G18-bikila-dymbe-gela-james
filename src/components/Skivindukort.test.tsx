@@ -1,7 +1,7 @@
 import { renderToStaticMarkup } from 'react-dom/server'
 import { describe, expect, it } from 'vitest'
 import type { Sted } from '../../shared/contracts/published'
-import Skivindukort from './Skivindukort'
+import Skivindukort, { SKIVINDU_FORKLARING } from './Skivindukort'
 
 const tekst = (props: Pick<Sted, 'skivindu' | 'skivinduUtenDagslys'>) =>
   renderToStaticMarkup(<Skivindukort {...props} />)
@@ -14,8 +14,13 @@ const vindu = { start: '2026-10-09T11:00:00Z', timer: 4, snittVindMs: 2.475, sni
 describe('Skivindukort', () => {
   it('shows the span in Norwegian time and the reason with wind and cloud in whole numbers', () => {
     expect(tekst({ skivindu: vindu, skivinduUtenDagslys: false })).toBe(
-      'Beste skivindu fredag 13–17 Snittvind 2 m/s, skydekke 1 %',
+      `Beste skivindu ${SKIVINDU_FORKLARING} fredag 13–17 Snittvind 2 m/s, skydekke 1 %`,
     )
+  })
+
+  it('says the window is about the weather and not the snow, also when there is no window', () => {
+    expect(SKIVINDU_FORKLARING).toBe('Gjelder været (vind, skydekke og dagslys), ikke snøen. Snøen står i SnowScore.')
+    expect(tekst({ skivindu: null, skivinduUtenDagslys: false })).toContain(SKIVINDU_FORKLARING)
   })
 
   it('says when the window comes after the snowfall', () => {
@@ -42,7 +47,7 @@ describe('Skivindukort', () => {
 
   it('stays with a message when there is no window', () => {
     expect(tekst({ skivindu: null, skivinduUtenDagslys: false })).toBe(
-      'Beste skivindu Fant ikke noe skivindu de neste 48 timene.',
+      `Beste skivindu ${SKIVINDU_FORKLARING} Fant ikke noe skivindu de neste 48 timene.`,
     )
   })
 })

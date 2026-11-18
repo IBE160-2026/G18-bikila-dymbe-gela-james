@@ -41,7 +41,7 @@ test('Gaustatoppen from the list shows the sub-scores, the data and the source t
   await expect(verdi(page, 'Skydekke, snitt')).toHaveText('85 %')
   await expect(verdi(page, 'Skydekke i dagslys')).toHaveText('87,9 %')
   await expect(verdi(page, 'Høyde')).toHaveText('1\u00a0882 moh.')
-  await expect(verdi(page, 'NVE-nysnø siste døgn')).toHaveText('0 mm')
+  await expect(verdi(page, 'Nysnø siste 24 t (NVE)')).toHaveText('0 cm')
   await expect(page.getByText('Prognose fra MET, oppdatert 7. oktober 2026 kl. 22:30')).toBeVisible()
   await expect(page.getByText(/^Utdatert/)).toHaveCount(0)
 
@@ -49,6 +49,9 @@ test('Gaustatoppen from the list shows the sub-scores, the data and the source t
   const tilbake = await page.getByRole('link', { name: 'Tilbake', exact: true }).boundingBox()
   expect(tilbake?.height ?? 0).toBeGreaterThanOrEqual(44)
   expect(tilbake?.width ?? 0).toBeGreaterThanOrEqual(44)
+  // Review 2026-11-18: «Tilbake» is above the place name, so it is seen without scrolling.
+  const navn = await page.getByRole('heading', { level: 1 }).boundingBox()
+  expect(tilbake?.y ?? Infinity).toBeLessThan(navn?.y ?? 0)
 })
 
 test('Kirkenes is marked «Utdatert» with its time, on the page and in the list', async ({ page }) => {
@@ -96,6 +99,8 @@ test('Hafjell shows the best ski window in Norwegian time with wind and cloud co
   await page.goto('/sted/hafjell')
   const kort = skivindu(page)
   await expect(kort.getByRole('heading', { level: 2 })).toHaveText('Beste skivindu')
+  // Review 2026-11-18: the card says it is about the weather, so it does not seem to contradict the score.
+  await expect(kort.getByText('Gjelder været (vind, skydekke og dagslys), ikke snøen. Snøen står i SnowScore.')).toBeVisible()
   // 2026-10-09T11:00Z is Friday 13:00 in Norway (CEST); four hours.
   await expect(kort.locator('.skivindu-tid')).toHaveText('fredag 13–17')
   await expect(kort).toContainText('Snittvind 1 m/s, skydekke 91 %, etter snøfallet')
