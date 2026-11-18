@@ -65,6 +65,7 @@ FR-29: Automatisk sletting av tilbakemelding — Ikke i v1 (v3)
 FR-30: Lokal demomodus med ferdige data (`npm ci && npm run dev` uten nøkler) — Må ha
 FR-31: Vurdering av SnowScore mot målte forhold — Ikke i v1 (v3)
 FR-32: Søk på stedsnavn (i nettleseren, shared/) — Må ha (v5, 2026-11-04)
+FR-33: Beste steder akkurat nå (topp 3 av treffene over kart og liste) — Bør ha (2026-11-18)
 
 ### Ikke-funksjonelle krav
 
@@ -148,7 +149,7 @@ UX-DR16 (v3): Demobanner «Demodata – ikke ekte prognoser» når datafilen har
 
 ### FR-dekningskart
 
-FR-1 til FR-7, FR-12, FR-13, FR-16, FR-30: Epic 1
+FR-1 til FR-7, FR-12, FR-13, FR-16, FR-30, FR-33: Epic 1
 FR-8 til FR-11: Epic 2
 FR-14, FR-15, FR-20 til FR-26, FR-32: Epic 3
 FR-17: Epic 4
@@ -169,7 +170,7 @@ spørsmål i PRD §10 og gjentas her for å unngå at det stille forsvinner mell
 Brukeren kan åpne SnowFinder og se ekte, ferske SnowScore-data for norske steder, enten som et
 fargelagt kart eller som en likeverdig, tilgjengelig liste, og åpne et sted for full detalj.
 Dette er den ugjennomskjærbare kjernen — uten denne fungerer ingen andre epics.
-**FRs dekket:** FR-1, FR-2, FR-3, FR-4, FR-5, FR-6, FR-7, FR-12, FR-13, FR-16, FR-30. **Konsoliderer**
+**FRs dekket:** FR-1, FR-2, FR-3, FR-4, FR-5, FR-6, FR-7, FR-12, FR-13, FR-16, FR-30, FR-33. **Konsoliderer**
 stedskatalog, pipeline, SnowScore-modul, kart OG listevisning i én epic fordi de deler samme
 kodefiler (`Utforsk.tsx`, `useSteder`-hooken, AD-8) og samme datalag — å splitte dem ville gitt
 to epics som begge endrer de samme filene uten reell risikogrense mellom dem.
@@ -408,6 +409,44 @@ rød i Actions-fanen (NFR-6)
 
 `[v3: Ny story fra endringsrunde 2. Actions er allerede på. Publiseringen til grenen `data` trenger
 verken admin eller hemmeligheter. v7: Vercel erstatter Pages, og trenger heller ingen nøkler.]`
+
+### Story 1.12: Se de beste stedene akkurat nå *(ny 2026-11-18)*
+
+**Prioritet:** Bør ha
+
+As en bruker som åpner SnowFinder for å se hvor det er best i dag,
+I want å se de tre beste stedene øverst på forsiden,
+So that jeg får svaret uten å bytte visning eller lete på kartet. Realiserer FR-33.
+Kommer fra [endringsforslaget om «Best akkurat nå»](../../project-workspace/planning-artifacts/sprint-change-proposal-2026-11-18-best-akkurat-naa.md).
+
+**Acceptance Criteria:**
+
+**Given** Utforsk i kart- eller listevisning uten filter, med demodata
+**When** siden vises
+**Then** står overskriften «Best akkurat nå» over kartet eller listen, med de tre stedene som har
+høyest SnowScore, i samme rekkefølge som de tre første i listen sortert etter score
+**And** hvert sted viser navnet og score-badge med tall og poengnivå, og er én lenke til stedssiden
+med filteret og visningen i adressen som i Story 3.2b
+
+**Given** et aktivt filter med minst ett treff
+**When** siden vises
+**Then** heter overskriften «Best blant treffene», og raden viser høyst tre av treffene, valgt og
+sortert på samme måte
+
+**Given** filteret gir null treff, eller ingen av treffene har poengsum
+**When** siden vises
+**Then** vises ikke raden
+
+**Given** treff med lik SnowScore, eller treff med ufullstendige data
+**When** raden velger steder
+**Then** avgjøres lik score av navnet som i listen, og steder med ufullstendige data er aldri med
+
+**And** raden står mellom søkefeltet og filteret eller kartet på alle bredder, aldri i bunn-arket,
+og under 768 px tar hvert sted én linje uten sideveis rulling
+**And** raden er en `section` med en `h2`-overskrift og en ordnet liste. Utvalget er en ren funksjon
+med enhetstester for rekkefølge, lik score, ufullstendige data og færre enn tre treff
+**And** E2E-testen i demomodus åpner det første stedet fra raden og kjører axe på Utforsk med raden
+synlig
 
 ### Story 1.7: Se Norgeskartet med fargelagte steder
 

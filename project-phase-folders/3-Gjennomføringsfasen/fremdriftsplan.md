@@ -23,7 +23,9 @@ på møtet. Oppdater statusen når et steg er ferdig.
   fra en gjennomgang av nettsiden 2026-11-18: navn som brytes midt i ordet, søkefelt uten hint,
   for mange desimaler, ulike enheter for nysnø, tegnforklaring på kartet, hvor ferske dataene er på
   forsiden, og en linje som skiller SnowScore fra skivinduet.
-- «Best akkurat nå» er en ny story og går gjennom `bmad-correct-course` før den bygges.
+- «Best akkurat nå» er godkjent av Aksel som Story 1.12 og FR-33 (Bør ha), se
+  [endringsforslaget](../../project-workspace/planning-artifacts/sprint-change-proposal-2026-11-18-best-akkurat-naa.md).
+  Den bygges etter rettingene og før kodefrysen, og står som `backlog`.
   Favoritter, «nær meg», minikart på stedssiden og PWA er v2 og skrives inn i sluttrapporten som videre arbeid.
 - Brukertesten pågår 17.–19. november.
 

@@ -1,7 +1,7 @@
 ---
 title: SnowFinder
 created: 2026-09-27
-updated: 2026-11-14
+updated: 2026-11-18
 status: final
 ---
 
@@ -39,7 +39,8 @@ speilkopi. `SnowFinder-PRD-og-SRS.html` er en avledet detaljspesifikasjon med eg
 dokumentet er relative til den gjeldende kopien, så de løser seg derfra og ikke fra speilkopien.
 
 FR-ID-ene er stabile og nummereres aldri om. Hvert krav står under funksjonen det hører til, så
-ID-ene kommer ikke alltid i tallrekkefølge: FR-32 (søk) står i §4.3 sammen med kart og liste.
+ID-ene kommer ikke alltid i tallrekkefølge: FR-32 (søk) og FR-33 (beste steder akkurat nå)
+står i §4.3 sammen med kart og liste.
 
 ## 1. Visjon
 
@@ -333,7 +334,8 @@ prognose/modell, ikke en målt eller garantert verdi.
 **Beskrivelse:** Forsiden. To likeverdige måter å utforske katalogen på: et visuelt kart for de
 fleste, og en tastaturnavigerbar listevisning som gir identisk informasjon og funksjonalitet uten
 å kreve mus, touch eller fargesyn. I tillegg et søkefelt for den som vet hvilket sted hen vil
-se. Realiserer UJ-1 (kart), UJ-3 (liste) og UJ-4 (søk).
+se, og en rad med de beste stedene akkurat nå for den som bare vil ha svaret. Realiserer UJ-1
+(kart), UJ-3 (liste) og UJ-4 (søk).
 
 #### FR-12: Interaktivt Norgeskart *(Må ha)*
 
@@ -412,6 +414,23 @@ stedene i datafila, uten søketjeneste.
 
 *Begrunnelse:* tre av fem oppgaver i brukertesten ber deltakeren finne et bestemt sted
 (sprint-change-proposal-2026-11-04-sok.md).
+
+#### FR-33: Beste steder akkurat nå *(Bør ha)*
+
+Utforsk viser de tre stedene med høyest SnowScore blant treffene øverst, over kartet og listen,
+så brukeren får svaret uten å lete.
+
+**Konsekvenser (testbare):**
+- Raden viser høyst 3 steder blant de samme treffene som kart og liste viser, sortert som listen
+  sortert etter SnowScore (lik score: navn). Steder med ufullstendige data er ikke med.
+- Hvert sted viser navnet og SnowScore som tall og poengnivå (FR-13), og åpner stedssiden med mus,
+  berøring eller Enter.
+- Overskriften er «Best akkurat nå» uten aktivt filter og «Best blant treffene» med aktivt filter.
+- Raden vises ikke ved null treff, og ikke når ingen av treffene har poengsum.
+- Raden står over kartet og listen på alle bredder, og aldri i bunn-arket.
+
+*Begrunnelse:* gjennomgangen av den publiserte siden 2026-11-18 viste at forsiden ikke svarte på
+«hvor er det best i dag?» (sprint-change-proposal-2026-11-18-best-akkurat-naa.md).
 
 ### 4.4 Stedsside
 
@@ -678,7 +697,7 @@ nysnø med NVE seNorges modellerte nysnø i etterkant, for katalogens steder ove
 ### 6.2 Utenfor MVP (Bør ha — bygges først når Må ha er ferdig og testet)
 
 - Beste skivindu (FR-17), kalkulator på forklaringssiden (FR-10), hurtigvalg (FR-15), solfilter
-  (FR-22), avstandsfilter (FR-23), stedstypefilter (FR-24), nysnø siste 24 t (FR-25)
+  (FR-22), avstandsfilter (FR-23), stedstypefilter (FR-24), nysnø siste 24 t (FR-25), beste steder akkurat nå (FR-33)
 - Nye forsøk ved feil (FR-6b)
 - Den oppgavebaserte 5-persons brukertesten (SM-2, SM-4, SM-16) er «bør ha»-dybde (Marys
   skille), ikke en blokkerende del av en «må ha»-leveranse. SM-3 er unntaket og er Må ha (§6.1).
@@ -1068,3 +1087,9 @@ ble tatt av Aksel 2026-11-14 på grunn av tidsfristen, og gruppa kan ta dem opp 
 - **§10 spørsmål 4 (§6 i tilbakemeldingen):** lukket. NFR-8 er en arkitekturforsikring, ikke et
   lastkrav.
 - **Status:** `final` for v1.
+
+### 2026-11-18: beste steder akkurat nå
+
+- Ny FR-33 (Bør ha) i §4.3 og §6.2. Den er et vedtatt unntak fra regelen om ingen nye stories
+  etter 16. november, etter at kodefrysen ble flyttet til 28. november
+  ([sprint-change-proposal-2026-11-18-best-akkurat-naa.md](../../project-workspace/planning-artifacts/sprint-change-proposal-2026-11-18-best-akkurat-naa.md)).

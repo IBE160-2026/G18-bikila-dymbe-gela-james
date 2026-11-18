@@ -59,6 +59,10 @@ brukertesten. Den justerer UX for Epic 3, men endrer ikke filterlogikken eller a
 valg 2026-11-07, og 2026-11-08 for plasseringen i regneeksemplet). Den gjenåpner Epic 2 og bygges før brukertesten, fordi den gjør SnowScore-kortet,
 regneeksemplet og kalkulatoren like.
 
+**Avvik (2026-11-18):** Story 1.12 (Best akkurat nå) er lagt til etter [endringsforslaget fra 2026-11-18](../../project-workspace/planning-artifacts/sprint-change-proposal-2026-11-18-best-akkurat-naa.md)
+og bygges etter rettingene, før kodefrysen 28. november. Den er et vedtatt unntak fra regelen om ingen nye stories etter
+16. november, og gjenåpner Epic 1.
+
 **Ikke i v1 (v3):** Story 4.1 (PWA), 4.3 og 4.4 (snøvarsel) og hele Epic 5 (tilbakemelding).
 De står i `sprint-status.yaml` med kommentaren «Ikke i v1» og bygges ikke.
 

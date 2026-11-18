@@ -63,3 +63,27 @@ gjelder. Aksel svarte at leveringen også flyttes, og at omfanget er rettinger p
 Ny rekkefølge: kodefrys 28.11, generalprøve 1.12, levering 2.12, deretter sluttrapport. Datoene står
 som forslag fra Aksel, fordi gruppa og faglærer må bekrefte dem.
 **Hva vi gjorde med det:** brukt.
+
+### 7
+> ja gruppa har bekreftet de nye datoene. gå deretter videre på steg 2
+
+**Svar (kort):** Datoene er endret fra «forslag» til «vedtatt» i milepælene, fremdriftsplanen og
+aktivitetsdiagrammet. Leveringen 2. desember er merket med at faglærer må godta den. Deretter ble
+`bmad-correct-course` kjørt, og ett samlet endringsforslag ble skrevet:
+`sprint-change-proposal-2026-11-18-best-akkurat-naa.md`.
+- Nytt krav: FR-33 (Bør ha).
+- Ny story: Story 1.12.
+- Nytt krav i SRS-en: SRS-F-35. SRS-F-33 var allerede brukt.
+- Valgene i forslaget:
+  - raden viser topp 3 av treffene, ikke av alle steder;
+  - lik score avgjøres av navnet;
+  - steder med ufullstendige data er ikke med;
+  - raden skjules ved null treff.
+**Hva vi gjorde med det:** brukt.
+
+### 8
+> ja godkjent. gjør enedringene og kjør pr
+
+**Svar (kort):** Endringene er gjort i PRD og EXPERIENCE (begge kopiene), epics, SRS (versjon 2.4),
+`sprint-status.yaml`, `sprintplan.md` og fremdriftsplanen, i samme PR som datoene.
+**Hva vi gjorde med det:** brukt.
