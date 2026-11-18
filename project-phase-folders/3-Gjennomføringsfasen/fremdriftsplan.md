@@ -3,7 +3,7 @@
 Oversikt over hvordan vi går fram, steg for steg, så alle kan følge med selv om de ikke var
 på møtet. Oppdater statusen når et steg er ferdig.
 
-**Sist oppdatert:** 2026-11-15
+**Sist oppdatert:** 2026-11-18
 
 ## Slik holder du deg oppdatert
 
@@ -14,6 +14,18 @@ på møtet. Oppdater statusen når et steg er ferdig.
 4. Se promptene fra siste økt i [`ai-log/prompter/`](../../ai-log/prompter/).
 
 ## Hvor er vi nå?
+
+**18. november: kodefrysen og leveringen er utsatt én uke. Ny kodefrys er 28. november, levering og demo 2. desember, og sluttrapporten skrives etterpå.**
+
+- Aksel flyttet fristene 2026-11-18, se [milepælene](../2-Planleggingsfasen/milepæler.md#forslaget-fra-2026-11-18).
+  Gruppa bekrefter dem på neste møte, og faglærer må godta den nye leveringsdatoen.
+- Den ekstra uka brukes til rettinger og forsiden «Best akkurat nå» (topp 3 steder). Rettingene kommer
+  fra en gjennomgang av nettsiden 2026-11-18: navn som brytes midt i ordet, søkefelt uten hint,
+  for mange desimaler, ulike enheter for nysnø, tegnforklaring på kartet, hvor ferske dataene er på
+  forsiden, og en linje som skiller SnowScore fra skivinduet.
+- «Best akkurat nå» er en ny story og går gjennom `bmad-correct-course` før den bygges.
+  Favoritter, «nær meg», minikart på stedssiden og PWA er v2 og skrives inn i sluttrapporten som videre arbeid.
+- Brukertesten pågår 17.–19. november.
 
 **15. november: Story 1.8b (PR #83) er merget, og Story 1.11 er ferdig, så alle v1-stories er bygget. Brukertesten og sluttrapporten er ikke startet.**
 
@@ -340,14 +352,13 @@ gantt
     Rekruttering til brukertesten                 : 2026-11-15, 2026-11-17
     Brukertest med fem personer                   : 2026-11-17, 2026-11-20
     F4 Brukertest ferdig                          : milestone, 2026-11-19, 0d
-    Rettinger etter brukertesten                  : 2026-11-20, 2026-11-22
-    M5 Kodefrys                                   : milestone, 2026-11-21, 0d
+    Rettinger og «Best akkurat nå»                : 2026-11-19, 2026-11-28
+    M5 Kodefrys                                   : milestone, 2026-11-28, 0d
 
     section 4 Avslutning
-    Sluttrapport og presentasjon                  : 2026-11-16, 2026-11-23
-    F5 Sluttrapport klar                          : milestone, 2026-11-23, 0d
-    Generalprøve etter README                     : 2026-11-24, 2026-11-25
-    M6 Levering og demo                           : milestone, crit, 2026-11-25, 0d
+    Generalprøve etter README                     : 2026-12-01, 2026-12-02
+    M6 Levering og demo                           : milestone, crit, 2026-12-02, 0d
+    Sluttrapport og presentasjon (dato ikke satt) : 2026-12-02, 2026-12-09
 ```
 
 | Dato | Hva | Fase | Status |
@@ -369,10 +380,10 @@ gantt
 | 2026-11-16 | Ingen nye stories etter dette: denne versjonen brukertestes ([brukertest/](brukertest/)) | Gjennomføring | ⬜ forslag |
 | 2026-11-19 | F4 Brukertest med fem personer, 17.–19. november (reserve: minimal test for SM-3 hvis under fem 18. november) | Gjennomføring | ⬜ forslag (var 2026-11-16) |
 | 2026-11-15 | M1 Timesjobb og publisering (1.11) i drift: 232 grønne kjøringer siden 8. november | Gjennomføring | ✅ (frist var 2026-11-11) |
-| 2026-11-21 | Kritiske funn rettet og M5 kodefrys | Gjennomføring | ⬜ forslag (var 2026-11-11 og 2026-11-20) |
-| 2026-11-23 | F5 Sluttrapport og presentasjon | Avslutning | ⬜ forslag |
-| 2026-11-24 | Generalprøve: `npm ci`, så `npm run dev:demo` og `npm run dev`, etter README på en ren maskin | Avslutning | ⬜ forslag |
-| 2026-11-25 | M6 Levering og demo | Avslutning | ⬜ vedtatt |
+| 2026-11-28 | Rettinger og «Best akkurat nå» ferdige, M5 kodefrys | Gjennomføring | ⬜ forslag (var 2026-11-11, 2026-11-20 og 2026-11-21) |
+| 2026-12-01 | Generalprøve: `npm ci`, så `npm run dev:demo` og `npm run dev`, etter README på en ren maskin | Avslutning | ⬜ forslag (var 2026-11-24) |
+| 2026-12-02 | M6 Levering og demo | Avslutning | ⬜ forslag (var 2026-11-25, vedtatt) |
+| Etter 2026-12-02 | F5 Sluttrapport og presentasjon, dato ikke satt | Avslutning | ⬜ forslag (var 2026-11-23) |
 
 ## Stegene
 
