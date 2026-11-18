@@ -116,3 +116,23 @@ PR #113 ble pushet uten reviewer. Deretter Story 1.12 «Best akkurat nå» med `
 ### Åpne punkter
 - PR #113 og PR-en for 1.12 trenger godkjenning fra et annet gruppemedlem før merge, innen 28.11.
 - Når #113 er merget: flett `main` inn i greinen for 1.12, eller la GitHub flytte basen.
+
+## 2026-11-18 kl. 23:50 — Aksel Dymbe
+
+### Oppgave
+#113 og #114 ble merget etter Aksels godkjenning, og den publiserte siden ble sjekket. Deretter skulle «Slik beregner vi SnowScore» vises bare i menyen på mobil, så kartet får plass.
+
+### Plan
+- `bmad-correct-course`: [sprint-change-proposal-2026-11-18-forklaring-bare-i-meny.md](../../project-workspace/planning-artifacts/sprint-change-proposal-2026-11-18-forklaring-bare-i-meny.md).
+- `bmad-build`: [spec-fix-forklaring-bare-i-meny.md](../../project-workspace/implementation-artifacts/spec-fix-forklaring-bare-i-meny.md).
+
+### Resultat
+- **#113 og #114 er merget** uten godkjenning fra et annet gruppemedlem. Avviket er kommentert på begge PR-ene. #114 ble lukket da greinen til #113 ble slettet, og ble åpnet igjen med `main` som base.
+- **Den publiserte siden** viser alle endringene.
+- **Lenken er flyttet, ikke fjernet.** Første versjon fjernet den, men gjennomgangen fant at det bryter FR-8 (Må ha). Aksel valgte da å flytte lenken til overskriftslinjen i «Best akkurat nå» på mobil.
+- **CI på Ubuntu:** lenken fikk ikke plass ved overskriften. Den er nå `meta` og kan brytes under overskriften.
+- **PR #116 er åpnet** og har alle sjekkene grønne. Konflikten i `ai-log/logg.md` med #115 er løst.
+
+### Åpne punkter
+- PR #116 trenger godkjenning fra et annet gruppemedlem før merge.
+- Avviket fra godkjenningsregelen for #113 og #114 bør tas opp på neste gruppemøte.
