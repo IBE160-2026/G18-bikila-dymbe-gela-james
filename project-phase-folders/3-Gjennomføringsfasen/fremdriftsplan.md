@@ -30,6 +30,9 @@ på møtet. Oppdater statusen når et steg er ferdig.
   - Stedssiden viser NVE-nysnø i cm og har «Tilbake» øverst.
   - Skivinduet sier at det gjelder været, ikke snøen.
   - Desimalene er beholdt, fordi de stemmer med filteret.
+- Lenken «Slik beregner vi SnowScore» er flyttet fra Kart | Liste til overskriftslinjen i «Best akkurat nå» på mobil,
+  så kartet får plass og FR-8 fortsatt er oppfylt
+  ([endringsforslag](../../project-workspace/planning-artifacts/sprint-change-proposal-2026-11-18-forklaring-bare-i-meny.md)).
 - «Best akkurat nå» er godkjent av Aksel som Story 1.12 og FR-33 (Bør ha), se
   [endringsforslaget](../../project-workspace/planning-artifacts/sprint-change-proposal-2026-11-18-best-akkurat-naa.md).
   Den er bygget på `story/1-12-best-akkurat-naa` ([spec](../../project-workspace/implementation-artifacts/spec-1-12-best-akkurat-naa.md))

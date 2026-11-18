@@ -26,9 +26,17 @@ export default function BestAkkuratNaa({ steder, filterAktiv, sok }: Props) {
   if (steder.length === 0) return null
   return (
     <section className="best-naa" aria-labelledby="best-naa-overskrift">
-      <h2 id="best-naa-overskrift" className="best-naa-overskrift">
-        {filterAktiv ? BEST_BLANT_TREFFENE : BEST_NAA}
-      </h2>
+      {/* FR-8: the scores here link to the explanation, not only the top menu. Below 768px, where the menu is
+          behind ☰, the link shares the heading's line so it takes no row of its own (change proposal 2026-11-18).
+          From 768px CSS hides it, since the top navigation shows the same link. */}
+      <div className="best-naa-topp">
+        <h2 id="best-naa-overskrift" className="best-naa-overskrift">
+          {filterAktiv ? BEST_BLANT_TREFFENE : BEST_NAA}
+        </h2>
+        <Lenke to={{ name: 'forklaring' }} className="forklaring-lenke best-naa-forklaring">
+          Slik beregner vi SnowScore
+        </Lenke>
+      </div>
       <ol className="best-naa-liste">
         {steder.map((sted) => (
           <li key={sted.id}>

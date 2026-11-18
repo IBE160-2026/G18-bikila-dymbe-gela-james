@@ -19,7 +19,7 @@ Brukeren skal kunne åpne forklaringssiden «Slik beregner vi SnowScore» og for
 
 - **Kort fortalt og steg for steg:** Siden sier hva SnowScore måler og ikke måler (ikke vind), viser formelen og har én illustrasjon per delpoeng: A Nysnøpotensial, B Kuldebonus og C Snøandel.
 - **Endringslogg:** Versjonsnummer og begrunnelse for hver formelendring. Første rad er nevneren i B, endret fra 6 til 16.
-- **Lenket fra hver score:** Toppnavigasjonen, kart, liste og stedssiden lenker til siden. På Utforsk vises lenken én gang: i toppnavigasjonen fra 768 px, og ved Kart/Liste under 768 px.
+- **Lenket fra hver score:** Toppnavigasjonen, kart, liste og stedssiden lenker til siden. På Utforsk vises lenken én gang: i toppnavigasjonen fra 768 px, og på linjen med overskriften «Best akkurat nå» under 768 px (flyttet fra Kart/Liste 2026-11-18).
 - **Regneeksempel:** 6-timerstabellen fra briefen, med S, P og T̄ utledet før A, B, C og summen. En test kjører eksempelets inndata gjennom den delte SnowScore-modulen, så tekst og modul ikke kan sprike.
 - **Datakilder og begrensninger:** MET (CC BY 4.0) og NVE (NLOD) med lisens. SnowScore er en prognose og ikke en garanti, og SnowFinder er ikke en skredfarevurdering. Siden lenker til Varsom.no for fjellområder.
 - **Datakvalitet:** Siste publiserte kjørings rapport i klartekst: tidspunkt, antall steder, andel gyldige, avviste svar per kilde og antall med ufullstendige data. Panelet må virke i demomodus.
@@ -53,5 +53,5 @@ Brukeren skal kunne åpne forklaringssiden «Slik beregner vi SnowScore» og for
 - SnowScore-kortet ligger på stedssiden fra Story 1.9 (Epic 1), men stolpene der hører sammen med regneeksemplet (2.2) og kalkulatoren (2.4) og bør bygges i samme endring, så de tre flatene er like.
 - 2.2 og 2.4 bygger på SnowScore-modulen fra 1.4 og kan ikke endre formelen.
 - 2.3 leser kvalitetsrapporten fra datafila fra 1.5 og 1.10, både i demo- og normalmodus.
-- Epic 3 endrer layouten i Utforsk. Forklaringslenken ved Kart/Liste under 768 px (2.1b) må overleve det.
+- Epic 3 endrer layouten i Utforsk. Forklaringslenken under 768 px (2.1b, på linjen med «Best akkurat nå» fra 2026-11-18) må overleve det.
 - Utsatte funn i `deferred-work.md` om forklaringssiden (lesbar tekst for formlene, felles axe-hjelper og utdaterte steder i datakvalitetspanelet) bør leses før arbeid i samme område.

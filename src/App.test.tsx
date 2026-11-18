@@ -41,9 +41,10 @@ describe('AppView', () => {
     const html = render(demoResult)
     expect(html).toMatch(tittel(true))
     expect(html).toContain('<a href="/slik-beregner-vi-snowscore" class="toppnav-lenke">Slik beregner vi SnowScore</a>')
-    // Story 2.1: one link next to the switch covers both map and list. Story 2.1b: CSS shows it only below
-    // 768px, where the navigation's link is folded behind ☰ (tests/e2e/forklaring.spec.ts).
-    expect(html).toContain('<a href="/slik-beregner-vi-snowscore" class="forklaring-lenke utforsk-forklaring">Slik beregner vi SnowScore</a>')
+    // Change proposal 2026-11-18: the link is no longer next to the switch, but on the heading line of «Best
+    // akkurat nå» (FR-8). CSS shows it only below 768px, where the navigation's link is behind ☰.
+    expect(html).not.toContain('utforsk-forklaring')
+    expect(html).toContain('<a href="/slik-beregner-vi-snowscore" class="forklaring-lenke best-naa-forklaring">Slik beregner vi SnowScore</a>')
     expect(html).toContain('Demodata – ikke ekte prognoser')
     expect(html).toContain('class="kart"')
     // Story 3.1: the filter panel, with nothing hidden until the user sets a requirement.

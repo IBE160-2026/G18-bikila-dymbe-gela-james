@@ -61,7 +61,8 @@ for (const [visning, adresse] of [
   ['map', '/'],
   ['list', '/?visning=liste'],
 ] as const) {
-  // Story 2.1b: from 768px only the navigation's link is shown, so Utforsk does not show it twice.
+  // Story 2.1b: from 768px only the navigation's link is shown, so Utforsk does not show it twice. The one on the
+  // «Best akkurat nå» heading line (change proposal 2026-11-18) is for phones only and hidden here.
   test(`the ${visning} shows the link once, in the navigation, and the decorative logo`, async ({ page }) => {
     await page.goto(adresse)
     await expect(page.getByRole('link', { name: NAVN })).toHaveCount(1)
@@ -163,16 +164,21 @@ test.describe('at 375px', () => {
     ['map', '/'],
     ['list', '/?visning=liste'],
   ] as const) {
-    // Story 2.1b: the navigation's link is folded behind ☰ here, so the one next to the switch is shown
-    // instead, and the explanation stays one tap away from map and list (Story 2.1, FR-8).
-    test(`the ${visning} shows the link next to the switch, and only that one`, async ({ page }) => {
+    // Change proposal 2026-11-18: on a phone the link sits on the heading line of «Best akkurat nå», not on a row
+    // of its own next to the switch, so the map moves up while the scores still link to the explanation (FR-8).
+    test(`the ${visning} shows the link on the «Best akkurat nå» line, and only that one`, async ({ page }) => {
       await page.goto(adresse)
       await expect(page.getByRole('link', { name: NAVN })).toHaveCount(1)
-      const lenke = page.locator('main').getByRole('link', { name: NAVN })
-      const box = await lenke.boundingBox()
-      expect(box?.height ?? 0).toBeGreaterThanOrEqual(44)
+      await expect(page.locator('.utforsk-verktoy').getByRole('link', { name: NAVN })).toHaveCount(0)
+      const lenke = page.locator('.best-naa').getByRole('link', { name: NAVN })
+      const lenkeBox = await lenke.boundingBox()
+      const overskrift = await page.getByRole('heading', { level: 2, name: 'Best akkurat nå' }).boundingBox()
+      if (!lenkeBox || !overskrift) throw new Error('The heading and the link must both be rendered')
+      expect(lenkeBox.height).toBeGreaterThanOrEqual(44)
+      // On the heading's line: the two overlap vertically, the link to the right.
+      expect(lenkeBox.y).toBeLessThan(overskrift.y + overskrift.height)
+      expect(lenkeBox.x).toBeGreaterThanOrEqual(overskrift.x + overskrift.width)
       await lenke.click()
-      // The navigation's own link, which expectExplanation checks, is behind ☰ at this width.
       await expect(page).toHaveURL(/\/slik-beregner-vi-snowscore$/)
       await expect(page.getByRole('heading', { level: 1 })).toHaveText(NAVN)
     })
