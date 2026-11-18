@@ -31,6 +31,7 @@ context:
   - `BestAkkuratNaa.tsx`: `.best-naa-topp` med `h2` og lenken;
   - `Utforsk.tsx`: lenken er fjernet fra `.utforsk-verktoy`, og importen av `Lenke` er fjernet;
   - `App.css`: `.best-naa-topp` og `.best-naa .best-naa-forklaring` er skjult fra 768 px. Regelen har to klasser, fordi `.forklaring-lenke` kommer senere i fila og ellers ville vunnet. E2E-testene på 1280 px fant det. To utdaterte kommentarer er rettet.
+- **CI på Ubuntu (bredere fonter):** overskriften og lenken fikk ikke plass på samme linje på 375 px, og E2E feilet. Lenken er nå `meta` under 768 px, og den kan brytes under overskriften inne i raden. Testen sjekker at lenken står i overskriftsraden over stedene. I tillegg venter testen på 1280 px på dataene før den måler.
 - **Dokumenter:** endringsforslaget §7, Story 2.1b, EXPERIENCE.md (begge kopiene), `epic-2-context.md` og `epic-3-context.md`.
 
 ## Review Triage Log

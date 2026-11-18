@@ -681,6 +681,13 @@ select:focus-visible {
   margin-bottom: var(--spacing-2);
 }
 
+/* Below 768px the link is meta text, so it usually fits beside the heading; with a wide font it wraps under it,
+   still inside the row's header and not on a line of its own by the switch. */
+.best-naa .best-naa-forklaring {
+  font-family: var(--typography-meta-font-family);
+  font-size: var(--typography-meta-font-size);
+}
+
 /* Two classes, so it wins over .forklaring-lenke (inline-flex), which comes later in this file. */
 @media (min-width: 768px) {
   .best-naa .best-naa-forklaring {

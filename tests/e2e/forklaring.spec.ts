@@ -175,9 +175,13 @@ test.describe('at 375px', () => {
       const overskrift = await page.getByRole('heading', { level: 2, name: 'Best akkurat nå' }).boundingBox()
       if (!lenkeBox || !overskrift) throw new Error('The heading and the link must both be rendered')
       expect(lenkeBox.height).toBeGreaterThanOrEqual(44)
-      // On the heading's line: the two overlap vertically, the link to the right.
-      expect(lenkeBox.y).toBeLessThan(overskrift.y + overskrift.height)
-      expect(lenkeBox.x).toBeGreaterThanOrEqual(overskrift.x + overskrift.width)
+      // In the row's header, above the places: beside the heading where it fits, under it with CI's wider fonts.
+      const forsteSted = await page.locator('.best-naa li').first().boundingBox()
+      if (!forsteSted) throw new Error('The row must list at least one place')
+      const topp = await page.locator('.best-naa-topp').boundingBox()
+      if (!topp) throw new Error('The row header must be rendered')
+      expect(lenkeBox.y).toBeGreaterThanOrEqual(topp.y)
+      expect(lenkeBox.y + lenkeBox.height).toBeLessThanOrEqual(forsteSted.y)
       await lenke.click()
       await expect(page).toHaveURL(/\/slik-beregner-vi-snowscore$/)
       await expect(page.getByRole('heading', { level: 1 })).toHaveText(NAVN)
