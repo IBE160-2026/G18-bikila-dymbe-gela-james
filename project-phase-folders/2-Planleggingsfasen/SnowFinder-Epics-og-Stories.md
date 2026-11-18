@@ -77,7 +77,7 @@ NFR-DQ1: Datakontrakt — MET/NVE-svar valideres mot Zod-skjemaer, dokumentert s
 NFR-DQ2: Kvalitetsrapport per kjøring (i datafilen, eller i jobbloggen/artifact ved feilet kjøring)
 NFR-DQ3: Sporbarhet — hver publisert verdi har kjørings-ID og kildens tidsstempel
 NFR-5 (v3): Ingen skrivbare endepunkter og ingen hemmeligheter; appen leser bare datafilen
-NFR-6 (v3): Feilede kjøringer og avviste svar står i kvalitetsrapporten og som rød kjøring i Actions-fanen; ingen egen varslingskanal
+NFR-6 (v3, endret 2026-11-18): Feilede kjøringer og avviste svar står i kvalitetsrapporten og som rød kjøring i Actions-fanen, og en planlagt agent sjekker siden utenfra og lager et issue ved avvik
 NFR-Privacy (v3): Ingen konto, ingen skjema, ingen lagrede brukeropplysninger; posisjon kun i nettleser
 NFR-7: WCAG 2.1 AA på alt unntatt selve kartlaget; tilgjengelig listevisning er fullt AA-alternativ
 NFR-8: Skalerbarhet — katalog 300→1500 steder, "noen tusen" samtidige brukere (statiske filer)
