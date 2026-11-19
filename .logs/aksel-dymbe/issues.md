@@ -44,7 +44,7 @@
 - [x] 2026-11-04 [story-1-11c-e2e-mot-demomodus](995-2026-11-01-00-16-06-story-1-11c-e2e-mot-demomodus.md) — PR #83, #85 og #87 venter på Josephs godkjenning; PR #86 på grønn CI og Aksels ja (løst 2026-11-15: #83, #85, #86 og #87 er merget)
 - [ ] 2026-11-04 [sok-pa-stedsnavn](993-2026-11-04-22-43-41-sok-pa-stedsnavn.md) — Gruppa bekrefter «til beslutning»-punktene i PRD/SRS v2: søk som Må ha, valg av dag ikke i v1, skala som arkitekturforsikring
 - [x] 2026-11-04 [sok-pa-stedsnavn](993-2026-11-04-22-43-41-sok-pa-stedsnavn.md) — Story 3.9 trenger review fra et gruppemedlem før merge (løst 2026-11-14: PR #85 er merget)
-- [ ] 2026-11-04 [sok-pa-stedsnavn](993-2026-11-04-22-43-41-sok-pa-stedsnavn.md) — Fargeforklaring for kartet (SRS-F-15 i v2) trenger eget endringsforslag
+- [x] 2026-11-04 [sok-pa-stedsnavn](993-2026-11-04-22-43-41-sok-pa-stedsnavn.md) — Fargeforklaring for kartet (SRS-F-15 i v2) trenger eget endringsforslag (løst 2026-11-19)
 - [ ] 2026-11-07 [prd-srs-v2-1](993-2026-11-07-12-29-57-prd-srs-v2-1.md) — Dagvalg og skala i PRD/SRS §7 er fortsatt til beslutning hos gruppa
 - [x] 2026-11-07 [prd-srs-v2-1](993-2026-11-07-12-29-57-prd-srs-v2-1.md) — PR #83 (1.8b) og #85 (3.9) venter på godkjenning fra et gruppemedlem (løst 2026-11-15: #85 merget 14.11, #83 merget 15.11)
 - [x] 2026-11-07 [prd-srs-v2-1](993-2026-11-07-12-29-57-prd-srs-v2-1.md) — Rekrutter minst fem testpersoner til brukertesten 12.–16. november (utgått 2026-11-15: erstattet av ny frist 16.11, se brukertest-materiell)
@@ -60,7 +60,7 @@
 - [x] 2026-11-08 [ux-poengfordeling](989-2026-11-08-00-00-36-ux-poengfordeling.md) — Steg 4 (fargeforklaring på kartet) og steg 5 (mobil og kvalitet) i UX-forbedringen (løst 2026-11-15: dublett av ux-fargeforklaring-punktene)
 - [x] 2026-11-08 [ux-poengfordeling](989-2026-11-08-00-00-36-ux-poengfordeling.md) — Story 2.5: PR #94 venter på at #93 merges og på godkjenning fra Joseph (løst 2026-11-08, PR #89–#96 merget)
 - [x] 2026-11-08 [ux-fargeforklaring](988-2026-11-08-12-36-35-ux-fargeforklaring.md) — Steg 4: godkjenn UX for fargeforklaringen, så push og PR mot #93 (løst 2026-11-08, PR #89–#96 merget)
-- [ ] 2026-11-08 [ux-fargeforklaring](988-2026-11-08-12-36-35-ux-fargeforklaring.md) — Steg 4: spec og bygging av fargeforklaringen (bmad-build), med storyen i epics
+- [x] 2026-11-08 [ux-fargeforklaring](988-2026-11-08-12-36-35-ux-fargeforklaring.md) — Steg 4: spec og bygging av fargeforklaringen (bmad-build), med storyen i epics (løst 2026-11-19)
 - [ ] 2026-11-08 [ux-fargeforklaring](988-2026-11-08-12-36-35-ux-fargeforklaring.md) — Steg 5: gjennomgang av mobil og kvalitet nå, bygging etter merge av #89–#94
 - [ ] 2026-11-08 [prd-srs-v2-2](987-2026-11-08-14-15-55-prd-srs-v2-2.md) — Gruppa vedtar sakene i beslutningsnotatet (formel, dagvalg, skala, 500 ms/2 s, hvilket dokument som gjelder, kodefrys); deretter bmad-correct-course for M5
 - [ ] 2026-11-08 [prd-srs-v2-2](987-2026-11-08-14-15-55-prd-srs-v2-2.md) — Referat fra møtet 2026-11-01 («den rette formelen») mangler
@@ -89,7 +89,7 @@
 - [ ] 2026-11-15 [brukertest-sporreskjema](979-2026-11-15-18-28-31-brukertest-sporreskjema.md) — Etter testene: last opp utfylt brukertest-svar.xlsx, før resultatene inn i resultater.md og sluttrapporten §4
 - [x] 2026-11-18 [gjennomgang-og-utsatt-kodefrys](978-2026-11-18-19-23-11-gjennomgang-og-utsatt-kodefrys.md) — Gruppa bekrefter kodefrys 28.11 og levering 2.12 (løst 2026-11-18; Bårds godkjenning står som eget punkt)
 - [x] 2026-11-18 [gjennomgang-og-utsatt-kodefrys](978-2026-11-18-19-23-11-gjennomgang-og-utsatt-kodefrys.md) — Endringsforslag for «Best akkurat nå» (topp 3 på forsiden) i bmad-correct-course før storyen bygges (løst 2026-11-18)
-- [ ] 2026-11-18 [gjennomgang-og-utsatt-kodefrys](978-2026-11-18-19-23-11-gjennomgang-og-utsatt-kodefrys.md) — Rettings-PR fra gjennomgangen: ordbrudd i navn, plassholder i søket, desimaler, enheter (cm og mm), tegnforklaring, ferskhet på forsiden, SnowScore og skivindu, tydelig Tilbake. Innen 28.11 (bygget i 86a48b4, venter på push, PR og review)
+- [x] 2026-11-18 [gjennomgang-og-utsatt-kodefrys](978-2026-11-18-19-23-11-gjennomgang-og-utsatt-kodefrys.md) — Rettings-PR fra gjennomgangen: ordbrudd i navn, plassholder i søket, desimaler, enheter (cm og mm), tegnforklaring, ferskhet på forsiden, SnowScore og skivindu, tydelig Tilbake. Innen 28.11 (bygget i 86a48b4, venter på push, PR og review) (løst 2026-11-19)
 - [ ] 2026-11-18 [gjennomgang-og-utsatt-kodefrys](978-2026-11-18-19-23-11-gjennomgang-og-utsatt-kodefrys.md) — Svar på Bårds to refleksjonsspørsmål fra PRD-tilbakemeldingen i sluttrapporten
 - [ ] 2026-11-18 [gjennomgang-og-utsatt-kodefrys](978-2026-11-18-19-23-11-gjennomgang-og-utsatt-kodefrys.md) — Sett en dato for sluttrapporten (F5), etter levering 2.12
 - [x] 2026-11-18 [gjennomgang-og-utsatt-kodefrys](978-2026-11-18-19-23-11-gjennomgang-og-utsatt-kodefrys.md) — Bård må godta at leveringen flyttes fra 25.11 til 2.12 (løst 2026-11-18: godtatt, gruppa satte selv innleveringsdatoen)
@@ -100,4 +100,7 @@
 - [ ] 2026-11-18 [overvaakingsagent](977-2026-11-18-22-58-52-overvaakingsagent.md) — Brukertestresultater 19.11: sorter mot rundbordets ideer (tom treffliste, «hvorfor denne scoren») og bygg høyst tre fix/ før 28.11
 - [ ] 2026-11-18 [overvaakingsagent](977-2026-11-18-22-58-52-overvaakingsagent.md) — Sluttrapporten: avsnitt om grensen for KI-autonomi i driften (nivå 1–3) og at forbudet hviler på instruksen
 - [ ] 2026-11-18 [gjennomgang-og-utsatt-kodefrys](978-2026-11-18-19-23-11-gjennomgang-og-utsatt-kodefrys.md) — Ta opp på gruppemøtet at #113 og #114 ble merget uten godkjenning fra et annet medlem
-- [ ] 2026-11-18 [gjennomgang-og-utsatt-kodefrys](978-2026-11-18-19-23-11-gjennomgang-og-utsatt-kodefrys.md) — PR #116 (forklaringslenken på mobil) trenger godkjenning før merge
+- [x] 2026-11-18 [gjennomgang-og-utsatt-kodefrys](978-2026-11-18-19-23-11-gjennomgang-og-utsatt-kodefrys.md) — PR #116 (forklaringslenken på mobil) trenger godkjenning før merge (løst 2026-11-19)
+- [ ] 2026-11-19 [brukertest-resultater](976-2026-11-19-22-31-25-brukertest-resultater.md) — Før inn O1–O5, tid, enhet og Safari-sjekken fra observasjonsskjemaene i resultater.md, og vurder SM-2, SM-3 og SM-4
+- [ ] 2026-11-19 [brukertest-resultater](976-2026-11-19-22-31-25-brukertest-resultater.md) — Sjekk om D6 testet før eller etter at «Tilbake» ble flyttet øverst (#113)
+- [ ] 2026-11-19 [brukertest-resultater](976-2026-11-19-22-31-25-brukertest-resultater.md) — Kartet er nesten ikke synlig over Filter-arket på små telefoner (ca. 60 px på 375 × 667); krever correct-course
