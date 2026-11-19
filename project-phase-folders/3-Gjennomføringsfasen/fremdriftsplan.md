@@ -3,7 +3,7 @@
 Oversikt over hvordan vi går fram, steg for steg, så alle kan følge med selv om de ikke var
 på møtet. Oppdater statusen når et steg er ferdig.
 
-**Sist oppdatert:** 2026-11-18
+**Sist oppdatert:** 2026-11-19
 
 ## Slik holder du deg oppdatert
 
@@ -15,6 +15,14 @@ på møtet. Oppdater statusen når et steg er ferdig.
 
 ## Hvor er vi nå?
 
+**19. november: brukertesten er gjennomført med seks deltakere, og SUS-snittet er 88,75 (målet er minst 68).**
+
+- Svarene fra spørreskjemaet (SUS og fritekst) står i [`brukertest/resultater.md`](brukertest/resultater.md).
+  Oppgavene O1–O5 (SM-2, SM-3 og SM-4) føres inn fra observasjonsskjemaene i en egen PR.
+- Ingen funn hindrer en oppgave. Det eneste som var vanskelig, var tilbakepilen (1 av 6), og «Tilbake» ble
+  flyttet øverst i PR #113. Ønsket om værmelding for flere dager (2 av 6) og snødybde blir videre arbeid.
+- PR #113 (rettinger), #114 (Story 1.12) og #116 (forklaringslenken på mobil) er merget og publisert.
+
 **18. november: kodefrysen og leveringen er utsatt én uke. Ny kodefrys er 28. november, levering og demo 2. desember, og sluttrapporten skrives etterpå.**
 
 - Aksel foreslo de nye fristene 2026-11-18, og gruppa bekreftet dem samme dag, se
@@ -24,7 +32,7 @@ på møtet. Oppdater statusen når et steg er ferdig.
   for mange desimaler, ulike enheter for nysnø, tegnforklaring på kartet, hvor ferske dataene er på
   forsiden, og en linje som skiller SnowScore fra skivinduet.
 - Rettingene fra gjennomgangen er bygget på `fix/rettinger-etter-gjennomgang`
-  ([spec](../../project-workspace/implementation-artifacts/spec-fix-rettinger-etter-gjennomgang.md)). PR-en venter på review.
+  ([spec](../../project-workspace/implementation-artifacts/spec-fix-rettinger-etter-gjennomgang.md)). PR #113 er merget.
   - Kartet har fått tegnforklaring, og forsiden viser «Oppdatert kl. …».
   - Stedsnavn brytes ikke lenger midt i ordet, og søkefeltet har fått en plassholder.
   - Stedssiden viser NVE-nysnø i cm og har «Tilbake» øverst.
@@ -37,7 +45,7 @@ på møtet. Oppdater statusen når et steg er ferdig.
   [endringsforslaget](../../project-workspace/planning-artifacts/sprint-change-proposal-2026-11-18-best-akkurat-naa.md).
   Den er bygget på `story/1-12-best-akkurat-naa` ([spec](../../project-workspace/implementation-artifacts/spec-1-12-best-akkurat-naa.md))
   og står som `done`. Øverst på Utforsk står de tre beste stedene blant treffene, med overskriften «Best blant treffene»
-  når et filter er aktivt. PR-en bygger på rettings-PR-en (#113) og venter på review.
+  når et filter er aktivt. PR #114 er merget.
   Favoritter, «nær meg», minikart på stedssiden og PWA er v2 og skrives inn i sluttrapporten som videre arbeid.
 - En agent skal overvåke nettsiden, godkjent av Aksel 2026-11-18 etter et rundbord med agentene, se
   [endringsforslaget](../../project-workspace/planning-artifacts/sprint-change-proposal-2026-11-18-overvaakingsagent.md).
@@ -400,7 +408,7 @@ gantt
 | 2026-10-31 | Story 1.11 bygget. Jobben velger Pages eller reserven selv i hver kjøring, så valget 4. november trengs ikke | Gjennomføring | 🔄 venter på review |
 | 2026-11-01 | Story 1.11: jobben skriver alltid grenen `data` og leser den tilbake (PR #78 merget). Faglærer slo av Pages, så Vercel publiserer appen | Gjennomføring | 🔄 venter på Vercel |
 | 2026-11-16 | Ingen nye stories etter dette: denne versjonen brukertestes ([brukertest/](brukertest/)) | Gjennomføring | ⬜ forslag |
-| 2026-11-19 | F4 Brukertest med fem personer, 17.–19. november (reserve: minimal test for SM-3 hvis under fem 18. november) | Gjennomføring | ⬜ forslag (var 2026-11-16) |
+| 2026-11-19 | F4 Brukertest med fem personer, 17.–19. november (reserve: minimal test for SM-3 hvis under fem 18. november) | Gjennomføring | ✅ seks deltakere, SUS 88,75 ([resultater](brukertest/resultater.md)); oppgavene føres inn |
 | 2026-11-15 | M1 Timesjobb og publisering (1.11) i drift: 232 grønne kjøringer siden 8. november | Gjennomføring | ✅ (frist var 2026-11-11) |
 | 2026-11-28 | Rettinger og «Best akkurat nå» ferdige, M5 kodefrys | Gjennomføring | ⬜ vedtatt (var 2026-11-11, 2026-11-20 og 2026-11-21) |
 | 2026-12-01 | Generalprøve: `npm ci`, så `npm run dev:demo` og `npm run dev`, etter README på en ren maskin | Avslutning | ⬜ vedtatt (var 2026-11-24) |
@@ -425,7 +433,7 @@ Vi bruker BMad Method med fem agenter. Hvert steg bygger på det forrige.
 | 8c | Wireframes, kursets skjermkrav (uten pålogging, droppet 2026-10-09) og brukertestplan | Sally (UX-designer) | Oppdatert EXPERIENCE.md og wireframes | Joseph og Aksel | 2026-10-28 | ✅ Ferdig ([wireframes](../2-Planleggingsfasen/wireframes/), skjermkrav og brukertestplan i EXPERIENCE.md) |
 | 8d | Oppdatere epics, stories og sprintplan etter forenklingen | John og `bmad-sprint-planning` | Epics og stories, sprintplan, `sprint-status.yaml` | Aksel | 2026-10-07 | ✅ Ferdig (epics v3, sprintplan og `sprint-status.yaml`) |
 | 9 | Bygge appen, én story om gangen | Amelia (utvikler) | Kode, tester, PR-er. Story 1.1 ferdig (PR #10). Story 1.2 ferdig (PR #18). Story 1.4 ferdig (PR #20). Story 1.10 ferdig (PR #22). Story 1.3 ferdig (PR #23). Story 1.5 ferdig (PR #24). Story 1.7 ferdig (PR #25). Story 1.8 ferdig (PR #27), 1.7b markører etter zoom (PR #28). Story 1.9 ferdig (PR #30), fullført med 1.9b og 1.9c (alder i åpen fane, tom tilstand, trykkmål, felles datalagring). Story 2.1 forklaringssiden «Slik beregner vi SnowScore» ferdig (PR #33). Story 2.2 regneeksempelet ferdig (PR #34). Story 2.3 datakilder, begrensninger og datakvalitet ferdig (PR #35). Story 2.4 kalkulatoren «Prøv selv» ferdig (PR #36), så hele Epic 2 er bygget. Retrospektiv for Epic 2 ferdig (PR #37, accepted-with-open-items, 11 tiltak). Tiltak A1–A5 og A11 ferdige (PR #38). Rød E2E på GitHub rettet (PR #39), dokumentene oppdatert etter revisjonen (PR #40). Revisjonens tre feil i dataprogrammet rettet (PR #43–#45). Tiltak A8 (toppnavigasjonen) og A7 (delt kortstil og `Formel`) fra retrospektiven ferdige (PR #46–#47). Story 3.1 filter på nysnø, vind og temperatur ferdig (PR #48). Story 3.2 filteret i nettadressen ferdig (PR #49), fullført med 3.2b: stedssidens adresse bærer søket (PR #50). Tre åpne punkter avgjort (PR #51). Story 3.3 antall treff og forslag ved null treff ferdig (PR #52), så Må ha i Epic 3 er ferdig. Story 3.5 filter på skydekke i dagslys ferdig (PR #53), før 3.4 fordi hurtigvalget trenger det. Story 3.4 hurtigvalg ferdig (PR #57). Story 3.6 filter på avstand, med knappen «Hele Norge», bygget men revertert (PR #58 merget uten godkjenning, reversert i PR #61), og merget på nytt (PR #63). Story 3.4 og 3.6 satt til `done` (PR #64 og denne). Story 3.7 filter på stedstype ferdig (PR #66). Story 3.8 nysnø siste 24 timer ferdig (bygget av Sena, synlig PR åpnet av Aksel), så hele Epic 3 er bygget. Story 4.2 beste skivindu ferdig (PR #74). Story 1.6 nye forsøk i dataprogrammet og banner for gamle data ferdig (bygget av Joseph, 2026-10-29, PR #77). Story 1.11 timesjobb og publisering bygget av Aksel (2026-10-31), endret stegvis etter at FR-30 og AD-10 ble endret, og ferdig etter måling i drift (2026-11-15). Vercel og timesjobb hvert 10. minutt merget (PR #81, 2026-11-02). Timer som starter neste kjøring, Story 1.11g, merget (PR #87). Story 2.1b logo, én forklaringslenke og slidere fra venstre merget (PR #82). Story 3.9 søk etter sted ferdig (PR #85, 2026-11-14), så hele Epic 3 er bygget. Story 1.8b destinasjonskort ferdig (PR #83, 2026-11-15). Story 1.6b rettinger etter review av 1.6 ferdig (2026-11-07). Story 3.1b ryddigere filter, steg 2 i UX-forbedringen, ferdig (2026-11-07). Story 2.5 delpoengstolper, steg 3 i UX-forbedringen, ferdig (2026-11-08). Story 1.6b, 3.1b og 2.5 merget etter godkjenning (PR #90, #92 og #94, 2026-11-08). Alle v1-stories ferdige 2026-11-15. Story 1.12 «Best akkurat nå» lagt til etter endringsforslaget 2026-11-18 og bygget samme dag. Rettinger bygges som `fix`-PR-er fram til kodefrysen 2026-11-28. | Aksel (sprint 1 og 4) | 2026-11-15 (frist var 2026-11-11) | ✅ Ferdig |
-| 10 | Brukertest, sluttrapport og demo | Hele gruppen | [Avslutningsfasen](../4-Avslutningsfasen/) | Joseph og Aksel | 2026-11-25 | 🔄 Pågår: materiellet til brukertesten er klart ([brukertest/](brukertest/)) |
+| 10 | Brukertest, sluttrapport og demo | Hele gruppen | [Avslutningsfasen](../4-Avslutningsfasen/) | Joseph og Aksel | 2026-11-25 | 🔄 Pågår: brukertesten er gjennomført ([resultater](brukertest/resultater.md)); sluttrapport og demo gjenstår |
 
 Steg 1 og 2 ble gjort før gruppen bestemte seg for denne rekkefølgen. Derfor kommer
 arkitekturen før PRD-en, og Winston går gjennom den på nytt i steg 6.
