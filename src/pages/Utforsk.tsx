@@ -7,7 +7,6 @@ import KartVisning from '../components/KartVisning'
 import ListeVisning from '../components/ListeVisning'
 import StedSok from '../components/StedSok'
 import Tegnforklaring from '../components/Tegnforklaring'
-import Lenke from '../components/Lenke'
 import VisningVeksler from '../components/VisningVeksler'
 import { href, replace, type UrlSortering, type UtforskRoute } from '../lib/router'
 import { besteSteder, type Posisjon } from '../lib/sortering'
@@ -115,16 +114,12 @@ export default function Utforsk({ steder, utdatert, route, oppdatert }: Props) {
         </section>
       ) : (
         <>
-          {/* Story 2.1: one link next to the switch covers both map and list. The map tooltip is hover text
-              and a list row is already a link, so the link cannot go inside either. Story 2.1b: it shows only
-              below 768px, where the top navigation's link is folded behind ☰, so it is never shown twice. */}
+          {/* Change proposal 2026-11-18: below 768px the explanation link moved from here to the heading line of
+              «Best akkurat nå» (BestAkkuratNaa), so on a phone the map gets the line it used to take. */}
           <div className="utforsk-verktoy">
             <VisningVeksler route={route} />
             {/* Review 2026-11-18: how fresh the data is, on the front page and not only on a place page. */}
             {oppdatert !== null && <p className="utforsk-oppdatert">{oppdatert}</p>}
-            <Lenke to={{ name: 'forklaring' }} className="forklaring-lenke utforsk-forklaring">
-              Slik beregner vi SnowScore
-            </Lenke>
           </div>
           {/* Story 3.9 (FR-32): between the switch and the map or list on every width, never in the sheet. */}
           <StedSok steder={steder} treffIds={treffIds} route={route} />

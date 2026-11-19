@@ -79,6 +79,9 @@ test('at 375 px each place is one line between the search and the map, with no s
 test('at 1280 px the three places stand side by side above the map, beside the filter panel', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 800 })
   await page.goto('/')
+  // Wait for the data: the row and the map render only once the places have loaded.
+  await expect(seksjon(page).getByRole('link')).toHaveCount(3)
+  await expect(page.locator('path.kart-markor')).toHaveCount(24)
   const bokser = await Promise.all((await seksjon(page).getByRole('link').all()).map((lenke) => lenke.boundingBox()))
   const panel = await page.getByRole('complementary', { name: 'Filter' }).boundingBox()
   const kart = await page.locator('.kart').boundingBox()

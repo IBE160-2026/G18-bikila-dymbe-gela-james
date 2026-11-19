@@ -94,8 +94,10 @@
 - [ ] 2026-11-18 [gjennomgang-og-utsatt-kodefrys](978-2026-11-18-19-23-11-gjennomgang-og-utsatt-kodefrys.md) — Sett en dato for sluttrapporten (F5), etter levering 2.12
 - [x] 2026-11-18 [gjennomgang-og-utsatt-kodefrys](978-2026-11-18-19-23-11-gjennomgang-og-utsatt-kodefrys.md) — Bård må godta at leveringen flyttes fra 25.11 til 2.12 (løst 2026-11-18: godtatt, gruppa satte selv innleveringsdatoen)
 - [x] 2026-11-18 [gjennomgang-og-utsatt-kodefrys](978-2026-11-18-19-23-11-gjennomgang-og-utsatt-kodefrys.md) — Bygg Story 1.12 (Best akkurat nå) med bmad-build etter rettings-PR-en, før 28.11 (løst 2026-11-18, venter på review)
-- [ ] 2026-11-18 [gjennomgang-og-utsatt-kodefrys](978-2026-11-18-19-23-11-gjennomgang-og-utsatt-kodefrys.md) — PR #113 og PR-en for Story 1.12 trenger godkjenning fra et annet gruppemedlem før merge, innen 28.11
+- [x] 2026-11-18 [gjennomgang-og-utsatt-kodefrys](978-2026-11-18-19-23-11-gjennomgang-og-utsatt-kodefrys.md) — PR #113 og PR-en for Story 1.12 trenger godkjenning fra et annet gruppemedlem før merge, innen 28.11 (løst 2026-11-18: merget etter Aksels godkjenning, avvik kommentert)
 - [ ] 2026-11-18 [overvaakingsagent](977-2026-11-18-22-58-52-overvaakingsagent.md) — Sett opp den planlagte Claude-økten med /schedule (06, 12, 18, 24) etter merge av PR #115, med to prøvekjøringer (uten avvik, og med grensen 1 min). Lenke i fremdriftsplan.md. Innen 28.11
 - [ ] 2026-11-18 [overvaakingsagent](977-2026-11-18-22-58-52-overvaakingsagent.md) — AGENTS.md: linje om overvåkeren og at den aldri skriver kode, via bmad-project-context
 - [ ] 2026-11-18 [overvaakingsagent](977-2026-11-18-22-58-52-overvaakingsagent.md) — Brukertestresultater 19.11: sorter mot rundbordets ideer (tom treffliste, «hvorfor denne scoren») og bygg høyst tre fix/ før 28.11
 - [ ] 2026-11-18 [overvaakingsagent](977-2026-11-18-22-58-52-overvaakingsagent.md) — Sluttrapporten: avsnitt om grensen for KI-autonomi i driften (nivå 1–3) og at forbudet hviler på instruksen
+- [ ] 2026-11-18 [gjennomgang-og-utsatt-kodefrys](978-2026-11-18-19-23-11-gjennomgang-og-utsatt-kodefrys.md) — Ta opp på gruppemøtet at #113 og #114 ble merget uten godkjenning fra et annet medlem
+- [ ] 2026-11-18 [gjennomgang-og-utsatt-kodefrys](978-2026-11-18-19-23-11-gjennomgang-og-utsatt-kodefrys.md) — PR #116 (forklaringslenken på mobil) trenger godkjenning før merge

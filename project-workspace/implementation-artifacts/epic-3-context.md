@@ -65,5 +65,5 @@ Brukeren skal kunne sette presise krav og få bare de stedene som oppfyller alle
 - 3.8 leser `nveNysnoSisteDognMm` fra dataprogrammet (1.3, 1.5). Verdien kan mangle når NVE har feilet.
 - 3.9 deler datalaget med kart og liste, og åpner stedssiden med søket i adressen som i 3.2b.
 - 3.9 bruker filteret fra 3.1 til å merke steder som «Oppfyller ikke filteret» i forslagene.
-- Epic 2: Lenken «Slik beregner vi SnowScore» ved Kart | Liste vises bare under 768 px og må overleve endringer i layouten.
+- Epic 2: Lenken «Slik beregner vi SnowScore» under 768 px står på linjen med «Best akkurat nå» (flyttet fra Kart | Liste 2026-11-18) og må overleve endringer i layouten.
 - Utsatte funn fra gjennomgangene står i `deferred-work.md`. Les dem før du endrer filteret.

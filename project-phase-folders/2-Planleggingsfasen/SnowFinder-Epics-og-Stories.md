@@ -619,7 +619,9 @@ So that jeg kjenner igjen SnowFinder og forstår filteret uten å lese hver slid
 **When** den åpnes
 **Then** står SnowFinder-logoen til venstre for «SnowFinder» i toppnavigasjonen, dekorativ for skjermlesere
 **And** på Utforsk vises lenken «Slik beregner vi SnowScore» én gang: i toppnavigasjonen fra 768 px, og
-ved Kart/Liste under 768 px, der toppnavigasjonen ligger bak ☰
+på linjen med overskriften «Best akkurat nå» under 768 px, der toppnavigasjonen ligger bak ☰ *(endret 2026-11-18:
+flyttet fra Kart/Liste, så den ikke tar en egen linje og kartet får plass,
+[sprint-change-proposal-2026-11-18-forklaring-bare-i-meny.md](../../project-workspace/planning-artifacts/sprint-change-proposal-2026-11-18-forklaring-bare-i-meny.md))*
 
 **Given** filterpanelet
 **When** alle krav står på «Alle»

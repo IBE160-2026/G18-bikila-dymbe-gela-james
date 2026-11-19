@@ -131,3 +131,33 @@ Etterpå var lint, typecheck, 782 enhetstester, `build:demo` og 168 E2E-tester g
 
 Raden ble flyttet inn i resultatkolonnen, fordi bunn-arket ellers forsvant på korte telefoner.
 **Hva vi gjorde med det:** brukt.
+
+### 14
+> merge begge nå. jeg godkjenner
+
+**Svar (kort):** PR #113 og #114 er merget. Hver av dem fikk en kommentar om at de ble merget uten godkjenning fra et annet gruppemedlem, som avvik fra AGENTS.md §2. Da greinen til #113 ble slettet, ble #114 lukket. Den ble åpnet igjen med `main` som base.
+**Hva vi gjorde med det:** brukt.
+
+### 15
+> sjekk at nettsiden er oppdatert
+
+**Svar (kort):** Den publiserte siden viser alle endringene. På iPhone er kartet nesten ikke synlig over bunn-arket.
+**Hva vi gjorde med det:** brukt.
+
+### 16
+> løs  løses ved å vise «Slik beregner vi SnowScore» bare i menyen på mob
+
+**Svar (kort):** Det endrer akseptkriteriet i Story 2.1b, så `bmad-correct-course` ble kjørt. Claude skrev at FR-8 ikke ble berørt, og det var feil.
+**Hva vi gjorde med det:** endringsforslaget ble godkjent, men endret senere (se 18).
+
+### 17
+> ja godkjent gjør endringene og lag pr
+
+**Svar (kort):** Lenken ble fjernet med `bmad-build`. Gjennomgangen fant at det bryter FR-8, som krever at forklaringen er lenket, «ikke bare fra toppmenyen».
+**Hva vi gjorde med det:** stoppet før commit.
+
+### 18
+Valg i dialog: «Flytt lenken til raden (Anbefalt)».
+
+**Svar (kort):** Lenken står nå på linjen med overskriften «Best akkurat nå» under 768 px. Endringsforslaget §7, Story 2.1b, EXPERIENCE.md og kontekstfilene er rettet.
+**Hva vi gjorde med det:** brukt.
