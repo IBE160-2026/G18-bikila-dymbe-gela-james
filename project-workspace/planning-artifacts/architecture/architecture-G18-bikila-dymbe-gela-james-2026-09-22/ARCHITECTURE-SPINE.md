@@ -272,6 +272,8 @@ flowchart LR
     session cannot reach the site itself (egress blocked, 2026-11-19), so an outage after a successful
     deploy is not detected. On a deviation it opens one issue
     labelled `overvåking`, comments only when the diagnosis changes, and closes it when all is well.
+    The Claude GitHub app has read-only access in the organisation, so when GitHub rejects the issue
+    (403) the agent sends a push notification to the routine's owner, who opens the issue by hand.
     It reads and reports only: it never pushes, opens PRs, merges, edits files or starts workflows.
     Its instructions are versioned in `drift/overvaakingsagent.md`.
   - **Lineage.** Every published location record carries the run ID and the source timestamp.
