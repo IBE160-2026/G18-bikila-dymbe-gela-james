@@ -759,11 +759,13 @@ database. Begrunnelsene står i §12.
   API-er uten nøkkel. Repoet inneholder ingen `.env` med ekte verdier.
 - **NFR-6:** Mislykkede kjøringer og avviste API-svar står i kvalitetsrapporten (NFR-DQ2). En
   feilet planlagt kjøring vises som rød i Actions-fanen, og GitHub sender e-post til den som sist
-  endret jobben. I tillegg sjekker en planlagt agent nettsiden utenfra fire ganger i døgnet,
-  uavhengig av GitHub Actions. Den lager ett issue med etiketten `overvåking` når siden ikke
-  svarer, når datafila har under 95 % av stedene, eller når dataene er over 2 timer gamle, og
-  lukker det når alt er i orden igjen. Agenten leser og melder fra, men endrer aldri kode eller
-  publiserer (`drift/overvaakingsagent.md`). *Begrunnelse:* en kjede som stopper, gir ingen rød
+  endret jobben. I tillegg sjekker en planlagt agent fire ganger i døgnet, uavhengig av GitHub
+  Actions, datafila som siden viser (`latest.json` på grenen `data`) og statusen til siste
+  publisering hos Vercel. Den lager ett issue med etiketten `overvåking` når publiseringen har
+  feilet, når datafila har under 95 % av stedene, eller når dataene er over 2 timer gamle, og
+  lukker det når alt er i orden igjen. Agenten når ikke selve nettsiden fra skymiljøet, så den ser
+  ikke om siden er nede etter en vellykket publisering. Agenten leser og melder fra, men endrer
+  aldri kode eller publiserer (`drift/overvaakingsagent.md`). *Begrunnelse:* en kjede som stopper, gir ingen rød
   kjøring, så bare en sjekk utenfra ser den.
 - **NFR-Privacy:** Ingen brukerkonto, ingen skjema og ingen lagring av brukeropplysninger.
   Posisjon brukes og beregnes bare i nettleseren og sendes aldri noe sted (FR-23). Den eneste
@@ -1104,3 +1106,9 @@ ble tatt av Aksel 2026-11-14 på grunn av tidsfristen, og gruppa kan ta dem opp 
 - NFR-6 har fått en planlagt agent som sjekker siden utenfra og lager et issue ved avvik. Agenten
   leser og melder fra, men endrer aldri kode
   ([sprint-change-proposal-2026-11-18-overvaakingsagent.md](../../project-workspace/planning-artifacts/sprint-change-proposal-2026-11-18-overvaakingsagent.md)).
+
+### 2026-11-19: overvåkingsagenten leser fra GitHub
+
+- Agenten kom ikke fram til nettsiden fra skymiljøet. Den leser nå datafila på grenen `data` og
+  statusen til publiseringen hos Vercel gjennom GitHub, og ser ikke om siden er nede
+  ([sprint-change-proposal-2026-11-19-overvaaking-fra-data-grenen.md](../../project-workspace/planning-artifacts/sprint-change-proposal-2026-11-19-overvaaking-fra-data-grenen.md)).

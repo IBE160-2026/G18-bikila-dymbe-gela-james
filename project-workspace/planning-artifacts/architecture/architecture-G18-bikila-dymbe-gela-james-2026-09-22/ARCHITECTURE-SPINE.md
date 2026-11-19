@@ -7,7 +7,7 @@ paradigm: 'Pipes-and-Filters data program (Node) publishing one static data file
 scope: 'Repository structure and system architecture for SnowFinder v1 (IBE160, G18)'
 status: final
 created: '2026-09-22'
-updated: '2026-11-18'
+updated: '2026-11-19'
 binds: []
 sources:
   - project-phase-folders/1-Oppstartsfasen/SnowFinder-Produktbrief.md
@@ -264,10 +264,13 @@ flowchart LR
     does not publish prints its report to the job log and uploads it as a workflow artifact.
     v1 keeps no history file: the GitHub Actions run list is the history, which keeps the
     scheduled job stateless.
-  - **Silence is watched from outside.** *(v8, 2026-11-18)* A stopped chain of `data-timer.yml` and
-    `data.yml` produces no failed run, so a scheduled Claude session outside GitHub Actions checks the
-    site four times a day: the page and its script answer, the data file is `live` with at least 95 %
-    of the locations, and its `referenceTime` is under 2 h old. On a deviation it opens one issue
+  - **Silence is watched from outside.** *(v8, 2026-11-18; v9, 2026-11-19)* A stopped chain of
+    `data-timer.yml` and `data.yml` produces no failed run, so a scheduled Claude session outside
+    GitHub Actions checks four times a day, through GitHub: `latest.json` on the `data` branch (the
+    file `vercel.json` serves as `/data/latest.json`) is `live` with at least 95 % of the locations and
+    a `referenceTime` under 2 h old, and the `Vercel` commit status on `main` is `success`. The cloud
+    session cannot reach the site itself (egress blocked, 2026-11-19), so an outage after a successful
+    deploy is not detected. On a deviation it opens one issue
     labelled `overvåking`, comments only when the diagnosis changes, and closes it when all is well.
     It reads and reports only: it never pushes, opens PRs, merges, edits files or starts workflows.
     Its instructions are versioned in `drift/overvaakingsagent.md`.
@@ -414,7 +417,7 @@ flowchart TB
 | `data.yml` (started by `data-timer.yml` about hourly; every 10 min with an age gate as fallback; on push to `main`; and manual) | `npm run data`, then publish `latest.json` to the branch `data`, only if it was produced. The branch and the site are read back and their `runId` compared | live | Actions enabled in the repo |
 | `data-timer.yml` (started by `data.yml`) | waits until the data is about 55 min old, then dispatches `data.yml` | live | Actions enabled in the repo |
 | Vercel (every push to `main`, and a preview per PR) | `npm run build` without `prebuild`, and without data files in `dist/`. The branch `data` is not built | live, through the rewrite | Vercel project, no keys |
-| Monitoring agent (scheduled Claude session, 06, 12, 18 and 24 Norwegian time) | reads the site, `/data/latest.json` and the runs of `data.yml` and `data-timer.yml`, and opens, comments on or closes one issue labelled `overvåking` | live, read only | Aksel's Claude account with the Claude GitHub app on the repository; no keys in the repository |
+| Monitoring agent (scheduled Claude session, 06, 12, 18 and 24 Norwegian time) | reads `latest.json` on the `data` branch, the `Vercel` status on `main` and the runs of `data.yml` and `data-timer.yml`, and opens, comments on or closes one issue labelled `overvåking` | live, read only | Aksel's Claude account with the Claude GitHub app on the repository; no keys in the repository |
 
 Story 1.1 created empty `supabase/` and `src/lib/supabase/` folders. Story 1.10 removes them
 and adds `src/lib/data/`.
