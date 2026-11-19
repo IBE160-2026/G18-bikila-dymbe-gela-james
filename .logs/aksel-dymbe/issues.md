@@ -104,3 +104,5 @@
 - [ ] 2026-11-19 [brukertest-resultater](976-2026-11-19-22-31-25-brukertest-resultater.md) — Før inn O1–O5, tid, enhet og Safari-sjekken fra observasjonsskjemaene i resultater.md, og vurder SM-2, SM-3 og SM-4
 - [ ] 2026-11-19 [brukertest-resultater](976-2026-11-19-22-31-25-brukertest-resultater.md) — Sjekk om D6 testet før eller etter at «Tilbake» ble flyttet øverst (#113)
 - [ ] 2026-11-19 [brukertest-resultater](976-2026-11-19-22-31-25-brukertest-resultater.md) — Kartet er nesten ikke synlig over Filter-arket på små telefoner (ca. 60 px på 375 × 667); krever correct-course
+- [ ] 2026-11-19 [overvaaking-oppsett](975-2026-11-19-23-40-00-overvaaking-oppsett.md) — Etter merge: ny prompt i rutinen trig_01KqK786NUhCuEwP1JzeDDQJ, slå den på, kjør de fire prøvene og legg lenken til issuet i fremdriftsplan.md
+- [ ] 2026-11-19 [overvaaking-oppsett](975-2026-11-19-23-40-00-overvaaking-oppsett.md) — Sluttrapporten: agenten når ikke nettsiden fra skymiljøet og ser ikke om siden er nede etter en vellykket publisering

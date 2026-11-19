@@ -247,8 +247,8 @@ Feltene i datafila og kildesvarene er beskrevet i
 
 ### Drift og overvåking
 
-Stopper kjeden, blir ingen kjøring rød. Derfor sjekker en planlagt Claude-økt på kontoen til Aksel nettsiden utenfra kl. 06,
-12, 18 og 24. Er siden nede, mangler stedene eller er dataene over 2 timer gamle, lager den ett issue med etiketten
+Stopper kjeden, blir ingen kjøring rød. Derfor sjekker en planlagt Claude-økt på kontoen til Aksel datafila og publiseringen
+gjennom GitHub kl. 06, 12, 18 og 24. Har publiseringen feilet, mangler stedene eller er dataene over 2 timer gamle, lager den ett issue med etiketten
 `overvåking`, med diagnose og neste steg, og lukker det når alt er i orden igjen. Får dere et slikt issue, følg neste
 steg i det. Agenten leser og melder fra, men endrer aldri kode. Instruksen står i
 [`drift/overvaakingsagent.md`](drift/overvaakingsagent.md).

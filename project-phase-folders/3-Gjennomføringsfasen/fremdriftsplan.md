@@ -22,6 +22,10 @@ på møtet. Oppdater statusen når et steg er ferdig.
 - Ingen funn hindrer en oppgave. Det eneste som var vanskelig, var tilbakepilen (1 av 6), og «Tilbake» ble
   flyttet øverst i PR #113. Ønsket om værmelding for flere dager (2 av 6) og snødybde blir videre arbeid.
 - PR #113 (rettinger), #114 (Story 1.12) og #116 (forklaringslenken på mobil) er merget og publisert.
+- Overvåkingsagenten er satt opp som en planlagt Claude-økt, men kom ikke fram til nettsiden fra skymiljøet i fem
+  prøvekjøringer. Den leser nå datafila og publiseringen gjennom GitHub i stedet
+  ([endringsforslag](../../project-workspace/planning-artifacts/sprint-change-proposal-2026-11-19-overvaaking-fra-data-grenen.md)). Rutinen er av til
+  PR-en er merget og prøvene er kjørt.
 
 **18. november: kodefrysen og leveringen er utsatt én uke. Ny kodefrys er 28. november, levering og demo 2. desember, og sluttrapporten skrives etterpå.**
 
