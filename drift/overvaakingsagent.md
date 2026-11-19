@@ -83,7 +83,21 @@ Se etter et **åpent** issue med etiketten `overvåking` i repoet.
 
 Er det mer enn ett åpent issue med etiketten, bruker du det eldste og lar de andre være.
 
+### Når GitHub avviser deg (403)
+
+Claude-appen har bare lesetilgang i organisasjonen, så å lage, kommentere eller lukke et issue gir ofte
+`403 Resource not accessible by integration`. Prøv én gang. Får du 403, send i stedet **ett push-varsel** til eieren av
+rutinen, og prøv ingen andre veier:
+
+- **I stedet for et nytt issue:** «Overvåking: <tittelen>. Diagnose: <navn>. Neste steg: <steget>. Data fra kl. HH.MM
+  (N min gamle), X steder, Vercel <status>. Lag issue med etiketten `overvåking`.»
+- **I stedet for en kommentar om ny diagnose:** «Overvåking #N: ny diagnose <navn>. Neste steg: <steget>.»
+- **I stedet for å lukke:** «Overvåking: i orden igjen kl. HH.MM. Lukk #N.»
+
+Du ser fortsatt hvilke issues som er åpne, så reglene over gjelder: samme diagnose og et åpent issue gir ingen
+varsel. Før eieren har laget issuet, sender du varselet på nytt ved hver kjøring.
+
 ## 4. Avslutt
 
 Skriv til slutt én linje i økten: tidspunktet, «i orden» eller diagnosen, og hva du gjorde («ingenting», «laget
-issue #N», «kommenterte #N» eller «lukket #N»).
+issue #N», «kommenterte #N», «lukket #N» eller «sendte push-varsel fordi GitHub ga 403»).

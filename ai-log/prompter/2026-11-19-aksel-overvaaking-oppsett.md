@@ -67,3 +67,21 @@ Valg i dialog: «Les fra grenen data (Anbefalt)».
 - README;
 - `drift/overvaakingsagent.md`.
 **Hva vi gjorde med det:** brukt.
+
+### 9
+> ja merge og kjør prøvene
+
+**Svar (kort):** Prøve 1 (ingen avvik) ga ingen issue. I prøve 2 (grense 1 min) ble avviket funnet, men GitHub avviste issuet med 403, fordi Claude-appen bare har lesetilgang i organisasjonen.
+**Hva vi gjorde med det:** brukt.
+
+### 10
+> ikke skriv til bård. finn en løsning i stedet som funker
+
+**Svar (kort):** Endringsforslaget sier at agenten prøver å lage issue, og sender et push-varsel til eieren av rutinen når den får 403. Agenten leser fortsatt issues, så den varsler ikke om det samme to ganger.
+**Hva vi gjorde med det:** brukt.
+
+### 11
+> ja godkjent .lag pr og kjør prøvene . går og legger meg
+
+**Svar (kort):** PR med NFR-6, SRS-N-11 (versjon 2.7), AD-11, README og instruksen. Etter merge kjøres prøvene uten at Aksel er til stede.
+**Hva vi gjorde med det:** brukt.

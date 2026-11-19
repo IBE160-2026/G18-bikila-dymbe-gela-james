@@ -763,8 +763,10 @@ database. Begrunnelsene står i §12.
   Actions, datafila som siden viser (`latest.json` på grenen `data`) og statusen til siste
   publisering hos Vercel. Den lager ett issue med etiketten `overvåking` når publiseringen har
   feilet, når datafila har under 95 % av stedene, eller når dataene er over 2 timer gamle, og
-  lukker det når alt er i orden igjen. Agenten når ikke selve nettsiden fra skymiljøet, så den ser
-  ikke om siden er nede etter en vellykket publisering. Agenten leser og melder fra, men endrer
+  lukker det når alt er i orden igjen. Får agenten ikke skrive issues (Claude-appen har bare
+  lesetilgang i organisasjonen), sender den i stedet et push-varsel til eieren av rutinen, som lager
+  issuet for hånd. Agenten når ikke selve nettsiden fra skymiljøet, så den ser ikke om siden er nede
+  etter en vellykket publisering. Agenten leser og melder fra, men endrer
   aldri kode eller publiserer (`drift/overvaakingsagent.md`). *Begrunnelse:* en kjede som stopper, gir ingen rød
   kjøring, så bare en sjekk utenfra ser den.
 - **NFR-Privacy:** Ingen brukerkonto, ingen skjema og ingen lagring av brukeropplysninger.
@@ -1112,3 +1114,6 @@ ble tatt av Aksel 2026-11-14 på grunn av tidsfristen, og gruppa kan ta dem opp 
 - Agenten kom ikke fram til nettsiden fra skymiljøet. Den leser nå datafila på grenen `data` og
   statusen til publiseringen hos Vercel gjennom GitHub, og ser ikke om siden er nede
   ([sprint-change-proposal-2026-11-19-overvaaking-fra-data-grenen.md](../../project-workspace/planning-artifacts/sprint-change-proposal-2026-11-19-overvaaking-fra-data-grenen.md)).
+- Agenten får ikke skrive issues i organisasjonen. Når GitHub avviser issuet, sender den et push-varsel til
+  eieren av rutinen, som lager issuet for hånd
+  ([sprint-change-proposal-2026-11-19-overvaaking-push-varsel.md](../../project-workspace/planning-artifacts/sprint-change-proposal-2026-11-19-overvaaking-push-varsel.md)).
