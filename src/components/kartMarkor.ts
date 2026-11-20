@@ -59,3 +59,18 @@ export function markerStyle(sted: Sted, sizePx: number = MARKER_SIZE_PX): Circle
 export function tooltipText(sted: Sted): string {
   return `${sted.navn} · ${scoreText(sted.snowScore)}`
 }
+
+/** What the map must change when the hits change: markers to remove by id, and places to draw. */
+export type MarkorEndringer = { fjern: string[]; leggTil: Sted[] }
+
+/**
+ * Compares the places the map has markers for with the new hits. A place still among the hits keeps its
+ * marker; one with the same id but another `Sted` object (a newer data file) counts as changed, so it is
+ * both removed and drawn again with the new style.
+ */
+export function markorEndringer(eksisterende: ReadonlyMap<string, Sted>, treff: readonly Sted[]): MarkorEndringer {
+  const nye = new Map(treff.map((sted) => [sted.id, sted]))
+  const fjern = [...eksisterende].filter(([id, sted]) => nye.get(id) !== sted).map(([id]) => id)
+  const leggTil = treff.filter((sted) => eksisterende.get(sted.id) !== sted)
+  return { fjern, leggTil }
+}

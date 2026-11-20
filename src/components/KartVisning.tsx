@@ -3,12 +3,14 @@ import type { CircleMarker, LayerGroup, Map as LeafletMap } from 'leaflet'
 import { useEffect, useRef, useState } from 'react'
 import type { Sted } from '../../shared/contracts/published'
 import { navigate, sted as stedRoute, type UtforskRoute } from '../lib/router'
-import { NORWAY_BOUNDS, TILE_ATTRIBUTION, TILE_URL, markerSizeForZoom, markerSizeStyle, markerStyle, tooltipText } from './kartMarkor'
+import { NORWAY_BOUNDS, TILE_ATTRIBUTION, TILE_URL, markerSizeForZoom, markerSizeStyle, markerStyle, markorEndringer, tooltipText } from './kartMarkor'
 
 export const MAP_LOAD_ERROR = 'Kartet kunne ikke lastes. Last siden på nytt.'
 
 type Leaflet = typeof import('leaflet')
-type Kart = { L: Leaflet; map: LeafletMap; markorer: LayerGroup<CircleMarker> }
+/** The places on the map by id, each with its marker, so a filter change only touches what changed. */
+type Markorer = Map<string, { sted: Sted; marker: CircleMarker }>
+type Kart = { L: Leaflet; map: LeafletMap; lag: LayerGroup<CircleMarker>; markorer: Markorer }
 
 /** Applies the marker size for the map's zoom to one marker and its tooltip offset. */
 function tilpassStorrelse(marker: CircleMarker, sizePx: number): void {
@@ -23,14 +25,21 @@ function tilpassStorrelse(marker: CircleMarker, sizePx: number): void {
  * The map in Utforsk. Leaflet touches `window` when its module loads, so it is imported inside the
  * effect: this keeps the component renderable in Node tests and puts Leaflet in its own chunk.
  *
- * Story 3.1: the map, its tiles and the first fit to Norway are made once. When the filter changes
- * `steder`, only the marker layer is refilled, so zoom and position stay where the user left them.
- * Story 3.2b: a marker opens the place with the current search `sok`, so a search change also refills them.
+ * Story 3.1: the map, its tiles and the first fit to Norway are made once, so zoom and position stay
+ * where the user left them. When the filter changes `steder`, only the markers for places that left or
+ * joined the hits are removed or drawn, and a place that stays keeps its marker (SM-1 on mobile).
+ * Story 3.2b: a marker opens the place with the current search `sok`. The click reads it from a ref,
+ * so a new search does not redraw any marker.
  */
 export default function KartVisning({ steder, sok }: { steder: Sted[]; sok: UtforskRoute }) {
   const container = useRef<HTMLDivElement>(null)
   const [kart, setKart] = useState<Kart | null>(null)
   const [failed, setFailed] = useState(false)
+  const sokRef = useRef(sok)
+
+  useEffect(() => {
+    sokRef.current = sok
+  }, [sok])
 
   useEffect(() => {
     const element = container.current
@@ -45,14 +54,14 @@ export default function KartVisning({ steder, sok }: { steder: Sted[]; sok: Utfo
         const map = L.map(element, { zoomSnap: 0.25 })
         map.fitBounds(NORWAY_BOUNDS)
         L.tileLayer(TILE_URL, { attribution: TILE_ATTRIBUTION, maxZoom: 18 }).addTo(map)
-        const markorer = L.layerGroup<CircleMarker>().addTo(map)
+        const lag = L.layerGroup<CircleMarker>().addTo(map)
         // Markers grow as the user zooms in, so they do not hide each other at country level.
         map.on('zoomend', () => {
           const size = markerSizeForZoom(map.getZoom())
-          markorer.eachLayer((layer) => tilpassStorrelse(layer as CircleMarker, size))
+          lag.eachLayer((layer) => tilpassStorrelse(layer as CircleMarker, size))
         })
         remove = () => map.remove()
-        setKart({ L, map, markorer })
+        setKart({ L, map, lag, markorer: new Map() })
       })
       .catch((error: unknown) => {
         // The Leaflet chunk can fail to load offline or after a redeploy that renamed it.
@@ -68,18 +77,25 @@ export default function KartVisning({ steder, sok }: { steder: Sted[]; sok: Utfo
 
   useEffect(() => {
     if (!kart) return
-    const { L, map, markorer } = kart
-    markorer.clearLayers()
+    const { L, map, lag, markorer } = kart
+    const paKartet = new Map([...markorer].map(([id, { sted }]) => [id, sted]))
+    const { fjern, leggTil } = markorEndringer(paKartet, steder)
+    for (const id of fjern) {
+      const markor = markorer.get(id)
+      if (markor) lag.removeLayer(markor.marker)
+      markorer.delete(id)
+    }
     const size = markerSizeForZoom(map.getZoom())
-    for (const sted of steder) {
+    for (const sted of leggTil) {
       const marker = L.circleMarker([sted.lat, sted.lon], markerStyle(sted, size))
         .bindTooltip(tooltipText(sted), { direction: 'top', offset: [0, -size / 2] })
-        .on('click', () => navigate(stedRoute(sted.id, sok)))
-        .addTo(markorer)
+        .on('click', () => navigate(stedRoute(sted.id, sokRef.current)))
+        .addTo(lag)
       // Lets the E2E tests find a specific place's marker.
       marker.getElement()?.setAttribute('data-sted-id', sted.id)
+      markorer.set(sted.id, { sted, marker })
     }
-  }, [kart, steder, sok])
+  }, [kart, steder])
 
   if (failed) {
     return (
