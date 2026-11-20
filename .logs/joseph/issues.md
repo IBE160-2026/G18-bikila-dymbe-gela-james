@@ -24,3 +24,7 @@
 - [ ] 2026-11-01 [moetereferat-2026-11-01](992-2026-11-01-14-30-02-moetereferat-2026-11-01.md) — fix-PR for funnene fra reviewen av 1.6, etter at #78 er merget
 - [ ] 2026-11-01 [moetereferat-2026-11-01](992-2026-11-01-14-30-02-moetereferat-2026-11-01.md) — orienter Aksel om beslutningene fra møtet
 - [ ] 2026-11-04 [moetereferat-2026-11-01](992-2026-11-01-14-30-02-moetereferat-2026-11-01.md) — legg merknad i referatet 2026-11-01 om at Vercel ble tatt i bruk samme kveld (PR #81)
+- [ ] 2026-11-20 [test-av-main-og-pr-124-127](991-2026-11-20-18-11-42-test-av-main-og-pr-124-127.md) — godkjenn #124 på GitHub, så Aksel kan merge
+- [ ] 2026-11-20 [test-av-main-og-pr-124-127](991-2026-11-20-18-11-42-test-av-main-og-pr-124-127.md) — #127 venter på møtet 23.11 og på #125
+- [ ] 2026-11-20 [test-av-main-og-pr-124-127](991-2026-11-20-18-11-42-test-av-main-og-pr-124-127.md) — foreslått test som låser at filteret gir samme `Sted`-objekter (#124)
+- [ ] 2026-11-20 [test-av-main-og-pr-124-127](991-2026-11-20-18-11-42-test-av-main-og-pr-124-127.md) — nevn fokusrekkefølgen under 768 px (#127) i sluttrapporten som bevisst avvik
