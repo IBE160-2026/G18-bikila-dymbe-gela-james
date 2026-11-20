@@ -107,3 +107,95 @@ hurtigbuffer hos Vercel og GitHub og er ikke tatt med.
 
 Mål på en ekte telefon i mellomsegmentet over 4G, for eksempel under brukertesten. Det avgjør om
 mobilprofilen her er for streng eller treffer.
+
+## Måling 20.11: kartet på små telefoner (løsning 1)
+
+Målt 2026-11-20 av Aksel med KI-assistanse (Claude Code). Endringsforslaget er
+[`sprint-change-proposal-2026-11-20-kart-sma-telefoner.md`](../../../project-workspace/planning-artifacts/sprint-change-proposal-2026-11-20-kart-sma-telefoner.md),
+og spesifikasjonen er [`spec-fix-kart-sma-telefoner.md`](../../../project-workspace/implementation-artifacts/spec-fix-kart-sma-telefoner.md).
+
+### Synlig kart på 375 × 667
+
+Målt med [`mal-kart-synlig.cjs`](mal-kart-synlig.cjs): hvor mange px av kartet som er synlig over bunn-arket når
+Utforsk åpnes, uten at brukeren ruller. `main` og løsning 1 er lokale produksjonsbygg med samme datafil (runId
+`20261120T122900Z-5419dd89`, data fra 20.11 kl. 13.29 norsk tid). De er servert med gzip
+([`serve-gzip.cjs`](serve-gzip.cjs)) og målt rett etter hverandre. Den publiserte siden ga også 59 px samme dag.
+
+| | Kartet starter | Kartets høyde | Bunn-arket starter | **Synlig kart** | «Best akkurat nå» starter |
+|---|---|---|---|---|---|
+| Før (`main`) | 527 px | 467 px (70vh) | 586 px | **59 px** | 247 px |
+| Etter (løsning 1) | 295 px | 334 px (50vh) | 586 px | **291 px** | 645 px |
+
+- Kartet er lavere på mobil (50vh), fordi Leaflet setter `touch-action: none`. Et sveip på kartet ruller ikke siden.
+  Med lavere kart er det alltid en stripe av siden over bunn-arket å sveipe på.
+- Etter at siden er rullet 330 px, står hele raden over arket (338–554 px, og arket starter på 570 px).
+
+| Før | Etter | Etter, rullet 330 px |
+|---|---|---|
+| ![Før](kart-375-for.png) | ![Etter](kart-375-etter.png) | ![Rullet](kart-375-rullet.png) |
+
+Kartflisene er grå på de lokale skjermbildene, fordi flisene ikke lastes der. På den publiserte siden vises de.
+
+### SM-1 med løsning 1
+
+Samme skript og profil som over (`mal-ytelse.cjs`, 4G og CPU 4×). Det er 10 runder, og variantene i hver serie er målt
+etter tur.
+
+| Serie | Variant | SM-1 samlet (krav 95 %) | Økter ≥ 95 % | Dårligste økt | p95, median |
+|---|---|---|---|---|---|
+| 1 | `main` | 92,0 % | 5 av 10 | 66,7 % | 512 ms |
+| 1 | Løsning 1 | 92,8 % | 1 av 10 | 87,7 % | 572 ms |
+| 2 | #124 (tiltak A) | 95,4 % | 6 av 10 | 89,5 % | 432 ms |
+| 2 | #124 + løsning 1 (lokal fletting) | **96,3 %** | 6 av 10 | 92,1 % | 360 ms |
+
+**Konklusjon:**
+- Løsning 1 gjør ikke SM-1 dårligere. Sammen med #124 holder kravet.
+- Alle tallene i serie 2 er lavere enn om morgenen, da #124 hadde 99,4 %. Maskinen var tregere om ettermiddagen:
+  SM-12 var 7,8–8,4 s mot 5 s om morgenen. Variantene ble målt etter tur, så det påvirker begge likt.
+- En første serie ble forkastet. To måleserier kjørte samtidig, og de forstyrret hverandre.
+
+```text
+Serie 1 (main mot løsning 1):
+1 main 5468 312 1216 38 114 14:03:17
+1 L1 5103 216 656 12 114 14:04:21
+2 main 5616 208 528 7 114 14:05:26
+2 L1 7082 216 624 14 114 14:06:32
+3 main 5024 208 536 7 114 14:07:33
+3 L1 5155 184 584 8 114 14:08:36
+4 main 6452 208 552 7 114 14:09:42
+4 L1 5080 208 552 9 114 14:10:44
+5 main 4854 184 456 1 114 14:11:40
+5 L1 5945 184 520 6 114 14:12:39
+6 main 6763 184 496 5 114 14:13:39
+6 L1 5802 184 560 9 114 14:14:39
+7 main 6300 168 456 4 114 14:15:38
+7 L1 5240 184 616 8 114 14:16:37
+8 main 5307 184 480 5 114 14:17:36
+8 L1 4389 200 552 6 114 14:18:36
+9 main 5730 216 472 4 114 14:19:36
+9 L1 4648 184 408 1 114 14:20:31
+10 main 6046 176 776 13 114 14:21:33
+10 L1 5573 224 656 9 114 14:22:37
+
+Serie 2 (#124 mot #124 + løsning 1):
+1 A124 6092 200 592 12 114 14:28:13
+1 A124+L1 9492 80 368 2 114 14:29:09
+2 A124 11594 72 376 1 114 14:30:07
+2 A124+L1 5665 64 296 1 114 14:30:54
+3 A124 7181 72 280 2 114 14:31:43
+3 A124+L1 7387 64 280 3 114 14:32:33
+4 A124 5936 88 432 4 114 14:33:34
+4 A124+L1 6524 160 560 7 114 14:34:55
+5 A124 8051 112 432 3 114 14:35:58
+5 A124+L1 8242 104 304 3 114 14:36:56
+6 A124 10717 104 392 2 114 14:38:03
+6 A124+L1 12362 160 504 6 114 14:39:22
+7 A124 12435 128 584 8 114 14:40:36
+7 A124+L1 6989 120 640 7 114 14:41:50
+8 A124 11481 120 632 8 114 14:43:05
+8 A124+L1 6928 128 552 9 114 14:44:11
+9 A124 8469 144 592 11 114 14:45:19
+9 A124+L1 9655 120 352 2 114 14:46:24
+10 A124 8369 112 352 1 114 14:47:25
+10 A124+L1 8469 104 336 2 114 14:48:23
+```
