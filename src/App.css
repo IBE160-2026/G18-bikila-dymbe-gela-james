@@ -665,8 +665,9 @@ select:focus-visible {
   background: var(--color-surface-raised);
 }
 
-/* Story 1.12 (FR-33): «Best akkurat nå», a compact row of the three best places above the map and the list.
-   One line per place below 768px, three cards side by side from 768px. */
+/* Story 1.12 (FR-33): «Best akkurat nå», a compact row of the three best places, above the map and the list
+   from 768px. Below 768px it stays above the list, but sits under the map in the map view (change proposal
+   2026-11-20). One line per place below 768px, three cards side by side from 768px. */
 .best-naa {
   margin-bottom: var(--spacing-4);
 }
@@ -762,6 +763,31 @@ select:focus-visible {
     padding: var(--spacing-1) var(--spacing-2);
     font-family: var(--typography-meta-font-family);
     font-size: var(--typography-meta-font-size);
+  }
+}
+
+/* Change proposal 2026-11-20 (solution 1): below 768px in the map view, the legend and the map come straight
+   after the search and «Best akkurat nå» goes under the map, so a small phone sees the map above the sheet.
+   Only the visual order changes (`order`), not the DOM. Every child has only a bottom margin, which flex does
+   not collapse, so the row swaps its bottom margin for a top one and the gaps stay as before. */
+@media (max-width: 767px) {
+  .utforsk-resultat--kart {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .utforsk-resultat--kart .best-naa {
+    order: 1;
+    margin: var(--spacing-4) 0 0;
+  }
+
+  /* Leaflet sets touch-action: none, so a swipe on the map never scrolls the page. A lower map leaves a strip
+     of page between the map and the sheet to swipe on, so the row under the map can be reached. The map
+     skeleton, shown while the data loads, gets the same height, so the page does not jump when the map arrives. */
+  .utforsk-resultat--kart .kart,
+  .kart-skeleton {
+    height: 50vh;
+    min-height: 240px;
   }
 }
 

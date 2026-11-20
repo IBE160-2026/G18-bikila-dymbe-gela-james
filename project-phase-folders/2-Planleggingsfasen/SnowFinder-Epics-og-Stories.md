@@ -423,7 +423,7 @@ Kommer fra [endringsforslaget om «Best akkurat nå»](../../project-workspace/p
 
 **Given** Utforsk i kart- eller listevisning uten filter, med demodata
 **When** siden vises
-**Then** står overskriften «Best akkurat nå» over kartet eller listen, med de tre stedene som har
+**Then** står overskriften «Best akkurat nå» over listen, eller over kartet fra 768 px, med de tre stedene som har
 høyest SnowScore, i samme rekkefølge som de tre første i listen sortert etter score
 **And** hvert sted viser navnet og score-badge med tall og poengnivå, og er én lenke til stedssiden
 med filteret og visningen i adressen som i Story 3.2b
@@ -441,8 +441,10 @@ sortert på samme måte
 **When** raden velger steder
 **Then** avgjøres lik score av navnet som i listen, og steder med ufullstendige data er aldri med
 
-**And** raden står mellom søkefeltet og filteret eller kartet på alle bredder, aldri i bunn-arket,
-og under 768 px tar hvert sted én linje uten sideveis rulling
+**And** raden står mellom søkefeltet og lista på alle bredder, og mellom søkefeltet og kartet fra
+768 px. Under 768 px står den rett under kartet i kartvisningen, så kartet synes over bunn-arket
+*(2026-11-20, [endringsforslaget om kartet på små telefoner](../../project-workspace/planning-artifacts/sprint-change-proposal-2026-11-20-kart-sma-telefoner.md))*.
+Raden står aldri i bunn-arket, og under 768 px tar hvert sted én linje uten sideveis rulling
 **And** raden er en `section` med en `h2`-overskrift og en ordnet liste. Utvalget er en ren funksjon
 med enhetstester for rekkefølge, lik score, ufullstendige data og færre enn tre treff
 **And** E2E-testen i demomodus åpner det første stedet fra raden og kjører axe på Utforsk med raden

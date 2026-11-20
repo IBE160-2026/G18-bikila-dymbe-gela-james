@@ -48,15 +48,22 @@ test('a place in the row opens its place page with the search in the address, an
   await expect(page).toHaveURL(/\/\?visning=liste&nysno=2&temp=0$/)
 })
 
-test('at 375 px each place is one line between the search and the map, with no sideways scrolling', async ({ page }) => {
+// Change proposal 2026-11-20 (solution 1): below 768px the map view puts the row under the map, so a small phone
+// sees the map above the bottom sheet. The list view keeps the row above the list.
+test('at 375 px each place is one line under the map, with no sideways scrolling', async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 812 })
   await page.goto('/')
   const sokBox = await page.locator('.sted-sok').boundingBox()
+  const legendBox = await page.getByRole('list', { name: 'Fargeforklaring' }).boundingBox()
   const seksjonBox = await seksjon(page).boundingBox()
   const kartBox = await page.locator('.kart').boundingBox()
-  if (!sokBox || !seksjonBox || !kartBox) throw new Error('The search, the row and the map must all be rendered')
-  expect(seksjonBox.y).toBeGreaterThanOrEqual(sokBox.y + sokBox.height)
-  expect(seksjonBox.y + seksjonBox.height).toBeLessThanOrEqual(kartBox.y)
+  if (!sokBox || !legendBox || !seksjonBox || !kartBox) {
+    throw new Error('The search, the legend, the row and the map must all be rendered')
+  }
+  // Search, legend, map, row: the legend comes straight after the search, and the row only after the map.
+  expect(legendBox.y).toBeGreaterThanOrEqual(sokBox.y + sokBox.height)
+  expect(legendBox.y + legendBox.height).toBeLessThanOrEqual(kartBox.y)
+  expect(seksjonBox.y).toBeGreaterThanOrEqual(kartBox.y + kartBox.height)
   // One line per place: the name is a single line box, and the row is not in the bottom sheet.
   for (const navn of await seksjon(page).locator('.best-naa-navn').all()) {
     const lineHeight = await navn.evaluate((el) => parseFloat(el.ownerDocument.defaultView?.getComputedStyle(el).lineHeight ?? '0'))
@@ -64,7 +71,7 @@ test('at 375 px each place is one line between the search and the map, with no s
     expect(box?.height ?? Infinity).toBeLessThanOrEqual(lineHeight + 1)
   }
   await expect(page.locator('.filter .best-naa')).toHaveCount(0)
-  // The same place in the list view: under the search, above the first card.
+  // The list view is unchanged: under the search, above the first card.
   await page.goto('/?visning=liste')
   const listeSok = await page.locator('.sted-sok').boundingBox()
   const listeSeksjon = await seksjon(page).boundingBox()

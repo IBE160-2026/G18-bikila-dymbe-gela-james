@@ -417,8 +417,9 @@ stedene i datafila, uten søketjeneste.
 
 #### FR-33: Beste steder akkurat nå *(Bør ha)*
 
-Utforsk viser de tre stedene med høyest SnowScore blant treffene øverst, over kartet og listen,
-så brukeren får svaret uten å lete.
+Utforsk viser de tre stedene med høyest SnowScore blant treffene, så brukeren får svaret uten å
+lete. Raden står øverst, over kartet og listen, fra 768 px og i listevisningen. Under 768 px står den
+rett under kartet i kartvisningen, så kartet synes over bunn-arket på en liten telefon *(2026-11-20)*.
 
 **Konsekvenser (testbare):**
 - Raden viser høyst 3 steder blant de samme treffene som kart og liste viser, sortert som listen
@@ -427,7 +428,8 @@ så brukeren får svaret uten å lete.
   berøring eller Enter.
 - Overskriften er «Best akkurat nå» uten aktivt filter og «Best blant treffene» med aktivt filter.
 - Raden vises ikke ved null treff, og ikke når ingen av treffene har poengsum.
-- Raden står over kartet og listen på alle bredder, og aldri i bunn-arket.
+- Raden står over listen på alle bredder, og over kartet fra 768 px. Under 768 px står den rett
+  under kartet i kartvisningen *(2026-11-20)*. Den står aldri i bunn-arket.
 
 *Begrunnelse:* gjennomgangen av den publiserte siden 2026-11-18 viste at forsiden ikke svarte på
 «hvor er det best i dag?» (sprint-change-proposal-2026-11-18-best-akkurat-naa.md).
@@ -1102,6 +1104,12 @@ ble tatt av Aksel 2026-11-14 på grunn av tidsfristen, og gruppa kan ta dem opp 
 - Ny FR-33 (Bør ha) i §4.3 og §6.2. Den er et vedtatt unntak fra regelen om ingen nye stories
   etter 16. november, etter at kodefrysen ble flyttet til 28. november
   ([sprint-change-proposal-2026-11-18-best-akkurat-naa.md](../../project-workspace/planning-artifacts/sprint-change-proposal-2026-11-18-best-akkurat-naa.md)).
+
+### 2026-11-20: kartet før «Best akkurat nå» på små telefoner
+
+- FR-33: «øverst» og «over kartet» gjelder fra 768 px. Under 768 px står raden rett under kartet i
+  kartvisningen, så kartet synes over bunn-arket. Listevisningen er uendret
+  ([sprint-change-proposal-2026-11-20-kart-sma-telefoner.md](../../project-workspace/planning-artifacts/sprint-change-proposal-2026-11-20-kart-sma-telefoner.md)).
 
 ### 2026-11-18: overvåking av nettsiden
 

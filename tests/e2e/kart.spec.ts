@@ -94,3 +94,33 @@ test('at 375 px the legend is visible above the map and not under the bottom she
   expect(legendBox.y + legendBox.height).toBeLessThanOrEqual(mapBox.y)
   expect(legendBox.y + legendBox.height).toBeLessThanOrEqual(sheetBox.y)
 })
+
+// Change proposal 2026-11-20 (solution 1): on a small phone the map comes straight after the legend, and
+// «Best akkurat nå» under it, so the map is seen above the bottom sheet without scrolling. The map is lower
+// there, so the row under it can still be reached by swiping the page.
+test('at 375 × 667 the map starts right under the legend, before «Best akkurat nå»', async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 667 })
+  await page.goto('/')
+  const legend = page.getByRole('list', { name: 'Fargeforklaring' })
+  const rad = page.getByRole('region', { name: 'Best akkurat nå' })
+  await expect(legend).toBeVisible()
+  await expect(rad).toBeAttached()
+  const legendBox = await legend.boundingBox()
+  const mapBox = await page.locator('.kart').boundingBox()
+  const radBox = await rad.boundingBox()
+  const sheetBox = await page.locator('.filter').boundingBox()
+  if (!legendBox || !mapBox || !radBox || !sheetBox) throw new Error('The legend, the map, the row and the sheet must all be rendered')
+  // Nothing between the legend and the map but the legend's own small margin.
+  expect(mapBox.y - (legendBox.y + legendBox.height)).toBeLessThan(16)
+  expect(radBox.y).toBeGreaterThanOrEqual(mapBox.y + mapBox.height)
+  // Well over the 59 px measured on the published site before the change are seen above the closed sheet (291 px
+  // there after it). This demo build also shows the demo banner, and CI's Ubuntu fonts wrap the legend wider (182 px
+  // on CI 2026-11-20), so the bound leaves room for both.
+  expect(sheetBox.y - mapBox.y).toBeGreaterThan(150)
+  // The closed sheet stays at the bottom of the screen.
+  expect(Math.abs(sheetBox.y + sheetBox.height - 667)).toBeLessThan(3)
+  // Leaflet swallows swipes on the map, so the map and the sheet together leave a strip of page to swipe on.
+  expect(mapBox.height + sheetBox.height).toBeLessThan(667)
+  const [scrollWidth, clientWidth] = await page.locator('html').evaluate((el) => [el.scrollWidth, el.clientWidth])
+  expect(scrollWidth).toBeLessThanOrEqual(clientWidth)
+})

@@ -133,16 +133,20 @@ export default function Utforsk({ steder, utdatert, route, oppdatert }: Props) {
               beOmPosisjon={beOmAvstandPosisjon}
               nveMangler={nveMangler}
             />
-            <div className="utforsk-resultat">
+            {/* Change proposal 2026-11-20 (solution 1): the modifier lets CSS put «Best akkurat nå» under the map
+                below 768px. Only the visual order changes; the DOM, and so the reading order, stays the same. */}
+            <div className={visning === 'liste' ? 'utforsk-resultat' : 'utforsk-resultat utforsk-resultat--kart'}>
               {/* Story 3.3 (FR-14, UX-DR4): the one live region for the hit count and the suggestion. It is
                   always rendered, so a screen reader hears each new count once; the panel and the banner only
                   show the same words. */}
               <p className="visually-hidden" role="status">
                 {nullTreff ?? antallTekst(treff.length)}
               </p>
-              {/* Story 1.12: at the top of the result column, so it sits between the search and the map or list on
-                  every width. Inside .utforsk, not above it, so the sticky bottom sheet still pins to the bottom of a
-                  short phone's screen. At zero hits `beste` is empty and the zero-hit card alone explains it. */}
+              {/* Story 1.12: at the top of the result column, between the search and the list on every width and
+                  above the map from 768px. Below 768px CSS moves it under the map (change proposal 2026-11-20), so a
+                  small phone sees the map above the sheet. Inside .utforsk, not above it, so the sticky bottom sheet
+                  still pins to the bottom of a short phone's screen. At zero hits `beste` is empty and the zero-hit
+                  card alone explains it. */}
               <BestAkkuratNaa steder={beste} filterAktiv={aktiveKrav(filter).length > 0} sok={route} />
               {/* Never an empty surface: say which requirement to ease, and offer the way back. */}
               {nullTreff && (
