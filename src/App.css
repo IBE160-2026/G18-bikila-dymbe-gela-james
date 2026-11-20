@@ -765,6 +765,22 @@ select:focus-visible {
   }
 }
 
+/* Change proposal 2026-11-20 (solution 1): below 768px in the map view, the legend and the map come straight
+   after the search and «Best akkurat nå» goes under the map, so a small phone sees the map above the sheet.
+   Only the visual order changes (`order`), not the DOM. Every child has only a bottom margin, which flex does
+   not collapse, so the row swaps its bottom margin for a top one and the gaps stay as before. */
+@media (max-width: 767px) {
+  .utforsk-resultat--kart {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .utforsk-resultat--kart .best-naa {
+    order: 1;
+    margin: var(--spacing-4) 0 0;
+  }
+}
+
 /* The map/list switch and «Oppdatert» share one row, wrapping on narrow screens. */
 .utforsk-verktoy {
   display: flex;

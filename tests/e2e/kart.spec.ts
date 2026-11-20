@@ -94,3 +94,26 @@ test('at 375 px the legend is visible above the map and not under the bottom she
   expect(legendBox.y + legendBox.height).toBeLessThanOrEqual(mapBox.y)
   expect(legendBox.y + legendBox.height).toBeLessThanOrEqual(sheetBox.y)
 })
+
+// Change proposal 2026-11-20 (solution 1): on a small phone the map comes straight after the legend, and
+// «Best akkurat nå» under it, so the map is seen above the bottom sheet without scrolling.
+test('at 375 × 667 the map starts right under the legend, before «Best akkurat nå»', async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 667 })
+  await page.goto('/')
+  const legend = page.getByRole('list', { name: 'Fargeforklaring' })
+  const rad = page.getByRole('region', { name: 'Best akkurat nå' })
+  await expect(legend).toBeVisible()
+  await expect(rad).toBeAttached()
+  const legendBox = await legend.boundingBox()
+  const mapBox = await page.locator('.kart').boundingBox()
+  const radBox = await rad.boundingBox()
+  const sheetBox = await page.locator('.filter').boundingBox()
+  if (!legendBox || !mapBox || !radBox || !sheetBox) throw new Error('The legend, the map, the row and the sheet must all be rendered')
+  // Nothing between the legend and the map but the legend's own small margin.
+  expect(mapBox.y - (legendBox.y + legendBox.height)).toBeLessThan(16)
+  expect(radBox.y).toBeGreaterThanOrEqual(mapBox.y + mapBox.height)
+  // Well over the 59 px measured before the change are seen above the closed sheet.
+  expect(sheetBox.y - mapBox.y).toBeGreaterThan(200)
+  const [scrollWidth, clientWidth] = await page.locator('html').evaluate((el) => [el.scrollWidth, el.clientWidth])
+  expect(scrollWidth).toBeLessThanOrEqual(clientWidth)
+})
