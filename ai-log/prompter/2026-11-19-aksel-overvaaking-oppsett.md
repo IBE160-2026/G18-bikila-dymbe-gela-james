@@ -91,3 +91,9 @@ Valg i dialog: «Les fra grenen data (Anbefalt)».
 
 **Svar (kort):** PR #120 er merget, og prøve A, B og C er bestått. Issue #121 er lukket, og rutinen er i drift.
 **Hva vi gjorde med det:** brukt.
+
+### 13
+> ja legg inn linjen i agents
+
+**Svar (kort):** `bmad-project-context` foreslo en linje om overvåkingsagenten under «Where things are», og en retting av linjen om steg 8c, som var utdatert.
+**Hva vi gjorde med det:** brukt. Valg i dialog: «Ja, og rett 8c (Anbefalt)».
