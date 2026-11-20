@@ -113,4 +113,5 @@ Velger gruppa avvik, skrives avsnittet inn i sluttrapporten.
 
 | Beslutning | Dato | Av |
 |---|---|---|
-| *(fylles ut på gruppemøtet)* | | |
+| Løsning 1, foreslått av Aksel 20.11, venter på bekreftelse på gruppemøtet 23.11. Avvik er reserven hvis løsningen ikke er merget innen 26.11 | 2026-11-20 | Aksel |
+| *(gruppas bekreftelse fylles ut på møtet 23.11)* | | |
