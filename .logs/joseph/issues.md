@@ -28,3 +28,4 @@
 - [ ] 2026-11-20 [test-av-main-og-pr-124-127](991-2026-11-20-18-11-42-test-av-main-og-pr-124-127.md) — #127 venter på møtet 23.11 og på #125
 - [ ] 2026-11-20 [test-av-main-og-pr-124-127](991-2026-11-20-18-11-42-test-av-main-og-pr-124-127.md) — foreslått test som låser at filteret gir samme `Sted`-objekter (#124)
 - [ ] 2026-11-20 [test-av-main-og-pr-124-127](991-2026-11-20-18-11-42-test-av-main-og-pr-124-127.md) — nevn fokusrekkefølgen under 768 px (#127) i sluttrapporten som bevisst avvik
+- [ ] 2026-11-20 [test-av-main-og-pr-124-127](991-2026-11-20-18-11-42-test-av-main-og-pr-124-127.md) — push referatet fra 1.11 som `docs/`-PR før møtet 23.11 (lovet i kommentaren på #126)
