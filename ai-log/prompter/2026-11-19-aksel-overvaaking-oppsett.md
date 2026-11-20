@@ -85,3 +85,9 @@ Valg i dialog: «Les fra grenen data (Anbefalt)».
 
 **Svar (kort):** PR med NFR-6, SRS-N-11 (versjon 2.7), AD-11, README og instruksen. Etter merge kjøres prøvene uten at Aksel er til stede.
 **Hva vi gjorde med det:** brukt.
+
+### 12
+> merge 120
+
+**Svar (kort):** PR #120 er merget, og prøve A, B og C er bestått. Issue #121 er lukket, og rutinen er i drift.
+**Hva vi gjorde med det:** brukt.
