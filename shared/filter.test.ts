@@ -187,6 +187,20 @@ describe('filtrerSteder on the demo data', () => {
     JSON.parse(readFileSync(new URL('../public/data/demo.json', import.meta.url), 'utf8')),
   )
 
+  // Review of PR #124 (Joseph): the map keeps a marker while its place is still a hit, by comparing place objects
+  // (markorEndringer). That only works if the filter hands back the very objects it was given, never copies.
+  it('returns the same place objects it was given, so the map can keep the markers that are still hits', () => {
+    const filter: FilterParams = { ...STANDARD_FILTER, minNysnoCm: 2 }
+    const forste = filtrerSteder(demo.steder, filter)
+    const andre = filtrerSteder(demo.steder, { ...filter, maksTemperaturC: 0 })
+    expect(forste.length).toBeGreaterThan(andre.length)
+    expect(andre.length).toBeGreaterThan(0)
+    for (const sted of forste) expect(demo.steder).toContain(sted)
+    for (const sted of andre) expect(forste.find(({ id }) => id === sted.id)).toBe(sted)
+    // Unchanged filter, a new call: the same objects again.
+    filtrerSteder(demo.steder, filter).forEach((sted, i) => expect(sted).toBe(forste[i]))
+  })
+
   it('keeps the six places with at least 2 cm new snow and at most 0 °C', () => {
     const treff = filtrerSteder(demo.steder, { minNysnoCm: 2, maksVindMs: null, maksTemperaturC: 0, maksSkydekkeDagslys: null, maksAvstandKm: null, stedstyper: null, nysnoKilde: 'met' })
     expect(ids(treff).sort()).toEqual(['galdhopiggen', 'gaustatoppen', 'jiehkkevarri', 'oksskolten', 'oppdal-skisenter', 'rondeslottet'])
