@@ -33,8 +33,11 @@ ikke om siden er nede etter en vellykket publisering. Skriv aldri at siden er ne
 
 Gjør alle tre sjekkene, også når en av dem feiler. Noter tidspunktet du sjekket, i norsk tid.
 
-1. **Publiseringen.** Les commit-statusene på siste commit på `main` gjennom GitHub. Statusen `Vercel` skal være
-   `success`. Er den `pending`, regnes den som i orden. Noter commit, status og beskrivelse.
+1. **Publiseringen.** Finn siste commit på `main`. Alle endringer kommer inn som PR, så commit-meldingen er
+   «Merge pull request #N …». Les statusen til PR #N (`get_status`), og se på statusen `Vercel`. Den skal være
+   `success`. Er den `pending`, regnes den som i orden. Noter commit, PR, status og beskrivelse.
+   GitHub-verktøyene kan ikke lese commit-statuser direkte. Får du ikke lest statusen på noen måte, er sjekk 1
+   **ukjent**, ikke feilet. Det gir ingen diagnose og intet varsel, men nevn det i sluttlinjen.
 2. **Datafila.** Les `latest.json` på grenen `data` gjennom GitHub. Den skal finnes og være gyldig JSON, og
    - `mode` er `"live"`;
    - `steder` har minst 285 steder (95 % av 300);
@@ -53,7 +56,7 @@ Alt er **i orden** når sjekk 1 og 2 holder. Ellers er det et **avvik**. Velg de
 
 | Diagnose | Når | Neste steg i issuet |
 |---|---|---|
-| **Publiseringen har feilet** | Statusen `Vercel` på siste commit på `main` er `failure` eller `error`, eller mangler. | Åpne Vercel-prosjektet `snowfinder` og se på siste publisering fra `main`. |
+| **Publiseringen har feilet** | Statusen `Vercel` er `failure` eller `error`. En status du ikke får lest, er ukjent og ikke et avvik. | Åpne Vercel-prosjektet `snowfinder` og se på siste publisering fra `main`. |
 | **Datafila mangler eller er ugyldig** | `latest.json` finnes ikke på grenen `data`, er ikke gyldig JSON, eller `mode` er ikke `live`. | Se på siste kjøring av `data.yml` og hva den skrev til grenen `data`. |
 | **Kjeden har stoppet** | Dataene er over 2 timer gamle, og ingen `data.yml` har kjørt de siste 2 timene. | Start `data.yml` for hånd i Actions («Run workflow» på `main`). Den starter `data-timer.yml` igjen. |
 | **Kjøringene feiler** | Dataene er over 2 timer gamle, og `data.yml` har kjørt, men feilet. | Les steget som feilet (står i issuet), og rett feilen på en egen grein. |
