@@ -782,9 +782,10 @@ select:focus-visible {
   }
 
   /* Leaflet sets touch-action: none, so a swipe on the map never scrolls the page. A lower map leaves a strip
-     of page between the map and the sheet to swipe on, so the row under the map can be reached. The skeleton
-     is shown before the page renders, outside this column, so it keeps its own height. */
-  .utforsk-resultat--kart .kart {
+     of page between the map and the sheet to swipe on, so the row under the map can be reached. The map
+     skeleton, shown while the data loads, gets the same height, so the page does not jump when the map arrives. */
+  .utforsk-resultat--kart .kart,
+  .kart-skeleton {
     height: 50vh;
     min-height: 240px;
   }
