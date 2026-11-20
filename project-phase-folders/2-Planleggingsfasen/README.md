@@ -6,6 +6,8 @@ Formål: oversette produktbrief til konkrete krav, arkitektur og en gjennomførb
 
 - **[`SnowFinder-PRD.md`](SnowFinder-PRD.md)** — produktkravdokument: 31 funksjonelle (FR-1–FR-31, flere merket «Ikke i v1») og 12
   ikke-funksjonelle krav, målgruppe og suksessmål
+- **[`SnowFinder-PRD-og-SRS.html`](SnowFinder-PRD-og-SRS.html)** — PRD og SRS (ISO/IEC/IEEE 29148) i ett
+  dokument, versjon 2.1 med søk som SRS-F-32 (åpne i nettleser). `SnowFinder-PRD.md` gjelder ved avvik
 - **[`SnowFinder-Arkitektur.md`](SnowFinder-Arkitektur.md)** — arkitekturspine: designparadigme,
   bindende regler (AD-1–AD-12), teknologivalg med versjoner, og repo-mappestruktur for
   React/TypeScript/Vite-frontend, et Node-dataprogram som publiserer én JSON-fil (ingen database), datapipeline mot

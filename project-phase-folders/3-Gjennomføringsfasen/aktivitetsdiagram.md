@@ -1,6 +1,6 @@
 # Aktivitetsdiagram og aktivitetsliste
 
-Arbeidsflyten gruppa følger fra i dag (2026-10-28) til levering og demo 2026-11-25, og en liste
+Arbeidsflyten gruppa følger fra i dag (2026-10-28) til levering og demo 2026-12-02 (flyttet fra 2026-11-25 den 18. november), og en liste
 over alle aktivitetene i prosjektet, bygget fra [epics og stories](../2-Planleggingsfasen/SnowFinder-Epics-og-Stories.md)
 og [sprintplanen](../2-Planleggingsfasen/sprintplan.md). Status for hver story står i
 [fremdriftsplanen](fremdriftsplan.md), og datoene i [milepælene](../2-Planleggingsfasen/milepæler.md)
@@ -10,7 +10,7 @@ og [tidslinjen](fremdriftsplan.md#tidslinje). Fristene merket «forslag» er ikk
 
 Tre spor går parallelt: storyene som gjenstår, Story 1.11 og steg 8c med brukertestplanen. Per
 2026-11-01 er alle storyene og steg 8c bygget, og 1.11 er merget, men appen er ikke publisert ennå. Når koden er fryst, går vi
-videre til brukertest, rettinger, sluttrapport og levering.
+videre til brukertest, rettinger og levering. Sluttrapporten skrives etter leveringen.
 
 ```mermaid
 flowchart TD
@@ -32,35 +32,37 @@ flowchart TD
     a10 -- "Ja" --> a11["Merge og slett greinen"]
     a11 --> a12{"Flere v1-stories igjen?"}
     a12 -- "Ja" --> a1
-    a12 -- "Nei" --> m4["M5 kodefrys<br/>forslag 2026-11-11"]
+    a12 -- "Nei" --> m4["Ingen nye stories<br/>etter 2026-11-16, forslag"]
 
     %% Spor B: Story 1.11
     fork1 --> b2["Bygg Story 1.11:<br/>timesjobb og publisering"]
     b2 --> b5["Publiser alltid datafila<br/>til grenen data"]
     b5 --> b6["Vercel publiserer appen fra main<br/>og henter datafila fra grenen"]
     b6 --> b7["Les tilbake fra grenen og nettsiden<br/>og sammenlign runId"]
-    b7 --> m1["M1: pipeline i drift<br/>forslag 2026-11-11"]
+    b7 --> m1["M1: pipeline i drift<br/>nådd 2026-11-15"]
 
     %% Spor C: UX og brukertestplan
     fork1 --> c1["Steg 8c med bmad-ux:<br/>wireframes og kursets skjermkrav"]
     c1 --> c2["Brukertestplan:<br/>oppgaver, minst fem personer"]
     c2 --> f3["F3: steg 8c ferdig<br/>nådd 2026-10-28"]
 
-    m4 --> join1{{"Alle tre spor ferdige:<br/>kodefrys"}}
+    m4 --> join1{{"Alle tre spor ferdige:<br/>versjonen som testes"}}
     m1 --> join1
     f3 --> join1
 
-    join1 --> d1["Brukertest med minst fem personer<br/>2026-11-12 til 2026-11-16"]
-    d1 --> f4["F4: brukertest ferdig<br/>forslag 2026-11-16"]
+    join1 --> d1["Brukertest med minst fem personer<br/>2026-11-17 til 2026-11-19, se brukertest/"]
+    d1 --> f4["F4: brukertest ferdig<br/>forslag 2026-11-19"]
     f4 --> d2{"Kritiske funn?"}
-    d2 -- "Ja" --> d3["Bygg rettingene som fix-PR-er<br/>med review, innen 2026-11-20"]
-    d2 -- "Nei" --> e1
-    d3 --> e1["Sluttrapport, retrospektiv<br/>og presentasjon i 4-Avslutningsfasen"]
-    e1 --> f5["F5: sluttrapport klar<br/>forslag 2026-11-23"]
-    f5 --> e2["Generalprøve 2026-11-24: npm ci, npm run dev:demo<br/>og npm run dev etter README på en ren maskin"]
+    d2 -- "Ja" --> d3["Bygg rettingene som fix-PR-er<br/>med review"]
+    d2 -- "Nei" --> d4
+    d3 --> d4["«Best akkurat nå» etter<br/>bmad-correct-course, som story-PR"]
+    d4 --> m5["M5: kodefrys<br/>vedtatt 2026-11-28"]
+    m5 --> e2["Generalprøve 2026-12-01: npm ci, npm run dev:demo<br/>og npm run dev etter README på en ren maskin"]
     e2 --> e3{"Virker alt uten nøkler?"}
     e3 -- "Nei" --> e4["Rett README eller koden"] --> e2
-    e3 -- "Ja" --> slutt(["M6: levering og demo<br/>2026-11-25, vedtatt"])
+    e3 -- "Ja" --> m6(["M6: levering og demo<br/>vedtatt 2026-12-02"])
+    m6 --> e1["Sluttrapport, retrospektiv<br/>og presentasjon i 4-Avslutningsfasen"]
+    e1 --> f5(["F5: sluttrapport klar<br/>dato ikke satt"])
 ```
 
 ### Løpende hele perioden
@@ -69,8 +71,8 @@ flowchart TD
   føres inn i milepælene, og «forslag» byttes med «vedtatt».
 - **Når en frist ikke holder:** flytt den i milepælene og tidslinjen i samme PR, og si hvorfor i
   «Hvor er vi nå?» i fremdriftsplanen. Nye krav eller mer omfang går gjennom `bmad-correct-course`.
-- **Etter kodefrys (2026-11-11):** bare rettinger fra brukertesten bygges. Alt annet skrives inn i
-  sluttrapporten som videre arbeid.
+- **Etter 2026-11-16:** ingen nye stories, bare rettinger, fram til kodefrysen 2026-11-28. Unntaket er «Best akkurat nå»,
+  hvis endringsforslaget godkjennes. Alt annet skrives inn i sluttrapporten som videre arbeid.
 - **Kontoene til Kelly og Sena:** til GitHub Support har sluppet dem fri, lager et annet medlem
   synlige kopi-PR-er av arbeidet deres (se spor A).
 
@@ -156,7 +158,7 @@ flowchart LR
 | 1.7 | Se Norgeskartet med fargelagte steder (med 1.7b) | Må ha | 1.10 | 2 | Aksel | 2026-10-08 (PR #25, #28) |
 | 1.8 | Bruk tilgjengelig listevisning i stedet for kart | Må ha | 1.10 | 2 | Aksel | 2026-10-08 (PR #27) |
 | 1.9 | Åpne en stedsside med full poengsum (med 1.9b og 1.9c) | Må ha | 1.7, 1.8 | 2 | Aksel | 2026-10-08 (PR #30–#32) |
-| 1.11 | Kjør dataprogrammet hver time og publiser appen | Må ha | 1.5, Vercel-prosjekt fra Aksel (for appen, grenen `data` skrives uansett) | 2, flyttet til 4 | Aksel | 2026-11-01 (PR #78, merget, Vercel gjenstår) |
+| 1.11 | Kjør dataprogrammet hver time og publiser appen | Må ha | 1.5, Vercel-prosjekt fra Aksel (for appen, grenen `data` skrives uansett) | 2, flyttet til 4 | Aksel | 2026-11-15, ferdig (PR #78, #81, #87; målt i drift) |
 | 1.6 | Hold tjenesten oppe når en datakilde er nede | Bør ha | 1.9 | 4 | Joseph | 2026-10-29 (PR #77, review i etterkant) |
 | **Epic 2** | **Forstå og stole på SnowScore** | | | | | |
 | 2.1 | Les kort fortalt og steg for steg | Må ha | 1.4 | 1 | Aksel | 2026-10-09 (PR #33) |
@@ -193,12 +195,12 @@ flowchart LR
 | P4 | Forenkling etter faglærers tilbakemelding (steg 8b og 8d) | Planlegging | P3 | Joseph og Aksel | 2026-10-07 (F2, PR #8–#21) |
 | P5 | Revisjon og rettinger i dataprogrammet | Gjennomføring | Epic 1 og 2 | Aksel | 2026-10-22 (PR #43–#47) |
 | P6 | Wireframes, kursets skjermkrav og brukertestplan (steg 8c, `bmad-ux`) | Planlegging | P4 | Aksel | 2026-10-28, ferdig (F3) |
-| P7 | Kodefrys: alle v1-stories merget | Gjennomføring | 1.6, 1.11, 4.2 | Hele gruppa | 2026-11-11, forslag (M1 og M5) |
-| P8 | Brukertest med minst fem personer | Gjennomføring | P6, P7 | Joseph og Aksel | 2026-11-16, forslag (F4) |
-| P9 | Rettinger etter brukertesten (bare kritiske funn) | Gjennomføring | P8 | Fordeles etter testen | 2026-11-20, forslag |
-| P10 | Sluttrapport, retrospektiv og presentasjon | Avslutning | P8 | Hele gruppa | 2026-11-23, forslag (F5) |
-| P11 | Generalprøve: `npm ci`, så `npm run dev:demo` og `npm run dev`, etter README på en ren maskin | Avslutning | P9, P10 | Joseph og Aksel | 2026-11-24, forslag |
-| P12 | Levering og demo | Avslutning | P11 | Hele gruppa | 2026-11-25, vedtatt (M6) |
+| P7 | Kodefrys: alle v1-stories merget | Gjennomføring | 1.6, 1.11, 4.2 | Hele gruppa | 2026-11-16 for nye stories og 2026-11-28 for rettinger, vedtatt (M5, var 2026-11-21). 1.11 i drift 2026-11-15 (M1, nådd) |
+| P8 | Brukertest med minst fem personer | Gjennomføring | P6, P7 | Joseph og Aksel | 17.–19. november, forslag (F4), materiell i [brukertest/](brukertest/) |
+| P9 | Rettinger etter brukertesten og gjennomgangen 2026-11-18, og «Best akkurat nå» etter `bmad-correct-course` | Gjennomføring | P8 | Fordeles etter testen | 2026-11-28, vedtatt (var 2026-11-21) |
+| P10 | Sluttrapport, retrospektiv og presentasjon | Avslutning | P12 | Hele gruppa | Etter levering 2026-12-02, dato ikke satt (F5, var 2026-11-23) |
+| P11 | Generalprøve: `npm ci`, så `npm run dev:demo` og `npm run dev`, etter README på en ren maskin | Avslutning | P9 | Joseph og Aksel | 2026-12-01, vedtatt (var 2026-11-24) |
+| P12 | Levering og demo | Avslutning | P11 | Hele gruppa | 2026-12-02, vedtatt 2026-11-18 (M6, var 2026-11-25) |
 
 Diagrammene og listen oppdateres når arbeidsflyten endres, for eksempel når et spor er ferdig, når
 en story legges til eller tas ut, når en frist flyttes, eller når en regel i `AGENTS.md` endrer

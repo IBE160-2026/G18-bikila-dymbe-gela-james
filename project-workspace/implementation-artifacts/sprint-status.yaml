@@ -29,35 +29,41 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 # - Retrospective appends its action items to action_items; the status view surfaces open ones
 generated: 09-27-2026 12:00
-last_updated: 10-31-2026 12:00
+last_updated: 11-18-2026 22:30
 project: G18-bikila-dymbe-gela-james
 project_key: NOKEY
 tracking_system: file-system
 story_location: project-workspace/implementation-artifacts
 development_status:
-  epic-1: in-progress
+  epic-1: done  # Story 1.12 (Best akkurat nå) lagt til og bygget 2026-11-18
   1-1-prosjekt-skaffolding-og-ci-skjelett: done
   1-2-bygg-stedskatalogen: done
   1-3-hent-og-valider-værdata-hver-time: done
   1-4-bygg-den-delte-snowscore-modulen: done
   1-10-kjør-snowfinder-lokalt-med-demodata: done
   1-5-beregn-og-publiser-snowscore-i-dataprogrammet: done
-  1-11-kjør-dataprogrammet-hver-time-og-publiser-appen: in-progress
+  1-11-kjør-dataprogrammet-hver-time-og-publiser-appen: done  # målt 2026-11-15: 232 grønne kjøringer siden 8.11, lengste opphold 58 min siste døgn
+  1-12-se-de-beste-stedene-akkurat-naa: done  # endringsforslag 2026-11-18, bygget 2026-11-18
   1-7-se-norgeskartet-med-fargelagte-steder: done
   1-8-bruk-tilgjengelig-listevisning-i-stedet-for-kart: done
+  1-8b-destinasjonskort: done
   1-9-åpne-en-stedsside-med-full-poengsum: done
   1-6-hold-tjenesten-oppe-når-en-datakilde-er-nede: done  # Bør ha (v3)
+  1-6b-rettinger-etter-review: done  # Rettinger etter review av PR #77 (2026-11-07)
   epic-1-retrospective: optional
 
-  epic-2: done
+  epic-2: done  # Story 2.5 (delpoengstolper) lagt til 2026-11-08, ferdig samme dag
   2-1-les-kort-fortalt-og-steg-for-steg: done
+  2-1b-toppnav-og-slidere: done
   2-2-se-det-utledede-regneeksempelet: done
   2-3-les-om-datakilder-og-begrensninger: done
   2-4-prøv-snowscore-kalkulatoren-selv: done
-  epic-2-retrospective: done
+  2-5-delpoengstolper: done
+  epic-2-retrospective: done  # holdt 2026-10-09, før Story 2.5
 
-  epic-3: done
+  epic-3: done  # Story 3.9 (søk) lagt til 2026-11-04, ferdig 2026-11-14 (PR #85)
   3-1-filtrer-på-nysnø-vind-og-temperatur: done
+  3-1b-ryddigere-filter: done  # UX-forbedring steg 2, lagt til 2026-11-07
   3-2-del-og-gjenåpne-et-filtrert-søk: done
   3-3-få-hjelp-ved-null-treff-og-se-antall-treff-live: done
   3-4-bruk-hurtigvalg-for-vanlige-kombinasjoner: done
@@ -65,6 +71,7 @@ development_status:
   3-6-filtrer-på-avstand: done
   3-7-filtrer-på-stedstype: done
   3-8-filtrer-på-nysnø-siste-24-timer: done
+  3-9-søk-etter-et-sted-ved-navn: done
   epic-3-retrospective: optional
 
   epic-4: done  # 4.1, 4.3 og 4.4 er Ikke i v1

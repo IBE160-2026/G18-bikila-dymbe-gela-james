@@ -64,18 +64,20 @@ FR-28: Serversidevalidert, misbruksbeskyttet innsending — Ikke i v1 (v3)
 FR-29: Automatisk sletting av tilbakemelding — Ikke i v1 (v3)
 FR-30: Lokal demomodus med ferdige data (`npm ci && npm run dev` uten nøkler) — Må ha
 FR-31: Vurdering av SnowScore mot målte forhold — Ikke i v1 (v3)
+FR-32: Søk på stedsnavn (i nettleseren, shared/) — Må ha (v5, 2026-11-04)
+FR-33: Beste steder akkurat nå (topp 3 av treffene over kart og liste) — Bør ha (2026-11-18)
 
 ### Ikke-funksjonelle krav
 
-NFR-1: 95% av filtersøk < 2 sekunder (filtrering i nettleseren over ~300 steder)
+NFR-1: 95 % av endringene i filteret eller søkefeltet oppdaterer trefflisten < 500 ms, målt manuelt (filtrering i nettleseren over ~300 steder; endret fra 2 s 2026-11-14)
 NFR-2: Norgeskartet interaktivt < 3 sekunder på mobil
-NFR-3: Datafriskhet — normalt < 90 min; "utdatert" 3–12 t; fjernet fra visning > 12 t
+NFR-3: Datafriskhet — under 3 t, mål rundt 1 t i normal drift; "utdatert" 3–12 t; fjernet fra visning > 12 t (endret fra «normalt < 90 min» 2026-11-14)
 NFR-4: Tjenesten fungerer med siste gyldige data ved datakilde-nedetid
 NFR-DQ1: Datakontrakt — MET/NVE-svar valideres mot Zod-skjemaer, dokumentert som dataordbok
 NFR-DQ2: Kvalitetsrapport per kjøring (i datafilen, eller i jobbloggen/artifact ved feilet kjøring)
 NFR-DQ3: Sporbarhet — hver publisert verdi har kjørings-ID og kildens tidsstempel
 NFR-5 (v3): Ingen skrivbare endepunkter og ingen hemmeligheter; appen leser bare datafilen
-NFR-6 (v3): Feilede kjøringer og avviste svar står i kvalitetsrapporten og som rød kjøring i Actions-fanen; ingen egen varslingskanal
+NFR-6 (v3, endret 2026-11-18 og 2026-11-19): Feilede kjøringer og avviste svar står i kvalitetsrapporten og som rød kjøring i Actions-fanen, og en planlagt agent sjekker datafila og publiseringen gjennom GitHub og lager et issue ved avvik
 NFR-Privacy (v3): Ingen konto, ingen skjema, ingen lagrede brukeropplysninger; posisjon kun i nettleser
 NFR-7: WCAG 2.1 AA på alt unntatt selve kartlaget; tilgjengelig listevisning er fullt AA-alternativ
 NFR-8: Skalerbarhet — katalog 300→1500 steder, "noen tusen" samtidige brukere (statiske filer)
@@ -132,8 +134,8 @@ ordinær kontroll, ikke dra-og-slipp.
 UX-DR7: Beste skivindu-kort med mørketid-fallback-tekst («Mørketid – vindu vist uten dagslys»).
 UX-DR8: *(Ikke i v1, v3)* Snøvarsel-skjema inline på stedssiden.
 UX-DR9: *(Ikke i v1, v3)* Tilbakemeldingsskjema.
-UX-DR10: Global `banner-stale-data`-komponent (warning-bakgrunn) når siste data er eldre enn
-normalt.
+UX-DR10: Global `banner-stale-data`-komponent (lys flate med `warning`-kant til venstre, avgjort
+2026-11-07) når siste data er eldre enn normalt.
 UX-DR11: Tilstander: skjelett-lasting (`surface-sunken`), null-treff med forslag, "ufullstendige
 data"-tekst i stedet for score-badge.
 UX-DR12: Responsiv layout: filterpanel som bunn-ark (<768px) vs. fast venstre sidepanel
@@ -147,9 +149,9 @@ UX-DR16 (v3): Demobanner «Demodata – ikke ekte prognoser» når datafilen har
 
 ### FR-dekningskart
 
-FR-1 til FR-7, FR-12, FR-13, FR-16, FR-30: Epic 1
+FR-1 til FR-7, FR-12, FR-13, FR-16, FR-30, FR-33: Epic 1
 FR-8 til FR-11: Epic 2
-FR-14, FR-15, FR-20 til FR-26: Epic 3
+FR-14, FR-15, FR-20 til FR-26, FR-32: Epic 3
 FR-17: Epic 4
 FR-18, FR-19, FR-27 til FR-29, FR-31: Ikke i v1 (v3). Story 4.1, 4.3, 4.4 og Epic 5 er merket deretter.
 
@@ -168,7 +170,7 @@ spørsmål i PRD §10 og gjentas her for å unngå at det stille forsvinner mell
 Brukeren kan åpne SnowFinder og se ekte, ferske SnowScore-data for norske steder, enten som et
 fargelagt kart eller som en likeverdig, tilgjengelig liste, og åpne et sted for full detalj.
 Dette er den ugjennomskjærbare kjernen — uten denne fungerer ingen andre epics.
-**FRs dekket:** FR-1, FR-2, FR-3, FR-4, FR-5, FR-6, FR-7, FR-12, FR-13, FR-16, FR-30. **Konsoliderer**
+**FRs dekket:** FR-1, FR-2, FR-3, FR-4, FR-5, FR-6, FR-7, FR-12, FR-13, FR-16, FR-30, FR-33. **Konsoliderer**
 stedskatalog, pipeline, SnowScore-modul, kart OG listevisning i én epic fordi de deler samme
 kodefiler (`Utforsk.tsx`, `useSteder`-hooken, AD-8) og samme datalag — å splitte dem ville gitt
 to epics som begge endrer de samme filene uten reell risikogrense mellom dem.
@@ -182,8 +184,8 @@ eller listen.
 ### Epic 3: Finn steder som oppfyller mine krav
 Brukeren kan sette presise krav (nysnø, vind, temperatur — og som utvidelse sol, avstand,
 stedstype, nysnø siste 24t) og få akkurat de stedene som oppfyller dem, med hjelp til å justere
-kravet ved null treff.
-**FRs dekket:** FR-14, FR-15, FR-20, FR-21, FR-22, FR-23, FR-24, FR-25, FR-26 (kryssreferanse).
+kravet ved null treff, og finne ett bestemt sted ved navn *(2026-11-04)*.
+**FRs dekket:** FR-14, FR-15, FR-20, FR-21, FR-22, FR-23, FR-24, FR-25, FR-26 (kryssreferanse), FR-32.
 
 ### Epic 4: Få mer ut av et sted jeg følger med på
 Brukeren kan se når det beste tidsvinduet for en skitur er (med mørketid-håndtering).
@@ -394,6 +396,12 @@ grønn kjøring betyr at dataene faktisk er ute *(ny v6, nettadressen v7)*
 siste publisering på grenen `data` er yngre enn 50 minutter, så GitHubs droppede kjøringer ikke gir
 timer gamle data, og MET fortsatt spørres omtrent én gang i timen. Kan ikke alderen leses, kjører
 jobben som vanlig *(ny 2026-11-02)*
+**And** hver kjøring på `main` som har hentet data, også en avvist, starter `data-timer.yml`, som
+venter til dataene er rundt 55 minutter gamle (minst 30 minutter) og så starter `data.yml`. Den
+starter ingenting når dataene er under 50 minutter gamle, og det går bare én timer om gangen. Så
+holder dataene seg under 3 timer, og i normal drift rundt én time gamle (NFR-3), selv når GitHub
+dropper planlagte kjøringer; timeplanen er
+reserve hvis kjeden stopper *(ny 2026-11-04)*
 **And** en kjøring uten `latest.json` publiserer ingenting, så grenen beholder siste gyldige fil, og
 produksjon viser aldri demodata (AD-10)
 **And** en kjøring som ikke publiserer, laster opp kvalitetsrapporten som artifact og vises som
@@ -401,6 +409,44 @@ rød i Actions-fanen (NFR-6)
 
 `[v3: Ny story fra endringsrunde 2. Actions er allerede på. Publiseringen til grenen `data` trenger
 verken admin eller hemmeligheter. v7: Vercel erstatter Pages, og trenger heller ingen nøkler.]`
+
+### Story 1.12: Se de beste stedene akkurat nå *(ny 2026-11-18)*
+
+**Prioritet:** Bør ha
+
+As en bruker som åpner SnowFinder for å se hvor det er best i dag,
+I want å se de tre beste stedene øverst på forsiden,
+So that jeg får svaret uten å bytte visning eller lete på kartet. Realiserer FR-33.
+Kommer fra [endringsforslaget om «Best akkurat nå»](../../project-workspace/planning-artifacts/sprint-change-proposal-2026-11-18-best-akkurat-naa.md).
+
+**Acceptance Criteria:**
+
+**Given** Utforsk i kart- eller listevisning uten filter, med demodata
+**When** siden vises
+**Then** står overskriften «Best akkurat nå» over kartet eller listen, med de tre stedene som har
+høyest SnowScore, i samme rekkefølge som de tre første i listen sortert etter score
+**And** hvert sted viser navnet og score-badge med tall og poengnivå, og er én lenke til stedssiden
+med filteret og visningen i adressen som i Story 3.2b
+
+**Given** et aktivt filter med minst ett treff
+**When** siden vises
+**Then** heter overskriften «Best blant treffene», og raden viser høyst tre av treffene, valgt og
+sortert på samme måte
+
+**Given** filteret gir null treff, eller ingen av treffene har poengsum
+**When** siden vises
+**Then** vises ikke raden
+
+**Given** treff med lik SnowScore, eller treff med ufullstendige data
+**When** raden velger steder
+**Then** avgjøres lik score av navnet som i listen, og steder med ufullstendige data er aldri med
+
+**And** raden står mellom søkefeltet og filteret eller kartet på alle bredder, aldri i bunn-arket,
+og under 768 px tar hvert sted én linje uten sideveis rulling
+**And** raden er en `section` med en `h2`-overskrift og en ordnet liste. Utvalget er en ren funksjon
+med enhetstester for rekkefølge, lik score, ufullstendige data og færre enn tre treff
+**And** E2E-testen i demomodus åpner det første stedet fra raden og kjører axe på Utforsk med raden
+synlig
 
 ### Story 1.7: Se Norgeskartet med fargelagte steder
 
@@ -443,6 +489,24 @@ dra-og-slipp)
 **And** en automatisert tilgjengelighetstest (axe/Playwright) i CI rapporterer null kritiske
 WCAG 2.1 AA-brudd på denne siden
 **And** listen virker i demomodus (Story 1.10)
+
+### Story 1.8b: Resultatlisten som destinasjonskort *(ny 2026-11-02)*
+
+**Prioritet:** Bør ha
+
+As en bruker,
+I want at stedene i listen står som kort med de samme tallene på samme plass,
+So that jeg raskt kan sammenligne nysnø, vind og temperatur mellom steder. Justerer listeraden fra Story 1.8.
+
+**Acceptance Criteria:**
+
+**Given** listen på Utforsk
+**When** den vises
+**Then** er hvert sted et kort som er én lenke, med navn og score-badge øverst og feltene Nysnø, Vind og
+Temp i samme rekkefølge på alle kort, og Avstand når listen er sortert etter avstand
+**And** på smale skjermer står kortene i én kolonne uten sideveis rulling, og når listen har plass til
+flere kort på minst 240 px, står de side om side med tallene på linje
+**And** det en skjermleser hører, og data, sortering og filter, er uendret
 
 ### Story 1.9: Åpne en stedsside med full poengsum
 
@@ -492,6 +556,28 @@ Storyen er derfor Bør ha.]`
 `banner-stale-data` på Utforsk- og stedssiden, som først finnes etter 1.7 og 1.9 — en
 forover-avhengighet. Nummeret er beholdt så kryssreferanser ikke brytes.]`
 
+### Story 1.6b: Rettinger etter review av Story 1.6 *(ny 2026-11-07)*
+
+**Prioritet:** Bør ha
+
+As en bruker,
+I want at banneret for gamle data er riktig og blir lest opp, og at dataprogrammet ikke kaster bort tid på en kilde som ikke svarer,
+So that jeg kan stole på banneret. Retter funnene fra reviewen av PR #77. Realiserer FR-6b og NFR-3.
+
+**Acceptance Criteria:**
+
+**Given** en gammel live-fil
+**When** Utforsk eller stedssiden lastes
+**Then** finnes bannerets statusregion før dataene kommer, og den får teksten etterpå
+
+**Given** en fane som har stått åpen til fila passerer 90 min
+**When** jobben har publisert en nyere fil
+**Then** hentes fila på nytt og vises uten banner, og banneret vises bare når ingen nyere fil finnes
+
+**Given** at en vert ikke tar imot tilkoblingen
+**When** dataprogrammet kjører
+**Then** prøves kallet ikke på nytt, og årsaken er «Tidsavbrudd ved tilkobling»
+
 ---
 
 ## Epic 2: Forstå og stole på SnowScore
@@ -518,6 +604,29 @@ formelendringer (starter med Marys B-nevner-endring 6→16, se briefens memlogg)
 stedsside)
 **And** en automatisert tilgjengelighetstest (axe/Playwright) i CI rapporterer null kritiske
 WCAG 2.1 AA-brudd på denne siden (NFR-7)
+
+### Story 2.1b: Logo, én forklaringslenke og slidere som starter til venstre *(ny 2026-11-02)*
+
+**Prioritet:** Bør ha
+
+As en bruker,
+I want en ryddig topp og filterslidere som oppfører seg likt,
+So that jeg kjenner igjen SnowFinder og forstår filteret uten å lese hver slider. Justerer UX for 2.1 og Epic 3.
+
+**Acceptance Criteria:**
+
+**Given** en hvilken som helst side
+**When** den åpnes
+**Then** står SnowFinder-logoen til venstre for «SnowFinder» i toppnavigasjonen, dekorativ for skjermlesere
+**And** på Utforsk vises lenken «Slik beregner vi SnowScore» én gang: i toppnavigasjonen fra 768 px, og
+på linjen med overskriften «Best akkurat nå» under 768 px, der toppnavigasjonen ligger bak ☰ *(endret 2026-11-18:
+flyttet fra Kart/Liste, så den ikke tar en egen linje og kartet får plass,
+[sprint-change-proposal-2026-11-18-forklaring-bare-i-meny.md](../../project-workspace/planning-artifacts/sprint-change-proposal-2026-11-18-forklaring-bare-i-meny.md))*
+
+**Given** filterpanelet
+**When** alle krav står på «Alle»
+**Then** står alle fem sliderne helt til venstre, og kravet blir strengere mot høyre og med piltast høyre
+**And** adressen, filterlogikken og tekstene som «høyst 8 m/s» er uendret
 
 ### Story 2.2: Se det utledede regneeksempelet
 
@@ -570,6 +679,29 @@ So that jeg kan utforske formelen interaktivt. Bør ha. Realiserer FR-10.
 **And** kalkulatoren importerer `shared/snowscore.ts` direkte — ingen egen kopi av formelen
 finnes i kalkulator-komponenten (AD-6)
 
+### Story 2.5: Delpoengstolper i SnowScore-kortet, regneeksemplet og kalkulatoren *(ny 2026-11-08)*
+
+**Prioritet:** Bør ha
+
+As en bruker,
+I want å se med et blikk hvilket delpoeng som trekker ned,
+So that jeg forstår SnowScore uten å lese hvert tall. Realiserer FR-16, FR-9 og FR-10 og steg 3 i UX-forbedringen (PR #93).
+
+**Acceptance Criteria:**
+
+**Given** stedssiden for et sted med score
+**When** siden åpnes
+**Then** har A, B og C hver sin grå stolpe fylt mot 60, 25 og 15, og teksten «x av N» er uendret
+**And** regneeksemplet og kalkulatoren viser de samme stolpene, og kalkulatorens stolper følger tallene uten omlasting
+
+**Given** ufullstendige data eller ugyldig inndata i kalkulatoren
+**When** siden vises
+**Then** vises verken delpoeng eller stolper
+
+**Given** en skjermleser eller 320 px bredde
+**When** delpoenglista vises
+**Then** hører skjermleseren bare etikett og «x av N», og siden ruller ikke sidelengs
+
 ---
 
 ## Epic 3: Finn steder som oppfyller mine krav
@@ -590,13 +722,43 @@ So that jeg bare ser steder som faktisk oppfyller kravene mine. Realiserer FR-20
 **When** jeg setter minimum nysnø, maks vind og temperaturgrense i filterpanelet
 **Then** viser kart og liste bare steder som oppfyller ALLE valgte kriterier (kombinert med OG)
 **And** filtreringen skjer i nettleseren med den delte `shared/filter.ts`, og 95 % av
-filtersøk svarer på under 2 sekunder (NFR-1)
+endringene i filteret oppdaterer trefflisten på under 500 ms, målt manuelt (NFR-1)
 **And** en fasittabell (`tests/golden/filter.json`, 5–8 steder, flere kombinasjoner) kjøres som
 CI-blokkerende test mot `shared/filter.ts`
 **And** nysnø-cm-anslaget bruker samme faste 1mm≈1cm-omregning som forklaringssiden
 **And** filterpanelet vises som et bunn-ark under 768px bredde og som et fast venstre sidepanel
 fra 768px og oppover (DESIGN.md/UX-DR12), verifisert med en Playwright-test i begge
 viewport-bredder
+
+### Story 3.1b: Ryddigere filter *(ny 2026-11-07)*
+
+**Prioritet:** Bør ha
+
+As en bruker,
+I want å se samlet hvilke krav som filtrerer, og å fjerne ett krav med ett trykk,
+So that filteret er lett å lese og justere uten å lete etter slideren. Realiserer FR-20, UX-DR4 og UX-DR12 (justert i UX-forbedring steg 2).
+
+**Acceptance Criteria:**
+
+**Given** aktive krav
+**When** panelet er åpent (eller bredden er minst 768 px)
+**Then** står chipsene med × øverst under «Filter» og antall treff
+**And** × fjerner bare det kravet og flytter fokus til kravets slider, til første avkrysningsboks for
+stedstype, eller til «Prognose» for kildechipen
+
+**Given** filteret
+**When** det vises
+**Then** kommer hurtigvalg, «Vær» og «Sted» i den rekkefølgen, hver med en overskrift, og én «Nullstill» sist
+
+**Given** skydekke eller datagrunnlaget
+**When** panelet åpnes
+**Then** er hjelpeteksten skjult bak «Mer om …»
+**And** et trykk viser den, og en skjermleser får den som beskrivelse uansett
+
+**Given** det lukkede bunn-arket
+**When** krav er aktive
+**Then** er chipsene ren tekst med «Nullstill», som før
+**And** filterlogikken, adressen og hurtigvalgene er uendret
 
 ### Story 3.2: Del og gjenåpne et filtrert søk
 
@@ -707,6 +869,51 @@ So that jeg også kan finne steder som allerede har fått snø. Bør ha. Realise
 **When** jeg velger «siste 24 t» som datagrunnlag for nysnø-filteret
 **Then** brukes NVE seNorge-verdien i stedet for MET-prognosen for det kriteriet, tydelig merket
 i grensesnittet hvilken kilde som er i bruk
+
+### Story 3.9: Søk etter et sted ved navn *(ny 2026-11-04)*
+
+**Prioritet:** Må ha
+
+As en bruker som vet hvilket sted jeg vil se,
+I want å skrive navnet i et søkefelt og få forslag,
+So that jeg kommer rett til stedssiden uten å lete på kartet. Realiserer FR-32. Realiserer UJ-4.
+Kommer fra [endringsforslaget om søk](../../project-workspace/planning-artifacts/sprint-change-proposal-2026-11-04-sok.md).
+
+**Acceptance Criteria:**
+
+**Given** Utforsk i kart- eller listevisning med publiserte data
+**When** jeg skriver «beito» i søkefeltet
+**Then** viser forslagslisten «Beitostølen» mens jeg skriver, uten at filteret, adressen eller
+trefftallet endres
+
+**Given** søketekst med en annen skrivemåte, for eksempel «tromso», «TRYSIL» eller «skisenter»
+**When** søket kjøres
+**Then** finnes de samme stedene som med riktig skrivemåte, etter reglene i FR-32, og rekkefølgen
+og grensen på 8 forslag følger fasittabellen `tests/golden/sok.json`
+
+**Given** et sted som er skjult av filteret eller har ufullstendige data
+**When** jeg søker etter det
+**Then** står det i forslagslisten med statusen som tekst («Oppfyller ikke filteret» eller
+«Ufullstendige data»)
+**And** et sted med data eldre enn 12 timer finnes ikke i søket, på samme måte som det ikke finnes
+i kart og liste (NFR-3)
+
+**Given** forslagslisten er åpen
+**When** jeg velger et forslag med mus, berøring eller piltaster og Enter
+**Then** åpnes stedssiden, med filteret og visningen i adressen som i Story 3.2b, og «Tilbake» går
+tilbake til Utforsk
+
+**Given** en søketekst uten treff
+**When** søket kjøres
+**Then** viser listen «Fant ingen steder som heter «…». SnowFinder dekker N steder i Norge.», der
+N er antall steder i datafila
+
+**And** feltet følger ARIA-mønsteret for combobox (`role="combobox"`, `aria-expanded`,
+`aria-controls`, `aria-activedescendant`). Antall forslag annonseres med `aria-live="polite"`, og
+Escape lukker listen og tømmer feltet ved andre trykk
+**And** søkefunksjonen er én ren funksjon i `shared/` (AD-6) med fasittabell (AD-4), og
+E2E-røyktesten søker opp et sted i demomodus og kjører axe på Utforsk med åpen forslagsliste
+**And** feltet ligger over kartet og listen på alle bredder, aldri inne i bunn-arket under 768 px
 
 ---
 

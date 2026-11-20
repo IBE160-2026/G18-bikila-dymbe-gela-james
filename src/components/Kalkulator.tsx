@@ -1,6 +1,7 @@
 import { useState } from 'react'
-import { delpoeng, tall } from '../lib/format'
-import { SNOWSCORE, WINDOW_HOURS, computeSnowScore, type SnowScoreResult } from '../lib/snowscore'
+import { tall } from '../lib/format'
+import { WINDOW_HOURS, computeSnowScore, type SnowScoreResult } from '../lib/snowscore'
+import Delpoengliste from './Delpoengliste'
 import { REGNEEKSEMPEL } from './Regneeksempel'
 import ScoreBadge from './ScoreBadge'
 
@@ -117,7 +118,6 @@ export default function Kalkulator() {
   const utregning = kalkuler(nedbor, temperatur)
   const startUtregning = kalkuler(start.nedbor, start.temperatur)
   const startScore = startUtregning.kind === 'score' ? startUtregning.resultat.score : null
-  const { maxA, maxB, maxC } = SNOWSCORE
 
   return (
     <section aria-labelledby="prov-selv">
@@ -152,20 +152,7 @@ export default function Kalkulator() {
       </div>
       <div className="kalkulator-resultat kort">
         {utregning.kind === 'score' && (
-          <dl className="tall-liste">
-            <div>
-              <dt>A Nysnøpotensial</dt>
-              <dd>{delpoeng(utregning.resultat.a, maxA)}</dd>
-            </div>
-            <div>
-              <dt>B Kuldebonus</dt>
-              <dd>{delpoeng(utregning.resultat.b, maxB)}</dd>
-            </div>
-            <div>
-              <dt>C Snøandel</dt>
-              <dd>{delpoeng(utregning.resultat.c, maxC)}</dd>
-            </div>
-          </dl>
+          <Delpoengliste a={utregning.resultat.a} b={utregning.resultat.b} c={utregning.resultat.c} />
         )}
         {/* Only this line is live, so a screen reader hears the new score, not the whole list on every key. */}
         <p className="kalkulator-sum" aria-live="polite">

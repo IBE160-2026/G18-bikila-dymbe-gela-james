@@ -1,0 +1,138 @@
+# Gjennomgang av nettsiden og utsatt kodefrys
+
+## 2026-11-18 kl. 19:23 — Aksel Dymbe
+
+### Oppgave
+Aksel ba om fire ting:
+- status for prosjektet;
+- et sammendrag av Bårds tilbakemelding på PRD-en;
+- en gjennomgang med agentene av hva som må til for at den publiserte siden (snowfinder-seven.vercel.app) ser profesjonell ut og blir brukt daglig;
+- at kodefrysen utsettes én uke, med leveringen 2. desember og sluttrapporten etterpå.
+
+### Plan
+- **Status:** hentet fra `fremdriftsplan.md`, `sprint-status.yaml`, `brukertest/resultater.md` og `issues.md`.
+- **PRD-tilbakemelding:** `tilbakemelding-prd.md` (2026-11-12) ble lest og sammenlignet med endringsforslaget fra 2026-11-14 (PR #99 og #100).
+- **Gjennomgang:** skjermbilder av den publiserte siden med Playwright, på PC (1440 px) og iPhone 13. Deretter `bmad-party-mode` med Sally, John, Mary, Winston og Amelia.
+- **Datoene:** endret i milepæler, fremdriftsplan og aktivitetsdiagram på greinen `docs/utsatt-kodefrys`, med logg i `ai-log`.
+
+### Resultat
+- **Funn fra gjennomgangen:**
+  - Forsiden svarer ikke på «hvor er det best i dag?».
+  - Kartet mangler tegnforklaring, og «Lite»-prikkene dominerer.
+  - Hvor ferske dataene er, vises bare på stedssiden.
+  - Navn brytes midt i ordet («Innerdalstårn/et»).
+  - Søkefeltet har ingen plassholder.
+  - Tallene har for mange desimaler, og nysnø vises i både cm og mm.
+  - «0 · Lite» står ved siden av et skivindu på fredag, uten forklaring.
+  - «Tilbake» er bare en lenke nederst på stedssiden.
+- **Prioritering:** rettingene tas før kodefrysen. «Best akkurat nå» (topp 3) må gjennom `bmad-correct-course`. Favoritter, «nær meg», minikart og PWA er v2.
+- **PR #110 merget** (`890614f`, flettecommit `41d5720`). Alle sjekkene var grønne.
+  - M5 kodefrys er 2026-11-28.
+  - Generalprøven er 2026-12-01.
+  - M6 levering er 2026-12-02.
+  - F5 sluttrapport kommer etter leveringen, uten dato.
+  - Datoene står som «forslag fra Aksel».
+- **Partyminne:** `project-workspace/party-mode/memories/installed/.memlog.md`.
+
+### Åpne punkter
+- Gruppa bekrefter de nye datoene, og Bård må godta at leveringen flyttes til 2. desember.
+- Endringsforslag for «Best akkurat nå» (`bmad-correct-course`) før storyen bygges.
+- Rettings-PR med listen fra gjennomgangen (`bmad-build`), med review fra et gruppemedlem, innen 28. november.
+- Bårds to refleksjonsspørsmål i PRD-tilbakemeldingen besvares i sluttrapporten.
+- Sett en dato for sluttrapporten (F5).
+
+## 2026-11-18 kl. 20:10 — Aksel Dymbe
+
+### Oppgave
+Gruppa bekreftet de nye datoene. Aksel ba om steg 2, endringsforslaget for «Best akkurat nå», godkjente forslaget og ba om at endringene ble gjort og PR-en åpnet.
+
+### Plan
+- Datoene endret fra «forslag» til «vedtatt», på greinen `docs/best-akkurat-naa`. Greinen het før `docs/sesjonslogg-2026-11-18`.
+- `bmad-correct-course` i samlet modus, etter malen i endringsforslaget om søk fra 2026-11-04.
+- Endringsforslag: [sprint-change-proposal-2026-11-18-best-akkurat-naa.md](../../project-workspace/planning-artifacts/sprint-change-proposal-2026-11-18-best-akkurat-naa.md).
+
+### Resultat
+- **Datoene er vedtatt:** `9bfe824`, i milepælene, fremdriftsplanen og aktivitetsdiagrammet.
+- **Nytt krav FR-33 (Bør ha):**
+  - PRD-en (begge kopiene): §0, §4.3, §6.2 og §12.
+  - SRS-en: ny SRS-F-35 og F3.5, og dokumentet er versjon 2.4.
+  - EXPERIENCE.md (begge kopiene): ny komponentrad og en setning om mobil.
+- **Story 1.12:** står i epics og i kravinventaret.
+- **Status og plan:** `sprint-status.yaml` har fått `1-12: backlog`, og `epic-1` står som `in-progress`. `sprintplan.md` har fått et avsnitt om avviket, og fremdriftsplanen er oppdatert.
+- **Logg:** raden i `ai-log` og promptene er ført.
+
+### Åpne punkter
+- Bård må godta at leveringen flyttes til 2. desember.
+- Rettings-PR fra gjennomgangen (se punktet over), deretter Story 1.12 med `bmad-build` på `story/1-12-best-akkurat-naa`, begge før 28. november.
+
+## 2026-11-18 kl. 21:10 — Aksel Dymbe
+
+### Oppgave
+PR #111 og #112 ble merget, siden Bård har godtatt levering 2. desember. Deretter rettingene fra gjennomgangen av nettsiden, med `bmad-build`.
+
+### Plan
+- Spesifikasjon: [spec-fix-rettinger-etter-gjennomgang.md](../../project-workspace/implementation-artifacts/spec-fix-rettinger-etter-gjennomgang.md), på greinen `fix/rettinger-etter-gjennomgang`.
+- Aksels valg:
+  - stedssiden beholder én desimal, som stemmer med filteret;
+  - tegnforklaringen er en stripe over kartet;
+  - «Tilbake» står øverst på stedssiden.
+- Gjennomgang med tre subagenter: Blind Hunter, Edge Case Hunter og Verification Gap.
+
+### Resultat
+- **Commit `86a48b4`** (lokal, ikke pushet):
+  - tegnforklaring over kartet, og «Oppdatert kl. …» på forsiden;
+  - stedsnavn uten ordbrudd, med navn og badge i `.liste-topp`;
+  - plassholder og maksbredde i søkefeltet;
+  - NVE-nysnø i cm og «Tilbake» øverst på stedssiden;
+  - en forklaringslinje i skivinduet;
+  - DESIGN.md, EXPERIENCE.md (begge kopiene) og SRS-F-15 er oppdatert.
+- **Gjennomgangen:** 18 funn. 13 ble rettet og 5 avvist. Se Review Triage Log i spesifikasjonen.
+- **Sjekker:** lint, typecheck, 782 enhetstester, `build:demo` og 168 E2E-tester (Chromium) er grønne. Ordbruddstesten feiler når feilen legges inn med vilje, så den fanger det den skal.
+- **PR #111 og #112 er merget.** Punktet om Bårds godkjenning er lukket.
+
+### Åpne punkter
+- Push og PR for rettingene, med review fra et gruppemedlem (vanligvis joseph210066) før merge.
+- Testene `nettlesere` (Firefox og WebKit) er ikke kjørt lokalt. CI kjører dem.
+
+## 2026-11-18 kl. 22:40 — Aksel Dymbe
+
+### Oppgave
+PR #113 ble pushet uten reviewer. Deretter Story 1.12 «Best akkurat nå» med `bmad-build`, og push med PR.
+
+### Plan
+- Spesifikasjon: [spec-1-12-best-akkurat-naa.md](../../project-workspace/implementation-artifacts/spec-1-12-best-akkurat-naa.md), oneshot-ruten.
+- Greinen `story/1-12-best-akkurat-naa` er bygget oppå `fix/rettinger-etter-gjennomgang` (#113), som ikke er merget.
+
+### Resultat
+- **Commit `fad9a6f`:**
+  - `besteSteder` i `sortering.ts`;
+  - komponenten `BestAkkuratNaa`, plassert øverst i resultatkolonnen;
+  - CSS, enhets-, komponent- og E2E-tester (`best-naa.spec.ts`, med axe).
+- **Plasseringen:** raden ble flyttet inn i `.utforsk-resultat`. Bunn-arket er `sticky` i `.utforsk` og forsvant på en kort telefon da raden sto over beholderen. E2E-testen `sok.spec.ts:215` oppdaget det.
+- **Gjennomgangen** (Blind Hunter): 15 funn. 10 ble rettet og 5 avvist.
+- **Status:** sprint-status sier at 1-12 og epic-1 er `done`. Fremdriftsplanen er oppdatert (Hvor er vi nå?, steg 9 og Sist oppdatert).
+- **PR #113 er ikke merget**, fordi Aksel bestilte den selv og ikke kan godkjenne sin egen PR.
+
+### Åpne punkter
+- PR #113 og PR-en for 1.12 trenger godkjenning fra et annet gruppemedlem før merge, innen 28.11.
+- Når #113 er merget: flett `main` inn i greinen for 1.12, eller la GitHub flytte basen.
+
+## 2026-11-18 kl. 23:50 — Aksel Dymbe
+
+### Oppgave
+#113 og #114 ble merget etter Aksels godkjenning, og den publiserte siden ble sjekket. Deretter skulle «Slik beregner vi SnowScore» vises bare i menyen på mobil, så kartet får plass.
+
+### Plan
+- `bmad-correct-course`: [sprint-change-proposal-2026-11-18-forklaring-bare-i-meny.md](../../project-workspace/planning-artifacts/sprint-change-proposal-2026-11-18-forklaring-bare-i-meny.md).
+- `bmad-build`: [spec-fix-forklaring-bare-i-meny.md](../../project-workspace/implementation-artifacts/spec-fix-forklaring-bare-i-meny.md).
+
+### Resultat
+- **#113 og #114 er merget** uten godkjenning fra et annet gruppemedlem. Avviket er kommentert på begge PR-ene. #114 ble lukket da greinen til #113 ble slettet, og ble åpnet igjen med `main` som base.
+- **Den publiserte siden** viser alle endringene.
+- **Lenken er flyttet, ikke fjernet.** Første versjon fjernet den, men gjennomgangen fant at det bryter FR-8 (Må ha). Aksel valgte da å flytte lenken til overskriftslinjen i «Best akkurat nå» på mobil.
+- **CI på Ubuntu:** lenken fikk ikke plass ved overskriften. Den er nå `meta` og kan brytes under overskriften.
+- **PR #116 er åpnet** og har alle sjekkene grønne. Konflikten i `ai-log/logg.md` med #115 er løst.
+
+### Åpne punkter
+- PR #116 trenger godkjenning fra et annet gruppemedlem før merge.
+- Avviket fra godkjenningsregelen for #113 og #114 bør tas opp på neste gruppemøte.

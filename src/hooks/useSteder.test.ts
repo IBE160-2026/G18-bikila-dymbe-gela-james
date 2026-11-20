@@ -6,6 +6,8 @@ import {
   createStederStore,
   FERSKHET_SJEKK_MS,
   medFerskhet,
+  NY_HENTING_ETTER_MS,
+  NY_HENTING_TIDSGRENSE_MS,
   oppdaterFerskhet,
   trengerFerskhetssjekk,
   type StederResult,
@@ -106,6 +108,168 @@ describe('createStederStore', () => {
     } finally {
       vi.unstubAllGlobals()
     }
+  })
+
+  describe('a live file that passes 90 min (Story 1.6b)', () => {
+    // Published an hour before the page was loaded, so it passes 90 min half an hour after load.
+    const MIN = 60_000
+    const publisert = (generertMs: number, kildeTidspunkt = '2026-10-08T11:00:00Z'): LoadResult => ({
+      status: 'ok',
+      data: {
+        mode: 'live',
+        referenceTime: '2026-10-08T12:00:00Z',
+        generert: new Date(generertMs).toISOString(),
+        steder: [stedMed('a', kildeTidspunkt)],
+      } as PublishedData,
+      source: 'latest',
+    })
+    const gammel = publisert(LOADED_AT - 60 * MIN)
+    const gamleData = (result: StederResult | null) => (result?.status === 'ok' ? result.gamleData : null)
+    const generert = (result: StederResult | null) => (result?.status === 'ok' ? result.data.generert : null)
+
+    // Every subscription a test makes is ended after it, so no check keeps running into the next test.
+    const avslutt: (() => void)[] = []
+    afterEach(() => {
+      for (const unsubscribe of avslutt.splice(0)) unsubscribe()
+      vi.useRealTimers()
+    })
+
+    async function aapen(...svar: (() => Promise<LoadResult>)[]) {
+      vi.useFakeTimers({ now: LOADED_AT })
+      const loadFn = vi.fn(() => Promise.resolve(gammel))
+      for (const neste of svar) loadFn.mockImplementationOnce(neste)
+      const store = createStederStore(loadFn)
+      const listener = vi.fn()
+      avslutt.push(store.subscribe(listener))
+      await vi.advanceTimersByTimeAsync(0)
+      expect(gamleData(store.getSnapshot())).toBe(false)
+      return { store, loadFn, listener }
+    }
+
+    it('loads the file again and shows the newer data without a banner, keeping the check going', async () => {
+      const nyere = publisert(LOADED_AT + 25 * MIN, '2026-10-08T12:25:00Z')
+      const { store, loadFn, listener } = await aapen(() => Promise.resolve(gammel), () => Promise.resolve(nyere))
+
+      // Exactly 90 min is not old yet: no new load.
+      await vi.advanceTimersByTimeAsync(30 * MIN)
+      expect(loadFn).toHaveBeenCalledTimes(1)
+      await vi.advanceTimersByTimeAsync(FERSKHET_SJEKK_MS)
+      expect(loadFn).toHaveBeenCalledTimes(2)
+      expect(generert(store.getSnapshot())).toBe(nyere.status === 'ok' && nyere.data.generert)
+      expect(gamleData(store.getSnapshot())).toBe(false)
+      // Subscribers heard the load and the new file, never a banner.
+      expect(listener).toHaveBeenCalledTimes(2)
+
+      // The newer file is checked like the first: it passes 90 min at 12:25 + 90 min.
+      await vi.advanceTimersByTimeAsync(85 * MIN)
+      expect(loadFn).toHaveBeenCalledTimes(3)
+    })
+
+    it('shows the banner when the new load gives the same file, and tries again at most once an hour', async () => {
+      const { store, loadFn } = await aapen()
+      const data = (result: StederResult | null) => (result?.status === 'ok' ? result.data : null)
+      const forst = data(store.getSnapshot())
+
+      await vi.advanceTimersByTimeAsync(31 * MIN)
+      expect(loadFn).toHaveBeenCalledTimes(2)
+      expect(gamleData(store.getSnapshot())).toBe(true)
+      // Same file, so the same data: the map is not rebuilt.
+      expect(data(store.getSnapshot())).toBe(forst)
+
+      await vi.advanceTimersByTimeAsync(NY_HENTING_ETTER_MS - FERSKHET_SJEKK_MS)
+      expect(loadFn).toHaveBeenCalledTimes(2)
+      await vi.advanceTimersByTimeAsync(FERSKHET_SJEKK_MS)
+      expect(loadFn).toHaveBeenCalledTimes(3)
+    })
+
+    it.each([
+      ['throws', () => Promise.reject(new Error('offline'))],
+      ['gives a load error', () => Promise.resolve<LoadResult>({ status: 'error', message: 'x' })],
+      ['gives an older file', () => Promise.resolve(publisert(LOADED_AT - 120 * MIN))],
+    ])('keeps the data and shows the banner when the new load %s', async (_name, svar: () => Promise<LoadResult>) => {
+      const { store, loadFn } = await aapen(() => Promise.resolve(gammel), svar)
+      await vi.advanceTimersByTimeAsync(31 * MIN)
+      expect(loadFn).toHaveBeenCalledTimes(2)
+      expect(store.getSnapshot()).toMatchObject({ status: 'ok', gamleData: true })
+      expect(generert(store.getSnapshot())).toBe(gammel.status === 'ok' && gammel.data.generert)
+    })
+
+    it('counts a new load that never answers as failed, and ignores a late answer', async () => {
+      let svar!: (loaded: LoadResult) => void
+      const { store, loadFn } = await aapen(
+        () => Promise.resolve(gammel),
+        () => new Promise((resolve) => (svar = resolve)),
+      )
+      await vi.advanceTimersByTimeAsync(31 * MIN)
+      expect(loadFn).toHaveBeenCalledTimes(2)
+      await vi.advanceTimersByTimeAsync(NY_HENTING_TIDSGRENSE_MS - 1)
+      expect(gamleData(store.getSnapshot())).toBe(false)
+      await vi.advanceTimersByTimeAsync(1)
+      expect(gamleData(store.getSnapshot())).toBe(true)
+
+      // A newer file that arrives after the time limit is not used.
+      svar(publisert(LOADED_AT + 25 * MIN, '2026-10-08T12:25:00Z'))
+      await vi.advanceTimersByTimeAsync(0)
+      expect(generert(store.getSnapshot())).toBe(gammel.status === 'ok' && gammel.data.generert)
+      expect(gamleData(store.getSnapshot())).toBe(true)
+
+      // The failed load counts as the try for this hour: no new load until an hour after it started.
+      await vi.advanceTimersByTimeAsync(NY_HENTING_ETTER_MS - NY_HENTING_TIDSGRENSE_MS - FERSKHET_SJEKK_MS)
+      expect(loadFn).toHaveBeenCalledTimes(2)
+    })
+
+    it('holds the banner back while the load is in flight', async () => {
+      let svar!: (loaded: LoadResult) => void
+      const { store, loadFn } = await aapen(
+        () => Promise.resolve(gammel),
+        () => new Promise((resolve) => (svar = resolve)),
+      )
+      await vi.advanceTimersByTimeAsync(31 * MIN)
+      expect(loadFn).toHaveBeenCalledTimes(2)
+      await vi.advanceTimersByTimeAsync(NY_HENTING_TIDSGRENSE_MS - 1)
+      expect(loadFn).toHaveBeenCalledTimes(2)
+      expect(gamleData(store.getSnapshot())).toBe(false)
+
+      svar(gammel)
+      await vi.advanceTimersByTimeAsync(0)
+      expect(gamleData(store.getSnapshot())).toBe(true)
+    })
+
+    it('marks a place «Utdatert» while the load is in flight, still holding the banner back', async () => {
+      // 2 h 30 min 30 s old at load, so it passes 3 h at the same check (31 min) that starts the load.
+      const vippende = publisert(LOADED_AT - 60 * MIN, '2026-10-08T09:30:30Z')
+      const { store, loadFn } = await aapen(
+        () => Promise.resolve(vippende),
+        () => new Promise(() => {}),
+      )
+      expect(utdatert(store.getSnapshot())).toEqual([])
+      await vi.advanceTimersByTimeAsync(31 * MIN)
+      expect(loadFn).toHaveBeenCalledTimes(2)
+      expect(gamleData(store.getSnapshot())).toBe(false)
+      expect(utdatert(store.getSnapshot())).toEqual(['a'])
+    })
+
+    it('does not load an old file again at once when the page opens on it', async () => {
+      vi.useFakeTimers({ now: LOADED_AT })
+      const loadFn = vi.fn(() => Promise.resolve(publisert(LOADED_AT - 120 * MIN)))
+      const store = createStederStore(loadFn)
+      avslutt.push(store.subscribe(() => {}))
+      await vi.advanceTimersByTimeAsync(NY_HENTING_ETTER_MS - FERSKHET_SJEKK_MS)
+      expect(loadFn).toHaveBeenCalledTimes(1)
+      expect(gamleData(store.getSnapshot())).toBe(true)
+      await vi.advanceTimersByTimeAsync(FERSKHET_SJEKK_MS)
+      expect(loadFn).toHaveBeenCalledTimes(2)
+    })
+
+    it('never loads demo data again', async () => {
+      vi.useFakeTimers({ now: LOADED_AT })
+      const demo = publisert(LOADED_AT - 120 * MIN)
+      if (demo.status !== 'ok') throw new Error('expected ok')
+      const loadFn = vi.fn(() => Promise.resolve<LoadResult>({ ...demo, data: { ...demo.data, mode: 'demo' }, source: 'demo' }))
+      avslutt.push(createStederStore(loadFn).subscribe(() => {}))
+      await vi.advanceTimersByTimeAsync(3 * NY_HENTING_ETTER_MS)
+      expect(loadFn).toHaveBeenCalledTimes(1)
+    })
   })
 
   it('shows the error view instead of a skeleton forever when loading throws', async () => {

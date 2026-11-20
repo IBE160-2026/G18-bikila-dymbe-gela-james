@@ -22,7 +22,8 @@
     "data:hent": "tsx scripts/pipeline/hent-data.ts",
     "fixtures:record": "tsx tests/contract/record-fixtures.ts",
     "prepare": "git config core.hooksPath .githooks || exit 0",
-    "test:e2e": "playwright test",
+    "test:e2e": "playwright test --project=chromium --project=normalmodus",
+    "test:e2e:nettlesere": "playwright test --project=firefox --project=webkit",
     "preview": "vite preview"
   },
   "dependencies": {

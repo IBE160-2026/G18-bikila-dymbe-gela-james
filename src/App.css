@@ -210,16 +210,30 @@ select:focus-visible {
 
 .liste-rader {
   display: grid;
-  gap: var(--spacing-2);
+  /* minmax(0, …): a card may shrink below its content, which wraps, so a 320px phone never scrolls sideways. */
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--spacing-3);
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-/* DESIGN.md listerad: a surface-raised card; the whole row is the link, not just the badge. */
+/* Story 1.8b: one card per row on mobile, then as many 240px+ columns as fit next to the filter. */
+@media (min-width: 768px) {
+  .liste-rader {
+    grid-template-columns: repeat(auto-fill, minmax(min(240px, 100%), 1fr));
+  }
+}
+
+/* DESIGN.md listerad (a destination card from Story 1.8b): a surface-raised card; the whole card is the link,
+   not just the badge. The card fills its grid cell, so cards in one row are the same height. */
 .app .liste-rad {
   display: grid;
-  grid-template-columns: 1fr auto;
+  height: 100%;
+  box-sizing: border-box;
+  /* Story 1.8b: the header at the top and the fields at the bottom, so the values line up across a row of
+     cards even when a name wraps or a card has «Utdatert». */
+  align-content: space-between;
   align-items: center;
   gap: var(--spacing-2) var(--spacing-3);
   min-height: var(--spacing-7);
@@ -235,22 +249,64 @@ select:focus-visible {
   border-color: var(--color-accent);
 }
 
+/* Review 2026-11-18: name and badge wrap instead of sitting in a grid with a fixed badge column, so a name
+   that does not fit beside the badge gets the whole line and the badge moves below it. */
+.liste-topp {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-2) var(--spacing-3);
+}
+
 .liste-navn {
+  flex: 1 1 auto;
+  min-width: 0;
+  /* Review 2026-11-18: «anywhere» broke names mid-word («Innerdalstårn/et»). Only a word wider than the whole
+     card is broken, hyphenated by the page's language (lang="nb"). */
+  overflow-wrap: break-word;
+  hyphens: auto;
   font-family: var(--typography-heading-font-family);
   font-size: var(--typography-heading-font-size);
   font-weight: var(--typography-heading-font-weight);
   line-height: var(--typography-heading-line-height);
 }
 
+/* Story 1.8b: fixed fields in equal columns, the label above the value, so values line up card to card. */
 .liste-detaljer {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
   grid-column: 1 / -1;
-  gap: var(--spacing-1) var(--spacing-4);
+  grid-auto-columns: minmax(0, 1fr);
+  grid-auto-flow: column;
+  gap: var(--spacing-2);
+}
+
+/* Each field is a column with its value at the bottom, so a wrapped label («Nysnø siste 24 t») does not
+   push its value below the others. */
+.liste-felt {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-width: 0;
+}
+
+.liste-felt-etikett {
+  display: block;
   color: var(--color-ink-secondary);
+  font-family: var(--typography-meta-font-family);
+  font-size: var(--typography-meta-font-size);
+  font-weight: var(--typography-meta-font-weight);
+  line-height: var(--typography-meta-line-height);
+  letter-spacing: var(--typography-meta-letter-spacing);
+}
+
+.liste-felt-verdi {
+  display: block;
+  color: var(--color-ink-primary);
   font-family: var(--typography-numeric-font-family);
   font-size: var(--typography-numeric-font-size);
   font-feature-settings: var(--typography-numeric-font-feature-settings);
+  overflow-wrap: anywhere;
 }
 
 /* «Utdatert» is a small meta text with the source time, never a block (EXPERIENCE, 3–12 h). */
@@ -343,6 +399,7 @@ select:focus-visible {
   line-height: var(--typography-heading-line-height);
 }
 
+.skivindu-forklaring,
 .skivindu-grunn,
 .skivindu-mangler {
   margin: 0 0 var(--spacing-1);
@@ -376,6 +433,34 @@ select:focus-visible {
   font-feature-settings: var(--typography-numeric-font-feature-settings);
 }
 
+/* Story 2.5 ({components.score-part-bar}): a grey bar between label and value. The bar shrinks on a
+   narrow phone; the value never wraps. The dd keeps at least the bar's minimum and the value, so on a
+   very narrow screen with a wide font the label wraps instead of the bar sliding under it. */
+.tall-liste dd.delpoeng-verdi {
+  display: flex;
+  flex: 1 0 auto;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--spacing-2);
+  white-space: nowrap;
+}
+
+.delpoeng-stolpe {
+  flex: 1;
+  min-width: 2rem;
+  max-width: 10rem;
+  height: var(--spacing-2);
+  overflow: hidden;
+  border-radius: var(--rounded-full);
+  background: var(--color-surface-sunken);
+}
+
+.delpoeng-stolpe > span {
+  display: block;
+  height: 100%;
+  background: var(--color-ink-secondary);
+}
+
 .sted-kilde {
   margin: var(--spacing-3) 0 0;
   color: var(--color-ink-secondary);
@@ -390,8 +475,11 @@ select:focus-visible {
 .sted-tilbake {
   display: inline-flex;
   align-items: center;
+  gap: var(--spacing-1);
   min-height: var(--spacing-7);
   min-width: var(--spacing-7);
+  /* Review 2026-11-18: above the place name, so it is seen without scrolling. */
+  margin-bottom: var(--spacing-2);
 }
 
 /* EXPERIENCE.md: never an empty surface without an explanation. */
@@ -439,7 +527,14 @@ select:focus-visible {
 .app-title {
   display: inline-flex;
   align-items: center;
+  gap: var(--spacing-2);
   min-height: var(--spacing-7);
+}
+
+/* Story 2.1b: the logo left of the name, DESIGN.md Toppnavigasjon. */
+.app-logo {
+  width: var(--spacing-6);
+  height: var(--spacing-6);
 }
 
 .toppnav-knapp {
@@ -496,7 +591,181 @@ select:focus-visible {
   }
 }
 
-/* The map/list switch and the explanation link share one row, wrapping on narrow screens. */
+/* Review 2026-11-18: how fresh the data is, as small meta text next to the map/list switch. */
+.utforsk-oppdatert {
+  margin: 0 auto 0 0;
+  color: var(--color-ink-secondary);
+  font-family: var(--typography-meta-font-family);
+  font-size: var(--typography-meta-font-size);
+  font-weight: var(--typography-meta-font-weight);
+  line-height: var(--typography-meta-line-height);
+  letter-spacing: var(--typography-meta-letter-spacing);
+}
+
+/* FR-12, SRS-F-15: the map legend, a strip above the map that wraps on narrow screens (review 2026-11-18). */
+.tegnforklaring {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-1) var(--spacing-4);
+  margin: 0 0 var(--spacing-2);
+  padding: 0;
+  list-style: none;
+  /* DESIGN.md components.map-legend: meta text and 10px swatches below 768px, body text and 14px from it. */
+  color: var(--color-ink-primary);
+  font-family: var(--typography-meta-font-family);
+  font-size: var(--typography-meta-font-size);
+  font-weight: var(--typography-meta-font-weight);
+  line-height: var(--typography-meta-line-height);
+  --tegnforklaring-prikk: 10px;
+}
+
+@media (min-width: 768px) {
+  .tegnforklaring {
+    font-family: var(--typography-body-font-family);
+    font-size: var(--typography-body-font-size);
+    font-weight: var(--typography-body-font-weight);
+    line-height: var(--typography-body-line-height);
+    --tegnforklaring-prikk: 14px;
+  }
+}
+
+.tegnforklaring li {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-1);
+}
+
+/* The same look as the markers (kartMarkor.ts): a filled dot per tier, a hollow dashed ring for incomplete. */
+.tegnforklaring-prikk {
+  box-sizing: border-box;
+  flex: none;
+  width: var(--tegnforklaring-prikk);
+  height: var(--tegnforklaring-prikk);
+  border-radius: 50%;
+}
+
+.tegnforklaring-prikk--0 {
+  background: var(--color-snowscore-0);
+}
+
+.tegnforklaring-prikk--1 {
+  background: var(--color-snowscore-1);
+}
+
+.tegnforklaring-prikk--2 {
+  background: var(--color-snowscore-2);
+}
+
+.tegnforklaring-prikk--3 {
+  background: var(--color-snowscore-3);
+}
+
+.tegnforklaring-prikk--ufullstendig {
+  border: 2px dashed var(--color-snowscore-0);
+  background: var(--color-surface-raised);
+}
+
+/* Story 1.12 (FR-33): «Best akkurat nå», a compact row of the three best places above the map and the list.
+   One line per place below 768px, three cards side by side from 768px. */
+.best-naa {
+  margin-bottom: var(--spacing-4);
+}
+
+/* The heading and, below 768px, the explanation link on one line (change proposal 2026-11-18). */
+.best-naa-topp {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  column-gap: var(--spacing-3);
+  margin-bottom: var(--spacing-2);
+}
+
+/* Below 768px the link is meta text, so it usually fits beside the heading; with a wide font it wraps under it,
+   still inside the row's header and not on a line of its own by the switch. */
+.best-naa .best-naa-forklaring {
+  font-family: var(--typography-meta-font-family);
+  font-size: var(--typography-meta-font-size);
+}
+
+/* Two classes, so it wins over .forklaring-lenke (inline-flex), which comes later in this file. */
+@media (min-width: 768px) {
+  .best-naa .best-naa-forklaring {
+    display: none;
+  }
+}
+
+.best-naa-overskrift {
+  margin: 0;
+  font-family: var(--typography-heading-font-family);
+  font-size: var(--typography-heading-font-size);
+  font-weight: var(--typography-heading-font-weight);
+  line-height: var(--typography-heading-line-height);
+}
+
+.best-naa-liste {
+  display: grid;
+  gap: var(--spacing-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 768px) {
+  .best-naa-liste {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.app .best-naa-rad {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-3);
+  box-sizing: border-box;
+  height: 100%;
+  min-height: var(--spacing-7);
+  padding: var(--spacing-2) var(--spacing-3);
+  border: 1px solid var(--color-border-hairline);
+  border-radius: var(--rounded-md);
+  background: var(--color-surface-raised);
+  color: var(--color-ink-primary);
+  text-decoration: none;
+}
+
+.app .best-naa-rad:hover,
+.app .best-naa-rad:focus-visible {
+  border-color: var(--color-accent);
+}
+
+/* One line per place: a name too long for the row ends in «…» rather than wrapping or scrolling sideways. */
+.best-naa-navn {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: var(--typography-heading-font-weight);
+}
+
+.best-naa-rad .score-badge {
+  flex: none;
+}
+
+/* Below 768px the three rows stay compact, so the map starts as high as it can: a smaller badge and less
+   padding bring each row down to its 48px minimum height, above the 44px touch target. */
+@media (max-width: 767px) {
+  .app .best-naa-rad {
+    padding: var(--spacing-1) var(--spacing-3);
+  }
+
+  .best-naa-rad .score-badge {
+    padding: var(--spacing-1) var(--spacing-2);
+    font-family: var(--typography-meta-font-family);
+    font-size: var(--typography-meta-font-size);
+  }
+}
+
+/* The map/list switch and «Oppdatert» share one row, wrapping on narrow screens. */
 .utforsk-verktoy {
   display: flex;
   flex-wrap: wrap;
@@ -510,7 +779,8 @@ select:focus-visible {
   margin-bottom: 0;
 }
 
-/* Links to the explanation page from a score: a 44px+ touch target like the other links. */
+/* Links to the explanation page from a score (the place page card, and «Best akkurat nå» below 768px): a 44px+
+   touch target like the other links. */
 .forklaring-lenke {
   display: inline-flex;
   align-items: center;

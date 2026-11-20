@@ -6,7 +6,7 @@ sources:
   - project-phase-folders/1-Oppstartsfasen/SnowFinder-Produktbrief.md
   - project-workspace/planning-artifacts/sprint-change-proposal-2026-10-07.md
   - project-workspace/planning-artifacts/sprint-change-proposal-2026-10-07-forenkling.md
-updated: 2026-10-28
+updated: 2026-11-15
 ---
 
 # SnowFinder — Experience Spine
@@ -31,7 +31,7 @@ Appen leser én publisert datafil og skriver ingenting. Demodatasettet vises bar
 |---|---|---|
 | Utforsk (kart) | `/` (standard) | Norgeskart fargelagt etter SnowScore, primær inngang |
 | Utforsk (liste) | `/` med `visning=liste`, eller «Vis som liste»-lenke fra kartet | Samme steder/filter som kartet, tastaturnavigerbar liste — fullverdig alternativ, ikke en degradert reserve (PRD FR-13) |
-| Stedsside | Trykk på kartmarkør, listerad, eller direkte delt lenke `/sted/:id` | Stedsnavnet som overskrift, SnowScore med delpoeng, «Grunnlag» (rådata, høyde og dataalder) og beste skivindu. «Tilbake» nederst går tilbake til søket. Stedstypen vises ikke. |
+| Stedsside | Trykk på kartmarkør, listerad, søkeforslag eller direkte delt lenke `/sted/:id` | Stedsnavnet som overskrift, SnowScore med delpoeng, «Grunnlag» (rådata, høyde og dataalder) og beste skivindu. «Tilbake» øverst, over stedsnavnet, går tilbake til søket *(flyttet fra bunnen 2026-11-18)*. Stedstypen vises ikke. |
 | Slik beregner vi SnowScore | Toppnavigasjon, eller lenke fra ethvert score-badge | Forklaring, regneeksempel, datakilder og begrensninger, datakvalitet for siste kjøring, «prøv selv»-kalkulator (Bør ha) |
 
 *(v2: Flaten «Tilbakemelding» er Ikke i v1.)*
@@ -71,25 +71,31 @@ Atferd. Visuelle spesifikasjoner ligger i `SnowFinder-DESIGN.md.Components`.
 
 | Komponent | Bruk | Atferdsregler |
 |---|---|---|
-| Toppnavigasjon | Alle flater, øverst | «SnowFinder» (til kartet) og «Slik beregner vi SnowScore». Under 768 px ligger lenken bak knappen ☰ (`aria-label="Meny"`, `aria-expanded`), og menyen lukkes når brukeren går til en annen side. Gjeldende side har `aria-current="page"` og vises med fet skrift og understrek, ikke bare farge. |
-| Kart \| Liste-veksling | Utforsk, rett under navigasjonen | To lenker, «Kart» og «Liste», ikke en bryter som bare finnes i JavaScript: valget står i URL-en (`visning=liste`), så Tilbake og delte lenker beholder det. Den valgte har `aria-current="page"`. Begge lenkene beholder filter og sortering. Lenken «Slik beregner vi SnowScore» står på samme linje. |
+| Toppnavigasjon | Alle flater, øverst | SnowFinder-logoen står til venstre for «SnowFinder» og er pynt for skjermlesere (`alt=""`), siden lenketeksten sier navnet *(2026-11-02)*. «SnowFinder» (til kartet) og «Slik beregner vi SnowScore». Under 768 px ligger lenken bak knappen ☰ (`aria-label="Meny"`, `aria-expanded`), og menyen lukkes når brukeren går til en annen side. Gjeldende side har `aria-current="page"` og vises med fet skrift og understrek, ikke bare farge. |
+| Kart \| Liste-veksling | Utforsk, rett under navigasjonen | Ved siden av står «Oppdatert kl. 17:29» i `meta`, tiden datafila ble laget, med dato når den er fra en annen dag *(2026-11-18)*. To lenker, «Kart» og «Liste», ikke en bryter som bare finnes i JavaScript: valget står i URL-en (`visning=liste`), så Tilbake og delte lenker beholder det. Den valgte har `aria-current="page"`. Begge lenkene beholder filter og sortering. Lenken «Slik beregner vi SnowScore» står ikke her. Fra 768 px er den i toppnavigasjonen. Under 768 px, der toppnavigasjonen ligger bak ☰, står den til høyre på linjen med overskriften «Best akkurat nå», så den ikke tar en egen linje og kartet får plass. Kart, liste og raden er da fortsatt lenket til forklaringen, som FR-8 krever. Fra 2026-11-02 til 2026-11-18 sto den her på mobil. |
+| Søkefelt *(Story 3.9)* | Utforsk, mellom Kart \| Liste-vekslingen og kartet eller listen, på alle bredder | Etiketten «Søk etter sted» er synlig over feltet, og plassholderen er «F.eks. Hemsedal eller Tromsø». Fra 768 px er feltet høyst 32rem bredt *(2026-11-18)*. Forslag vises fra første tegn, høyst 8, i en liste rett under feltet. Hvert forslag viser stedsnavnet og score-badge, eller statusen som tekst («Oppfyller ikke filteret», «Ufullstendige data»). Steder med for gamle data er fjernet og finnes ikke i søket. Når alle steder er fjernet («Ingen ferske data»), vises heller ikke søkefeltet. Pil opp og ned flytter markeringen, Enter åpner stedssiden, og Escape lukker listen (andre trykk tømmer feltet). Et klikk utenfor lukker listen. Søketeksten står ikke i adressen og endrer aldri filteret eller trefftallet. Antallet forslag annonseres med `aria-live="polite"`. Feltet ligger aldri i bunn-arket. |
+| Best akkurat nå *(Story 1.12)* | Utforsk, mellom søkefeltet og filteret eller kartet, på alle bredder | Overskriften er «Best akkurat nå», eller «Best blant treffene» når et filter er aktivt. Under den står høyst tre steder med høyest SnowScore blant treffene, i samme rekkefølge som listen sortert etter score. Hvert sted er én lenke med navnet og score-badge og åpner stedssiden. Under 768 px står lenken «Slik beregner vi SnowScore» i `meta` til høyre på overskriftens linje, eller rett under overskriften når skriften er bred (FR-8, 2026-11-18). Steder med ufullstendige data er ikke med. Raden vises ikke ved null treff, der null treff-kortet står, og heller ikke når ingen treff har poengsum. Under 768 px tar hvert sted én linje. Raden ligger aldri i bunn-arket. |
 | Kartmarkør | Utforsk (kart) | Klikk/trykk åpner stedsside. Hover (desktop) viser stedsnavn + score i tooltip. *(v3, 2026-10-08)* Ingen klynging: markørene er små på landsnivå og vokser når brukeren zoomer inn (mål i DESIGN.md `{components.map-marker}`), så ingen sted forsvinner inn i en klynge. |
-| Listerad | Utforsk (liste) | Hele raden er én lenke: Tab-navigerbar, Enter åpner stedsside. Stedsnavn, score-badge og nøkkeltall (nysnø, vind, temperatur). |
+| Fargeforklaring *(2026-11-08, plassering endret 2026-11-18)* | Utforsk (kart), en stripe rett over kartet | Viser hva fargene på kartet betyr (SRS-F-15). Står over kartet og ikke inne i det, fordi Finnmark ligger oppe til høyre og bunn-arket dekker bunnen på mobil. Det er en vanlig liste med navnet «Fargeforklaring» (`aria-label`) og fem punkter på én linje som brytes ved behov: «70–100 Svært godt», «45–69 Godt», «20–44 Middels», «0–19 Lite» og «Ufullstendige data». Skjermleseren leser navnet og lista, mens fargeprikkene er pynt (`aria-hidden`). Forklaringen er ikke interaktiv: den har ingen knapp, får ikke fokus, og dekker aldri markørene. Ved null treff vises den ikke. Den er alltid synlig, også under 768 px, i mindre form (mål i DESIGN.md `{components.map-legend}`). Listevisningen har ingen forklaring, siden hver rad viser tall og ord. |
+| Listerad (destinasjonskort) | Utforsk (liste) | Hele kortet er én lenke: Tab-navigerbar, Enter åpner stedsside. Stedsnavn, score-badge og nøkkeltall (nysnø, vind, temperatur). *(2026-11-02, Story 1.8b)* Feltene står i samme rekkefølge på alle kort: Nysnø (eller «Nysnø siste 24 t» med NVE valgt), Vind, Temp, og Avstand når listen er sortert etter avstand. Tallene står nederst i kortet, så de står på linje fra kort til kort også når et navn går over to linjer. «Utdatert» står mellom navnet og feltene. Får ikke navnet plass ved siden av badgen, står badgen på linjen under, så navnet ikke brytes midt i et ord. Bare et enkelt ord som er bredere enn hele kortet, deles, med bindestrek *(2026-11-18)*. Skjermleseren hører det samme som før: «Gaustatoppen, 58 · Godt, Nysnø 10 cm, Vind 12 m/s, Temp −6,4 °C», og ved avstand «… 12 km unna». |
 | Sorteringsvalg | Utforsk (liste), over radene | En ordinær `<select>` med etiketten «Sorter etter» og valgene «Score», «Avstand» og «Navn», aldri en museavhengig dra-og-slipp. «Score» og «Navn» står i URL-en. «Avstand» ber om posisjonen først når brukeren velger det, og posisjonen blir bare i minnet (se Tilstandsmønstre, avslått posisjon). |
 | Score-badge | Overalt SnowScore vises | Tall + tekstetikett alltid sammen. Trykk/tap gjør ingenting i seg selv (badge er ikke en egen lenke) — hele kortet/raden er klikkmålet. Trinn og etikett følger tersklene i tabellen under Colors i DESIGN.md (70 «Svært godt», 45 «Godt», 20 «Middels», 0 «Lite»). |
-| Filterpanel | Utforsk (kart + liste) | Slidere for nysnø/vind/temperatur (Må ha) + skydekke i dagslys/avstand (Bør ha), pluss avkrysning for stedstype og valg av datagrunnlag for nysnø (Bør ha). Antall treff oppdateres live (`aria-live="polite"`) mens sliderne justeres. Nullstill-knapp alltid synlig når minst ett filter avviker fra standard. Alle krav kombineres med OG. Under 768 px ligger panelet i bunn-arket, fra 768 px er det et fast sidepanel. |
+| Filterpanel | Utforsk (kart + liste) | Slidere for nysnø/vind/temperatur (Må ha) + skydekke i dagslys/avstand (Bør ha), pluss avkrysning for stedstype og valg av datagrunnlag for nysnø (Bør ha). Antall treff oppdateres live (`aria-live="polite"`) mens sliderne justeres. Nullstill-knapp alltid synlig når minst ett filter avviker fra standard. Alle krav kombineres med OG. Alle fem sliderne starter på «Alle» helt til venstre, og kravet blir strengere mot høyre: mer nysnø, mindre vind, kaldere, mindre skydekke og kortere avstand. Piltast høyre gjør kravet strengere, mens opp og ned følger tallet, slik skjermlesere forventer *(2026-11-02; før sto vind, temperatur, skydekke og avstand på «Alle» helt til høyre)*. Under 768 px ligger panelet i bunn-arket, fra 768 px er det et fast sidepanel. Rekkefølgen er: «Filter» og antall treff, de aktive kravene, hurtigvalgene, gruppen «Vær» (nysnø med datagrunnlag, vind, temperatur, skydekke i dagslys), gruppen «Sted» (avstand, stedstype) og «Nullstill». Hver gruppe har en overskrift *(2026-11-07)*. |
+| Aktive krav *(2026-11-07)* | Filterpanel, øverst under «Filter» og antall treff, på alle bredder | Vises bare når minst ett krav er aktivt, i en liste med navnet «Aktive krav». Hvert krav er en chip med samme tekst som på det lukkede bunn-arket («Nysnø minst 10 cm», «Stedstype skisted, by») og en ×-knapp med det tilgjengelige navnet «Fjern nysnøkravet» (tilsvarende for hvert krav). × setter bare det kravet til «Alle» og flytter fokus til kravets slider, eller til første avkrysningsboks for stedstype. Kildechipens × heter «Bytt tilbake til prognose», setter kilden tilbake til «Prognose» og flytter fokus dit. Filterlogikken og adressen er uendret. På det lukkede bunn-arket er chipsene fortsatt ren tekst. |
 | Bunn-ark | Utforsk, under 768 px | Lukket viser det knappen «Filter» med antall treff, de aktive kravene som chips (ren tekst, ikke knapper) og «Nullstill». Knappen åpner og lukker arket (`aria-expanded`), ingen dra-gest. Åpent viser det hele filterpanelet, høyst 60 % av skjermhøyden og med egen rulling. Arket står fast nederst over kartet og skjuler aldri siste listerad. |
-| Skydekke i dagslys *(Story 3.5)* | Filterpanel | Slider «Skydekke i dagslys», høyst X % i steg på 10. Hjelpeteksten sier «Steder uten dagslys de neste 24 timene (mørketid) vises ikke når kravet er på.» |
+| Skydekke i dagslys *(Story 3.5)* | Filterpanel | Slider «Skydekke i dagslys», høyst X % i steg på 10. Hjelpeteksten sier «Steder uten dagslys de neste 24 timene (mørketid) vises ikke når kravet er på.» Den ligger bak «Mer om skydekke» *(2026-11-07)*. |
 | Stedstype *(Story 3.7)* | Filterpanel | Tre avkrysningsbokser, «Skisted», «Fjelltopp» og «By», i en gruppe med overskriften «Stedstype». Ingen avkrysset betyr «Alle» og er standard; å fjerne siste kryss gir «Alle» igjen, aldri null treff. Hjelpeteksten «Ingen avkrysset viser alle stedstyper.» er koblet til gruppen med `aria-describedby`. Chip på det lukkede bunn-arket: «Stedstype skisted, by». Ved null treff kan forslaget være «Prøv uten stedstypekravet.» |
-| Datagrunnlag for nysnø *(Story 3.8)* | Filterpanel, under nysnø-slideren | To radioknapper: «Prognose (MET, neste 24 t)» (standard) og «Siste 24 t (NVE, modellert)». Aldri deaktivert. Hjelpeteksten sier at NVEs verdier er modellerte estimater fra seNorge, ikke målt snø, og at 1 mm vannekvivalent regnes som omtrent 1 cm snø. Listen viser nysnø fra kilden filteret bruker. Forslaget ved null treff bytter aldri kilde. Chip når kilden er valgt mens nysnø står på «Alle»: «Datagrunnlag siste 24 t (NVE)». |
+| Datagrunnlag for nysnø *(Story 3.8)* | Filterpanel, under nysnø-slideren | To radioknapper: «Prognose (MET, neste 24 t)» (standard) og «Siste 24 t (NVE, modellert)». Aldri deaktivert. Hjelpeteksten sier at NVEs verdier er modellerte estimater fra seNorge, ikke målt snø, og at 1 mm vannekvivalent regnes som omtrent 1 cm snø. Den ligger bak «Mer om NVE-dataene», og ordlyden er uendret *(2026-11-07)*. Listen viser nysnø fra kilden filteret bruker. Forslaget ved null treff bytter aldri kilde. Chip når kilden er valgt mens nysnø står på «Alle»: «Datagrunnlag siste 24 t (NVE)». |
+| «Mer om» *(2026-11-07)* | Filterpanel, under skydekke-slideren og under datagrunnlaget for nysnø | En tekstknapp, «Mer om skydekke» og «Mer om NVE-dataene», med `aria-expanded`. Trykk viser hjelpeteksten rett under knappen, og nytt trykk skjuler den. Lukket som standard. Hjelpeteksten er koblet til slideren eller gruppen med `aria-describedby` også når den er skjult, så en skjermleser alltid hører den. Statustekster (NVE-data mangler, posisjon) og hjelpeteksten for stedstype står alltid synlige. |
 | Hurtigvalg-chip | Filterpanel | «Pudderdag», «Sol etter snøfall» — trykk fyller filteret og oppdaterer resultatet i samme handling, ingen bekreftelsesdialog. |
-| SnowScore-kortet | Stedsside, øverst | Overskriften «SnowScore», score-badge med tallet i `display`, og delpoengene «A Nysnøpotensial», «B Kuldebonus» og «C Snøandel» som «x av 60», «x av 25» og «x av 15». Ved ufullstendige data vises bare teksten «Ufullstendige data», uten delpoeng. Lenken «Slik beregner vi SnowScore» står nederst i kortet. |
-| Grunnlag-kortet | Stedsside | Overskriften «Grunnlag» og rådataene som etikett og verdi: nysnø neste døgn, temperatur, maks vind, skydekke, skydekke i dagslys, høyde og NVE-nysnø siste døgn. En verdi som mangler, vises som «–». Nederst kilden og tidspunktet: «Prognose fra MET, oppdatert …». |
+| SnowScore-kortet | Stedsside, øverst | Overskriften «SnowScore», score-badge med tallet i `display`, og delpoengene «A Nysnøpotensial», «B Kuldebonus» og «C Snøandel» som «x av 60», «x av 25» og «x av 15». Hvert delpoeng har en vannrett stolpe mellom etiketten og «x av N», fylt mot delpoengets eget maks (60, 25 og 15), så en full stolpe betyr fullt hus på det delpoenget *(steg 3 i UX-forbedringen, 2026-11-07)*. Stolpen er bare pynt for øyet (`aria-hidden`): teksten «x av N» bærer tallet, og skjermleseren hører den som før. Ingen begrunnelse per rad, fordi Grunnlag-kortet har rådataene. Ved ufullstendige data vises bare teksten «Ufullstendige data», uten delpoeng og uten stolper. Lenken «Slik beregner vi SnowScore» står nederst i kortet. |
+| Grunnlag-kortet | Stedsside | Overskriften «Grunnlag» og rådataene som etikett og verdi: nysnø neste døgn, temperatur, maks vind, skydekke, skydekke i dagslys, høyde og «Nysnø siste 24 t (NVE)» i cm, regnet om som i listen og filteret *(2026-11-18)*. En verdi som mangler, vises som «–». Nederst kilden og tidspunktet: «Prognose fra MET, oppdatert …». |
 | «Tilbake» | Stedsside, nederst | Går ett steg tilbake i historikken når stedssiden ble åpnet fra appen, så kart eller liste og filteret er som før. Ble siden åpnet fra en delt lenke, går den til søket som står i lenken. |
-| Beste skivindu-kort *(Story 4.2)* | Stedsside | Vises alltid. Tidsrom i norsk tid («fredag 13–17») og en begrunnelse («Snittvind 1 m/s, skydekke 91 %, etter snøfallet»). Finnes ikke fire sammenhengende dagslystimer, vises det beste kortere vinduet med «Bare N sammenhengende dagslystimer» («timer» i mørketid, entall ved 1). Kortet leser bare dataprogrammets felt, også mørketid-flagget, og regner aldri dagslys selv. Variantene er tegnet i [wireframe-stedsside](wireframes/wireframe-stedsside-2026-10-28.excalidraw), ramme 4–5. |
-| Kalkulator («prøv selv») | Forklaringsside | To numeriske inndata (nedbør, temperatur) → live-oppdatert A/B/C + sum, samme modul som dataprogrammet (PRD FR-10, Bør ha). |
+| Beste skivindu-kort *(Story 4.2)* | Stedsside | Vises alltid. Under overskriften står alltid «Gjelder været (vind, skydekke og dagslys), ikke snøen. Snøen står i SnowScore.», så et godt vindu ved siden av en lav SnowScore ikke ser ut som en motsigelse *(2026-11-18)*. Tidsrom i norsk tid («fredag 13–17») og en begrunnelse («Snittvind 1 m/s, skydekke 91 %, etter snøfallet»). Finnes ikke fire sammenhengende dagslystimer, vises det beste kortere vinduet med «Bare N sammenhengende dagslystimer» («timer» i mørketid, entall ved 1). Kortet leser bare dataprogrammets felt, også mørketid-flagget, og regner aldri dagslys selv. Variantene er tegnet i [wireframe-stedsside](wireframes/wireframe-stedsside-2026-10-28.excalidraw), ramme 4–5. |
+| Kalkulator («prøv selv») | Forklaringsside | To numeriske inndata (nedbør, temperatur) → live-oppdatert A/B/C + sum, samme modul som dataprogrammet (PRD FR-10, Bør ha). A, B og C har de samme stolpene som SnowScore-kortet, og stolpene følger tallene mens brukeren skriver. Ved ugyldig inndata vises verken tall eller stolper *(2026-11-07)*. |
+| Regneeksempel *(2026-11-07)* | Forklaringsside, under «Delpoengene» | Delpoengene i det faste eksemplet har de samme stolpene som SnowScore-kortet, så brukeren kjenner dem igjen på stedssiden. |
 | Demobanner | Alle flater, øverst under navigasjonen | Vises når datafilen er demodata (`mode: "demo"`): «Demodata – ikke ekte prognoser». Kan ikke lukkes, men blokkerer ingenting. Lenker til README-avsnittet om ekte data. |
-| Banner-stale-data | Alle flater, øverst under navigasjonen | Vises når de nyeste dataene er eldre enn normalt (over 90 min, NFR-3): «Viser siste kjente data fra kl. XX:XX». Blokkerer ikke bruk av resten av siden. Utløses av dataalder, ikke av en kretsbryter. *(Ikke bygget ennå, Story 1.6.)* |
+| Banner-stale-data | Utforsk og stedssiden, øverst under navigasjonen (ikke forklaringssiden) | Vises når datafila sist ble publisert for over 90 min siden (`generert`, NFR-3): «Viser siste kjente data fra kl. XX:XX». En frossen prognose fra MET i en fil som publiseres som normalt, gir ikke banner. Blokkerer ikke bruk av resten av siden. Utløses av dataalder, ikke av en kretsbryter. Statusregionen (`role="status"`) finnes fra første tegning, også mens data lastes, så skjermleseren hører banneret når teksten fylles inn. En fane som har stått åpen, henter datafila på nytt når den passer 90 min, og viser banneret bare hvis det ikke finnes en nyere fil. Vises ikke sammen med «Ingen ferske data» *(Story 1.6b, 2026-11-07)*. |
 | Datakvalitetspanel | Forklaringsside | Viser siste publiserte kjørings kvalitetsrapport i klartekst: tidspunkt, antall steder, andel gyldige, avviste svar per kilde og antall med ufullstendige data (NFR-DQ2). Ingen grafer kreves; en enkel tabell eller liste. |
 
 *(v2: Snøvarsel-knapp/-skjema og tilbakemeldingsskjema er Ikke i v1.)*
@@ -101,6 +107,7 @@ Atferd. Visuelle spesifikasjoner ligger i `SnowFinder-DESIGN.md.Components`.
 | Laster (kaldstart) | Alle flater | Kart og liste: et skjelett i `{colors.surface-sunken}` med samme form som kartet eller listen, så siden ikke hopper når dataene kommer. Stedssiden: et enkelt skjelett. Skjermleseren hører «Laster stedsdata» (`role="status"`). Ingen spinner-only-skjerm. Forklaringssiden vises med en gang; bare datakvalitetspanelet venter og sier «Henter kvalitetsrapporten for siste kjøring …». |
 | Datafilen lar seg ikke laste | Kart/liste/stedsside | «Klarte ikke å lese stedsdataene. Prøv å laste siden på nytt senere.» (`role="alert"`). Forklaringssiden vises likevel, og datakvalitetspanelet sier «Kvalitetsrapporten kunne ikke lastes. Last inn siden på nytt for å prøve igjen.» Lar kartbiblioteket seg ikke laste, står «Kartet kunne ikke lastes. Last siden på nytt.» i stedet for kartet. |
 | Null treff | Kart/liste | Teksten over kartet eller listen sier hvilket krav som kan lempes: «Ingen treff. Prøv vind høyst 8 m/s.» Knappen «Bruk forslaget» setter verdien med ett trykk og flytter fokus til glideren for det kravet, og «Nullstill» står ved siden av. Hjelper det ikke å endre ett krav: «Det hjelper ikke å endre bare ett krav. Prøv «Nullstill».» Aldri en tom flate uten handling. Se [wireframe-utforsk](wireframes/wireframe-utforsk-2026-10-28.excalidraw), ramme 5. |
+| Ingen søketreff | Søkefeltet | «Fant ingen steder som heter «…». SnowFinder dekker N steder i Norge.» i forslagslisten. Filteret, kartet og listen er uendret. |
 | Utdatert data (3–12 t) | Stedsside, kort, liste | Liten `meta`-tekst «Utdatert» + tidsstempel, ingen blokkering av visning. |
 | Data for gammel (>12 t) | Kart/liste/stedsside | Stedet vises ikke i det hele tatt (fjernet fra resultater, jf. NFR-3) — ikke vist gråtonet, faktisk fjernet, så brukeren aldri handler på for gammel info. Åpnes en delt lenke `/sted/:id` til et slikt sted, sier stedssiden «Dataene for dette stedet er for gamle til å vises» med lenken «Gå til kartet». |
 | Alle steder fjernet | Utforsk | Er alle stedene for gamle, vises overskriften «Ingen ferske data», teksten «Ingen steder har ferske nok data akkurat nå. Last inn siden på nytt for å hente de nyeste dataene.» og knappen «Last inn på nytt». Kart \| Liste-vekslingen og filteret vises ikke, siden det ikke er noe å vise. |
@@ -108,7 +115,7 @@ Atferd. Visuelle spesifikasjoner ligger i `SnowFinder-DESIGN.md.Components`.
 | Fant ikke siden | Alle adresser appen ikke kjenner | «Fant ikke siden» med lenken «Gå til kartet». |
 | Avslått posisjon | Filterpanel (avstand), sorteringsvalget | Avstandsfilteret: «Fikk ikke tilgang til posisjonen din. Avstandskravet har ingen effekt.» Sortering etter avstand: «Fikk ikke tilgang til posisjonen din. Listen er sortert etter score.» (eller rekkefølgen som står i URL-en). Mens nettleseren spør: «Henter posisjonen din …». |
 | MET-prognose mangler | Stedsside, Grunnlag-kortet | «Prognosen fra MET mangler for dette stedet.» i stedet for kilde og tidspunkt. |
-| Gamle data | Global banner | Banner-stale-data (se Komponentmønstre) øverst når de nyeste dataene er eldre enn normalt (over 90 min, NFR-3), for eksempel fordi en datakilde er nede: «Viser siste kjente data fra kl. XX:XX». Blokkerer ikke bruk av resten av siden. *(v2: utløses av dataalder, ikke av en kretsbryter.)* |
+| Gamle data | Banner på Utforsk og stedssiden | Banner-stale-data (se Komponentmønstre) øverst når datafila sist ble publisert for over 90 min siden (`generert`, NFR-3), for eksempel fordi timesjobben har stoppet: «Viser siste kjente data fra kl. XX:XX». Blokkerer ikke bruk av resten av siden. Når alle steder er eldre enn 12 t, vises bare «Ingen ferske data». *(v2: utløses av dataalder, ikke av en kretsbryter. Presisert i Story 1.6b, 2026-11-07.)* |
 | Demodata | Global banner | Demobanneret (se Komponentmønstre). Alder regnes mot demodatasettets egen «nå», så «Utdatert» og «fjernet» oppfører seg likt hver gang. Vises bare i demomodus. |
 | Ingen datafil | Hele Utforsk | Lokalt, uten nett og uten en hentet fil: «Fant ingen værdata. Sjekk nettet og start på nytt, eller kjør `npm run dev:demo`.» Viser aldri demodata uten at de er valgt. |
 | Ufullstendige data | Stedsside, kort | Tekst «Ufullstendige data» i stedet for et score-badge — aldri en tallverdi som ser reell ut. |
@@ -135,14 +142,15 @@ kartlaget (PRD NFR-7 — Marys og Sallys eksplisitte avgrensning; kartlaget komp
 listevisningen, som **er** fullt AA).
 
 - SnowScore vises **aldri** kun som farge — alltid tall + tekstetikett, i badge, kart-tooltip og
-  listerad likt.
+  listerad likt. Kartets fargeforklaring gir hvert trinn et intervall og et ord, og ufullstendige
+  data har stiplet kant i tillegg til farge *(2026-11-08)*.
 - Alle interaktive elementer nåbare og betjenbare med tastatur alene: Tab-rekkefølge følger
   lesretning, synlig fokusring, Enter/Space aktiverer, piltaster betjener slidere.
 - Filterets levende treff-antall annonseres til skjermleser via `aria-live="polite"` — en
   skjermleser-bruker som justerer en slider skal høre «14 treff» uten å måtte navigere bort og
   tilbake (realiserer UJ-3).
 - Skjema-feil er programmatisk koblet til feltet (`aria-describedby`), ikke bare visuelt rødt.
-- Trykkmål ≥ 44×44px (mobil), inkl. slider-gripepunkt og hurtigvalg-chips.
+- Trykkmål ≥ 44×44px (mobil), inkl. slider-gripepunkt, hurtigvalg-chips og ×-knappene på aktive krav.
 - `prefers-reduced-motion` respekteres: skjelett-fade og bunn-ark-animasjon droppes til et
   umiddelbart bytte.
 - Kontrast ≥ 4.5:1 for brødtekst, ≥ 3:1 for stor tekst/UI-komponenter — inkludert hvert
@@ -152,9 +160,12 @@ listevisningen, som **er** fullt AA).
 
 - **Brytpunkt:** én hovedbrytning ved ~768px (mobil vs. desktop-layout). Ingen egen
   nettbrett-spesifikk layout — nettbrett bruker desktop-layouten skalert ned.
-- **Mobil (<768px):** Kart/liste fyller skjermen under toppnavigasjonen. Filterpanelet ligger i
+- **Mobil (<768px):** Kart/liste fyller skjermen under toppnavigasjonen. Over kartet og listen står
+  søkefeltet og raden «Best akkurat nå» (Story 1.12). Raden har høyst tre kompakte linjer med mindre
+  badge. På en liten telefon kan kartet derfor starte under bunn-arket, og brukeren ruller ned til det *(2026-11-18)*. Filterpanelet ligger i
   et bunn-ark. Lukket viser det knappen «Filter» og de aktive kravene som chips. Knappen åpner
-  arket (Story 3.1, 2026-10-22: en knapp virker med tastatur og skjermleser). Stedsside er én kolonne; beste skivindu-kort ligger under SnowScore-kortet med delpoengene, over grunnlaget.
+  arket (Story 3.1, 2026-10-22: en knapp virker med tastatur og skjermleser). Fargeforklaringen står
+  rett over kartet, så bunn-arket aldri dekker den *(2026-11-18)*. Stedsside er én kolonne; beste skivindu-kort ligger under SnowScore-kortet med delpoengene, over grunnlaget.
 - **Desktop (≥768px):** Filterpanelet er et fast venstre sidepanel (ikke bunn-ark), kart/liste
   fyller resten. Stedsside bruker to kolonner (SnowScore med delpoeng og grunnlaget under hverandre til
   venstre, beste skivindu til høyre).
@@ -226,6 +237,15 @@ får hun høre at listen beholder rekkefølgen den hadde.
 Feil-gren: Har hun ikke nett, og finnes det ingen hentet datafil, sier `npm run dev` fra og viser
 kommandoen for demomodus. Demomodus virker alltid.
 
+### Flyt 5 — Mari sjekker ett bestemt sted (realiserer UJ-4) *(2026-11-04)*
+
+1. Mari åpner SnowFinder på mobil. Kartet lastes.
+2. Hun skriver «beito» i søkefeltet over kartet. Forslaget «Beitostølen» vises med score-badge.
+3. Hun trykker forslaget, og stedssiden åpnes.
+
+Feil-gren: Filteret skjuler Beitostølen → forslaget står likevel, merket «Oppfyller ikke
+filteret». Hun kan åpne stedssiden eller nullstille filteret.
+
 ## Wireframes *(steg 8c, 2026-10-28)*
 
 Wireframene viser appen slik den er bygget, på mobil (375 px) og desktop (1280 px). De åpnes på
@@ -272,25 +292,38 @@ som finnes, uten nye funksjoner. Koblingen står også som merknader i wireframe
 
 Denne seksjonen er ikke et byggekrav. Den er planen for å måle SM-2, SM-3 og SM-4 (PRD §9.3).
 
-Gjennomføres fra 2026-11-12 og innen F4 (forslag 2026-11-16) av Joseph og Aksel, med appen i demomodus
+Gjennomføres 2026-11-17–19 og innen F4 (forslag 2026-11-19, flyttet fra 2026-11-16 den 2026-11-15) av Joseph og Aksel, med appen i demomodus
 (`npm ci && npm run build:demo && npm run preview`), så alle deltakerne ser de samme dataene.
 Testdatasettet er `public/data/demo.json` (24 steder, kjørings-ID `demo`). Det er committet, og fasiten
-i oppgavene under gjelder det. Endres fila, må fasiten sjekkes på nytt.
+i oppgavene under gjelder det (sjekket på nytt 2026-11-15). Endres fila, må fasiten sjekkes på nytt.
+Testmanus, observasjonsskjema, tidsplan og resultatmal ligger i `project-phase-folders/3-Gjennomføringsfasen/brukertest/`.
 
 **Deltakere.** Minst fem personer med blandet erfaring, også noen utenfor studiet, fysisk eller via
 Teams med skjermdeling. Én leder testen og én tar notater. Deltakerne samtykker muntlig til at
 notatene brukes anonymt i sluttrapporten.
+
+**Minimal test for SM-3** *(2026-11-14, PRD §9.3)*. SM-3 er Må ha. Blir femperstesten ikke
+gjennomført, måles SM-3 i en minimal test med minst tre personer, der minst 2 av 3 skal klare
+oppgave 3. Den minimale testen har samme introduksjon, samme demodata og samme måling som oppgave 3
+i tabellen under: deltakeren leser forklaringssiden og forklarer så Gaustatoppens poengsum med egne
+ord. De andre oppgavene og SUS-skjemaet kan tas med, men SM-2, SM-4 og SM-16 måles bare i
+femperstesten. Femperstesten er fortsatt planen, og den minimale testen er reserven.
 
 **Gjennomføring (ca. 20 min per person).** Kort introduksjon uten å forklare appen, så de fem
 oppgavene med tenk-høyt. Testlederen hjelper bare når deltakeren står fast i over to minutter, og
 noterer da oppgaven som «med hjelp». Til slutt SUS-skjemaet og to åpne spørsmål: «Hva var
 vanskeligst?» og «Hva ville fått deg til å bruke SnowFinder før en skitur?»
 
+**Ekte Safari** *(2026-11-02, Story 2.1b)*. Minst én deltaker bruker Safari på iPhone og én Safari på Mac,
+hvis noen har det. Etter oppgavene sjekker testlederen filtersliderne der: alle fem står på «Alle» til
+venstre, å dra mot høyre gjør kravet strengere, og på Mac gjør pil høyre det samme. Slidertesten kjører
+i WebKit i CI, men ikke i ekte Safari.
+
 | # | Oppgave | Måler | Mål |
 |---|---|---|---|
 | 1 | «Finn et skisted med minst 10 cm nysnø og vind høyst 10 m/s, og åpne det.» Riktig svar: Trysil (12,6 cm nysnø, vind 9,5 m/s, skisted). | Tid, og om den fullføres uten hjelp | SM-2: minst 4 av 5 på under 2 minutter uten hjelp |
 | 2 | «Finn ut når det er best å dra til Hafjell de neste to dagene.» | Om deltakeren finner kortet «Beste skivindu» | Minst 4 av 5 uten hjelp |
-| 3 | «Forklar med egne ord hvorfor Gaustatoppen har den poengsummen den har.» (58, Godt) | Om forklaringen nevner nysnø, nedbør som kommer som snø og/eller temperatur (delpoengene A, B og C). Vind teller ikke, fordi SnowScore ikke måler vind. | SM-3: minst 4 av 5 etter å ha lest forklaringssiden |
+| 3 | «Forklar med egne ord hvorfor Gaustatoppen har den poengsummen den har.» (58, Godt) | Om forklaringen nevner nysnø, nedbør som kommer som snø og/eller temperatur (delpoengene A, B og C). Vind teller ikke, fordi SnowScore ikke måler vind. | SM-3: minst 4 av 5 etter å ha lest forklaringssiden (minimal test: minst 2 av 3) |
 | 4 | «Send søket ditt til en venn, slik at hen ser de samme stedene.» | Om deltakeren kopierer adressen med filteret | Minst 4 av 5 uten hjelp |
 | 5 | «Er snøen i Kirkenes målt i dag, eller er det en prognose? Hvor ferske er tallene?» Kirkenes er det eneste utdaterte stedet i demodataene (4 t). | Om deltakeren ser «Prognose», dataalderen og «Utdatert» | SM-4: minst 4 av 5 uten å bli fortalt det |
 

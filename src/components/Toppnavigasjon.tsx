@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import logo from '../assets/snowfinder-logo.svg'
 import { href, utforsk, type Route } from '../lib/router'
 import Lenke from './Lenke'
 
@@ -30,6 +31,8 @@ export default function Toppnavigasjon({ route }: { route: Route }) {
         className="app-title"
         current={route.name === 'utforsk' && route.visning === 'kart'}
       >
+        {/* Story 2.1b: decorative, since the link text already says «SnowFinder». */}
+        <img src={logo} alt="" className="app-logo" />
         SnowFinder
       </Lenke>
       <button

@@ -45,6 +45,12 @@ krever nøkkel, men som trenger nett for å vise kartbildene.
 Velg «Liste» under navigasjonen (eller åpne `/?visning=liste`) for å se de samme stedene som en
 liste som virker med tastatur og skjermleser, sortert etter score, avstand eller navn.
 
+Over kartet og listen står feltet «Søk etter sted». Skriv starten av et navn eller et ord i navnet, for
+eksempel «gaus» eller «skisenter», og velg et av høyst 8 forslag med mus, berøring eller piltastene og Enter
+for å åpne stedssiden. Søket skiller ikke store og små bokstaver, og «tromso» finner Tromsø. Et sted som
+filteret skjuler, står likevel i forslagene, merket «Oppfyller ikke filteret». Søket endrer aldri filteret
+eller adressen. Escape lukker forslagene, og et trykk til tømmer feltet.
+
 Filteret (til venstre på store skjermer, bak knappen «Filter» nederst på mobil) har seks krav:
 minst så mye nysnø, høyst så mye vind, høyst så høy temperatur, høyst så mye skydekke i dagslys
 (0–100 % i steg på 10, «Alle» ved 100), høyst så langt unna din egen posisjon (0–200 km i steg på 10,
@@ -133,7 +139,7 @@ alltid automatisk fra prognosen.
 Playwright-testene i `tests/e2e/` bygger appen to ganger: i demomodus for de fleste testene, og i normal
 modus for `tests/e2e/normalmodus.spec.ts`, som viser at normal modus aldri leser `demo.json`. Portene 4173 og
 4174 må være ledige. Testene sjekker kart → stedsside
-→ tilbake, listevisningen med tastatur, filteret (ved 1280 og 375 px), stedssiden, forklaringssiden (også ved 320 og 375 px), den tomme
+→ tilbake, listevisningen med tastatur, filteret (ved 1280 og 375 px), søket etter sted, stedssiden, forklaringssiden (også ved 320 og 375 px), den tomme
 tilstanden og en axe-sjekk av tilgjengeligheten i Chromium på demodataene.
 De henter ingenting fra nett. Nettleseren lastes ned én gang:
 
@@ -142,7 +148,17 @@ npx playwright install chromium   # last ned Chromium for Playwright (én gang)
 npm run test:e2e                  # kjør røyktesten
 ```
 
-På pull requests og ved push til `main` kjøres den av `.github/workflows/e2e.yml` på Ubuntu. Fontene der
+`tests/e2e/slidere.spec.ts` sjekker at de speilede filtersliderne starter på «Alle» til venstre, og at pil
+høyre gjør kravet strengere. Nettlesermotorene behandler speilede slidere ulikt, så den fila kjøres også i
+Firefox og WebKit (Safari-motoren). Bare den fila kjøres der, ikke hele E2E-pakken:
+
+```sh
+npx playwright install firefox webkit   # last ned Firefox og WebKit (én gang)
+npm run test:e2e:nettlesere             # slidertestene i Firefox og WebKit
+```
+
+På pull requests og ved push til `main` kjøres begge av `.github/workflows/e2e.yml` på Ubuntu, i to jobber ved
+siden av hverandre: `e2e` (Chromium) og `nettlesere` (Firefox og WebKit). Fontene der
 er bredere enn på Windows, så sjekk at E2E er grønn på GitHub, ikke bare lokalt. `npm test` kjører bare
 enhetstestene og trenger verken nettleser eller nett.
 
@@ -195,7 +211,12 @@ skrives ut når kjøringen ikke ble publisert.
 startes for hånd. GitHub hopper over mange planlagte kjøringer, så timeplanen prøver hvert 10. minutt, og den
 første jobben, `gate`, stopper en planlagt kjøring når siste commit på grenen `data` er under 50 minutter
 gammel. Loggen til `gate` viser alderen. Actions-fanen får derfor rundt 144 kjøringer i døgnet, og de fleste
-har `data`, `branch` og `verify` som skipped. Jobben trenger ingen nøkler. Hver kjøring som henter, legger
+har `data`, `branch` og `verify` som skipped. Likevel startet GitHub bare 7 av rundt 290 forsøk på 49 timer, så
+hver kjøring på `main` som har hentet, starter `.github/workflows/data-timer.yml` til slutt. Timeren venter til
+dataene er rundt 55 minutter gamle (minst 30 minutter etter en avvist kjøring) og starter så `data.yml`. Den står
+som «Data timer» i Actions-fanen og venter på en maskin hos GitHub. Bare én timer venter om gangen, og timeplanen
+starter kjeden igjen hvis den stopper. Vil dere stoppe kjeden, slå av «Data timer» under Actions. Da får jobben
+`timer` en advarsel, men kjøringen blir fortsatt grønn når dataene er publisert. Jobben trenger ingen nøkler. Hver kjøring som henter, legger
 `latest.json` i rota på grenen `data`. Grenen har alltid ett commit, så den får ingen historikk som
 vokser. Herfra henter `npm run data:hent` fila.
 
@@ -219,10 +240,19 @@ ligger som artifact (`data-run-log`) på kjøringen. En PR som endrer `data.yml`
 publisere.
 
 Feiler tilbakelesingen, kan den nye fila likevel være ute. Loggen viser hvilken `runId` som var forventet og
-funnet, og neste forsøk prøver igjen når dataene er over 50 minutter gamle.
+funnet, og timeren starter neste kjøring når dataene er rundt 55 minutter gamle.
 
 Feltene i datafila og kildesvarene er beskrevet i
 [`shared/contracts/data-dictionary.md`](shared/contracts/data-dictionary.md).
+
+### Drift og overvåking
+
+Stopper kjeden, blir ingen kjøring rød. Derfor sjekker en planlagt Claude-økt på kontoen til Aksel datafila og publiseringen
+gjennom GitHub kl. 06, 12, 18 og 24. Har publiseringen feilet, mangler stedene eller er dataene over 2 timer gamle, lager den ett issue med etiketten
+`overvåking`, med diagnose og neste steg, og lukker det når alt er i orden igjen. Claude-appen har bare lesetilgang
+i organisasjonen, så i praksis sender agenten et push-varsel til Aksel, som lager issuet. Får dere et slikt issue, følg
+neste steg i det. Agenten leser og melder fra, men endrer aldri kode. Instruksen står i
+[`drift/overvaakingsagent.md`](drift/overvaakingsagent.md).
 
 ### Stedskatalogen
 

@@ -126,9 +126,11 @@ describe('Kalkulator', () => {
   it('starts at 12 mm and −2,3 °C and shows A, B, C and the score', () => {
     expect(html).toContain('value="12"')
     expect(html).toContain('value="−2,3"')
-    expect(html).toContain('<dd>36,0 av 60</dd>')
-    expect(html).toContain('<dd>6,7 av 25</dd>')
-    expect(html).toContain('<dd>15,0 av 15</dd>')
+    expect(html).toContain('36,0 av 60</dd>')
+    expect(html).toContain('6,7 av 25</dd>')
+    expect(html).toContain('15,0 av 15</dd>')
+    // Story 2.5: the shared list with one bar per sub-score.
+    expect(html.match(/class="delpoeng-stolpe"/g)).toHaveLength(3)
     expect(html).toContain('58 · Godt')
   })
 

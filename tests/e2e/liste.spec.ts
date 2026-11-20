@@ -122,3 +122,138 @@ test('the list page has no serious or critical WCAG 2.1 AA violations', async ({
   const blocking = results.violations.filter(({ impact }) => impact === 'serious' || impact === 'critical')
   expect(blocking, JSON.stringify(blocking, null, 2)).toEqual([])
 })
+
+// Story 1.8b: destination cards. The same fields at the same place on every card, so values can be compared.
+// CI runs on Linux, whose fonts are wider than Windows' (PR #33–#38), so the narrow checks use a wide font.
+const BRED_FONT = `* { font-family: Verdana, 'DejaVu Sans', sans-serif !important; }`
+
+/** A bounding box that must exist: a missing element fails here instead of passing as zeros. */
+async function boks(locator: Locator) {
+  const box = await locator.boundingBox()
+  expect(box, locator.toString()).not.toBeNull()
+  return box!
+}
+
+/** Every visible card's own box and its wind value's box, in page order. */
+async function kortOgVind(page: Page) {
+  const antall = await rows(page).count()
+  const resultat = []
+  for (let i = 0; i < antall; i++) {
+    const kort = rows(page).nth(i)
+    resultat.push({ kort: await boks(kort), vind: await boks(kort.locator('.liste-felt').nth(1).locator('.liste-felt-verdi')) })
+  }
+  return resultat
+}
+
+async function ingenSidevisRulling(page: Page): Promise<void> {
+  const [scrollWidth, clientWidth] = await page.locator('html').evaluate((el) => [el.scrollWidth, el.clientWidth])
+  expect(scrollWidth).toBeLessThanOrEqual(clientWidth)
+}
+
+test('wide screens put cards side by side, with the values in line across each row of cards', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 800 })
+  await page.goto('/?visning=liste')
+  await expect(rows(page)).toHaveCount(24)
+  const alle = await kortOgVind(page)
+  expect(Math.abs(alle[0].kort.y - alle[1].kort.y)).toBeLessThan(1)
+  expect(alle[1].kort.x).toBeGreaterThan(alle[0].kort.x + alle[0].kort.width - 1)
+
+  // In every row of cards, wrapped names («Store Skagastølstind») and «Utdatert» included, the wind values
+  // share one line and sit at the same place in each card.
+  const rader = new Map<number, typeof alle>()
+  for (const element of alle) rader.set(Math.round(element.kort.y), [...(rader.get(Math.round(element.kort.y)) ?? []), element])
+  expect([...rader.values()].some((rad) => rad.length > 1)).toBe(true)
+  for (const rad of rader.values()) {
+    for (const { kort, vind } of rad) {
+      expect(Math.abs(vind.y - rad[0].vind.y)).toBeLessThan(1)
+      expect(Math.abs(vind.x - kort.x - (rad[0].vind.x - rad[0].kort.x))).toBeLessThan(1)
+    }
+  }
+
+  // Chrome puts a space around grid items in the name, as it did when the row was already a grid before the
+  // cards; the words and their order are the same.
+  await expect(rows(page).first()).toHaveAccessibleName(/^Gaustatoppen ?, 58 · Godt ?, Nysnø 10 cm ?, Vind 12 m\/s ?, Temp −6,4 °C$/)
+})
+
+for (const width of [320, 375]) {
+  test(`cards are one column and the list does not scroll sideways at ${width}px, even with a wide font and NVE`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 740 })
+    // «Nysnø siste 24 t» is the longest label; its value must still line up with wind and temperature.
+    await page.goto('/?visning=liste&nysnokilde=nve')
+    await expect(rows(page).first()).toContainText('Nysnø siste 24 t')
+    await page.addStyleTag({ content: BRED_FONT })
+    const [forste, andre] = await kortOgVind(page).then((alle) => alle.slice(0, 2))
+    expect(Math.abs(forste.kort.x - andre.kort.x)).toBeLessThan(1)
+    expect(andre.kort.y).toBeGreaterThan(forste.kort.y)
+    const verdier = rows(page).first().locator('.liste-felt-verdi')
+    const [nysno, vind] = [await boks(verdier.nth(0)), await boks(verdier.nth(1))]
+    expect(Math.abs(nysno.y - vind.y)).toBeLessThan(1)
+    await ingenSidevisRulling(page)
+  })
+}
+
+test('sorted by distance, a card shows «Avstand» over «0 km», and a screen reader still hears «0 km unna»', async ({ browser }) => {
+  const context = await browser.newContext({
+    geolocation: { latitude: 59.9139, longitude: 10.7522 },
+    permissions: ['geolocation'],
+    viewport: { width: 375, height: 740 },
+  })
+  await isolate(context)
+  const page = await context.newPage()
+  await page.goto('/?visning=liste')
+  await page.getByLabel('Sorter etter').selectOption('avstand')
+  const forste = rows(page).first()
+  const avstand = forste.locator('.liste-felt').nth(3)
+  await expect(avstand.locator('.liste-felt-etikett')).toHaveText('Avstand')
+  await expect(avstand.locator('.liste-felt-etikett')).toHaveAttribute('aria-hidden', 'true')
+  // «unna» is for the screen reader only, so the card shows «0 km».
+  await expect(avstand.locator('.liste-felt-verdi')).toHaveText('0 km unna')
+  await expect(avstand.locator('.liste-felt-verdi .visually-hidden')).toHaveText(' unna')
+  await expect(forste).toHaveAccessibleName(/^Oslo ?,.* ?, 0 km unna$/)
+  await page.addStyleTag({ content: BRED_FONT })
+  await ingenSidevisRulling(page)
+  await context.close()
+})
+
+// Review 2026-11-18: a place name is never broken inside a word (it was «Innerdalstårn/et»). A name that does
+// not fit beside the badge gets its own line instead. Each word must lie on one line: one client rect.
+for (const bredde of [390, 1440]) {
+  test(`no place name is broken inside a word at ${bredde} px`, async ({ page }) => {
+    await page.setViewportSize({ width: bredde, height: 900 })
+    await page.goto('/?visning=liste')
+    await expect(page.locator('.liste-navn').first()).toBeVisible()
+    const brutt = await page.locator('.liste-navn').evaluateAll((navn) =>
+      navn.flatMap((el) => {
+        const tekst = el.firstChild
+        // 3 is a text node; the E2E tsconfig has no DOM lib, so Node and document are reached through the element.
+        if (!tekst || tekst.nodeType !== 3) return []
+        const ord: string[] = []
+        for (const match of (tekst.textContent ?? '').matchAll(/\S+/g)) {
+          const range = el.ownerDocument.createRange()
+          range.setStart(tekst, match.index)
+          range.setEnd(tekst, match.index + match[0].length)
+          if (range.getClientRects().length > 1) ord.push(match[0])
+        }
+        return ord
+      }),
+    )
+    expect(brutt).toEqual([])
+  })
+}
+
+test('at 1440 px the badge stays beside a short name and moves under a name that does not fit', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await page.goto('/?visning=liste')
+  const deler = async (navn: string) => {
+    const kort = page.locator('a.liste-rad').filter({ hasText: navn })
+    const navnBox = await kort.locator('.liste-navn').boundingBox()
+    const badgeBox = await kort.locator('.score-badge').boundingBox()
+    if (!navnBox || !badgeBox) throw new Error(`${navn}: the name and the badge must both be rendered`)
+    return { navnBox, badgeBox }
+  }
+  const kort = await deler('Trysil')
+  expect(kort.badgeBox.x).toBeGreaterThanOrEqual(kort.navnBox.x + kort.navnBox.width)
+  expect(kort.badgeBox.y).toBeLessThan(kort.navnBox.y + kort.navnBox.height)
+  const langt = await deler('Store Skagastølstind')
+  expect(langt.badgeBox.y).toBeGreaterThanOrEqual(langt.navnBox.y + langt.navnBox.height)
+})

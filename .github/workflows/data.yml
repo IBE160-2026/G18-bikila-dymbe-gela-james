@@ -5,7 +5,9 @@ on:
     # GitHub drops many scheduled runs (only 2 of 14 hourly ones started on 2026-11-02), so the schedule
     # tries every 10 min, off the full hour. The gate job lets a run fetch only when the published file is
     # 50 min old, so MET is still asked about once an hour, and four tries start between 50 and 90 min, the
-    # limit of the stale data banner.
+    # limit of the stale data banner. Even so only 7 of about 290 tries started in 49 hours (2026-11-04), so
+    # the timer job at the end starts data-timer.yml, which starts the next run. The schedule is the fallback
+    # that restarts the chain.
     - cron: '5,15,25,35,45,55 * * * *'
   push:
     branches: [main]
@@ -227,3 +229,26 @@ jobs:
             failed=1
           fi
           exit "$failed"
+
+  # Starts data-timer.yml, which starts the next run when the data is about an hour old. Also after a rejected
+  # or failed run, so the chain goes on; the timer waits at least 30 min then. A scheduled try the gate
+  # stopped starts none, since a timer is already waiting for the same data; a gate that failed does, so the
+  # chain does not hang on the schedule.
+  timer:
+    needs: [gate, data, branch, verify]
+    if: ${{ always() && github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && needs.gate.outputs.run != 'false' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      actions: write
+    steps:
+      # A warning, not a failure: the colour of the run says whether the data was published, and a timer
+      # turned off under Actions must not make every run red.
+      - name: Start the timer for the next run
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          if ! gh workflow run data-timer.yml --ref main; then
+            echo "::warning::Fikk ikke startet data-timer.yml. Timeplanen starter neste kjøring."
+          fi

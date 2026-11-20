@@ -36,3 +36,16 @@ export function sorterSteder(steder: readonly Sted[], valg: Sortering, posisjon?
   }
   return sortert.sort((a, b) => scoreVerdi(b) - scoreVerdi(a) || etterNavn(a, b))
 }
+
+/** Story 1.12 (FR-33): how many places «Best akkurat nå» shows. */
+const BESTE_ANTALL = 3
+
+/**
+ * Story 1.12 (FR-33): the best places among the hits for «Best akkurat nå». The list's score order (ties by
+ * name, then id), with incomplete data left out, at most three places.
+ */
+export function besteSteder(treff: readonly Sted[]): Sted[] {
+  return sorterSteder(treff, 'score')
+    .filter((sted) => sted.snowScore.kind === 'score')
+    .slice(0, BESTE_ANTALL)
+}

@@ -1,0 +1,73 @@
+name: Data timer
+
+# GitHub dropped almost all scheduled runs of data.yml (7 of about 290 tries in 49 hours, 2026-11-04), so
+# every run of data.yml on main that fetched starts this workflow, and it starts the next run when the data
+# is about 55 min old. workflow_dispatch is one of the events GITHUB_TOKEN may start, and it is not dropped.
+# The schedule in data.yml stays as a fallback that restarts the chain.
+#
+# The runner sleeps while it waits. When an admin creates the environment data-timer with a wait timer of
+# 55 min, add `environment: data-timer` to the job and remove the sleep step: then nothing runs while it
+# waits. Keep the age check, so a missing wait timer cannot make the chain loop.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  # One timer at a time. A newer run means newer data, so it replaces the one that is waiting.
+  group: data-timer
+  cancel-in-progress: true
+
+jobs:
+  wait:
+    runs-on: ubuntu-latest
+    # The longest sleep is TARGET_AGE_MINUTES when the age cannot be read.
+    timeout-minutes: 70
+    permissions:
+      actions: write
+      contents: read
+    env:
+      # The age is the time of the commit on the branch data, as in the gate job. The banner counts from
+      # generert, which is set when a run starts, so it sees the data about one run (1–2 min) older.
+      URL: ${{ github.api_url }}/repos/${{ github.repository }}/commits/data
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      TARGET_AGE_MINUTES: 55
+      # After a rejected run the data is already old: wait anyway, so a source that is down is not asked in
+      # a tight loop.
+      MIN_WAIT_MINUTES: 30
+      # The same limit as the gate job in data.yml.
+      SKIP_YOUNGER_THAN_MINUTES: 50
+    steps:
+      - name: Wait until the data is about an hour old
+        run: |
+          wait=$TARGET_AGE_MINUTES
+          if published=$(curl --silent --fail --max-time 30 -H "Authorization: Bearer $GH_TOKEN" "$URL" |
+            jq -er '.commit.committer.date | strings') &&
+            published_seconds=$(date -u -d "$published" +%s 2>/dev/null); then
+            age=$(( ($(date -u +%s) - published_seconds) / 60 ))
+            wait=$(( TARGET_AGE_MINUTES - age ))
+            echo "Dataene på grenen data er $age min gamle (publisert $published)."
+          else
+            echo "::warning::Fant ikke alderen på grenen data, så timeren venter $TARGET_AGE_MINUTES min."
+          fi
+          if [ "$wait" -lt "$MIN_WAIT_MINUTES" ]; then wait=$MIN_WAIT_MINUTES; fi
+          echo "Venter $wait min."
+          sleep $(( wait * 60 ))
+
+      - name: Start data.yml unless something published meanwhile
+        run: |
+          if published=$(curl --silent --fail --max-time 30 -H "Authorization: Bearer $GH_TOKEN" "$URL" |
+            jq -er '.commit.committer.date | strings') &&
+            published_seconds=$(date -u -d "$published" +%s 2>/dev/null); then
+            age=$(( ($(date -u +%s) - published_seconds) / 60 ))
+            if [ "$age" -ge 0 ] && [ "$age" -lt "$SKIP_YOUNGER_THAN_MINUTES" ]; then
+              echo "Dataene er $age min gamle, så noe annet har publisert. Den kjøringen startet sin egen timer."
+              exit 0
+            fi
+            echo "Dataene er $age min gamle. Starter data.yml."
+          else
+            echo "::warning::Fant ikke alderen på grenen data. Starter data.yml."
+          fi
+          gh workflow run data.yml --ref main

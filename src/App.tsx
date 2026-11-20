@@ -3,6 +3,7 @@ import GamleDataBanner from './components/GamleDataBanner'
 import Toppnavigasjon from './components/Toppnavigasjon'
 import { useSteder, type StederResult } from './hooks/useSteder'
 import { now } from './lib/clock'
+import { oppdatertTekst } from './lib/format'
 import { useRoute, type Route } from './lib/router'
 import IkkeFunnet from './pages/IkkeFunnet'
 import SlikBeregnerViSnowScore from './pages/SlikBeregnerViSnowScore'
@@ -30,7 +31,14 @@ function Innhold({ result, route }: { result: StederResult | null; route: Route 
     )
   }
   if (route.name === 'utforsk') {
-    return <Utforsk steder={result.data.steder} utdatert={result.utdatert} route={route} />
+    return (
+      <Utforsk
+        steder={result.data.steder}
+        utdatert={result.utdatert}
+        route={route}
+        oppdatert={oppdatertTekst(result.data.generert, now(result.data))}
+      />
+    )
   }
   // NFR-3: a place removed for being older than 12 h says so, instead of "not found".
   if (result.fjernet.has(route.id)) return <IkkeFunnet melding="Dataene for dette stedet er for gamle til å vises" sok={route.sok} />
@@ -51,10 +59,19 @@ export function AppView({ result, route }: { result: StederResult | null; route:
       <header className="app-header">
         <Toppnavigasjon route={route} />
       </header>
-      {/* Story 1.6: an old data file is flagged on the pages that show its places, not on the explanation. */}
-      {result?.status === 'ok' && (route.name === 'utforsk' || route.name === 'sted') && (
-        <GamleDataBanner generert={result.data.generert} naa={now(result.data)} vis={result.gamleData} />
-      )}
+      {/* Story 1.6: an old data file is flagged on the pages that show its places, not on the explanation.
+          Story 1.6b: the region is mounted from the first paint, also while loading, so a screen reader
+          hears the banner when the data arrives. «Ingen ferske data» says enough on its own. */}
+      {(route.name === 'utforsk' || route.name === 'sted') &&
+        (result?.status === 'ok' ? (
+          <GamleDataBanner
+            generert={result.data.generert}
+            naa={now(result.data)}
+            vis={result.gamleData && statusMelding(result, route) !== INGEN_FERSKE}
+          />
+        ) : (
+          <GamleDataBanner vis={false} />
+        ))}
       {result?.status === 'ok' && result.data.mode === 'demo' && <DemoBanner />}
       <main className="app">
         {/* Rendered from the first paint, also while loading, so a screen reader hears the message when it

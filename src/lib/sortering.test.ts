@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { PublishedData, type Sted } from '../../shared/contracts/published'
-import { avstandKm, sorterSteder } from './sortering'
+import { avstandKm, besteSteder, sorterSteder } from './sortering'
 
 const demo = PublishedData.parse(
   JSON.parse(readFileSync(new URL('../../public/data/demo.json', import.meta.url), 'utf8')),
@@ -78,5 +78,42 @@ describe('sorterSteder', () => {
     expect(sortert).toHaveLength(24)
     expect(sortert[0].id).toBe('gaustatoppen')
     expect(sortert.at(-1)?.id).toBe('trondheim')
+  })
+})
+
+// Story 1.12 (FR-33): «Best akkurat nå» takes the list's score order, without incomplete data.
+describe('besteSteder', () => {
+  it('gives the three highest scores, best first, in the list order', () => {
+    const steder = [sted('a', 'Alta', 40), sted('b', 'Beitostølen', 70), sted('c', 'Cervinia', 55), sted('d', 'Dombås', 20)]
+    expect(ids(besteSteder(steder))).toEqual(['b', 'c', 'a'])
+    expect(ids(besteSteder(steder))).toEqual(ids(sorterSteder(steder, 'score')).slice(0, 3))
+  })
+
+  it('breaks a tie by the name, in Norwegian order', () => {
+    const steder = [sted('aa', 'Ålesund', 50), sted('h', 'Hafjell', 50), sted('o', 'Oppdal', 50), sted('b', 'Bergen', 50)]
+    expect(ids(besteSteder(steder))).toEqual(['b', 'h', 'o'])
+  })
+
+  it('breaks a tie between equal names by id, so the input order never decides the cut after three', () => {
+    const steder = [sted('c', 'Nes', 40), sted('b', 'Nes', 40), sted('a', 'Alta', 50), sted('d', 'Nes', 40)]
+    expect(ids(besteSteder(steder))).toEqual(['a', 'b', 'c'])
+    expect(ids(besteSteder([...steder].reverse()))).toEqual(['a', 'b', 'c'])
+  })
+
+  it('never includes a place with incomplete data, even when it would fill a slot', () => {
+    const steder = [sted('x', 'Xtra', null), sted('a', 'Alta', 10), sted('y', 'Ytre', null), sted('b', 'Bodø', 0)]
+    expect(ids(besteSteder(steder))).toEqual(['a', 'b'])
+  })
+
+  it('gives fewer than three when there are fewer places with a score, and none for no hits', () => {
+    expect(ids(besteSteder([sted('a', 'Alta', 30)]))).toEqual(['a'])
+    expect(besteSteder([sted('x', 'Xtra', null)])).toEqual([])
+    expect(besteSteder([])).toEqual([])
+  })
+
+  it('does not change the order of the array it is given', () => {
+    const steder = [sted('a', 'Alta', 10), sted('b', 'Bodø', 90)]
+    besteSteder(steder)
+    expect(ids(steder)).toEqual(['a', 'b'])
   })
 })

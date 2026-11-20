@@ -35,6 +35,15 @@ test('the navigation opens the page, with its seven sections, three described gr
   }
   // Story 2.2: the worked example ends in the brief's score.
   await expect(page.getByText('SnowScore = 36 + 6,8 + 15 = 57,8, avrundet til 58')).toBeVisible()
+  // Story 2.5: the example's sub-scores with the same bars and text as on the place page.
+  const eksempel = page.locator('section[aria-labelledby="regneeksempel"] .tall-liste')
+  await expect(eksempel.locator('dd')).toHaveText(['36,0 av 60', '6,8 av 25', '15,0 av 15'])
+  await expect(eksempel.locator('.delpoeng-stolpe[aria-hidden="true"]')).toHaveCount(3)
+  const eksempelFyll = eksempel.locator('.delpoeng-stolpe > span')
+  await expect(eksempelFyll.nth(0)).toHaveAttribute('style', /^width: 60%;?$/)
+  // B is 6,77… of 25 ≈ 27,1 %, computed from the unrounded value.
+  await expect(eksempelFyll.nth(1)).toHaveAttribute('style', /^width: 27(\.\d+)?%;?$/)
+  await expect(eksempelFyll.nth(2)).toHaveAttribute('style', /^width: 100%;?$/)
   // Story 2.3: the sources point to Varsom, and the quality panel describes the demo data set.
   await expect(page.getByRole('link', { name: 'Varsom.no' })).toHaveAttribute('href', 'https://www.varsom.no/')
   await expect(page.locator('.datakvalitet')).toContainText('Du ser demodata: innspilte svar fra MET og NVE')
@@ -52,9 +61,19 @@ for (const [visning, adresse] of [
   ['map', '/'],
   ['list', '/?visning=liste'],
 ] as const) {
-  test(`the link next to the map/list switch opens the page from the ${visning}`, async ({ page }) => {
+  // Story 2.1b: from 768px only the navigation's link is shown, so Utforsk does not show it twice. The one on the
+  // «Best akkurat nå» heading line (change proposal 2026-11-18) is for phones only and hidden here.
+  test(`the ${visning} shows the link once, in the navigation, and the decorative logo`, async ({ page }) => {
     await page.goto(adresse)
-    await page.locator('main').getByRole('link', { name: NAVN }).click()
+    await expect(page.getByRole('link', { name: NAVN })).toHaveCount(1)
+    await expect(page.locator('main').getByRole('link', { name: NAVN })).toHaveCount(0)
+    // The logo is decorative: it loads, and the link's name is still only «SnowFinder».
+    const logo = nav(page).locator('img.app-logo')
+    await expect(logo).toHaveAttribute('alt', '')
+    await expect(logo).toHaveJSProperty('complete', true)
+    await expect(logo).not.toHaveJSProperty('naturalWidth', 0)
+    await expect(nav(page).getByRole('link', { name: 'SnowFinder', exact: true })).toBeVisible()
+    await nav(page).getByRole('link', { name: NAVN }).click()
     await expectExplanation(page)
   })
 }
@@ -81,6 +100,10 @@ test('the calculator updates A, B, C and the score as you type, and explains an 
   const nedbor = page.getByLabel('Nedbør i 24 timer (mm)')
   const temperatur = page.getByLabel('Snittemperatur (°C)')
   await expect(resultat).toContainText('58 · Godt')
+  // Story 2.5: the start values give A 36 of 60 and a full C.
+  const fyll = resultat.locator('.delpoeng-stolpe > span')
+  await expect(fyll.nth(0)).toHaveAttribute('style', /^width: 60%;?$/)
+  await expect(fyll.nth(2)).toHaveAttribute('style', /^width: 100%;?$/)
 
   // 20 mm at −14 °C gives full A and full B: 60 + 25 + 15 = 100. No reload: the URL stays the same.
   await nedbor.fill('20')
@@ -88,17 +111,22 @@ test('the calculator updates A, B, C and the score as you type, and explains an 
   await expect(resultat).toContainText('60,0 av 60')
   await expect(resultat).toContainText('25,0 av 25')
   await expect(resultat).toContainText('100 · Svært godt')
+  // Story 2.5: the bars follow the input without a reload; A and B are full, and so is C.
+  await expect(fyll).toHaveCount(3)
+  for (let i = 0; i < 3; i++) await expect(fyll.nth(i)).toHaveAttribute('style', /^width: 100%;?$/)
   await expect(page).toHaveURL(/\/slik-beregner-vi-snowscore$/)
 
   // Rain at 5 °C gives no new snow, no cold bonus and no snow share.
   await temperatur.fill('5')
   await expect(resultat).toContainText('0 · Lite')
+  for (let i = 0; i < 3; i++) await expect(fyll.nth(i)).toHaveAttribute('style', /^width: 0%;?$/)
 
   await nedbor.fill('mye')
   await expect(nedbor).toHaveAttribute('aria-invalid', 'true')
   await expect(nedbor).toHaveAttribute('aria-describedby', 'kalkulator-nedbor-feil')
   await expect(page.locator('#kalkulator-nedbor-feil')).toHaveText('Skriv et tall, for eksempel 12 eller −2,5.')
   await expect(resultat).toHaveText('Rett verdiene over for å se SnowScore.')
+  await expect(resultat.locator('.delpoeng-stolpe')).toHaveCount(0)
 })
 
 test.describe('at 375px', () => {
@@ -132,11 +160,40 @@ test.describe('at 375px', () => {
     expect(scrollWidth).toBeLessThanOrEqual(375)
   })
 
+  for (const [visning, adresse] of [
+    ['map', '/'],
+    ['list', '/?visning=liste'],
+  ] as const) {
+    // Change proposal 2026-11-18: on a phone the link sits on the heading line of «Best akkurat nå», not on a row
+    // of its own next to the switch, so the map moves up while the scores still link to the explanation (FR-8).
+    test(`the ${visning} shows the link on the «Best akkurat nå» line, and only that one`, async ({ page }) => {
+      await page.goto(adresse)
+      await expect(page.getByRole('link', { name: NAVN })).toHaveCount(1)
+      await expect(page.locator('.utforsk-verktoy').getByRole('link', { name: NAVN })).toHaveCount(0)
+      const lenke = page.locator('.best-naa').getByRole('link', { name: NAVN })
+      const lenkeBox = await lenke.boundingBox()
+      const overskrift = await page.getByRole('heading', { level: 2, name: 'Best akkurat nå' }).boundingBox()
+      if (!lenkeBox || !overskrift) throw new Error('The heading and the link must both be rendered')
+      expect(lenkeBox.height).toBeGreaterThanOrEqual(44)
+      // In the row's header, above the places: beside the heading where it fits, under it with CI's wider fonts.
+      const forsteSted = await page.locator('.best-naa li').first().boundingBox()
+      if (!forsteSted) throw new Error('The row must list at least one place')
+      const topp = await page.locator('.best-naa-topp').boundingBox()
+      if (!topp) throw new Error('The row header must be rendered')
+      expect(lenkeBox.y).toBeGreaterThanOrEqual(topp.y)
+      expect(lenkeBox.y + lenkeBox.height).toBeLessThanOrEqual(forsteSted.y)
+      await lenke.click()
+      await expect(page).toHaveURL(/\/slik-beregner-vi-snowscore$/)
+      await expect(page.getByRole('heading', { level: 1 })).toHaveText(NAVN)
+    })
+  }
+
   test('going Back closes an open ☰ menu', async ({ page }) => {
     await page.goto('/')
-    await page.locator('main').getByRole('link', { name: NAVN }).click()
-    await expect(page).toHaveURL(/\/slik-beregner-vi-snowscore$/)
     const knapp = nav(page).getByRole('button', { name: 'Meny' })
+    await knapp.click()
+    await nav(page).getByRole('link', { name: NAVN }).click()
+    await expect(page).toHaveURL(/\/slik-beregner-vi-snowscore$/)
     await knapp.click()
     await expect(knapp).toHaveAttribute('aria-expanded', 'true')
 
@@ -196,6 +253,23 @@ for (const width of [320, 375]) {
     }
   })
 }
+
+test('at 320px with a wide font the sub-score values in the worked example and the calculator stay inside their rows', async ({ page }) => {
+  // Story 2.5: the bars must not push the page or a value sideways.
+  await page.setViewportSize({ width: 320, height: 740 })
+  await page.goto('/slik-beregner-vi-snowscore')
+  const verdier = page.locator(
+    'section[aria-labelledby="regneeksempel"] dd.delpoeng-verdi, .kalkulator-resultat dd.delpoeng-verdi',
+  )
+  await expect(verdier).toHaveCount(6)
+  await page.addStyleTag({ content: BRED_FONT })
+  const [scrollWidth, clientWidth] = await page.locator('html').evaluate((el) => [el.scrollWidth, el.clientWidth])
+  expect(scrollWidth).toBeLessThanOrEqual(clientWidth)
+  for (const dd of await verdier.all()) {
+    const [ddScroll, ddClient] = await dd.evaluate((el) => [el.scrollWidth, el.clientWidth])
+    expect(ddScroll).toBeLessThanOrEqual(ddClient)
+  }
+})
 
 test('both tables fit a 375px phone in the page font, without scrolling inside', async ({ page }) => {
   // The inner scrolling is only a safety net for wide fonts; with the page's own font the tighter

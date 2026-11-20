@@ -30,7 +30,7 @@ Frister fylles inn i [milepæler](milepæler.md) når gruppa har satt datoer.
 | 1 | Prosjektet bygger, SnowScore-formelen og katalogen finnes i kode, appen kjører med demodata, og forklaringssiden er på plass | 1.1, 1.2, 1.4, 1.10, 2.1, 2.2, 2.3, 2.4 | Ingen |
 | 2 | Ekte data på kart, i liste og på stedssiden | 1.3, 1.5, 1.7, 1.8, 1.9, 1.11 | UX-dokumentene er oppdatert |
 | 3 | Filter (Må ha først, deretter Bør ha) | 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8 | Sprint 2 er ferdig |
-| 4 | Bør ha: robusthet og skivindu | 1.6, 4.2 | Sprint 3 er ferdig |
+| 4 | Bør ha: robusthet og skivindu. Må ha: søk etter sted | 1.6, 4.2, 3.9 | Sprint 3 er ferdig |
 
 Kart, liste og stedsside (1.7–1.9) kan bygges mot demodata fra 1.10 før de ekte kildene er
 koblet på i 1.3 og 1.5. Epic 2 bygges i sprint 1, fordi forklaringssiden bare trenger
@@ -39,6 +39,29 @@ sprint 2. Kvalitetspanelet i 2.3 viser demodataenes rapport til 1.5 er ferdig.
 
 **Avvik i sprint 3 (2026-10-23):** Story 3.5 (sol) ble bygget før 3.4 (hurtigvalg), fordi
 hurtigvalget «Sol etter snøfall» trenger solfilteret.
+
+**Avvik (2026-11-02):** Story 2.1b (logo, én forklaringslenke og slidere som starter til venstre) ble lagt
+til etter Aksels ønske og bygget mens 1.11 ventet på målingen. Den justerer UX for 2.1 og Epic 3.
+**Avvik (2026-11-02):** Aksel bestilte en UX-forbedring i fem steg, før kodefrysen 11. november. Steg 1 er
+Story 1.8b (resultatlisten som destinasjonskort). Hvert steg er en egen story med egen PR.
+
+**Avvik (2026-11-04):** Story 3.9 (søk) er lagt til etter [endringsforslaget om søk](../../project-workspace/planning-artifacts/sprint-change-proposal-2026-11-04-sok.md)
+og bygges før brukertesten.
+
+**Avvik (2026-11-07):** Story 1.6b (rettinger etter reviewen av PR #77) er lagt til og bygget før
+kodefrysen, fordi funnene gjelder banneret brukertesten kan møte.
+
+**Avvik (2026-11-07):** Story 3.1b (ryddigere filter: aktive krav som chips med ×, gruppene «Vær» og «Sted»
+og forklaringer bak «Mer om») ble lagt til etter Aksels valg i UX-forbedringen 2026-11-07, og bygges før
+brukertesten. Den justerer UX for Epic 3, men endrer ikke filterlogikken eller adressen.
+
+**Avvik (2026-11-08):** Story 2.5 (delpoengstolper) er lagt til som steg 3 i UX-forbedringen (PR #93, Aksels
+valg 2026-11-07, og 2026-11-08 for plasseringen i regneeksemplet). Den gjenåpner Epic 2 og bygges før brukertesten, fordi den gjør SnowScore-kortet,
+regneeksemplet og kalkulatoren like.
+
+**Avvik (2026-11-18):** Story 1.12 (Best akkurat nå) er lagt til etter [endringsforslaget fra 2026-11-18](../../project-workspace/planning-artifacts/sprint-change-proposal-2026-11-18-best-akkurat-naa.md)
+og bygges etter rettingene, før kodefrysen 28. november. Den er et vedtatt unntak fra regelen om ingen nye stories etter
+16. november, og gjenåpner Epic 1.
 
 **Ikke i v1 (v3):** Story 4.1 (PWA), 4.3 og 4.4 (snøvarsel) og hele Epic 5 (tilbakemelding).
 De står i `sprint-status.yaml` med kommentaren «Ikke i v1» og bygges ikke.

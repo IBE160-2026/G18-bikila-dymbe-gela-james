@@ -122,6 +122,60 @@ describe('fetchAll', () => {
     expect(validated.validated.every((v) => v.met === null && v.nve !== null)).toBe(true)
   })
 
+  // Story 1.6b: NVE goes through the same retries as MET.
+  it('tries NVE network errors, 5xx and 429 three times too, waiting 1 s and then 2 s', async () => {
+    const { fetchFn, calls } = fakeFetch((url) => {
+      if (isMet(url)) return json(metResponse(snowyDay()))
+      const nveFor = (id: string) => nveUrl(catalogEntry(id), Date.parse(REFERENCE_TIME))
+      if (url === nveFor('a')) throw new TypeError('fetch failed', { cause: new Error('ECONNRESET') })
+      if (url === nveFor('b')) return new Response('', { status: 503 })
+      return new Response('', { status: 429 })
+    })
+    const { slept, sleep } = recordingSleep()
+    const ctx = await fetchAll(contextFor(['a', 'b', 'c']), { fetchFn, minIntervalMs: 0, sleep })
+
+    expect(ctx.raw.map((r) => r.feil)).toEqual([
+      { nve: 'Nettverksfeil: fetch failed: ECONNRESET (etter 3 forsøk)' },
+      { nve: 'HTTP 503 (etter 3 forsøk)' },
+      { nve: 'HTTP 429 (etter 3 forsøk)' },
+    ])
+    expect(ctx.raw.every((r) => r.met !== undefined && r.nve === undefined)).toBe(true)
+    expect(calls.filter((c) => !isMet(c.url))).toHaveLength(9)
+    expect(calls.filter((c) => isMet(c.url))).toHaveLength(3)
+    expect([...slept].sort((a, b) => a - b)).toEqual([1000, 1000, 1000, 2000, 2000, 2000])
+  })
+
+  it.each([
+    ['MET', true],
+    ['NVE', false],
+  ])('does not call %s again before the wait between attempts is over', async (_name, met) => {
+    const { fetchFn, calls } = fakeFetch((url) => (isMet(url) === met ? new Response('', { status: 503 }) : defaultAnswer(url)))
+    const sourceCalls = () => calls.filter((c) => isMet(c.url) === met).length
+    // A sleep that only ends when the test says so.
+    const waits: { ms: number; end: () => void }[] = []
+    const sleep = (ms: number) => new Promise<void>((resolve) => waits.push({ ms, end: resolve }))
+    const flush = () => new Promise((resolve) => setTimeout(resolve, 5))
+
+    const done = fetchAll(contextFor(['a']), { fetchFn, minIntervalMs: 0, sleep })
+    await flush()
+    expect(sourceCalls()).toBe(1)
+    expect(waits.map(({ ms }) => ms)).toEqual([1000])
+
+    await flush()
+    expect(sourceCalls()).toBe(1)
+    waits[0].end()
+    await flush()
+    expect(sourceCalls()).toBe(2)
+    expect(waits.map(({ ms }) => ms)).toEqual([1000, 2000])
+
+    await flush()
+    expect(sourceCalls()).toBe(2)
+    waits[1].end()
+    const ctx = await done
+    expect(sourceCalls()).toBe(3)
+    expect(ctx.raw[0].feil).toEqual({ [met ? 'met' : 'nve']: 'HTTP 503 (etter 3 forsøk)' })
+  })
+
   it('uses the answer when a brief failure passes on the next attempt, with no rejection', async () => {
     let metCalls = 0
     const { fetchFn } = fakeFetch((url) => {
@@ -198,6 +252,24 @@ describe('fetchAll', () => {
     expect(calls).toHaveLength(2)
     expect(slept).toEqual([])
     expect(validate(ctx).avviste.map((a) => a.kilde)).toEqual(['met', 'nve'])
+  })
+
+  // Story 1.6b: what Node's fetch (undici) throws when a host does not accept the connection in about 10 s.
+  it('gives up after a connect timeout, without a new attempt, and says so', async () => {
+    const { fetchFn, calls } = fakeFetch((url) => {
+      if (!isMet(url)) return json(nveResponse())
+      const cause = Object.assign(new Error('Connect Timeout Error (attempted address: api.met.no:443, timeout: 10000ms)'), {
+        name: 'ConnectTimeoutError',
+        code: 'UND_ERR_CONNECT_TIMEOUT',
+      })
+      throw new TypeError('fetch failed', { cause })
+    })
+    const { slept, sleep } = recordingSleep()
+    const ctx = await fetchAll(contextFor(['a']), { fetchFn, minIntervalMs: 0, sleep })
+
+    expect(calls.filter((c) => isMet(c.url))).toHaveLength(1)
+    expect(slept).toEqual([])
+    expect(ctx.raw[0].feil).toEqual({ met: 'Tidsavbrudd ved tilkobling' })
   })
 
   it('treats a 200 response that is not JSON as a failed call', async () => {

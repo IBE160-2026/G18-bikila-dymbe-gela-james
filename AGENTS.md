@@ -1,5 +1,5 @@
 <!-- bmad:context -->
-<!-- Verified 2026-10-27 against 9d39949. Managed by bmad-project-context; edits inside this block are replaced on refresh. Keep anything you want preserved outside the markers. -->
+<!-- Verified 2026-11-20 against 3e2da34. Managed by bmad-project-context; edits inside this block are replaced on refresh. Keep anything you want preserved outside the markers. -->
 
 ## SnowFinder (G18, IBE160)
 
@@ -24,18 +24,19 @@ Gruppeprosjekt i IBE160 ved Høgskolen i Molde: en statisk webapp som rangerer ~
 - Publisering: Vercel-prosjektet `snowfinder` eies av Aksel og publiserer fra `main`. `vercel.json` henter datafila fra grenen `data`. Lag aldri et prosjekt til for repoet.
 - Prosjektets fremdrift og stegrekkefølge står bare i `project-phase-folders/3-Gjennomføringsfasen/fremdriftsplan.md`. Lag ingen egen statusfil andre steder.
 - Datoer og arbeidsflyt: milepælene står i `project-phase-folders/2-Planleggingsfasen/milepæler.md`, tidslinjen i «Tidslinje» i `fremdriftsplan.md`, og arbeidsflyten til levering i `3-Gjennomføringsfasen/aktivitetsdiagram.md`.
-- Planleggingsdokumentene er godkjent. Steg 8c (wireframes, kursets skjermkrav og brukertestplan) er fortsatt åpent hos Sally (`bmad-ux`).
+- Planleggingsdokumentene er godkjent, og steg 8c (wireframes, skjermkrav og brukertestplan) ble ferdig 2026-10-28.
 - Nytt arbeid bygges av Amelia (`bmad-build`), én story om gangen, i rekkefølgen i `sprintplan.md`. Bygges en story i en annen rekkefølge, før avviket inn i `sprintplan.md` i samme PR.
 - Story-status: `project-workspace/implementation-artifacts/sprint-status.yaml`. Story-specs og epic-kontekst ligger i samme mappe.
 - Epics og stories finnes bare i `project-phase-folders/2-Planleggingsfasen/SnowFinder-Epics-og-Stories.md`.
 - Utsatte funn fra kodegjennomganger: `project-workspace/implementation-artifacts/deferred-work.md`. Les dem før du bygger i samme område.
 - Hvorfor planen ble forenklet: `project-workspace/planning-artifacts/sprint-change-proposal-2026-10-07*.md`.
+- Overvåking: rutinen `SnowFinder-overvåking` (planlagt Claude-økt på Aksels konto, kl. 06, 12, 18 og 24) følger `drift/overvaakingsagent.md`. Den leser datafila og Vercel-statusen gjennom GitHub og endrer aldri kode. Claude-appen får 403 på issues, så agenten sender Aksel et push-varsel, og Aksel lager issuet med etiketten `overvåking`. Endrer du instruksen, oppdater prompten i rutinen i samme PR.
 
 ## Running and verifying
 
 - Node 24, eller 26 og nyere (`engines` i `package.json`). Node 25 støttes ikke av Vitest.
 - Kjør `npm run lint`, `npm run typecheck`, `npm test` og `npm run build:demo` før hver commit. CI og pre-push-hooken kjører de samme fire, og `npm test` alene typesjekker ikke. `npm run build` henter data fra nett først (`prebuild`), så bruk den ikke som sjekk.
-- `npm run test:e2e` kjører i CI (`e2e.yml`), men ikke i pre-push-hooken. Kjør den lokalt før PR når du endrer UI. Port 4173 og 4174 må være ledige.
+- `npm run test:e2e` kjører Chromium og normal modus. `npm run test:e2e:nettlesere` kjører bare `tests/e2e/slidere.spec.ts` i Firefox og WebKit, etter `npx playwright install firefox webkit` én gang. CI kjører dem i to jobber i `e2e.yml`, `e2e` og `nettlesere`, men pre-push-hooken kjører ingen av dem. Kjør `npm run test:e2e` lokalt før PR når du endrer UI, og begge når du endrer sliderne. Port 4173 og 4174 må være ledige.
 - Pre-push-hooken (`.githooks/pre-push`) kjører de fire sjekkene og avviser push når sporede filer har endringer som ikke er committet. Commit eller stash først.
 - Lås avhengigheter til eksakte versjoner uten `^`, og commit `package-lock.json`. Bruk TypeScript 6.0.x, ikke 7, fordi typescript-eslint krever <6.1.
 
