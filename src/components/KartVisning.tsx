@@ -1,6 +1,6 @@
 import 'leaflet/dist/leaflet.css'
 import type { CircleMarker, LayerGroup, Map as LeafletMap } from 'leaflet'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import type { Sted } from '../../shared/contracts/published'
 import { navigate, sted as stedRoute, type UtforskRoute } from '../lib/router'
 import { NORWAY_BOUNDS, TILE_ATTRIBUTION, TILE_URL, markerSizeForZoom, markerSizeStyle, markerStyle, markorEndringer, tooltipText } from './kartMarkor'
@@ -37,7 +37,8 @@ export default function KartVisning({ steder, sok }: { steder: Sted[]; sok: Utfo
   const [failed, setFailed] = useState(false)
   const sokRef = useRef(sok)
 
-  useEffect(() => {
+  // A layout effect runs before the browser paints, so a click right after a new search uses that search.
+  useLayoutEffect(() => {
     sokRef.current = sok
   }, [sok])
 
