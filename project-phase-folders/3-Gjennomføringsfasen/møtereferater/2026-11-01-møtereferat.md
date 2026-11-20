@@ -32,3 +32,12 @@ Kort møte (15 minutter).
 | Se på Vercel som hostingløsning (kunngjøringen) | Hele gruppa | Neste møte |
 | Kontakte GitHub Support for å få kontoene sluppet fri | Kelly og Sena | Så snart som mulig |
 | Orientere Aksel om beslutningene fra dette møtet | Joseph | Neste møte |
+
+## Etter møtet
+
+*Lagt til 2026-11-20, da referatet ble levert.*
+
+- PR #78 ble merget samme kveld, 1. november kl. 21.06.
+- Vercel ble ikke tatt opp på neste møte. Samme kveld ble Vercel vedtatt i stedet for GitHub Pages
+  via `bmad-correct-course`, og publiseringen kom med PR #81, merget 2. november. Se «1. november
+  (kveld)» i fremdriftsplanen.

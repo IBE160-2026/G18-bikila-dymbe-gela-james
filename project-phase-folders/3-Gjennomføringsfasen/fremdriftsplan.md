@@ -211,7 +211,8 @@ på møtet. Oppdater statusen når et steg er ferdig.
   merger den.
 - Gruppa vil at SnowFinder skal bruke den rette formelen for SnowScore, så prediksjonene blir
   riktige. Endringer i formelen eller kravene går via `bmad-correct-course`.
-- På neste møte begynner gruppa å se på Vercel, hostingløsningen fra kunngjøringen.
+- På neste møte skulle gruppa se på Vercel, hostingløsningen fra kunngjøringen. Vercel ble vedtatt
+  allerede samme kveld (se over).
 - Aksel hadde gyldig fravær. Se [referatet](møtereferater/2026-11-01-møtereferat.md).
 
 **31. oktober: Story 1.11 er bygget, så alle v1-stories er ferdige. Igjen står brukertesten, rettinger, sluttrapporten og generalprøven.**
