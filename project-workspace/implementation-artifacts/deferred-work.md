@@ -200,3 +200,6 @@
 - source_spec: `project-workspace/implementation-artifacts/spec-1-6b-rettinger-etter-review.md`
   summary: Presiser NFR-3 og FR-6b i PRD-en (begge kopier) slik DESIGN.md og EXPERIENCE.md nå gjør: banneret følger `generert`, en frossen MET-prognose gir ikke banner, og nye forsøk gjelder nettverksfeil, 429 og 5xx.
   evidence: Funn 10 i gjennomgangen av 1.6b. En endring i PRD-en går via `bmad-correct-course`, og presiseringen endrer ikke kravet.
+- source_spec: `project-workspace/implementation-artifacts/spec-ytelse-mobil.md`
+  summary: E2E-test for at kartet tegner hvert sted på nytt én gang, med ny stil, når en nyere datafil publiseres mens kartet vises (KartVisning etter tiltak A).
+  evidence: Bare den rene `markorEndringer` er testet for nye `Sted`-objekter med samme id. Ingen E2E-test serverer to live-filer til kartet, slik `tom.spec.ts` gjør med `serveLive` og `page.clock` for listevisningen.
