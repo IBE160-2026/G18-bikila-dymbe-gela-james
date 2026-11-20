@@ -96,7 +96,8 @@ test('at 375 px the legend is visible above the map and not under the bottom she
 })
 
 // Change proposal 2026-11-20 (solution 1): on a small phone the map comes straight after the legend, and
-// «Best akkurat nå» under it, so the map is seen above the bottom sheet without scrolling.
+// «Best akkurat nå» under it, so the map is seen above the bottom sheet without scrolling. The map is lower
+// there, so the row under it can still be reached by swiping the page.
 test('at 375 × 667 the map starts right under the legend, before «Best akkurat nå»', async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 667 })
   await page.goto('/')
@@ -114,6 +115,10 @@ test('at 375 × 667 the map starts right under the legend, before «Best akkurat
   expect(radBox.y).toBeGreaterThanOrEqual(mapBox.y + mapBox.height)
   // Well over the 59 px measured before the change are seen above the closed sheet.
   expect(sheetBox.y - mapBox.y).toBeGreaterThan(200)
+  // The closed sheet stays at the bottom of the screen.
+  expect(Math.abs(sheetBox.y + sheetBox.height - 667)).toBeLessThan(3)
+  // Leaflet swallows swipes on the map, so the map and the sheet together leave a strip of page to swipe on.
+  expect(mapBox.height + sheetBox.height).toBeLessThan(667)
   const [scrollWidth, clientWidth] = await page.locator('html').evaluate((el) => [el.scrollWidth, el.clientWidth])
   expect(scrollWidth).toBeLessThanOrEqual(clientWidth)
 })

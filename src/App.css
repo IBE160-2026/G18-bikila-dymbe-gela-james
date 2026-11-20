@@ -665,8 +665,9 @@ select:focus-visible {
   background: var(--color-surface-raised);
 }
 
-/* Story 1.12 (FR-33): «Best akkurat nå», a compact row of the three best places above the map and the list.
-   One line per place below 768px, three cards side by side from 768px. */
+/* Story 1.12 (FR-33): «Best akkurat nå», a compact row of the three best places, above the map and the list
+   from 768px. Below 768px it stays above the list, but sits under the map in the map view (change proposal
+   2026-11-20). One line per place below 768px, three cards side by side from 768px. */
 .best-naa {
   margin-bottom: var(--spacing-4);
 }
@@ -778,6 +779,14 @@ select:focus-visible {
   .utforsk-resultat--kart .best-naa {
     order: 1;
     margin: var(--spacing-4) 0 0;
+  }
+
+  /* Leaflet sets touch-action: none, so a swipe on the map never scrolls the page. A lower map leaves a strip
+     of page between the map and the sheet to swipe on, so the row under the map can be reached. The skeleton
+     is shown before the page renders, outside this column, so it keeps its own height. */
+  .utforsk-resultat--kart .kart {
+    height: 50vh;
+    min-height: 240px;
   }
 }
 

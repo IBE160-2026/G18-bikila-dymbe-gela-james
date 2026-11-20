@@ -417,9 +417,9 @@ stedene i datafila, uten søketjeneste.
 
 #### FR-33: Beste steder akkurat nå *(Bør ha)*
 
-Utforsk viser de tre stedene med høyest SnowScore blant treffene øverst, over kartet og listen,
-så brukeren får svaret uten å lete. Under 768 px står raden rett under kartet i kartvisningen, så
-kartet synes over bunn-arket på en liten telefon *(2026-11-20)*.
+Utforsk viser de tre stedene med høyest SnowScore blant treffene, så brukeren får svaret uten å
+lete. Raden står øverst, over kartet og listen, fra 768 px og i listevisningen. Under 768 px står den
+rett under kartet i kartvisningen, så kartet synes over bunn-arket på en liten telefon *(2026-11-20)*.
 
 **Konsekvenser (testbare):**
 - Raden viser høyst 3 steder blant de samme treffene som kart og liste viser, sortert som listen
