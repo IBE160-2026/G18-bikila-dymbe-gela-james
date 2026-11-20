@@ -27,3 +27,23 @@ Sette opp overvåkingsagenten som en planlagt Claude-økt (NFR-6), og få den ti
 ### Åpne punkter
 - Etter merge: oppdater prompten i rutinen (uten nettadressen), slå den på og kjør de fire prøvene. Legg lenken til issuet inn i fremdriftsplan.md.
 - Agenten ser ikke om nettsiden er nede etter en vellykket publisering. Ta det med i sluttrapporten.
+
+## 2026-11-20 kl. 09:10 — Aksel Dymbe
+
+### Oppgave
+Få overvåkingsagenten i drift etter at den ikke fikk skrive issues (403), og kjøre prøvene.
+
+### Plan
+- Endringsforslag om push-varsel ([sprint-change-proposal-2026-11-19-overvaaking-push-varsel.md](../../project-workspace/planning-artifacts/sprint-change-proposal-2026-11-19-overvaaking-push-varsel.md)), PR #119.
+- Rette sjekk 1 etter at prøve A ga en falsk «Publiseringen har feilet», PR #120.
+- Prøvene A, B og C.
+
+### Resultat
+- PR #119 og #120 er merget. Sjekk 1 leser Vercel-statusen gjennom PR-en som ble merget, og en status agenten ikke får lest, regnes som ukjent.
+- Prøve A (grense 1 min): avvik, 403, og så push-varsel. Bestått.
+- Prøve B: issue #121 laget for hånd. Agenten så det og sendte ikke varsel. Bestått, men den kom fram til det fordi ingen diagnose passet (`data.yml` kjørte), ikke fordi diagnosen var den samme.
+- Prøve C (vanlig prompt, 2 t): kommentaren ga 403, og så kom push-varselet «I orden igjen. Lukk #121». Bestått. #121 er lukket for hånd.
+- Rutinen er på med den vanlige prompten. Neste kjøring er kl. 12.03.
+
+### Åpne punkter
+- Overvåkingen varsler bare Aksel. Får Claude-appen skrivetilgang til issues, lager agenten issuene selv.

@@ -3,7 +3,7 @@
 Oversikt over hvordan vi går fram, steg for steg, så alle kan følge med selv om de ikke var
 på møtet. Oppdater statusen når et steg er ferdig.
 
-**Sist oppdatert:** 2026-11-19
+**Sist oppdatert:** 2026-11-20
 
 ## Slik holder du deg oppdatert
 
@@ -22,10 +22,17 @@ på møtet. Oppdater statusen når et steg er ferdig.
 - Ingen funn hindrer en oppgave. Det eneste som var vanskelig, var tilbakepilen (1 av 6), og «Tilbake» ble
   flyttet øverst i PR #113. Ønsket om værmelding for flere dager (2 av 6) og snødybde blir videre arbeid.
 - PR #113 (rettinger), #114 (Story 1.12) og #116 (forklaringslenken på mobil) er merget og publisert.
-- Overvåkingsagenten er satt opp som en planlagt Claude-økt, men kom ikke fram til nettsiden fra skymiljøet i fem
-  prøvekjøringer. Den leser nå datafila og publiseringen gjennom GitHub i stedet
-  ([endringsforslag](../../project-workspace/planning-artifacts/sprint-change-proposal-2026-11-19-overvaaking-fra-data-grenen.md)). Rutinen er av til
-  PR-en er merget og prøvene er kjørt.
+- **Overvåkingsagenten er i drift fra 20. november** (NFR-6). En planlagt Claude-økt kjører kl. 06, 12, 18 og 24 og leser
+  datafila og publiseringen gjennom GitHub. Skymiljøet slipper den ikke fram til nettsiden
+  ([endringsforslag](../../project-workspace/planning-artifacts/sprint-change-proposal-2026-11-19-overvaaking-fra-data-grenen.md)).
+  Claude-appen har bare lesetilgang i organisasjonen, så agenten sender Aksel et push-varsel, og Aksel lager issuet
+  ([endringsforslag](../../project-workspace/planning-artifacts/sprint-change-proposal-2026-11-19-overvaaking-push-varsel.md)).
+  Prøvene 20.11 er bestått:
+  - avvik ga push-varsel;
+  - et åpent issue ga ingen nytt varsel;
+  - «I orden igjen. Lukk #N» kom som push-varsel.
+
+  Prøve-issuet er [#121](https://github.com/IBE160-2026/G18-bikila-dymbe-gela-james/issues/121).
 
 **18. november: kodefrysen og leveringen er utsatt én uke. Ny kodefrys er 28. november, levering og demo 2. desember, og sluttrapporten skrives etterpå.**
 
