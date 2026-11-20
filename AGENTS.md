@@ -1,5 +1,5 @@
 <!-- bmad:context -->
-<!-- Verified 2026-10-27 against 9d39949. Managed by bmad-project-context; edits inside this block are replaced on refresh. Keep anything you want preserved outside the markers. -->
+<!-- Verified 2026-11-20 against 3e2da34. Managed by bmad-project-context; edits inside this block are replaced on refresh. Keep anything you want preserved outside the markers. -->
 
 ## SnowFinder (G18, IBE160)
 
@@ -24,12 +24,13 @@ Gruppeprosjekt i IBE160 ved Høgskolen i Molde: en statisk webapp som rangerer ~
 - Publisering: Vercel-prosjektet `snowfinder` eies av Aksel og publiserer fra `main`. `vercel.json` henter datafila fra grenen `data`. Lag aldri et prosjekt til for repoet.
 - Prosjektets fremdrift og stegrekkefølge står bare i `project-phase-folders/3-Gjennomføringsfasen/fremdriftsplan.md`. Lag ingen egen statusfil andre steder.
 - Datoer og arbeidsflyt: milepælene står i `project-phase-folders/2-Planleggingsfasen/milepæler.md`, tidslinjen i «Tidslinje» i `fremdriftsplan.md`, og arbeidsflyten til levering i `3-Gjennomføringsfasen/aktivitetsdiagram.md`.
-- Planleggingsdokumentene er godkjent. Steg 8c (wireframes, kursets skjermkrav og brukertestplan) er fortsatt åpent hos Sally (`bmad-ux`).
+- Planleggingsdokumentene er godkjent, og steg 8c (wireframes, skjermkrav og brukertestplan) ble ferdig 2026-10-28.
 - Nytt arbeid bygges av Amelia (`bmad-build`), én story om gangen, i rekkefølgen i `sprintplan.md`. Bygges en story i en annen rekkefølge, før avviket inn i `sprintplan.md` i samme PR.
 - Story-status: `project-workspace/implementation-artifacts/sprint-status.yaml`. Story-specs og epic-kontekst ligger i samme mappe.
 - Epics og stories finnes bare i `project-phase-folders/2-Planleggingsfasen/SnowFinder-Epics-og-Stories.md`.
 - Utsatte funn fra kodegjennomganger: `project-workspace/implementation-artifacts/deferred-work.md`. Les dem før du bygger i samme område.
 - Hvorfor planen ble forenklet: `project-workspace/planning-artifacts/sprint-change-proposal-2026-10-07*.md`.
+- Overvåking: rutinen `SnowFinder-overvåking` (planlagt Claude-økt på Aksels konto, kl. 06, 12, 18 og 24) følger `drift/overvaakingsagent.md`. Den leser datafila og Vercel-statusen gjennom GitHub og endrer aldri kode. Claude-appen får 403 på issues, så agenten sender Aksel et push-varsel, og Aksel lager issuet med etiketten `overvåking`. Endrer du instruksen, oppdater prompten i rutinen i samme PR.
 
 ## Running and verifying
 
