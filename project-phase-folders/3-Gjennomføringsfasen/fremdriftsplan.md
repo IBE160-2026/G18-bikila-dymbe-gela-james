@@ -205,6 +205,16 @@ på møtet. Oppdater statusen når et steg er ferdig.
   nettsiden og en direkte lenke. Pages er fortsatt av (`build_type: none`), så det må tas med faglærer.
   Storyen står derfor på `in-progress`.
 
+**1. november (kort møte): PR #78 godkjent, formelen og hosting tas opp.**
+
+- Joseph godkjente PR #78 (Story 1.11), fordi Kelly og Sena fortsatt har flaggede kontoer. Aksel
+  merger den.
+- Gruppa vil at SnowFinder skal bruke den rette formelen for SnowScore, så prediksjonene blir
+  riktige. Endringer i formelen eller kravene går via `bmad-correct-course`.
+- På neste møte skulle gruppa se på Vercel, hostingløsningen fra kunngjøringen. Vercel ble vedtatt
+  allerede samme kveld (se over).
+- Aksel hadde gyldig fravær. Se [referatet](møtereferater/2026-11-01-møtereferat.md).
+
 **31. oktober: Story 1.11 er bygget, så alle v1-stories er ferdige. Igjen står brukertesten, rettinger, sluttrapporten og generalprøven.**
 
 - Aksel bygde 1.11 med `bmad-build`. `data.yml` kjører dataprogrammet én gang i timen og velger selv i
