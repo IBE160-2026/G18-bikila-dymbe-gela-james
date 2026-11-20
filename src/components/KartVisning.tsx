@@ -4,10 +4,10 @@ import { useEffect, useRef, useState } from 'react'
 import type { Sted } from '../../shared/contracts/published'
 import { navigate, sted as stedRoute, type UtforskRoute } from '../lib/router'
 import { NORWAY_BOUNDS, TILE_ATTRIBUTION, TILE_URL, markerSizeForZoom, markerSizeStyle, markerStyle, markorEndringer, tooltipText } from './kartMarkor'
-import { lastLeaflet, type Leaflet } from './lastLeaflet'
 
 export const MAP_LOAD_ERROR = 'Kartet kunne ikke lastes. Last siden på nytt.'
 
+type Leaflet = typeof import('leaflet')
 /** The places on the map by id, each with its marker, so a filter change only touches what changed. */
 type Markorer = Map<string, { sted: Sted; marker: CircleMarker }>
 type Kart = { L: Leaflet; map: LeafletMap; lag: LayerGroup<CircleMarker>; markorer: Markorer }
@@ -22,9 +22,8 @@ function tilpassStorrelse(marker: CircleMarker, sizePx: number): void {
 }
 
 /**
- * The map in Utforsk. Leaflet touches `window` when its module loads, so it comes from the shared
- * loader in the effect: this keeps the component renderable in Node tests and puts Leaflet in its own
- * chunk. main.tsx has usually started the load already, so the map does not wait for it in series.
+ * The map in Utforsk. Leaflet touches `window` when its module loads, so it is imported inside the
+ * effect: this keeps the component renderable in Node tests and puts Leaflet in its own chunk.
  *
  * Story 3.1: the map, its tiles and the first fit to Norway are made once, so zoom and position stay
  * where the user left them. When the filter changes `steder`, only the markers for places that left or
@@ -48,8 +47,8 @@ export default function KartVisning({ steder, sok }: { steder: Sted[]; sok: Utfo
     let cancelled = false
     let remove: (() => void) | null = null
 
-    lastLeaflet()
-      .then((L) => {
+    import('leaflet')
+      .then(({ default: L }) => {
         if (cancelled) return
         // A finer zoom step lets Norway fill more of the map on load.
         const map = L.map(element, { zoomSnap: 0.25 })

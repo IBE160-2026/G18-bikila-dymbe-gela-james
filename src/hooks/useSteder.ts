@@ -80,8 +80,6 @@ export function trengerFerskhetssjekk(raw: LoadResult | null): boolean {
 export type StederStore = {
   subscribe: (onChange: () => void) => () => void
   getSnapshot: () => StederResult | null
-  /** Starts the load before anyone subscribes; `subscribe` then reuses it, so the file is loaded once. */
-  forhandslast: () => void
 }
 
 /** Time in ms by the file's own clock (AD-10), or null when there is no file. */
@@ -181,23 +179,18 @@ export function createStederStore(loadFn: () => Promise<LoadResult>): StederStor
     }
   }
 
-  /** The first load, started once by forhandslast() or the first subscribe(), whichever comes first. */
-  function forhandslast() {
-    pending ??= loadFn()
-      // loadPublishedData never rejects, but an unexpected throw must show the error view, not a
-      // skeleton forever.
-      .catch((): LoadResult => ({ status: 'error', message: LOAD_ERROR_MESSAGE }))
-      .then((loaded) => {
-        brukFil(loaded)
-        publiser(medFerskhet(loaded))
-        if (listeners.size > 0) startSjekk()
-      })
-  }
-
   return {
     subscribe(onChange) {
       listeners.add(onChange)
-      forhandslast()
+      pending ??= loadFn()
+        // loadPublishedData never rejects, but an unexpected throw must show the error view, not a
+        // skeleton forever.
+        .catch((): LoadResult => ({ status: 'error', message: LOAD_ERROR_MESSAGE }))
+        .then((loaded) => {
+          brukFil(loaded)
+          publiser(medFerskhet(loaded))
+          if (listeners.size > 0) startSjekk()
+        })
       if (raw !== null) startSjekk()
       return () => {
         listeners.delete(onChange)
@@ -208,7 +201,6 @@ export function createStederStore(loadFn: () => Promise<LoadResult>): StederStor
       }
     },
     getSnapshot: () => result,
-    forhandslast,
   }
 }
 
@@ -216,14 +208,6 @@ export function createStederStore(loadFn: () => Promise<LoadResult>): StederStor
 const store = createStederStore(() =>
   loadPublishedData(undefined, import.meta.env.BASE_URL, dataKilde(import.meta.env.MODE)),
 )
-
-/**
- * Starts loading the data file before React draws, called from main.tsx, so it loads in parallel with
- * the app instead of after the first render (SM-12). The same rules for new loads and age apply.
- */
-export function forhandslastSteder(): void {
-  store.forhandslast()
-}
 
 /** `null` while loading, then the `ok` or `error` result, with too old places already removed. */
 export function useSteder(): StederResult | null {

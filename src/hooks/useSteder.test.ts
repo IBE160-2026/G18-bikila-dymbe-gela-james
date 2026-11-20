@@ -42,42 +42,6 @@ describe('createStederStore', () => {
     expect(store.getSnapshot()).toBe(store.getSnapshot())
   })
 
-  it('starts the load before anyone subscribes, and subscribe reuses that very load', async () => {
-    let svar: (result: LoadResult) => void = () => {}
-    const loadFn = vi.fn(() => new Promise<LoadResult>((resolve) => (svar = resolve)))
-    const store = createStederStore(loadFn)
-    store.forhandslast()
-    store.forhandslast()
-    expect(loadFn).toHaveBeenCalledTimes(1)
-
-    const listener = vi.fn()
-    store.subscribe(listener)
-    expect(loadFn).toHaveBeenCalledTimes(1)
-    svar(fil('demo'))
-    await vi.waitFor(() => expect(store.getSnapshot()).not.toBeNull())
-    expect(listener).toHaveBeenCalledTimes(1)
-    expect(loadFn).toHaveBeenCalledTimes(1)
-  })
-
-  it('gives a subscriber that arrives after an early load the result at once, and still re-checks live data', async () => {
-    vi.useFakeTimers({ now: LOADED_AT })
-    const loadFn = vi.fn(() => Promise.resolve(fil('live')))
-    const store = createStederStore(loadFn)
-    store.forhandslast()
-    await vi.waitFor(() => expect(store.getSnapshot()).not.toBeNull())
-    // Nobody is listening yet, so no check runs.
-    expect(vi.getTimerCount()).toBe(0)
-
-    const snapshot = store.getSnapshot()
-    store.subscribe(() => {})
-    expect(store.getSnapshot()).toBe(snapshot)
-    expect(loadFn).toHaveBeenCalledTimes(1)
-    expect(vi.getTimerCount()).toBe(1)
-    vi.setSystemTime(LOADED_AT + 3_600_000)
-    vi.advanceTimersByTime(FERSKHET_SJEKK_MS)
-    expect(utdatert(store.getSnapshot())).toEqual(['a'])
-  })
-
   it('re-checks live data every minute and tells every subscriber', async () => {
     vi.useFakeTimers({ now: LOADED_AT })
     const store = createStederStore(() => Promise.resolve(fil('live')))
