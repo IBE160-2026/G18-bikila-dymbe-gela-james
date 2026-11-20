@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { PublishedData, type Sted } from '../../shared/contracts/published'
 import { colors } from '../lib/theme'
-import { MARKER_CLASS, markerSizeForZoom, markerSizeStyle, markerStyle, tooltipText } from './kartMarkor'
+import { MARKER_CLASS, markerSizeForZoom, markerSizeStyle, markerStyle, markorEndringer, tooltipText } from './kartMarkor'
 
 const demo = PublishedData.parse(
   JSON.parse(readFileSync(new URL('../../public/data/demo.json', import.meta.url), 'utf8')),
@@ -92,5 +92,39 @@ describe('tooltipText', () => {
           : `${sted.navn} · Ufullstendige data`
       expect(tooltipText(sted)).toBe(expected)
     }
+  })
+})
+
+describe('markorEndringer', () => {
+  const alle = demo.steder
+  const ids = (steder: readonly Sted[]) => steder.map(({ id }) => id)
+  const kartMed = (steder: readonly Sted[]) => new Map(steder.map((sted) => [sted.id, sted]))
+  const del = alle.filter((_, i) => i % 3 === 0)
+  const resten = alle.filter((sted) => !del.includes(sted))
+
+  it('draws every place on an empty map', () => {
+    expect(markorEndringer(new Map(), alle)).toEqual({ fjern: [], leggTil: alle })
+  })
+
+  it('removes only the places a stricter filter drops and leaves the rest untouched', () => {
+    const { fjern, leggTil } = markorEndringer(kartMed(alle), del)
+    expect(leggTil).toEqual([])
+    expect(fjern).toEqual(ids(resten))
+  })
+
+  it('adds only the places a looser filter brings back and leaves the rest untouched', () => {
+    const { fjern, leggTil } = markorEndringer(kartMed(del), alle)
+    expect(fjern).toEqual([])
+    expect(leggTil).toEqual(resten)
+  })
+
+  it('changes nothing when the hits are the same places, as after a new search', () => {
+    expect(markorEndringer(kartMed(alle), [...alle])).toEqual({ fjern: [], leggTil: [] })
+  })
+
+  it('draws a place again when a new data file gives a new object with the same id', () => {
+    const [forste, ...andre] = alle
+    const nyttForste = { ...forste, snowScore: score(82) }
+    expect(markorEndringer(kartMed(alle), [nyttForste, ...andre])).toEqual({ fjern: [forste.id], leggTil: [nyttForste] })
   })
 })
