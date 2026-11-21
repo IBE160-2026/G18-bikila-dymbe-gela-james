@@ -78,7 +78,7 @@ arbeid).
 
 | # | Funn | Oppgave | Hvor mange av deltakerne | Prioritet | Oppfølging (PR eller «videre arbeid») |
 |---|---|---|---|---|---|
-| 1 | Tilbakepilen på stedssiden er vanskelig å se | – | 1 av 6 (D6) | viktig | «Tilbake» ble flyttet øverst på stedssiden i PR #113 (18.11). Sjekk i observasjonsskjemaet om D6 testet før eller etter det |
+| 1 | Tilbakepilen på stedssiden er vanskelig å se | – | 1 av 6 (D6) | viktig | «Tilbake» ble flyttet øverst på stedssiden i PR #113, merget 18.11 kl. 21:08:24 UTC (22:08 norsk tid). Sjekk «Dato og tid» i D6s observasjonsskjema mot dette tidspunktet for å se om D6 testet før eller etter |
 | 2 | Ønsker værmelding for de neste dagene på stedssiden | – | 2 av 6 (D1, D2) | senere | Videre arbeid. Prognosen i v1 går 24–48 timer fram |
 | 3 | Et sted kan få SnowScore 0 selv om det ligger snø fra en uke siden | – | 1 av 6 (D2) | senere | SnowScore måler nysnø, ikke snødybde. Forklares i sluttrapporten, og snødybde blir videre arbeid |
 | 4 | «Litt mange filter» | – | 1 av 6 (D2) | senere | Videre arbeid. Hurtigvalgene finnes allerede |
