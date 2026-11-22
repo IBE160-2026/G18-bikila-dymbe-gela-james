@@ -6,12 +6,13 @@
 ## Saker *(til sammen 45 min)*
 
 1. **Avviket for SM-12 (8 min).** Kartet blir interaktivt etter rundt 5 s mot kravet på 3 s. SM-1 holder etter
-   [#124](https://github.com/IBE160-2026/G18-bikila-dymbe-gela-james/pull/124). Godkjenn utkastet til avvik i
-   `målinger/README.md` på #124 (frist 25.11). Hvem måler på en ekte telefon, og når?
+   [#124](https://github.com/IBE160-2026/G18-bikila-dymbe-gela-james/pull/124), som er merget 20.11. Godkjenn utkastet til
+   avvik i `målinger/README.md` (frist 25.11). Hvem måler på en ekte telefon, og når?
    Beslutning: ______ · Ansvarlig og dato for telefonmålingen: ______
 2. **Kartet på små telefoner (8 min).** Bare rundt 60 px av kartet er synlig over Filter-arket på 375 × 667
    ([#125](https://github.com/IBE160-2026/G18-bikila-dymbe-gela-james/pull/125)). Aksel foreslår løsning 1 (kartet
-   før «Best akkurat nå» på mobil), og avvik som reserve hvis den ikke er merget innen 26.11.
+   før «Best akkurat nå» på mobil), og avvik som reserve hvis den ikke er merget innen 26.11. Løsningen er bygget i
+   [#127](https://github.com/IBE160-2026/G18-bikila-dymbe-gela-james/pull/127) og godkjent av Joseph (291 px synlig kart).
    Beslutning: ______ · Ansvarlig: ______
 3. **PRD-beslutningene fra 14.11 (8 min).** Aksel tok dem alene på grunn av fristen
    ([endringsforslag](../../../project-workspace/planning-artifacts/sprint-change-proposal-2026-11-14-prd-tilbakemelding.md)).
@@ -24,11 +25,12 @@
    6. SM-3 er Må ha. Den minimale testen er minst 2 av 3, og SM-2, SM-4 og SM-16 er Bør ha. ☐ ja ☐ nei
 4. **Status på oppgavene til Kelly og Sena (6 min).** Bare status:
    - a. **Godkjenning i etterkant av #113, #114 og #116:** ingen av dem har en synlig review på GitHub (sjekket 20.11).
-   - b. **D6 og tilbakepilen:** ukjent. Observasjonsskjemaene er ikke i repoet. #113, som flyttet «Tilbake»
-     øverst, ble merget 18.11 kl. 22.08. Spørreskjemaene for D1–D2 ble lagret 18.11 kl. 22.29, så D6 ble trolig
-     testet 19.11. Var testmaskinen oppdatert fra `main`?
+   - b. **D6 og tilbakepilen:** Kelly har ført inn når #113 ble merget (18.11 kl. 22.08) i `resultater.md`
+     ([#129](https://github.com/IBE160-2026/G18-bikila-dymbe-gela-james/pull/129), merget 22.11). Det gjenstår å slå
+     det opp mot «Dato og tid» i D6s observasjonsskjema, som ikke er i repoet. Var testmaskinen oppdatert fra `main`?
    - c. **Opprydding i `issues.md`:** ikke gjort. Fila har 46 åpne punkter på `main`.
-   - d. **Referatet fra 1.11:** mangler fortsatt.
+   - d. **Referatet fra 1.11:** skrevet av Joseph
+     ([#128](https://github.com/IBE160-2026/G18-bikila-dymbe-gela-james/pull/128), merget 22.11).
 
    Status per punkt: ______ · Ny frist: ______
 5. **GitHub-kontoene og review (3 min).** `Missbikila` og `SenaBikila` står som collaborators, men ingen av dem er på
