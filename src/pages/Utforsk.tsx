@@ -69,8 +69,8 @@ export default function Utforsk({ steder, utdatert, route, oppdatert }: Props) {
     replace({ ...route, filter: ny })
   }
   // Places older than 12 h are already gone from `steder`; the filter only narrows what is left. Memoised,
-  // so other re-renders reuse the same array. Every filter change gives a new one, and the map then
-  // rebuilds all its markers while keeping its zoom and position.
+  // so other re-renders reuse the same array. Every filter change gives a new one with the same place
+  // objects, so the map only removes or draws the markers for places that left or joined the hits.
   const treff = useMemo(
     () => filtrerSteder(steder, filter, avstandPosisjon ?? undefined),
     [steder, filter, avstandPosisjon],

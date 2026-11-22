@@ -15,6 +15,16 @@ på møtet. Oppdater statusen når et steg er ferdig.
 
 ## Hvor er vi nå?
 
+**20. november: SM-1 holder etter en retting av kartet. SM-12 holder ikke og føres trolig som avvik.**
+
+- Kartet oppdaterer nå bare markørene som endres. Med 10 målinger per variant på mobilprofilen går SM-1 fra 94,8 % til
+  99,4 % av endringene under 500 ms, og kravet er 95 %
+  ([målinger](../4-Avslutningsfasen/målinger/README.md#måling-2011-tiltak-a-og-b),
+  [spec](../../project-workspace/implementation-artifacts/spec-ytelse-mobil.md)). PR-en venter på review fra Joseph og Kelly.
+- SM-12: kartet er interaktivt etter rundt 5 s, mot kravet på 3 s. Det å hente datafila og Leaflet parallelt ga ingen
+  målbar effekt og er tatt ut igjen. Kartet venter på CPU-en, ikke på nettet. Et utkast til avvik ligger i
+  målingene, og gruppa avgjør innen 25.11. SM-12 skal også måles på en ekte telefon.
+
 **19. november: brukertesten er gjennomført med seks deltakere, og SUS-snittet er 88,75 (målet er minst 68).**
 
 - Svarene fra spørreskjemaet (SUS og fritekst) står i [`brukertest/resultater.md`](brukertest/resultater.md).

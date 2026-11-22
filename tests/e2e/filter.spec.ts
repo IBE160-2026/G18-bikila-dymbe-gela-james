@@ -122,6 +122,18 @@ test.describe('at 1280px', () => {
     expect(after.width).toBeCloseTo(zoomed.width, 0)
   })
 
+  test('a place that stays among the hits keeps its marker element when the filter changes', async ({ page }) => {
+    await page.goto('/')
+    await expect(markers(page)).toHaveCount(24)
+    const oksskolten = page.locator('path[data-sted-id="oksskolten"]')
+    await oksskolten.evaluate((element) => element.setAttribute('data-merket', 'ja'))
+
+    // Oksskolten has at least 2 cm new snow, so it stays a hit while 16 other markers go.
+    await nysno(page).fill('2')
+    await expect(markers(page)).toHaveCount(8)
+    await expect(oksskolten).toHaveAttribute('data-merket', 'ja')
+  })
+
   test('zero hits say so, show no markers, and «Nullstill» brings every place back', async ({ page }) => {
     await page.goto('/')
     await expect(markers(page)).toHaveCount(24)
