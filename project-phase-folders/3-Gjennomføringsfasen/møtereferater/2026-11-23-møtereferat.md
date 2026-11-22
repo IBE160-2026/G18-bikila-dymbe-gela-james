@@ -24,7 +24,8 @@
    5. En dagslystime: solen står over 0° ved timens start eller en halvtime senere. ☐ ja ☐ nei
    6. SM-3 er Må ha. Den minimale testen er minst 2 av 3, og SM-2, SM-4 og SM-16 er Bør ha. ☐ ja ☐ nei
 4. **Status på oppgavene til Kelly og Sena (6 min).** Bare status:
-   - a. **Godkjenning i etterkant av #113, #114 og #116:** ingen av dem har en synlig review på GitHub (sjekket 20.11).
+   - a. **Godkjenning i etterkant av #113, #114 og #116:** gjort. Kelly godkjente alle tre 21.11 etter å ha testet
+     lokalt, og godkjenningene vises på GitHub.
    - b. **D6 og tilbakepilen:** Kelly har ført inn når #113 ble merget (18.11 kl. 22.08) i `resultater.md`
      ([#129](https://github.com/IBE160-2026/G18-bikila-dymbe-gela-james/pull/129), merget 22.11). Det gjenstår å slå
      det opp mot «Dato og tid» i D6s observasjonsskjema, som ikke er i repoet. Var testmaskinen oppdatert fra `main`?
@@ -34,8 +35,8 @@
 
    Status per punkt: ______ · Ny frist: ______
 5. **GitHub-kontoene og review (3 min).** `Missbikila` og `SenaBikila` står som collaborators, men ingen av dem er på
-   lista over bidragsytere. `Kellygela1` står der. Ingen av Kellys eller Senas kontoer har en synlig review. Hva
-   svarer GitHub Support? Fram til kodefrysen er Joseph reviewer.
+   lista over bidragsytere. `Kellygela1` står der. Kellys godkjenninger vises fra 21.11 (#113, #114 og #116), men
+   Senas konto har ennå ingen synlig review. Hva svarer GitHub Support? Fram til kodefrysen er Joseph reviewer.
    Status: ______
 6. **Sluttrapporten (9 min).** [Skjelettet](../../4-Avslutningsfasen/SnowFinder-Sluttrapport.md) har §1–10. Den skal ha
    med:
