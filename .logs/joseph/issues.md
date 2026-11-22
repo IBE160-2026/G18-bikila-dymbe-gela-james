@@ -19,3 +19,13 @@
 - [ ] 2026-10-29 [story-1-6-hold-tjenesten-oppe](993-2026-10-29-11-45-07-story-1-6-hold-tjenesten-oppe.md) — AD-2 («one attempt») via `bmad-architecture` og fargene til `banner-stale-data` i DESIGN.md via `bmad-ux`, begge kopier
 - [ ] 2026-10-29 [story-1-6-hold-tjenesten-oppe](993-2026-10-29-11-45-07-story-1-6-hold-tjenesten-oppe.md) — vurder tidsbudsjett for trege 5xx-svar i `fetch.ts` når 1.11 går
 - [ ] 2026-10-29 [story-1-6-hold-tjenesten-oppe](993-2026-10-29-11-45-07-story-1-6-hold-tjenesten-oppe.md) — datakvalitetspanelet viser antall utdaterte og fjernede steder (utsatt fra 2.3)
+- [ ] 2026-11-01 [moetereferat-2026-11-01](992-2026-11-01-14-30-02-moetereferat-2026-11-01.md) — avklar «den rette formelen» for SnowScore, og ta endringer via `bmad-correct-course`
+- [x] 2026-11-01 [moetereferat-2026-11-01](992-2026-11-01-14-30-02-moetereferat-2026-11-01.md) — se på Vercel som hosting på neste møte (bytte fra Pages går via `bmad-correct-course`) (løst 2026-11-04: Vercel tatt i bruk i PR #81)
+- [ ] 2026-11-01 [moetereferat-2026-11-01](992-2026-11-01-14-30-02-moetereferat-2026-11-01.md) — fix-PR for funnene fra reviewen av 1.6, etter at #78 er merget
+- [ ] 2026-11-01 [moetereferat-2026-11-01](992-2026-11-01-14-30-02-moetereferat-2026-11-01.md) — orienter Aksel om beslutningene fra møtet
+- [x] 2026-11-04 [moetereferat-2026-11-01](992-2026-11-01-14-30-02-moetereferat-2026-11-01.md) — legg merknad i referatet 2026-11-01 om at Vercel ble tatt i bruk samme kveld (PR #81) (løst 2026-11-20: merknad lagt inn ved levering)
+- [ ] 2026-11-20 [test-av-main-og-pr-124-127](991-2026-11-20-18-11-42-test-av-main-og-pr-124-127.md) — godkjenn #124 på GitHub, så Aksel kan merge
+- [ ] 2026-11-20 [test-av-main-og-pr-124-127](991-2026-11-20-18-11-42-test-av-main-og-pr-124-127.md) — #127 venter på møtet 23.11 og på #125
+- [ ] 2026-11-20 [test-av-main-og-pr-124-127](991-2026-11-20-18-11-42-test-av-main-og-pr-124-127.md) — foreslått test som låser at filteret gir samme `Sted`-objekter (#124)
+- [ ] 2026-11-20 [test-av-main-og-pr-124-127](991-2026-11-20-18-11-42-test-av-main-og-pr-124-127.md) — nevn fokusrekkefølgen under 768 px (#127) i sluttrapporten som bevisst avvik
+- [x] 2026-11-20 [test-av-main-og-pr-124-127](991-2026-11-20-18-11-42-test-av-main-og-pr-124-127.md) — bestem om referatet fra 1.11 skal pushes som `docs/`-PR før møtet 23.11 (løst 2026-11-20: levert som docs-PR)
