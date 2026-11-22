@@ -82,7 +82,7 @@
 - [ ] 2026-11-15 [1-11-done-og-opprydding](982-2026-11-15-16-01-28-1-11-done-og-opprydding.md) — Rekrutter 5–6 deltakere til brukertesten innen 16.11 kl. 20 (minst én med iPhone/Safari)
 - [ ] 2026-11-15 [sluttrapport-skjelett](981-2026-11-15-16-11-06-sluttrapport-skjelett.md) — Skriv sluttrapporten ferdig og lag presentasjonen innen F5 (forslag 23.11)
 - [x] 2026-11-15 [sluttrapport-skjelett](981-2026-11-15-16-11-06-sluttrapport-skjelett.md) — Mål SM-1 (500 ms i filteret) og SM-12 (kart på 4G) manuelt og før dem inn i sluttrapporten (løst 2026-11-15: målt, se 980-…-maling-sm-1-og-sm-12)
-- [ ] 2026-11-15 [maling-sm-1-og-sm-12](980-2026-11-15-18-11-27-maling-sm-1-og-sm-12.md) — SM-1 og SM-12 holder ikke på mobilprofilen (kart 9 s, 61 % under 500 ms): gruppa velger retting via bmad-build før 21.11 eller avvik
+- [x] 2026-11-15 [maling-sm-1-og-sm-12](980-2026-11-15-18-11-27-maling-sm-1-og-sm-12.md) — SM-1 og SM-12 holder ikke på mobilprofilen (kart 9 s, 61 % under 500 ms): gruppa velger retting via bmad-build før 21.11 eller avvik (løst 2026-11-20: SM-1 rettet, SM-12 går til avvik)
 - [ ] 2026-11-15 [maling-sm-1-og-sm-12](980-2026-11-15-18-11-27-maling-sm-1-og-sm-12.md) — Bekreft SM-1 og SM-12 på ekte telefon i mellomsegmentet over 4G
 - [ ] 2026-11-15 [brukertest-sporreskjema](979-2026-11-15-18-28-31-brukertest-sporreskjema.md) — Skriv ut 6 spørreskjemaer før 17.11
 - [ ] 2026-11-15 [brukertest-sporreskjema](979-2026-11-15-18-28-31-brukertest-sporreskjema.md) — Sjekk at `npm run preview -- --host` kan nås fra en telefon på skolenettet (ellers hotspot)
@@ -107,3 +107,6 @@
 - [x] 2026-11-19 [overvaaking-oppsett](975-2026-11-19-23-40-00-overvaaking-oppsett.md) — Etter merge: ny prompt i rutinen trig_01KqK786NUhCuEwP1JzeDDQJ, slå den på, kjør de fire prøvene og legg lenken til issuet i fremdriftsplan.md (løst 2026-11-20)
 - [ ] 2026-11-19 [overvaaking-oppsett](975-2026-11-19-23-40-00-overvaaking-oppsett.md) — Sluttrapporten: agenten når ikke nettsiden fra skymiljøet og ser ikke om siden er nede etter en vellykket publisering
 - [ ] 2026-11-20 [overvaaking-oppsett](975-2026-11-19-23-40-00-overvaaking-oppsett.md) — Overvåkingen varsler bare Aksel (push). Hvis organisasjonen gir Claude-appen skrivetilgang til issues, lager agenten issuene selv uten endring
+- [ ] 2026-11-20 [ytelse-mobil](974-2026-11-20-11-30-00-ytelse-mobil.md) — Gruppa avgjør avviket for SM-12 (utkast i målinger/README.md) innen 25.11
+- [ ] 2026-11-20 [ytelse-mobil](974-2026-11-20-11-30-00-ytelse-mobil.md) — Mål den publiserte siden på nytt etter merge, og oppdater sluttrapporten §3.2 med tallene fra 20.11
+- [ ] 2026-11-20 [ytelse-mobil](974-2026-11-20-11-30-00-ytelse-mobil.md) — Correct-course-forslag om kartet på små telefoner (ca. 60 px over Filter-arket) til gruppemøtet
