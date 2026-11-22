@@ -2,29 +2,29 @@
 
 - [x] 2026-10-26 [synlige-pr-er-for-kelly](999-2026-10-26-22-25-07-synlige-pr-er-for-kelly.md) — #63 (Story 3.6) trenger «Approve» fra Aksel eller Sena. Etter merge: 3.6 `done` og oppdatert fremdriftsplan (løst 2026-10-27: #63 merget; 3.6 `done` følges opp under synlig-pr-for-sena)
 - [x] 2026-10-26 [synlige-pr-er-for-kelly](999-2026-10-26-22-25-07-synlige-pr-er-for-kelly.md) — merge #64 (Story 3.4 `done`) (løst 2026-10-27)
-- [ ] 2026-10-26 [synlige-pr-er-for-kelly](999-2026-10-26-22-25-07-synlige-pr-er-for-kelly.md) — Kelly får kontoen sluppet fri via GitHub Support, og lukker #60 og #62
+- [x] 2026-10-26 [synlige-pr-er-for-kelly](999-2026-10-26-22-25-07-synlige-pr-er-for-kelly.md) — Kelly får kontoen sluppet fri via GitHub Support, og lukker #60 og #62 (løst 2026-11-21: Kellys godkjenninger vises fra kontoen Kellygela1; #60 og #62 finnes ikke lenger)
 - [ ] 2026-10-26 [synlige-pr-er-for-kelly](999-2026-10-26-22-25-07-synlige-pr-er-for-kelly.md) — slett 3.4- og 3.6-greinene og kopigreinene etter merge
 - [ ] 2026-10-26 [synlige-pr-er-for-kelly](999-2026-10-26-22-25-07-synlige-pr-er-for-kelly.md) — avklar Bårds direkte push til `main`
 - [x] 2026-10-27 [synlig-pr-for-sena](998-2026-10-27-21-40-29-synlig-pr-for-sena-story-3-7.md) — #66 (Story 3.7) trenger «Approve» fra Aksel (eller Kelly når kontoen er fri) (løst 2026-10-28: Aksel godkjente, #66 merget)
-- [ ] 2026-10-27 [synlig-pr-for-sena](998-2026-10-27-21-40-29-synlig-pr-for-sena-story-3-7.md) — etter merge av #66: 3.7 `done` og oppdatert fremdriftsplan, Sena lukker #65, slett begge 3.7-greinene
+- [ ] 2026-10-27 [synlig-pr-for-sena](998-2026-10-27-21-40-29-synlig-pr-for-sena-story-3-7.md) — etter merge av #66: 3.7 `done` og oppdatert fremdriftsplan, Sena lukker #65, slett begge 3.7-greinene (delvis løst: 3.7 er done og #65 finnes ikke lenger; 3.7-greinene finnes fortsatt 2026-11-22)
 - [ ] 2026-10-27 [synlig-pr-for-sena](998-2026-10-27-21-40-29-synlig-pr-for-sena-story-3-7.md) — Sena får kontoen sluppet fri via GitHub Support
 - [x] 2026-10-27 [synlig-pr-for-sena](998-2026-10-27-21-40-29-synlig-pr-for-sena-story-3-7.md) — sett 3.6 til `done` på `main` og oppdater fremdriftsplanen (løst 2026-10-27 i PR #68, gjelder når den er merget)
-- [ ] 2026-10-27 [tidslinje-milepaeler-og-aktivitetsdiagram](997-2026-10-27-22-58-20-tidslinje-milepaeler-og-aktivitetsdiagram.md) — gruppa vedtar eller endrer de foreslåtte fristene (M4, F3, M1/M5, F4, F5), og «forslag» byttes med «vedtatt»
+- [x] 2026-10-27 [tidslinje-milepaeler-og-aktivitetsdiagram](997-2026-10-27-22-58-20-tidslinje-milepaeler-og-aktivitetsdiagram.md) — gruppa vedtar eller endrer de foreslåtte fristene (M4, F3, M1/M5, F4, F5), og «forslag» byttes med «vedtatt» (utgått 2026-11-18: erstattet av vedtaket om kodefrys 28.11 og levering 2.12)
 - [x] 2026-10-27 [tidslinje-milepaeler-og-aktivitetsdiagram](997-2026-10-27-22-58-20-tidslinje-milepaeler-og-aktivitetsdiagram.md) — sjekk at diagrammene vises riktig på GitHub, og merge #68 (løst 2026-10-28: #68 merget)
 - [x] 2026-10-28 [milepaeler-og-aktivitetsliste](995-2026-10-28-19-05-00-milepaeler-og-aktivitetsliste.md) — gruppa vedtar de nye fristene og fordeler ansvarlig for 1.6, 1.11, 4.2, steg 8c, brukertesten og generalprøven (delvis løst 2026-10-28: ansvar fordelt på møtet, fristene vedtas neste møte)
 - [ ] 2026-10-28 [milepaeler-og-aktivitetsliste](995-2026-10-28-19-05-00-milepaeler-og-aktivitetsliste.md) — sjekk at diagrammene i milepæler og aktivitetsliste vises riktig på GitHub
 - [x] 2026-10-28 [milepaeler-og-aktivitetsliste](995-2026-10-28-19-05-00-milepaeler-og-aktivitetsliste.md) — Story 3.8: synlig kopi-PR av Senas grein, løs konflikten i tre dokumentfiler, review (løst 2026-10-28: Aksel åpnet #71, Joseph godkjente, merget)
-- [ ] 2026-10-28 [moetereferat-og-demo](994-2026-10-28-20-30-00-moetereferat-og-demo.md) — be faglærer endre Pages-kilden til «GitHub Actions» og slå på grenbeskyttelse innen 2026-11-04
-- [ ] 2026-10-29 [story-1-6-hold-tjenesten-oppe](993-2026-10-29-11-45-07-story-1-6-hold-tjenesten-oppe.md) — sjekk at E2E er grønn i CI (Ubuntu) før merge av 1.6-PR-en
-- [ ] 2026-10-29 [story-1-6-hold-tjenesten-oppe](993-2026-10-29-11-45-07-story-1-6-hold-tjenesten-oppe.md) — AD-2 («one attempt») via `bmad-architecture` og fargene til `banner-stale-data` i DESIGN.md via `bmad-ux`, begge kopier
+- [ ] 2026-10-28 [moetereferat-og-demo](994-2026-10-28-20-30-00-moetereferat-og-demo.md) — be faglærer endre Pages-kilden til «GitHub Actions» og slå på grenbeskyttelse innen 2026-11-04 (Pages utgått 2026-11-01, Vercel publiserer; grenbeskyttelse er fortsatt av 2026-11-22)
+- [x] 2026-10-29 [story-1-6-hold-tjenesten-oppe](993-2026-10-29-11-45-07-story-1-6-hold-tjenesten-oppe.md) — sjekk at E2E er grønn i CI (Ubuntu) før merge av 1.6-PR-en (løst 2026-10-29: CI og E2E grønne på PR #77)
+- [x] 2026-10-29 [story-1-6-hold-tjenesten-oppe](993-2026-10-29-11-45-07-story-1-6-hold-tjenesten-oppe.md) — AD-2 («one attempt») via `bmad-architecture` og fargene til `banner-stale-data` i DESIGN.md via `bmad-ux`, begge kopier (løst 2026-11-07: Story 1.6b, se deferred-work.md)
 - [ ] 2026-10-29 [story-1-6-hold-tjenesten-oppe](993-2026-10-29-11-45-07-story-1-6-hold-tjenesten-oppe.md) — vurder tidsbudsjett for trege 5xx-svar i `fetch.ts` når 1.11 går
 - [ ] 2026-10-29 [story-1-6-hold-tjenesten-oppe](993-2026-10-29-11-45-07-story-1-6-hold-tjenesten-oppe.md) — datakvalitetspanelet viser antall utdaterte og fjernede steder (utsatt fra 2.3)
 - [ ] 2026-11-01 [moetereferat-2026-11-01](992-2026-11-01-14-30-02-moetereferat-2026-11-01.md) — avklar «den rette formelen» for SnowScore, og ta endringer via `bmad-correct-course`
 - [x] 2026-11-01 [moetereferat-2026-11-01](992-2026-11-01-14-30-02-moetereferat-2026-11-01.md) — se på Vercel som hosting på neste møte (bytte fra Pages går via `bmad-correct-course`) (løst 2026-11-04: Vercel tatt i bruk i PR #81)
-- [ ] 2026-11-01 [moetereferat-2026-11-01](992-2026-11-01-14-30-02-moetereferat-2026-11-01.md) — fix-PR for funnene fra reviewen av 1.6, etter at #78 er merget
-- [ ] 2026-11-01 [moetereferat-2026-11-01](992-2026-11-01-14-30-02-moetereferat-2026-11-01.md) — orienter Aksel om beslutningene fra møtet
+- [x] 2026-11-01 [moetereferat-2026-11-01](992-2026-11-01-14-30-02-moetereferat-2026-11-01.md) — fix-PR for funnene fra reviewen av 1.6, etter at #78 er merget (løst 2026-11-08: Story 1.6b, PR #90)
+- [x] 2026-11-01 [moetereferat-2026-11-01](992-2026-11-01-14-30-02-moetereferat-2026-11-01.md) — orienter Aksel om beslutningene fra møtet (utgått 2026-11-22: referatet ligger på main (PR #128))
 - [x] 2026-11-04 [moetereferat-2026-11-01](992-2026-11-01-14-30-02-moetereferat-2026-11-01.md) — legg merknad i referatet 2026-11-01 om at Vercel ble tatt i bruk samme kveld (PR #81) (løst 2026-11-20: merknad lagt inn ved levering)
-- [ ] 2026-11-20 [test-av-main-og-pr-124-127](991-2026-11-20-18-11-42-test-av-main-og-pr-124-127.md) — godkjenn #124 på GitHub, så Aksel kan merge
+- [x] 2026-11-20 [test-av-main-og-pr-124-127](991-2026-11-20-18-11-42-test-av-main-og-pr-124-127.md) — godkjenn #124 på GitHub, så Aksel kan merge (løst 2026-11-20: #124 er merget)
 - [ ] 2026-11-20 [test-av-main-og-pr-124-127](991-2026-11-20-18-11-42-test-av-main-og-pr-124-127.md) — #127 venter på møtet 23.11 og på #125
 - [ ] 2026-11-20 [test-av-main-og-pr-124-127](991-2026-11-20-18-11-42-test-av-main-og-pr-124-127.md) — foreslått test som låser at filteret gir samme `Sted`-objekter (#124)
 - [ ] 2026-11-20 [test-av-main-og-pr-124-127](991-2026-11-20-18-11-42-test-av-main-og-pr-124-127.md) — nevn fokusrekkefølgen under 768 px (#127) i sluttrapporten som bevisst avvik

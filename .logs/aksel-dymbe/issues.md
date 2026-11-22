@@ -4,7 +4,7 @@
 - [x] 2026-10-28 [review-3-7-og-synlig-pr-3-8](999-2026-10-28-19-34-01-review-3-7-og-synlig-pr-3-8.md) — AD-12 og UX-dokumentene mangler `avstand`, `type` og `nysnokilde` (deferred-work.md) (løst 2026-10-28, PR #74)
 - [ ] 2026-10-28 [review-3-7-og-synlig-pr-3-8](999-2026-10-28-19-34-01-review-3-7-og-synlig-pr-3-8.md) — NFR-1-ytelsestesten og timeouten i run.test.ts er ustabile under last
 - [ ] 2026-10-28 [review-3-7-og-synlig-pr-3-8](999-2026-10-28-19-34-01-review-3-7-og-synlig-pr-3-8.md) — tiltak A6 og A9 fra retrospektiven etter Epic 2 er åpne
-- [ ] 2026-10-28 [review-3-7-og-synlig-pr-3-8](999-2026-10-28-19-34-01-review-3-7-og-synlig-pr-3-8.md) — Sena og Kelly må få kontoene sluppet fri via GitHub Support (godkjenningene deres er usynlige)
+- [ ] 2026-10-28 [review-3-7-og-synlig-pr-3-8](999-2026-10-28-19-34-01-review-3-7-og-synlig-pr-3-8.md) — Sena og Kelly må få kontoene sluppet fri via GitHub Support (godkjenningene deres er usynlige) (delvis løst 2026-11-21: Kellys godkjenninger vises fra kontoen Kellygela1; Senas konto gjenstår)
 - [x] 2026-10-28 [story-4-2-beste-skivindu](998-2026-10-28-20-55-44-story-4-2-beste-skivindu.md) — PR #74 (Story 4.2) venter på review fra Joseph og merge (løst 2026-10-28, PR #74)
 - [ ] 2026-10-28 [story-4-2-beste-skivindu](998-2026-10-28-20-55-44-story-4-2-beste-skivindu.md) — avviket fra FR-30 (ingen demosted i mørketid) må avgjøres i bmad-correct-course
 - [ ] 2026-10-28 [story-4-2-beste-skivindu](998-2026-10-28-20-55-44-story-4-2-beste-skivindu.md) — mørketidsvinduet kan havne midt på natta; mulig kravendring
@@ -12,10 +12,10 @@
 - [x] 2026-10-28 [story-4-2-beste-skivindu](998-2026-10-28-20-55-44-story-4-2-beste-skivindu.md) — EXPERIENCE.md beskriver fortsatt at bunn-arket dras opp, ikke knappen «Filter» (deferred-work, Story 3.1) (løst 2026-10-28, steg 8c, PR #76)
 - [x] 2026-10-28 [steg-8c](997-2026-10-28-22-46-40-steg-8c-wireframes-skjermkrav-brukertest.md) — Rekruttere minst fem testpersoner til brukertesten (Joseph og Aksel, forslag 11. november) (utgått 2026-11-15: erstattet av ny frist 16.11, se brukertest-materiell)
 - [ ] 2026-10-28 [steg-8c](997-2026-10-28-22-46-40-steg-8c-wireframes-skjermkrav-brukertest.md) — Faglærer har ikke bekreftet at pålogging droppes
-- [ ] 2026-10-28 [steg-8c](997-2026-10-28-22-46-40-steg-8c-wireframes-skjermkrav-brukertest.md) — Vurder tegnforklaring på kartet og stedstype på stedssiden (deferred-work.md)
+- [ ] 2026-10-28 [steg-8c](997-2026-10-28-22-46-40-steg-8c-wireframes-skjermkrav-brukertest.md) — Vurder tegnforklaring på kartet og stedstype på stedssiden (deferred-work.md) (delvis løst 2026-11-19: fargeforklaringen på kartet er bygget; stedstype på stedssiden gjenstår)
 - [ ] 2026-10-28 [steg-8c](997-2026-10-28-22-46-40-steg-8c-wireframes-skjermkrav-brukertest.md) — Sett UX-dokumentene til final etter brukertesten
-- [ ] 2026-10-31 [review-pr77-og-story-1-11](996-2026-10-31-20-27-02-review-pr77-og-story-1-11.md) — Faglærer må se på Pages og grenbeskyttelse igjen: API-et viste at ingen av dem var aktive 2026-10-31
-- [ ] 2026-10-31 [review-pr77-og-story-1-11](996-2026-10-31-20-27-02-review-pr77-og-story-1-11.md) — Joseph bes ta funnene fra review av PR #77 i en egen fix-PR
+- [ ] 2026-10-31 [review-pr77-og-story-1-11](996-2026-10-31-20-27-02-review-pr77-og-story-1-11.md) — Faglærer må se på Pages og grenbeskyttelse igjen: API-et viste at ingen av dem var aktive 2026-10-31 (Pages utgått 2026-11-01, Vercel publiserer; grenbeskyttelse er fortsatt av 2026-11-22)
+- [x] 2026-10-31 [review-pr77-og-story-1-11](996-2026-10-31-20-27-02-review-pr77-og-story-1-11.md) — Joseph bes ta funnene fra review av PR #77 i en egen fix-PR (løst 2026-11-08: Story 1.6b, PR #90)
 - [ ] 2026-10-31 [review-pr77-og-story-1-11](996-2026-10-31-20-27-02-review-pr77-og-story-1-11.md) — Story 1.6 er ikke prøvd for hånd i nettleseren
 - [x] 2026-10-31 [review-pr77-og-story-1-11](996-2026-10-31-20-27-02-review-pr77-og-story-1-11.md) — Kjør data.yml for hånd etter merge av 1.11, og sjekk npm run dev på et rent klon mot grenen data (løst 2026-11-01)
 - [ ] 2026-10-31 [review-pr77-og-story-1-11](996-2026-10-31-20-27-02-review-pr77-og-story-1-11.md) — Framtving én rød kjøring av data.yml og se at data-run-log har kvalitetsrapporten
@@ -42,10 +42,10 @@
 - [ ] 2026-11-04 [story-1-11c-e2e-mot-demomodus](995-2026-11-01-00-16-06-story-1-11c-e2e-mot-demomodus.md) — Bytt sovingen i data-timer.yml med environment og wait timer når en admin har laget det
 - [x] 2026-11-04 [story-1-11c-e2e-mot-demomodus](995-2026-11-01-00-16-06-story-1-11c-e2e-mot-demomodus.md) — UX-steg 2 (filteret): planen venter på Aksels godkjenning (løst 2026-11-08: Story 3.1b merget (PR #92))
 - [x] 2026-11-04 [story-1-11c-e2e-mot-demomodus](995-2026-11-01-00-16-06-story-1-11c-e2e-mot-demomodus.md) — PR #83, #85 og #87 venter på Josephs godkjenning; PR #86 på grønn CI og Aksels ja (løst 2026-11-15: #83, #85, #86 og #87 er merget)
-- [ ] 2026-11-04 [sok-pa-stedsnavn](993-2026-11-04-22-43-41-sok-pa-stedsnavn.md) — Gruppa bekrefter «til beslutning»-punktene i PRD/SRS v2: søk som Må ha, valg av dag ikke i v1, skala som arkitekturforsikring
+- [x] 2026-11-04 [sok-pa-stedsnavn](993-2026-11-04-22-43-41-sok-pa-stedsnavn.md) — Gruppa bekrefter «til beslutning»-punktene i PRD/SRS v2: søk som Må ha, valg av dag ikke i v1, skala som arkitekturforsikring (utgått 2026-11-14: søk er Må ha og skala er lukket i PRD-en (PR #99); gruppas bekreftelse følges i punktet fra 14.11)
 - [x] 2026-11-04 [sok-pa-stedsnavn](993-2026-11-04-22-43-41-sok-pa-stedsnavn.md) — Story 3.9 trenger review fra et gruppemedlem før merge (løst 2026-11-14: PR #85 er merget)
 - [x] 2026-11-04 [sok-pa-stedsnavn](993-2026-11-04-22-43-41-sok-pa-stedsnavn.md) — Fargeforklaring for kartet (SRS-F-15 i v2) trenger eget endringsforslag (løst 2026-11-19)
-- [ ] 2026-11-07 [prd-srs-v2-1](993-2026-11-07-12-29-57-prd-srs-v2-1.md) — Dagvalg og skala i PRD/SRS §7 er fortsatt til beslutning hos gruppa
+- [x] 2026-11-07 [prd-srs-v2-1](993-2026-11-07-12-29-57-prd-srs-v2-1.md) — Dagvalg og skala i PRD/SRS §7 er fortsatt til beslutning hos gruppa (utgått 2026-11-14: lukket i PRD-en (PR #99); gruppas bekreftelse følges i punktet fra 14.11)
 - [x] 2026-11-07 [prd-srs-v2-1](993-2026-11-07-12-29-57-prd-srs-v2-1.md) — PR #83 (1.8b) og #85 (3.9) venter på godkjenning fra et gruppemedlem (løst 2026-11-15: #85 merget 14.11, #83 merget 15.11)
 - [x] 2026-11-07 [prd-srs-v2-1](993-2026-11-07-12-29-57-prd-srs-v2-1.md) — Rekrutter minst fem testpersoner til brukertesten 12.–16. november (utgått 2026-11-15: erstattet av ny frist 16.11, se brukertest-materiell)
 - [ ] 2026-11-07 [prd-srs-v2-1](993-2026-11-07-12-29-57-prd-srs-v2-1.md) — Bytt nøkkelen/tokenet som ble limt inn i chatten 2026-11-07, hvis det var et ekte
@@ -63,7 +63,7 @@
 - [x] 2026-11-08 [ux-fargeforklaring](988-2026-11-08-12-36-35-ux-fargeforklaring.md) — Steg 4: spec og bygging av fargeforklaringen (bmad-build), med storyen i epics (løst 2026-11-19)
 - [ ] 2026-11-08 [ux-fargeforklaring](988-2026-11-08-12-36-35-ux-fargeforklaring.md) — Steg 5: gjennomgang av mobil og kvalitet nå, bygging etter merge av #89–#94
 - [ ] 2026-11-08 [prd-srs-v2-2](987-2026-11-08-14-15-55-prd-srs-v2-2.md) — Gruppa vedtar sakene i beslutningsnotatet (formel, dagvalg, skala, 500 ms/2 s, hvilket dokument som gjelder, kodefrys); deretter bmad-correct-course for M5
-- [ ] 2026-11-08 [prd-srs-v2-2](987-2026-11-08-14-15-55-prd-srs-v2-2.md) — Referat fra møtet 2026-11-01 («den rette formelen») mangler
+- [x] 2026-11-08 [prd-srs-v2-2](987-2026-11-08-14-15-55-prd-srs-v2-2.md) — Referat fra møtet 2026-11-01 («den rette formelen») mangler (løst 2026-11-22: PR #128)
 - [ ] 2026-11-08 [prd-srs-v2-2](987-2026-11-08-14-15-55-prd-srs-v2-2.md) — Testkolonne per SRS-krav i SRS §4 (B8) etter kodefrysen
 - [ ] 2026-11-08 [prd-srs-v2-2](987-2026-11-08-14-15-55-prd-srs-v2-2.md) — Epics-funn (FR-30-linja, mørketid i Story 4.2, 1.8b uten FR) i egen PR etter merge av #83, #85, #90–#94
 - [ ] 2026-11-08 [prd-srs-v2-2](987-2026-11-08-14-15-55-prd-srs-v2-2.md) — Stram data-workflow.test.ts til 10/50 min i egen story
@@ -79,14 +79,14 @@
 - [x] 2026-11-14 [prd-tilbakemelding](985-2026-11-14-22-57-22-prd-tilbakemelding.md) — Sluttrapport og presentasjon (F5, forslag 2026-11-23) er ikke startet (løst 2026-11-15: skjelett til sluttrapporten, se [sluttrapport-skjelett](981-2026-11-15-16-11-06-sluttrapport-skjelett.md); presentasjonen er ikke startet)
 - [x] 2026-11-15 [status-og-merge-1-8b](984-2026-11-15-15-13-01-status-og-merge-1-8b.md) — Gruppa vedtar nye datoer for kodefrys og brukertest, så tidslinjen og milepæler.md kan oppdateres (løst 2026-11-15: forslag lagt inn, se [brukertest-materiell](983-2026-11-15-15-34-15-brukertest-materiell.md))
 - [x] 2026-11-15 [brukertest-materiell](983-2026-11-15-15-34-15-brukertest-materiell.md) — Gruppa bekrefter datoforslagene (ingen nye stories etter 16.11, brukertest 17.–19.11, kodefrys 21.11) og bytter «forslag» med «vedtatt» (løst 2026-11-18: erstattet av vedtaket om kodefrys 28.11)
-- [ ] 2026-11-15 [1-11-done-og-opprydding](982-2026-11-15-16-01-28-1-11-done-og-opprydding.md) — Rekrutter 5–6 deltakere til brukertesten innen 16.11 kl. 20 (minst én med iPhone/Safari)
+- [x] 2026-11-15 [1-11-done-og-opprydding](982-2026-11-15-16-01-28-1-11-done-og-opprydding.md) — Rekrutter 5–6 deltakere til brukertesten innen 16.11 kl. 20 (minst én med iPhone/Safari) (løst 2026-11-19: seks deltakere)
 - [ ] 2026-11-15 [sluttrapport-skjelett](981-2026-11-15-16-11-06-sluttrapport-skjelett.md) — Skriv sluttrapporten ferdig og lag presentasjonen innen F5 (forslag 23.11)
 - [x] 2026-11-15 [sluttrapport-skjelett](981-2026-11-15-16-11-06-sluttrapport-skjelett.md) — Mål SM-1 (500 ms i filteret) og SM-12 (kart på 4G) manuelt og før dem inn i sluttrapporten (løst 2026-11-15: målt, se 980-…-maling-sm-1-og-sm-12)
 - [x] 2026-11-15 [maling-sm-1-og-sm-12](980-2026-11-15-18-11-27-maling-sm-1-og-sm-12.md) — SM-1 og SM-12 holder ikke på mobilprofilen (kart 9 s, 61 % under 500 ms): gruppa velger retting via bmad-build før 21.11 eller avvik (løst 2026-11-20: SM-1 rettet, SM-12 går til avvik)
 - [ ] 2026-11-15 [maling-sm-1-og-sm-12](980-2026-11-15-18-11-27-maling-sm-1-og-sm-12.md) — Bekreft SM-1 og SM-12 på ekte telefon i mellomsegmentet over 4G
-- [ ] 2026-11-15 [brukertest-sporreskjema](979-2026-11-15-18-28-31-brukertest-sporreskjema.md) — Skriv ut 6 spørreskjemaer før 17.11
-- [ ] 2026-11-15 [brukertest-sporreskjema](979-2026-11-15-18-28-31-brukertest-sporreskjema.md) — Sjekk at `npm run preview -- --host` kan nås fra en telefon på skolenettet (ellers hotspot)
-- [ ] 2026-11-15 [brukertest-sporreskjema](979-2026-11-15-18-28-31-brukertest-sporreskjema.md) — Etter testene: last opp utfylt brukertest-svar.xlsx, før resultatene inn i resultater.md og sluttrapporten §4
+- [x] 2026-11-15 [brukertest-sporreskjema](979-2026-11-15-18-28-31-brukertest-sporreskjema.md) — Skriv ut 6 spørreskjemaer før 17.11 (utgått 2026-11-19: brukertesten er gjennomført)
+- [x] 2026-11-15 [brukertest-sporreskjema](979-2026-11-15-18-28-31-brukertest-sporreskjema.md) — Sjekk at `npm run preview -- --host` kan nås fra en telefon på skolenettet (ellers hotspot) (utgått 2026-11-19: brukertesten er gjennomført)
+- [x] 2026-11-15 [brukertest-sporreskjema](979-2026-11-15-18-28-31-brukertest-sporreskjema.md) — Etter testene: last opp utfylt brukertest-svar.xlsx, før resultatene inn i resultater.md og sluttrapporten §4 (løst 2026-11-19: brukertest-svar.xlsx er lastet opp, og SUS og fritekst står i resultater.md (PR #117); O1–O5 følges i punktet fra 19.11)
 - [x] 2026-11-18 [gjennomgang-og-utsatt-kodefrys](978-2026-11-18-19-23-11-gjennomgang-og-utsatt-kodefrys.md) — Gruppa bekrefter kodefrys 28.11 og levering 2.12 (løst 2026-11-18; Bårds godkjenning står som eget punkt)
 - [x] 2026-11-18 [gjennomgang-og-utsatt-kodefrys](978-2026-11-18-19-23-11-gjennomgang-og-utsatt-kodefrys.md) — Endringsforslag for «Best akkurat nå» (topp 3 på forsiden) i bmad-correct-course før storyen bygges (løst 2026-11-18)
 - [x] 2026-11-18 [gjennomgang-og-utsatt-kodefrys](978-2026-11-18-19-23-11-gjennomgang-og-utsatt-kodefrys.md) — Rettings-PR fra gjennomgangen: ordbrudd i navn, plassholder i søket, desimaler, enheter (cm og mm), tegnforklaring, ferskhet på forsiden, SnowScore og skivindu, tydelig Tilbake. Innen 28.11 (bygget i 86a48b4, venter på push, PR og review) (løst 2026-11-19)
@@ -95,18 +95,18 @@
 - [x] 2026-11-18 [gjennomgang-og-utsatt-kodefrys](978-2026-11-18-19-23-11-gjennomgang-og-utsatt-kodefrys.md) — Bård må godta at leveringen flyttes fra 25.11 til 2.12 (løst 2026-11-18: godtatt, gruppa satte selv innleveringsdatoen)
 - [x] 2026-11-18 [gjennomgang-og-utsatt-kodefrys](978-2026-11-18-19-23-11-gjennomgang-og-utsatt-kodefrys.md) — Bygg Story 1.12 (Best akkurat nå) med bmad-build etter rettings-PR-en, før 28.11 (løst 2026-11-18, venter på review)
 - [x] 2026-11-18 [gjennomgang-og-utsatt-kodefrys](978-2026-11-18-19-23-11-gjennomgang-og-utsatt-kodefrys.md) — PR #113 og PR-en for Story 1.12 trenger godkjenning fra et annet gruppemedlem før merge, innen 28.11 (løst 2026-11-18: merget etter Aksels godkjenning, avvik kommentert)
-- [ ] 2026-11-18 [overvaakingsagent](977-2026-11-18-22-58-52-overvaakingsagent.md) — Sett opp den planlagte Claude-økten med /schedule (06, 12, 18, 24) etter merge av PR #115, med to prøvekjøringer (uten avvik, og med grensen 1 min). Lenke i fremdriftsplan.md. Innen 28.11
-- [ ] 2026-11-18 [overvaakingsagent](977-2026-11-18-22-58-52-overvaakingsagent.md) — AGENTS.md: linje om overvåkeren og at den aldri skriver kode, via bmad-project-context
+- [x] 2026-11-18 [overvaakingsagent](977-2026-11-18-22-58-52-overvaakingsagent.md) — Sett opp den planlagte Claude-økten med /schedule (06, 12, 18, 24) etter merge av PR #115, med to prøvekjøringer (uten avvik, og med grensen 1 min). Lenke i fremdriftsplan.md. Innen 28.11 (løst 2026-11-20: rutinen er i drift og prøvene er bestått (PR #122))
+- [x] 2026-11-18 [overvaakingsagent](977-2026-11-18-22-58-52-overvaakingsagent.md) — AGENTS.md: linje om overvåkeren og at den aldri skriver kode, via bmad-project-context (løst 2026-11-20: PR #123)
 - [ ] 2026-11-18 [overvaakingsagent](977-2026-11-18-22-58-52-overvaakingsagent.md) — Brukertestresultater 19.11: sorter mot rundbordets ideer (tom treffliste, «hvorfor denne scoren») og bygg høyst tre fix/ før 28.11
 - [ ] 2026-11-18 [overvaakingsagent](977-2026-11-18-22-58-52-overvaakingsagent.md) — Sluttrapporten: avsnitt om grensen for KI-autonomi i driften (nivå 1–3) og at forbudet hviler på instruksen
 - [ ] 2026-11-18 [gjennomgang-og-utsatt-kodefrys](978-2026-11-18-19-23-11-gjennomgang-og-utsatt-kodefrys.md) — Ta opp på gruppemøtet at #113 og #114 ble merget uten godkjenning fra et annet medlem
 - [x] 2026-11-18 [gjennomgang-og-utsatt-kodefrys](978-2026-11-18-19-23-11-gjennomgang-og-utsatt-kodefrys.md) — PR #116 (forklaringslenken på mobil) trenger godkjenning før merge (løst 2026-11-19)
 - [ ] 2026-11-19 [brukertest-resultater](976-2026-11-19-22-31-25-brukertest-resultater.md) — Før inn O1–O5, tid, enhet og Safari-sjekken fra observasjonsskjemaene i resultater.md, og vurder SM-2, SM-3 og SM-4
-- [ ] 2026-11-19 [brukertest-resultater](976-2026-11-19-22-31-25-brukertest-resultater.md) — Sjekk om D6 testet før eller etter at «Tilbake» ble flyttet øverst (#113)
+- [ ] 2026-11-19 [brukertest-resultater](976-2026-11-19-22-31-25-brukertest-resultater.md) — Sjekk om D6 testet før eller etter at «Tilbake» ble flyttet øverst (#113) (delvis løst 2026-11-22: mergetidspunktet for #113 står i resultater.md (PR #129); D6s observasjonsskjema gjenstår)
 - [ ] 2026-11-19 [brukertest-resultater](976-2026-11-19-22-31-25-brukertest-resultater.md) — Kartet er nesten ikke synlig over Filter-arket på små telefoner (ca. 60 px på 375 × 667); krever correct-course
 - [x] 2026-11-19 [overvaaking-oppsett](975-2026-11-19-23-40-00-overvaaking-oppsett.md) — Etter merge: ny prompt i rutinen trig_01KqK786NUhCuEwP1JzeDDQJ, slå den på, kjør de fire prøvene og legg lenken til issuet i fremdriftsplan.md (løst 2026-11-20)
 - [ ] 2026-11-19 [overvaaking-oppsett](975-2026-11-19-23-40-00-overvaaking-oppsett.md) — Sluttrapporten: agenten når ikke nettsiden fra skymiljøet og ser ikke om siden er nede etter en vellykket publisering
 - [ ] 2026-11-20 [overvaaking-oppsett](975-2026-11-19-23-40-00-overvaaking-oppsett.md) — Overvåkingen varsler bare Aksel (push). Hvis organisasjonen gir Claude-appen skrivetilgang til issues, lager agenten issuene selv uten endring
 - [ ] 2026-11-20 [ytelse-mobil](974-2026-11-20-11-30-00-ytelse-mobil.md) — Gruppa avgjør avviket for SM-12 (utkast i målinger/README.md) innen 25.11
 - [ ] 2026-11-20 [ytelse-mobil](974-2026-11-20-11-30-00-ytelse-mobil.md) — Mål den publiserte siden på nytt etter merge, og oppdater sluttrapporten §3.2 med tallene fra 20.11
-- [ ] 2026-11-20 [ytelse-mobil](974-2026-11-20-11-30-00-ytelse-mobil.md) — Correct-course-forslag om kartet på små telefoner (ca. 60 px over Filter-arket) til gruppemøtet
+- [x] 2026-11-20 [ytelse-mobil](974-2026-11-20-11-30-00-ytelse-mobil.md) — Correct-course-forslag om kartet på små telefoner (ca. 60 px over Filter-arket) til gruppemøtet (løst 2026-11-22: forslaget ligger i PR #125 og er sak 2 på møtet 23.11)
